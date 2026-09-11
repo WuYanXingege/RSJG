@@ -98,7 +98,10 @@ class Scene_base(object):
         # from (X,Y) valued in [0,C] to (X,Y,C) valued in [0,1]
         num_classes = len(self.semantic_classes)
         sem_map = [(sem_map == v) for v in range(num_classes)]
-        sem_map = np.stack(sem_map, axis=-1).astype(int)
+        # Float32 preserves the exact binary 0/1 values consumed by the CNN
+        # while using half the memory of NumPy's platform-default int64. This
+        # matters for SDD, where 47 full-resolution six-channel maps coexist.
+        sem_map = np.stack(sem_map, axis=-1).astype(np.float32)
         return sem_map
 
     def _load_semantic(self, semantic='gt'):
@@ -113,14 +116,21 @@ class Scene_base(object):
             sem_map = self._load_semantic_map(semantic_map_path)
             return sem_map
 
-    def _load_extra_data(self):
+    def _load_extra_data(self, load_visual_data=True):
         self.scene_folder = os.path.join(self.dataset_folder, self.name)
         self.H = self._load_H_matix()
         self.H_inv = self._compute_H_inv()
         self.ortho_px_to_meter = self._load_ortho_px_to_meter()
-        self.RGB_image = self._load_RGB_image()
-        self.semantic_map_gt = self._load_semantic(semantic='gt')
-        self.semantic_map_pred = self._load_semantic(semantic='pred')
+        if load_visual_data:
+            self.RGB_image = self._load_RGB_image()
+            self.semantic_map_gt = self._load_semantic(semantic='gt')
+            self.semantic_map_pred = self._load_semantic(semantic='pred')
+        else:
+            # Prediction/evaluation receives downsampled visual tensors from
+            # the batch cache and needs only scene geometry for coordinates.
+            self.RGB_image = None
+            self.semantic_map_gt = None
+            self.semantic_map_pred = None
 
     def _make_pixel_coord_pandas(self, raw_world_data):
         raise NotImplementedError
@@ -162,6 +172,6 @@ class Scene_base(object):
         else:
             raise ValueError("Unit of measure")
 
-    def load_scene_all(self, verbose=False):
+    def load_scene_all(self, verbose=False, load_visual_data=True):
         self.delta_time = 1 / self.frames_per_second
-        self._load_extra_data()
+        self._load_extra_data(load_visual_data=load_visual_data)

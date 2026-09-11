@@ -1,0 +1,866 @@
+# Codex Prompt
+# V4 Multi-Scene Packed Training Optimization
+# 目标：停止当前正在运行的 V4 正式训练，在不改变 V4 数学模型、loss 定义、K=20 语义和评测协议的前提下，
+# 完成冻结上游轨迹缓存 + variable-N multi-scene packing + scene-balanced loss 等工程优化；
+# 优化、测试和 benchmark 全部通过后，再从头启动新的正式训练。
+
+你现在位于已经实现 RelationAwareMultiwayCoupler / Multiway Coupling V4 的 GDTS 工程中。
+
+当前训练状态：
+- 当前已有一轮 V4 正式训练正在运行；
+- 这轮训练使用旧的 single-scene 外层 DataLoader，实际 outer batch_size=1；
+- 当前 GPU 显存占用较低、GPU utilization 偏低，存在明显工程提速空间；
+- 我们现在明确决定：停止当前正在运行的正式训练，不再把它继续跑完；
+- 这轮训练仅视为旧数据流水线下的临时试验，不作为最终正式结果；
+- 完成下面的 packed-batch 优化、严格等价性测试和 benchmark 后，再启动新的正式训练。
+
+============================================================
+一、第一步：安全停止当前训练
+============================================================
+
+开始修改代码前，先停止当前正在运行的 V4 正式训练。
+
+要求：
+
+1. 找到当前 V4 训练进程；
+2. 采用安全方式终止，不要直接破坏文件系统；
+3. 优先发送正常终止信号，让当前日志和 checkpoint 写入动作正常结束；
+4. 确认对应训练进程已经完全退出；
+5. 不删除当前 output directory、checkpoint、log、config；
+6. 将旧实验保留，便于后续作为 single-scene throughput / sanity 对照；
+7. 不要从这个旧训练 checkpoint 继续新的 packed 正式训练，除非后续明确要求；
+8. packed 优化完成后，新正式训练应使用独立输出目录，并按照新配置重新开始。
+
+请在最终报告中写明：
+- 停止的是哪个进程；
+- 原实验目录；
+- 停止时的大致 epoch / progress；
+- 是否有 checkpoint 被完整保留。
+
+============================================================
+二、优化目标
+============================================================
+
+当前瓶颈：
+
+- synchronized scene-window 路径的 DataLoader 外层仍为 batch_size=1；
+- 一个 item = 一个真实同步 scene-window；
+- 每个 window 的行人数 N 可变；
+- coupling_grad_accum_steps 只能扩大 effective optimization batch，不能真正提高 GPU 并行度；
+- upstream GDTS 已冻结，但训练时仍重复执行昂贵的 diffusion tree sampling；
+- 不同 scene 的地图尺寸、homography、scene object 和 N 不同，
+  因此不能直接把 DataLoader(batch_size=1) 改成 4。
+
+本次只做工程加速，不改变 V4 方法本身。
+
+核心方案：
+
+    Frozen upstream multi-seed trajectory bank cache
+        +
+    variable-N multi-scene packing
+        +
+    sparse graph index offset
+        +
+    strictly scene-balanced loss reduction
+
+============================================================
+三、硬性要求
+============================================================
+
+1. 不修改当前 V4 网络数学结构。
+2. 不修改 trajectory-pair-conditioned relation 的定义。
+3. 不修改 trajectory pair energy 的公式。
+4. 不修改 pair-specific gate 的定义。
+5. 不修改 multiway permutation synchronization 的目标。
+6. 不修改 Hungarian hard projection 的默认逻辑。
+7. 不修改现有 loss 的数学含义。
+8. 不修改 JADE / JFDE / minADE / minFDE 的定义。
+9. 不修改 K=20 的含义。
+10. 不允许把多个 cached seeds 合并成更大的 K。
+11. 不允许不同 scene/window 之间产生 graph edge。
+12. 不允许 packed 后按 N_total 或 E_total 直接平均，从而改变 scene 权重。
+13. 旧 single-scene V4 路径必须完整保留，可做消融。
+14. 旧训练停止后保留其日志和 checkpoint，但新正式训练使用独立目录。
+15. 所有修改完成并通过测试后，自动启动新的 packed 正式训练。
+
+============================================================
+四、Frozen Upstream Trajectory Bank Cache
+============================================================
+
+当前 V4 中 upstream GDTS 已冻结，因此训练 coupler 时每个 epoch 重复执行完整 diffusion sampling 不产生新的梯度。
+
+对每个 synchronized window w，预先生成多个随机 seed 的 K=20 trajectory banks：
+
+    B_w^(q) = {Y_i^(q,k)}
+
+其中：
+
+    q = 1,...,S_seed
+    k = 1,...,K
+    K = 20
+
+建议默认：
+
+    num_cached_seeds_per_window = 4
+
+每个 seed 必须始终独立保持 K=20。
+
+禁止：
+
+    seed0 的 20 条
+    +
+    seed1 的 20 条
+    =
+    K=40
+
+训练时：
+- 每个 window 每次只随机选择一个 q；
+- 同一个 forward 内始终只有 K=20。
+
+Validation / Test：
+- 每个 seed 独立做 K=20 evaluation；
+- 最后对 seed 指标求 mean/std；
+- 不得合并成 K=80。
+
+============================================================
+五、Trajectory Bank Cache 内容
+============================================================
+
+每个 synchronized window 至少保存：
+
+    window_id
+    scene_name
+    frame_ids
+    agent_ids
+
+    obs_world
+        [N,T_obs,2]
+
+    gt_future_world
+        [N,T_pred,2]
+
+    raw_trajectory_banks
+        推荐统一为：
+        [S_seed,N,K,T_pred,2]
+
+以及必要 metadata：
+
+    upstream_checkpoint_id
+    upstream_generator_type
+    K
+    T_obs
+    T_pred
+    dt
+    coordinate_system
+    cache_format_version
+
+不要缓存 trainable V4 模块的输出，例如：
+- trajectory feature；
+- pair score；
+- pair relation posterior；
+- pair gate；
+- Sinkhorn matrix。
+
+这些必须训练时在线计算。
+
+============================================================
+六、Cache Seed 设计
+============================================================
+
+使用 deterministic seed：
+
+    seed(w,q)
+    =
+    hash(
+        global_seed,
+        scene_name,
+        frame_start,
+        q
+    )
+
+确保：
+1. cache 可复现；
+2. 不同 window 不共享完全相同随机流；
+3. 不同 q 对应真正独立的 diffusion samples；
+4. 重建 cache 可得到相同输出。
+
+新增参数：
+
+    --num_cached_seeds_per_window 4
+    --trajectory_bank_seed_base 42
+    --force_rebuild_trajectory_bank False
+
+============================================================
+七、Cache Manifest
+============================================================
+
+新增 trajectory bank manifest，例如：
+
+    trajectory_bank_manifest.json
+
+至少记录：
+
+    cache_version
+    dataset
+    test_set
+    obs_length
+    pred_length
+    dt
+    K
+    num_cached_seeds
+    upstream_checkpoint_path
+    upstream_checkpoint identifier/hash/mtime
+    upstream_generator_type
+    DDPM steps
+    DDIM steps
+    trunk settings
+    coordinate convention
+    relevant config fields
+
+如果 manifest 与当前配置不匹配：
+- 禁止静默读取；
+- 明确报 mismatch；
+- 根据 force flag rebuild。
+
+============================================================
+八、Online vs Cached Equivalence
+============================================================
+
+这是强制测试。
+
+对于同一个 synchronized window、upstream checkpoint、random seed，比较：
+
+A. 原在线 GDTS generation
+
+B. trajectory bank cache 生成结果
+
+要求：
+
+    torch.allclose(
+        online_raw_future,
+        cached_raw_future,
+        atol=...,
+        rtol=...
+    )
+
+若不一致：
+- 检查 seed；
+- model.eval()；
+- device；
+- dtype；
+- diffusion sampling；
+- DDIM/DDPM path；
+- trunk/branch 设置。
+
+不能用“看起来接近”替代严格测试。
+
+============================================================
+九、Multi-Scene Packing
+============================================================
+
+完成 trajectory cache 后，coupling 阶段只处理统一的 world-coordinate tensors：
+
+    obs_world
+        [N,T_obs,2]
+
+    gt_future
+        [N,T_pred,2]
+
+    raw_future
+        [N,K,T_pred,2]
+
+不同 scenes 可以沿 agent 维 concatenate。
+
+packed batch：
+
+    obs_world
+        [N_total,T_obs,2]
+
+    gt_future
+        [N_total,T_pred,2]
+
+    raw_future
+        [N_total,K,T_pred,2]
+
+    scene_index
+        [N_total]
+
+    scene_ptr
+        [num_scenes+1]
+
+其中：
+
+    N_total = Σ_s N_s
+
+同时保留：
+
+    scene_names
+    frame_ids
+    agent_ids
+    window_ids
+    selected_seed_indices
+
+============================================================
+十、Dynamic Scene Packing
+============================================================
+
+不要简单固定：
+
+    batch_size = 4 scenes
+
+因为不同窗口 N 和 E 差异较大。
+
+新增参数：
+
+    --max_agents_per_pack 32
+    --max_edges_per_pack 256
+    --max_scenes_per_pack 8
+
+以 max_agents_per_pack 和 max_edges_per_pack 为主要容量限制。
+
+packing 不能拆分一个 synchronized window。
+
+伪代码：
+
+function build_scene_packs(windows):
+
+    shuffle(windows)
+
+    packs = []
+    current = []
+    N_sum = 0
+    E_sum = 0
+
+    for w in windows:
+
+        N_w = w.num_agents
+        E_w = estimate_or_cached_edge_count(w)
+
+        overflow =
+            len(current) >= max_scenes_per_pack
+            or N_sum + N_w > max_agents_per_pack
+            or E_sum + E_w > max_edges_per_pack
+
+        if overflow and current is not empty:
+            emit current
+            current = []
+            N_sum = 0
+            E_sum = 0
+
+        add w to current
+        N_sum += N_w
+        E_sum += E_w
+
+    emit remaining current
+
+============================================================
+十一、Graph Packing
+============================================================
+
+每个 scene 独立构图：
+
+    edge_index_s [2,E_s]
+    edge_feat_s
+    edge_weight_s
+
+然后按 agent offset：
+
+    offset = scene_ptr[s]
+
+    edge_index_s += offset
+
+最后：
+
+    edge_index = cat(edge_index_s, dim=1)
+    edge_feat = cat(edge_feat_s, dim=0)
+    edge_weight = cat(edge_weight_s, dim=0)
+
+必须 assert：
+
+    scene_index[edge_index[0]]
+    ==
+    scene_index[edge_index[1]]
+
+若出现跨 scene edge：
+    立即抛错。
+
+============================================================
+十二、Packed Forward
+============================================================
+
+pack 后：
+
+    raw_future [N_total,K,T_pred,2]
+
+可以一次性输入：
+- trajectory encoder；
+- pair-conditioned relation；
+- trajectory pair energy；
+- pair-specific gate；
+- multiway synchronizer。
+
+只对 E_total 条 sparse edges 构造 pair tensors。
+
+禁止构造：
+
+    [N_total,N_total,K,K,...]
+
+只允许：
+
+    [E_total,K,K,...]
+
+============================================================
+十三、最关键：保持 Scene-Balanced Loss
+============================================================
+
+旧 single-scene 训练时：
+
+    一个 step = 一个 scene-window
+
+如果 packed 后直接：
+
+    mean over N_total agents
+
+会让大 N scene 权重更高。
+
+如果直接：
+
+    mean over E_total edges
+
+会让拥挤 scene 权重更高。
+
+这会改变训练目标。
+
+默认必须：
+
+    scene_balanced_loss = True
+
+对于每个 scene s 独立计算：
+
+    L_alignment_s
+    L_pair_score_s
+    L_pair_assignment_s
+    L_no_harm_s
+    L_entropy_s
+    L_relation_prior_s
+
+然后：
+
+    L_total
+    =
+    mean_s L_total_s
+
+pair loss：
+先：
+
+    L_pair_s
+    =
+    mean_{e in scene s} L_e
+
+再：
+
+    mean over scenes
+
+不能直接：
+
+    mean over all packed edges
+
+============================================================
+十四、Loss Equivalence Test
+============================================================
+
+构造两个 scenes A/B。
+
+分别单独计算：
+
+    L_A
+    L_B
+
+期望：
+
+    L_expected
+    =
+    (L_A + L_B)/2
+
+packed 后：
+
+    L_pack
+
+要求：
+
+    abs(L_pack-L_expected)
+    < tolerance
+
+逐项验证：
+
+    L_alignment
+    L_pair_score
+    L_pair_assignment
+    L_no_harm
+    L_perm_entropy
+    L_relation_prior
+    L_gate_reg
+
+============================================================
+十五、Packed vs Single Deterministic Equivalence
+============================================================
+
+取 scene A、B。
+
+固定：
+- cached bank；
+- model eval / deterministic mode；
+- RNG；
+
+分别运行：
+
+    A single
+    B single
+
+和：
+
+    pack(A,B)
+
+比较：
+- trajectory features；
+- relation posterior；
+- pair energy；
+- pair gate；
+- Sinkhorn P；
+- Hungarian permutation；
+- component membership；
+
+要求：
+pack 中 A/B 的结果分别与 single 基本一致。
+
+============================================================
+十六、Multiway Synchronizer Scene Isolation
+============================================================
+
+packed 后必须保证：
+
+- connected component search 不跨 scene；
+- anchor/gauge 不跨 scene；
+- Sinkhorn synchronization 不跨 scene；
+- keep confidence 不跨 scene；
+- Hungarian projection 不跨 scene。
+
+必须加入人工测试：
+
+两个 scene 使用完全相同的空间坐标。
+
+即使位置完全重合：
+    也不能产生跨 scene edge/message/component。
+
+============================================================
+十七、显存约束
+============================================================
+
+pair tensor 主要复杂度：
+
+    O(E_total K^2 M)
+
+因此 pack 不应只按 N 限制。
+
+必须同时支持：
+
+    max_edges_per_pack
+
+启动训练时打印：
+
+    num_scenes
+    N_total
+    E_total
+    K
+    M
+    estimated_pair_elements
+    estimated_pair_memory_mb
+
+若 pack 预计超过设置：
+    自动拆包。
+
+============================================================
+十八、Gradient Accumulation
+============================================================
+
+multi-scene packing 与 grad accumulation 分开。
+
+例如：
+
+    max_agents_per_pack=32
+    coupling_grad_accum_steps=2
+
+表示：
+- 一个 forward 已经包含多个 scenes；
+- 两个 packed forwards 后再 optimizer.step。
+
+确保：
+
+    loss = loss / grad_accum_steps
+
+再 backward。
+
+============================================================
+十九、训练模式
+============================================================
+
+新增或复用参数：
+
+    --use_trajectory_bank_cache True
+    --use_multi_scene_packing True
+    --scene_balanced_loss True
+
+建议：
+
+    --max_agents_per_pack 32
+    --max_edges_per_pack 256
+    --max_scenes_per_pack 8
+    --num_cached_seeds_per_window 4
+
+旧路径：
+
+    --use_trajectory_bank_cache False
+    --use_multi_scene_packing False
+
+必须还能运行。
+
+============================================================
+二十、Evaluation Seed Protocol
+============================================================
+
+Validation 可支持：
+
+    validation_seed_mode=fixed
+
+例如固定：
+    seed_index=0
+
+用于快速 model selection。
+
+正式多 seed test：
+
+    validation/test_seed_mode=all
+
+分别计算每个 cached seed 的：
+- minADE/minFDE；
+- Raw_JADE/JFDE；
+- aligned JADE/JFDE；
+- recovery ratio；
+
+最后汇总 mean/std。
+
+禁止把多 seed 组合成大 K。
+
+============================================================
+二十一、不要改变 V4 算法
+============================================================
+
+本次禁止顺便调整：
+
+    relation network architecture
+    trajectory pair energy
+    pair gate
+    synchronizer objective
+    Sinkhorn iteration
+    Hungarian logic
+    keep threshold
+    graph radius/TTC
+    V4 loss weights
+    K
+    diffusion hyperparameters
+
+除非发现明确 bug。
+
+若发现 bug：
+- 修复；
+- 最终报告单独列出；
+- 不把 bug fix 与 packing speedup 混为一个算法改动。
+
+============================================================
+二十二、Benchmark
+============================================================
+
+实现 benchmark。
+
+至少比较：
+
+A. online upstream + single scene
+
+B. cached upstream + single scene
+
+C. cached upstream + packed scenes
+
+记录：
+
+    windows/sec
+    scenes/sec
+    agents/sec
+
+    data_loading_ms
+    graph_build_ms
+    trajectory_encoder_ms
+    pair_module_ms
+    synchronizer_ms
+    backward_ms
+
+    GPU memory
+    peak GPU memory
+
+    average scenes/pack
+    average agents/pack
+    average edges/pack
+
+    total speedup
+
+============================================================
+二十三、必须新增的测试
+============================================================
+
+[ ] cache vs online equivalence
+
+[ ] packed vs single deterministic forward equivalence
+
+[ ] packed loss = mean(single-scene losses)
+
+[ ] no cross-scene edges
+
+[ ] no cross-scene components
+
+[ ] edge index offset correct
+
+[ ] variable N
+
+[ ] N=1 / E=0
+
+[ ] K remains 20
+
+[ ] multi-seed never becomes K>20
+
+[ ] Sinkhorn works per scene
+
+[ ] Hungarian works per component
+
+[ ] raw/aligned minADE preserved
+
+[ ] raw/aligned minFDE preserved
+
+[ ] JADE/JFDE definitions unchanged
+
+[ ] no NaN/Inf
+
+全部通过后，才能启动新的正式训练。
+
+============================================================
+二十四、正式训练启动顺序
+============================================================
+
+请严格按照：
+
+1. 安全停止当前正在运行的正式训练；
+2. 保留旧 output/checkpoint/log；
+3. 实现 trajectory bank cache；
+4. 实现 scene packer；
+5. 实现 packed graph/index offset；
+6. 修改 V4 forward 支持 packed；
+7. 修改全部 loss 为 scene-balanced packed reduction；
+8. 修改 metrics/evaluation；
+9. 运行全部 equivalence tests；
+10. 运行 benchmark；
+11. 根据 benchmark 和显存选择 pack 参数；
+12. 创建全新的 packed 正式实验目录；
+13. 从正式 V4 初始化重新开始训练；
+14. 不 resume 被停止的旧 single-scene training；
+15. 确认新训练 loss/metric 正常后持续运行。
+
+不需要在第 10 步后等待人工确认。
+测试全部通过后直接启动新的 packed 正式训练。
+
+============================================================
+二十五、建议初始 packed 参数
+============================================================
+
+初始尝试：
+
+    max_agents_per_pack = 32
+    max_edges_per_pack = 256
+    max_scenes_per_pack = 8
+
+    num_cached_seeds_per_window = 4
+
+如果 peak VRAM 仍明显低于可用显存：
+依次尝试：
+
+    max_agents_per_pack = 48
+    max_agents_per_pack = 64
+
+同时必须监控 E_total。
+
+不要只根据 agent 数扩大 pack。
+
+============================================================
+二十六、最终报告
+============================================================
+
+全部完成后报告：
+
+1. 当前旧训练如何停止；
+2. 停止时 epoch/progress；
+3. 旧日志/checkpoint 保存位置；
+4. 修改文件；
+5. 新增文件；
+6. trajectory bank cache 格式；
+7. seed 策略；
+8. multi-scene packing 算法；
+9. graph offset 方式；
+10. scene-balanced loss 实现；
+11. single vs packed equivalence test；
+12. online vs cached equivalence test；
+13. benchmark 结果；
+14. 最终推荐 pack 参数；
+15. 新 packed 正式训练命令；
+16. 新 output 目录；
+17. 新正式训练是否成功启动；
+18. 当前 windows/sec；
+19. GPU utilization；
+20. peak VRAM；
+21. 相比旧 single-scene 的 speedup。
+
+============================================================
+二十七、最终原则
+============================================================
+
+这次不是“边训练边优化”。
+
+我们明确要求：
+
+    停止当前旧训练
+        ↓
+    完成全部工程优化
+        ↓
+    做严格数值等价测试
+        ↓
+    benchmark
+        ↓
+    从头启动新的 packed 正式训练
+
+最终必须做到：
+
+    same V4 model
+    same K=20
+    same synchronized windows
+    same graph semantics
+    same loss semantics
+    same metrics
+
+只改变：
+
+    frozen computation reuse
+    +
+    GPU packing efficiency
+
+不要通过改变数据权重或模型结构换取所谓“提速”。
+
+现在开始执行。
+不要中途停下来等待确认。
+先停止当前训练，再完成全部优化、测试和 benchmark，
+最后直接启动新的 packed 正式训练。

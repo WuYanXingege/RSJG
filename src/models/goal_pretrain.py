@@ -53,7 +53,8 @@ class Goal_Pretrain(torch.nn.Module):
         super().__init__()
         self.args = args
         self.device = device
-        self.dataset = create_dataset(self.args.dataset)
+        self.dataset = create_dataset(
+            self.args.dataset, load_visual_data=False)
 
         ##################
         # MODEL PARAMETERS

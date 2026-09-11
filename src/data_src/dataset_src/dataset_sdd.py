@@ -12,7 +12,7 @@ class Dataset_sdd(Dataset_base):
     are 30 train scenes and 17 test scenes, for a total of 47
     different scenes recorded at 8 unique locations.
     """
-    def __init__(self, verbose=False):
+    def __init__(self, verbose=False, load_visual_data=True):
         super().__init__()
         self.name = "sdd"
         self.dataset_folder = os.path.join(self.path_to_root, "data", self.name)
@@ -78,5 +78,6 @@ class Dataset_sdd(Dataset_base):
             'quad_2',
             'quad_3',
         }
-        self.scenes = {key: Scene_sdd(key, verbose) for
+        self.scenes = {key: Scene_sdd(
+            key, verbose, load_visual_data=load_visual_data) for
                        key in self.train_scenes.union(self.test_scenes)}

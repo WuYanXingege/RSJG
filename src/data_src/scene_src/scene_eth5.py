@@ -18,7 +18,12 @@ class Scene_eth5(Scene_base):
         self.has_semantic_map_pred = True
 
         self.frames_per_second = 2.5
-        self.delta_frame = 10#6 if self.name == 'eth' else 10
+        # ETH-univ is sampled every 6 source frames, whereas the remaining
+        # ETH/UCY scenes use a 10-frame source stride.  The legacy independent
+        # batching path never enforced this interval, but synchronized social
+        # windows do; treating ETH as stride 10 therefore removes every
+        # validation/test window for the ETH leave-one-out split.
+        self.delta_frame = 6 if self.name == 'eth' else 10
         self.unit_of_measure = 'meter'
 
         scene_to_raw_data = {

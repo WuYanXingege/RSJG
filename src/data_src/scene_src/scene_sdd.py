@@ -8,7 +8,7 @@ from src.data_src.scene_src.scene_base import Scene_base
 
 
 class Scene_sdd(Scene_base):
-    def __init__(self, scene_name, verbose=False):
+    def __init__(self, scene_name, verbose=False, load_visual_data=True):
         super().__init__()
         self.name = scene_name
         self.dataset_name = "sdd"
@@ -48,7 +48,8 @@ class Scene_sdd(Scene_base):
         self.delta_frame = 1
         self.unit_of_measure = "pixel"
 
-        self.load_scene_all(verbose)
+        self.load_scene_all(
+            verbose, load_visual_data=load_visual_data)
 
     def _load_raw_data_table(self, path):
         # load .txt raw data table

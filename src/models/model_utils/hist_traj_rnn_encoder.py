@@ -3,8 +3,6 @@ import torch.nn as nn
 import torch.nn.utils.rnn as rnn
 import torch.nn.functional as F
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-
 def run_lstm_on_variable_length_seqs(lstm_module, original_seqs, lower_indices=None, upper_indices=None, total_length=None) -> torch.Tensor:
     bs, tf = original_seqs.shape[:2] # B, T(num of the past frame)
     if lower_indices is None:

@@ -156,7 +156,10 @@ def pairwise_distance(data1, data2, device=torch.device('cpu')):
 
     dis = (A - B) ** 2.0
     # return N*N matrix for pairwise distance
-    dis = dis.sum(dim=-1).squeeze()
+    # Preserve the explicit [num_samples, num_clusters] matrix even when one
+    # dimension equals one.  An unconditional squeeze breaks deterministic
+    # TTST with a single cluster.
+    dis = dis.sum(dim=-1)
     return dis
 
 
@@ -177,5 +180,5 @@ def pairwise_cosine(data1, data2, device=torch.device('cpu')):
     cosine = A_normalized * B_normalized
 
     # return N*N matrix for pairwise distance
-    cosine_dis = 1 - cosine.sum(dim=-1).squeeze()
+    cosine_dis = 1 - cosine.sum(dim=-1)
     return cosine_dis

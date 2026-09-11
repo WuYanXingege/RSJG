@@ -1,6 +1,7 @@
 from typing import Optional
 
 import torch
+import torch.nn.functional as F
 import numpy as np
 
 from src.models.model_utils.kmeans import kmeans
@@ -10,9 +11,13 @@ def normalize_prob_map(x):
     """Normalize a probability map of shape (B, T, H, W) so
     that sum over H and W equal ones"""
     assert len(x.shape) == 4
+    if not torch.is_floating_point(x) or not torch.isfinite(x).all() or \
+            (x < 0).any():
+        raise ValueError('probability map must be finite and non-negative')
     sums = x.sum(-1, keepdim=True).sum(-2, keepdim=True)
-    x = torch.divide(x, sums)
-    return x
+    normalized = torch.divide(x, sums.clamp_min(torch.finfo(x.dtype).tiny))
+    uniform = torch.full_like(x, 1.0 / (x.shape[-2] * x.shape[-1]))
+    return torch.where(sums > 0, normalized, uniform)
 
 
 def un_normalize_prob_map(x):
@@ -98,14 +103,29 @@ def sampling(probability_map,
              replacement=True):
     """Given probability maps of shape (B, T, H, W) sample
     num_samples points for each B and T"""
+    if probability_map.ndim != 4 or not probability_map.is_floating_point():
+        raise ValueError('probability_map must be floating [B,T,H,W]')
+    if not torch.isfinite(probability_map).all() or \
+            (probability_map < 0).any():
+        raise ValueError('probability_map must be finite and non-negative')
     # new view that has shape=[batch*timestep, H*W]
-    prob_map = probability_map.view(probability_map.size(0) * probability_map.size(1), -1)
+    prob_map = probability_map.reshape(
+        probability_map.size(0) * probability_map.size(1), -1)
+    original_prob_map = prob_map
     if rel_threshold is not None:
         # exclude points with very low probability
         thresh_values = prob_map.max(dim=1)[0].unsqueeze(1).expand(-1, prob_map.size(1))
         mask = prob_map < thresh_values * rel_threshold
-        prob_map = prob_map * (~mask).int()
-        prob_map = prob_map / prob_map.sum()
+        prob_map = prob_map * (~mask).to(prob_map.dtype)
+
+    # Multinomial normalizes rows internally, but explicit row normalization
+    # lets us repair a zero-mass agent independently. A global normalization
+    # would still leave a zero row invalid when another agent has mass.
+    row_sum = prob_map.sum(dim=1, keepdim=True)
+    normalized = prob_map / row_sum.clamp_min(torch.finfo(prob_map.dtype).tiny)
+    fallback = torch.zeros_like(prob_map)
+    fallback.scatter_(1, original_prob_map.argmax(dim=1, keepdim=True), 1.0)
+    prob_map = torch.where(row_sum > 0, normalized, fallback)
 
     # samples.shape=[batch*timestep, num_samples]
     samples = torch.multinomial(prob_map,
@@ -157,3 +177,87 @@ def TTST_test_time_sampling_trick(x, num_goals, device):
     goal_samples = torch.cat([goal_samples, goal_samples_argmax.unsqueeze(0)],
                              dim=0)
     return goal_samples
+
+
+def _topk_goal_candidates(probability_map, num_candidates):
+    """Extract deterministic heatmap candidates as ``[N, K, 2]`` (x, y)."""
+    num_agents, _, height, width = probability_map.shape
+    flat = probability_map[:, 0].reshape(num_agents, -1)
+    take = min(num_candidates, flat.shape[-1])
+    indices = flat.topk(take, dim=-1).indices
+    if take < num_candidates:
+        padding = indices[:, :1].expand(-1, num_candidates - take)
+        indices = torch.cat((indices, padding), dim=-1)
+    x_coord = indices.remainder(width)
+    y_coord = torch.div(indices, width, rounding_mode='floor')
+    return torch.stack((x_coord, y_coord), dim=-1).to(probability_map.dtype)
+
+
+def candidate_probabilities(probability_map, goal_candidates, eps=1e-8):
+    """Read bilinear heatmap mass at candidate points and normalize over K.
+
+    Parameters
+    ----------
+    probability_map : torch.Tensor
+        Endpoint heatmaps ``[N, 1, H, W]``.
+    goal_candidates : torch.Tensor
+        Candidate coordinates in heatmap pixels, ``[N, K, 2]`` (x, y).
+    """
+    if probability_map.ndim != 4 or probability_map.shape[1] != 1:
+        raise ValueError('probability_map must have shape [N, 1, H, W]')
+    if goal_candidates.ndim != 3 or goal_candidates.shape[-1] != 2:
+        raise ValueError('goal_candidates must have shape [N, K, 2]')
+    height, width = probability_map.shape[-2:]
+    grid = goal_candidates.clone()
+    if width > 1:
+        grid[..., 0] = 2.0 * grid[..., 0] / (width - 1) - 1.0
+    else:
+        grid[..., 0] = 0.0
+    if height > 1:
+        grid[..., 1] = 2.0 * grid[..., 1] / (height - 1) - 1.0
+    else:
+        grid[..., 1] = 0.0
+    sampled = F.grid_sample(
+        probability_map, grid.unsqueeze(2), mode='bilinear',
+        padding_mode='border', align_corners=True)[:, 0, :, 0]
+    sampled = sampled.clamp_min(eps)
+    return sampled / sampled.sum(dim=-1, keepdim=True).clamp_min(eps)
+
+
+@torch.no_grad()
+def generate_goal_candidates(probability_map, num_candidates, device,
+                             use_ttst=True):
+    """Separate GDTS candidate generation from structured joint selection.
+
+    The legacy baseline still calls :func:`TTST_test_time_sampling_trick`
+    unchanged. Social variants call this function and receive an explicit
+    candidate set and categorical probability for each agent.
+
+    Returns
+    -------
+    goal_candidates : torch.Tensor
+        ``[N, K, 2]`` heatmap coordinates.
+    candidate_prob : torch.Tensor
+        ``[N, K]`` normalized heatmap masses.
+    """
+    if num_candidates < 1:
+        raise ValueError('num_candidates must be positive')
+    if probability_map.ndim != 4 or probability_map.shape[1] != 1 or \
+            not probability_map.is_floating_point():
+        raise ValueError('probability_map must have shape [N,1,H,W]')
+    if not torch.isfinite(probability_map).all() or \
+            (probability_map < 0).any():
+        raise ValueError('probability_map must be finite and non-negative')
+
+    if use_ttst and num_candidates > 1:
+        # The original helper appends one argmax to ``num_goals`` clusters.
+        raw = TTST_test_time_sampling_trick(
+            probability_map, num_goals=num_candidates - 1, device=device)
+        goal_candidates = raw.squeeze(2).permute(1, 0, 2)
+    else:
+        goal_candidates = _topk_goal_candidates(
+            probability_map, num_candidates)
+
+    candidate_prob = candidate_probabilities(
+        probability_map, goal_candidates)
+    return goal_candidates, candidate_prob

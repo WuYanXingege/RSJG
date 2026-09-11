@@ -50,5 +50,11 @@ class Experiment_sdd(Experiment_base):
         return set_name_data
 
     def _load_train_val_test(self):
-        for set_name in ['train', 'valid', 'test']:
-            self.data[set_name] = self._load_data_files(set_name)
+        self.data['train'] = self._load_data_files('train')
+        self.data['valid'] = self._load_data_files('valid')
+        # The published SDD protocol validates on the exact test scenes. Share
+        # their already-loaded DataFrames instead of parsing and storing all 17
+        # large annotation files twice. Each metadata mapping remains distinct
+        # so the preprocessor's split assertion is preserved.
+        self.data['test'] = [
+            dict(item, set_name='test') for item in self.data['valid']]

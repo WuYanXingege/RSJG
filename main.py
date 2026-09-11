@@ -3,6 +3,7 @@ from src.parser import main_parser
 from src.data_pre_process import Trajectory_Data_Pre_Process
 from src.trainer import trainer
 from src.models.goal_pretrain import goal_pretrainer
+from src.trajectory_bank_builder import TrajectoryBankCacheBuilder
 import os
 # os.environ["WANDB_MODE"]="offline"
 
@@ -16,11 +17,16 @@ def main():
         set_seed(seed_value=args.seed, use_cuda=args.use_cuda)
         print('set random seed')
 
-    # Run data pre-process
-    Trajectory_Data_Pre_Process(args)
+    # Frozen trajectory-bank construction is a read-only consumer of the
+    # synchronized batch cache.  In particular, debug limits for cache smoke
+    # tests must never invalidate or rebuild the expensive source batches.
+    if args.phase != 'trajectory_cache':
+        Trajectory_Data_Pre_Process(args)
 
     if args.phase == 'pre-process':
         processor = None
+    elif args.phase == 'trajectory_cache':
+        processor = TrajectoryBankCacheBuilder(args)
     elif args.phase == 'goal_pretrain':
         processor = goal_pretrainer(args)
     else:
@@ -29,6 +35,8 @@ def main():
 
     if args.phase == 'pre-process':
         print("Data pre-processing and batches creation finished.")
+    elif args.phase == 'trajectory_cache':
+        processor.build()
     elif args.phase == 'goal_pretrain':
         processor.train_test()
     elif args.phase == 'train':
@@ -40,7 +48,8 @@ def main():
     else:
         raise ValueError(
             f"Unsupported phase {args.phase}! args.phase can only take the "
-            f"following values: 'train', 'test', 'train_test' or 'pre-process'")
+            f"following values: 'train', 'test', 'train_test', "
+            "'trajectory_cache' or 'pre-process'")
 
 
 if __name__ == '__main__':

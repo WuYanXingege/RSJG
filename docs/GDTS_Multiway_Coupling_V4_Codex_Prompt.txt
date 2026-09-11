@@ -1,0 +1,2306 @@
+# Codex 一步到位实现 Prompt
+# Final V4：Relation-Aware Multiway Trajectory Coupling for GDTS
+# 目标：固定强单人边际生成能力，只学习多行人未来之间的联合耦合；重点解决 UNIV 中多人、大连通分量和复杂交互下的 JADE/JFDE 退化问题。
+
+你现在位于一个已经修改过的 GDTS（Goal-Guided Diffusion Tree Sampling）行人轨迹预测工程中。当前工程已经具有：
+- synchronized scene-window cache；
+- radius + TTC 稀疏交互图；
+- SocialMotionEncoder；
+- latent RelationInference；
+- low-rank joint goal / goal energy / joint sampler；
+- 原 GDTS goal-conditioned diffusion tree；
+- Stage 3 RelationAwareTrajectoryAligner；
+- JADE/JFDE、Raw_JADE/Raw_JFDE、minADE/minFDE 等联合评价。
+
+当前已知现象：
+- ETH 上当前网络表现尚可；
+- UNIV 上联合指标不理想；
+- 旧 Stage 2 连续终点 refinement 存在“联合指标改善但边际指标变差”的冲突；
+- 当前 Stage 3 通过严格 permutation 保持每个行人的 K=20 条轨迹集合不变，因此能够数学上保护 minADE/minFDE；
+- 但当前 Stage 3 仍采用“连通分量内选择一个 reference agent + 其他 agent 围绕 reference 做 Sinkhorn 对齐 + greedy hard bijection”的结构；
+- 该结构对小规模交互较自然，但对 UNIV 中更大的 connected component、环状图、多群体并存和复杂 pairwise consistency 可能不足；
+- 当前 relation 主要是 edge-level q(r_ij|X)，没有显式依赖具体候选轨迹对 (Y_i^a,Y_j^b)；
+- 当前 hard projection 为 greedy，不保证全局最优 assignment；
+- 当前 scene-level social mode 可能对复杂场景过度耦合，因此不应继续强化这一点，现阶段应把论文主线收敛为：
+  “strong marginal generator + relation-aware learned coupling”。
+
+本次任务要求：
+1. 不分多轮修改，不要求每一阶段停下来确认；
+2. 先在内部快速审计现有代码，然后一次性完成全部必要修改；
+3. 保留原有 baseline、旧 Stage 1 / Stage 2 / Stage 3 路径，保证可做消融；
+4. 新增一个新的正式训练路径，例如：
+   training_stage=multiway_coupling
+   trajectory_coupling=v4
+5. 完成全部代码、配置、测试和启动脚本后，直接启动新网络训练；
+6. 不要为了实现新模型重写原 GDTS diffusion；
+7. 默认主模型使用“固定强边际轨迹集合 + 联合耦合”，即不改变每个行人的 K 条原始候选轨迹坐标；
+8. 所有新增功能必须预留消融开关。
+
+============================================================
+一、最终主线：从“参考行人对齐”升级为“图上的多路置换同步”
+============================================================
+
+最终主模型应被理解为：
+
+    GDTS marginal generator
+        ↓
+    每个行人 K 条完整未来轨迹
+        ↓
+    synchronized sparse social graph
+        ↓
+    candidate-trajectory-pair-conditioned relation
+        ↓
+    candidate-trajectory-pair compatibility
+        ↓
+    graph-wide multiway permutation synchronization
+        ↓
+    Sinkhorn relaxed doubly-stochastic assignments
+        ↓
+    Hungarian hard permutation
+        ↓
+    joint future samples
+
+关键思想：
+
+原 GDTS 为每个 agent i 生成 K 条完整未来：
+
+    Y_i = {Y_i^1, ..., Y_i^K}
+
+其中：
+
+    Y_i^a ∈ R^{T_pred × 2}
+
+我们不修改这些轨迹坐标，而只学习每个行人的一个 permutation：
+
+    π_i : {1,...,K} -> {1,...,K}
+
+或者 permutation matrix：
+
+    P_i ∈ {0,1}^{K×K}
+
+满足：
+
+    P_i 1 = 1
+    P_i^T 1 = 1
+
+最终 joint sample s 为：
+
+    \tilde Y_i^s = Y_i^{π_i(s)}
+
+因此对任何 agent i：
+
+    { \tilde Y_i^s | s=1...K }
+    =
+    { Y_i^a | a=1...K }
+
+所以在相同原始轨迹集合下：
+
+    minADE_aligned(i) = minADE_raw(i)
+    minFDE_aligned(i) = minFDE_raw(i)
+
+这不是“靠较小学习率避免伤害边际”，而是由输出空间的双射约束严格保证。
+
+============================================================
+二、核心概率/优化解释：学习 marginals 之间的 coupling
+============================================================
+
+把 agent i 的 K 条离散样本看成经验边际分布：
+
+    μ_i = (1/K) Σ_a δ_{Y_i^a}
+
+我们不修改 μ_i，只学习多行人联合经验分布：
+
+    γ = (1/K) Σ_s
+        δ_(Y_1^{π_1(s)}, ..., Y_N^{π_N(s)})
+
+这个 γ 的每个边际仍为 μ_i。
+
+因此新模型从理论上可以描述为：
+
+    fixed marginal future distributions
+        +
+    learned social dependence / coupling
+
+而不是再学习一套新的 trajectory generator。
+
+这条数学主线应贯穿代码注释、文档和后续论文：
+- marginal quality 由 GDTS 负责；
+- joint consistency 由 coupling module 负责；
+- coupling 不创造新轨迹，只重新组织样本之间的联合对应关系。
+
+============================================================
+三、不要再把一个 reference agent 当作所有人的中心
+============================================================
+
+当前 Stage 3 的 reference-agent 方案可以保留为消融，但新主模型必须改成：
+
+    graph-wide multiway permutation synchronization
+
+对于一个 connected component C 中每个 agent i，都维护：
+
+    P_i ∈ B_K
+
+其中 B_K 是 Birkhoff polytope：
+
+    B_K = {
+        P ∈ R_+^{K×K} |
+        P 1 = 1,
+        P^T 1 = 1
+    }
+
+训练时使用 soft doubly-stochastic matrix；
+测试时再投影到 hard permutation。
+
+注意：
+- 仍允许选一个 anchor agent；
+- 但 anchor 只用于固定 permutation gauge：
+      P_anchor = I
+  防止所有 P_i 同时右乘一个相同 permutation 导致全局列编号不唯一；
+- anchor 不再作为“所有其他 agent 必须围绕它直接匹配”的中心；
+- 所有 graph edges 都必须同时参与全局 objective。
+
+============================================================
+四、Pairwise Compatibility 的全局目标
+============================================================
+
+对于稀疏图中的边：
+
+    (i,j) ∈ E
+
+构造：
+
+    C_ij ∈ R^{K×K}
+
+其中：
+
+    C_ij[a,b]
+
+表示：
+
+    agent i 的第 a 条未来轨迹
+    与
+    agent j 的第 b 条未来轨迹
+
+放在同一个 joint future 中的兼容度。
+
+如果 P_i 和 P_j 是 permutation matrices，则：
+
+    Q_ij = P_i P_j^T
+
+表示两个 agent 的样本对应关系。
+
+全局同步目标：
+
+    maximize_{P_i}
+        Σ_(i,j ∈ E)
+        w_ij < C_ij, P_i P_j^T >
+
+其中：
+
+    <A,B> = Σ_ab A_ab B_ab
+
+训练时：
+    P_i ∈ B_K
+
+测试时：
+    P_i ∈ permutation matrices
+
+这是新网络最重要的数学核心。
+
+============================================================
+五、Trajectory Encoder：必须编码完整 12 帧路径
+============================================================
+
+保留并优化当前 trajectory encoder。
+
+输入：
+
+    raw_future:
+        [K, T_pred, N, 2]
+    或内部：
+        [N, K, T_pred, 2]
+
+对每个 agent i、sample a：
+
+    Y_i^a = [y_1,...,y_T]
+
+构造 step feature，至少包含：
+
+    displacement from last observed position: 2
+    velocity: 2
+    acceleration: 2（建议增加，若当前没有）
+    optional normalized time: 1
+
+例如：
+
+    d_t = y_t - x_i_last
+    v_t = (y_t - y_{t-1}) / dt
+    a_t = (v_t - v_{t-1}) / dt
+
+然后：
+- shared MLP / temporal GRU / small temporal Transformer；
+- 输出每条候选轨迹表示：
+
+    h_i^a ∈ R^{D_traj}
+
+建议 D_traj=128。
+
+推荐：
+- 不使用很重的 Transformer；
+- 保持所有 agents / samples 参数共享；
+- 对 agent 顺序 permutation equivariant。
+
+============================================================
+六、Relation 必须从 edge-level 升级为 trajectory-pair-conditioned
+============================================================
+
+旧关系先验：
+
+    q0(r_ij=m | X)
+
+来自观察历史、agent features、edge features。
+
+保留旧 RelationInference 作为 prior，不删除。
+
+但新主模型必须增加 candidate-conditioned relation residual：
+
+    Δl_ij^{ab}
+    =
+    f_rel(
+        h_i^a,
+        h_j^b,
+        e_ij,
+        φ_pair(Y_i^a,Y_j^b)
+    )
+
+其中：
+
+    Δl_ij^{ab} ∈ R^M
+
+最终：
+
+    q(r_ij^{ab}=m | X,Y_i^a,Y_j^b)
+    =
+    softmax_m(
+        log q0(r_ij=m|X)
+        +
+        Δl_ij^{ab,m}
+    )
+
+建议：
+- M 保持当前 4；
+- relation 仍然是 latent modes；
+- 不人工规定：
+      mode0=朋友
+      mode1=避让
+      ...
+- 训练后通过统计解释；
+- relation prior 与 candidate posterior 的差异可以加小权重 KL regularization。
+
+新增配置：
+
+    trajectory_conditioned_relation=True/False
+    relation_residual_dim=...
+    relation_prior_kl_weight=...
+    num_relation_modes=4
+
+消融：
+- edge-level relation only；
+- trajectory-pair-conditioned relation。
+
+============================================================
+七、Trajectory-pair 几何特征
+============================================================
+
+对每条 edge (i,j) 和候选对 (a,b)，构造 pair geometric features。
+
+至少包含：
+
+1. endpoint distance：
+
+    d_end^{ab}
+    =
+    ||Y_i^a(T) - Y_j^b(T)||
+
+2. full-path minimum distance：
+
+    d_min^{ab}
+    =
+    min_t ||Y_i^a(t)-Y_j^b(t)||
+
+3. mean relative distance：
+
+    d_mean^{ab}
+    =
+    mean_t ||Y_i^a(t)-Y_j^b(t)||
+
+4. relative trajectory / formation change：
+
+    Δ_rel^{ab}
+    =
+    (Y_i^a(T)-Y_j^b(T))
+    -
+    (x_i_last-x_j_last)
+
+5. displacement similarity：
+
+    cos(
+        Y_i^a(T)-x_i_last,
+        Y_j^b(T)-x_j_last
+    )
+
+6. relative velocity similarity / divergence；
+
+7. optional time of closest approach along predicted paths；
+
+8. optional endpoint heading difference。
+
+注意：
+interaction != repulsion。
+
+不要加入统一规则：
+
+    “两个人越近，score 一定越差”
+
+因为同行 / companion 可能长期保持近距离。
+
+这些几何量只是 feature，由 relation-conditioned network 学习：
+- coordination；
+- formation preservation；
+- crossing / yielding；
+- following；
+- weak interaction；
+而不是硬编码行为语义。
+
+============================================================
+八、Relation-conditioned Trajectory Pair Energy
+============================================================
+
+建议使用当前 low-rank goal energy 的思想迁移到 trajectory pair level。
+
+对 edge e=(i,j)、relation mode m、轨迹样本 a,b：
+
+    E_e^m(a,b)
+    =
+    - w_e
+      < A_e^m(a), B_e^m(b) >
+      / sqrt(r_t)
+
+其中：
+
+    A_e^m(a) ∈ R^{r_t}
+    B_e^m(b) ∈ R^{r_t}
+
+建议：
+
+    r_t = 8 或 16
+
+然后 relation mixture 不使用简单能量平均，而在 compatibility space 中融合：
+
+    E_eff^{ab}
+    =
+    -logsumexp_m(
+        log q(r_ij^{ab}=m)
+        -
+        E_e^m(a,b)
+    )
+
+最终 pair compatibility：
+
+    C_ij[a,b] = - E_eff^{ab}
+
+必须保留：
+- low-rank factorization；
+- soft latent relation；
+- compatibility-space mixture。
+
+新增配置：
+
+    trajectory_energy_type=lowrank
+    trajectory_pair_rank=8
+    trajectory_relation_mixture=True
+
+消融：
+- direct MLP pair score；
+- low-rank pair energy。
+
+============================================================
+九、Pair-specific Edge Gate
+============================================================
+
+旧 Stage 3 只有 edge-level gate：
+
+    g_ij ∈ [0,1]
+
+新主模型需要支持 trajectory-pair-specific gate：
+
+    g_ij^{ab}
+    =
+    sigmoid(
+        f_gate(
+            h_i^a,
+            h_j^b,
+            e_ij,
+            q(r_ij^{ab})
+        )
+    )
+
+然后：
+
+    C_ij[a,b]
+    =
+    g_ij^{ab}
+    ×
+    (-E_eff^{ab})
+
+可选加一个 edge-level base gate：
+
+    g0_ij
+
+则：
+
+    g_ij^{ab}
+    =
+    g0_ij
+    ×
+    sigmoid(Δg_ij^{ab})
+
+但不要在训练时 detach / hard top-k。
+
+训练：
+- 所有 radius+TTC candidate edges 保留；
+- gate 连续可微；
+- task gradient 可以直接作用到 gate。
+
+推理：
+- 若需要控制复杂度，可先计算：
+
+    \bar g_ij = mean_ab g_ij^{ab}
+
+  再对每个 node 取 top-k edges；
+- top-k 仅用于 hard inference；
+- 默认 top-k=4；
+- 配置可关闭。
+
+新增配置：
+
+    pair_specific_gate=True
+    inference_edge_topk=4
+    use_inference_edge_topk=True
+
+消融：
+- no gate；
+- edge-level gate；
+- pair-specific gate。
+
+============================================================
+十、多路置换同步：核心可微求解器
+============================================================
+
+新增独立模块，例如：
+
+    src/models/permutation_synchronizer.py
+
+输入：
+    pair_scores:
+        dict / sparse tensor for each edge
+        C_ij [K,K]
+    edge_index [2,E]
+    edge_strength [E] 或由 pair gate 汇总
+    scene_index
+    num_samples=K
+
+输出：
+    soft_permutations:
+        P [N,K,K]
+    hard_permutations:
+        perm_index [N,K]
+    component metadata
+    confidence
+
+------------------------------------------------------------
+10.1 初始化
+------------------------------------------------------------
+
+对于每个 connected component：
+
+若 component size = 1：
+    P_i = I
+    直接 identity。
+
+若 size >= 2：
+    选择 anchor：
+        weighted graph degree 最大者
+    但 anchor 只固定 gauge：
+        P_anchor = I
+
+其他：
+    P_i 初始为 I 或 uniform doubly-stochastic matrix。
+
+推荐：
+    identity initialization
+因为 raw GDTS 的列顺序虽然没有理论 joint semantics，但它至少是一个稳定起点，并有利于 no-harm。
+
+------------------------------------------------------------
+10.2 图上同步迭代
+------------------------------------------------------------
+
+目标：
+
+    maximize Σ_(i,j) w_ij <C_ij, P_i P_j^T>
+
+固定其他 P_j 时，P_i 的一阶 message 可写为：
+
+对于 edge orientation C_ij：
+    message from j to i:
+        M_{j→i} = C_ij P_j
+
+对于 reverse：
+        M_{i→j} = C_ij^T P_i
+
+因此每轮：
+
+    score_i
+    =
+    (1 / degree_i)
+    Σ_{j∈N(i)}
+    w_ij * oriented_message(j→i)
+
+然后：
+
+    P_i
+    =
+    Sinkhorn(score_i / tau_sync)
+
+建议引入 residual：
+
+    score_i
+    =
+    alpha_identity * I
+    +
+    alpha_msg * message_i
+    +
+    alpha_prev * log(P_i_prev + eps)
+
+再做 Sinkhorn。
+
+推荐默认：
+    sync_iterations = 3~5
+    sinkhorn_iterations = 8
+    tau_sync = 0.15~0.3
+
+所有值必须配置化。
+
+anchor 每轮强制：
+    P_anchor = I
+
+注意：
+- 所有边同时约束 P_i；
+- 不再把所有人直接相对 anchor pairwise matching；
+- 大 component 中必须利用 entire graph。
+
+------------------------------------------------------------
+10.3 伪代码
+------------------------------------------------------------
+
+function synchronize(C_edges, edge_index, edge_weight, K):
+
+    P_i = I_K for all i
+
+    components = connected_components(edge_index)
+
+    for comp in components:
+        if len(comp) == 1:
+            continue
+
+        anchor = argmax(weighted_degree(comp))
+        P[anchor] = I_K
+
+        for t in range(sync_iterations):
+
+            message[i] = 0
+            degree[i] = 0
+
+            for e=(i,j) in comp.edges:
+                C = C_edges[e]          # [K,K]
+                w = edge_weight[e]
+
+                # objective <C_ij, P_i P_j^T>
+                message[i] += w * C @ P[j]
+                message[j] += w * C.T @ P[i]
+
+                degree[i] += w
+                degree[j] += w
+
+            for i in comp.nodes:
+                if i == anchor:
+                    P[i] = I
+                    continue
+
+                msg = message[i] / max(degree[i], eps)
+
+                logits =
+                    alpha_msg * msg
+                    + alpha_prev * log(P[i] + eps)
+                    + alpha_identity * I
+
+                P[i] = sinkhorn(logits / tau_sync)
+
+    return P
+
+要求：
+- fully differentiable；
+- 不 detach；
+- 不在训练中 hard top-k；
+- variable N；
+- E=0、N=1 安全；
+- packed multi-scene 时绝不跨 scene。
+
+============================================================
+十一、Sinkhorn 实现要求
+============================================================
+
+对 logits L ∈ R^{K×K}：
+
+优先使用 log-space Sinkhorn：
+
+    Z = L
+
+repeat T_sink times:
+    Z = Z - logsumexp(Z, dim=row)
+    Z = Z - logsumexp(Z, dim=col)
+
+最后：
+
+    P = exp(Z)
+
+必须：
+- 避免 NaN；
+- 支持 batch [N,K,K]；
+- eps 可配置；
+- 数值稳定；
+- 记录 row/column sum deviation。
+
+新增诊断：
+
+    sinkhorn_row_error
+    sinkhorn_col_error
+    permutation_entropy
+
+============================================================
+十二、Hard Projection：必须从 Greedy 改成 Hungarian
+============================================================
+
+当前 greedy bijection 只保留作消融。
+
+新默认 hard projection：
+
+    Hungarian / Linear Sum Assignment
+
+目标：
+
+对于每个 non-anchor agent：
+
+    π_i
+    =
+    argmax_permutation
+        Σ_s P_i[π_i(s), s]
+
+或等价对：
+
+    -P_i
+
+运行 Hungarian。
+
+K=20，因此 O(K^3) 完全可接受。
+
+实现优先：
+    scipy.optimize.linear_sum_assignment
+
+若工程不希望强制 scipy 新依赖，则实现：
+- scipy 路径；
+- 无 scipy 时 fallback 到现有 greedy；
+- 但日志必须明确 fallback。
+
+新增配置：
+
+    hard_projection=hungarian
+    hard_projection=greedy   # ablation
+
+严格检查：
+- permutation 每个 index 只出现一次；
+- 无重复、无缺失；
+- aligned trajectory 仅通过 gather 重排；
+- 禁止平均、插值、复制、删除、移动坐标。
+
+============================================================
+十三、Component-level Confidence / Identity Bypass
+============================================================
+
+保留“有证据才修改”的安全思想，但从 reference-centric 改成 component-level。
+
+对一个 component，计算：
+
+1. identity objective：
+
+    J_id
+    =
+    Σ_(i,j)
+    w_ij < C_ij, I >
+
+2. synchronized soft objective：
+
+    J_sync
+    =
+    Σ_(i,j)
+    w_ij < C_ij, P_i P_j^T >
+
+3. objective gain：
+
+    ΔJ = J_sync - J_id
+
+4. mean permutation entropy；
+
+5. mean pair gate；
+
+6. graph density / component size；
+
+7. cycle/synchronization consistency，可选。
+
+输入 keep_head：
+
+    confidence
+    =
+    sigmoid(
+        f_keep(
+            ΔJ,
+            entropy,
+            mean_gate,
+            component_size,
+            score_dispersion,
+            ...
+        )
+    )
+
+推理：
+    if confidence < keep_threshold:
+        所有该 component 的 P_i = I
+
+默认：
+    keep_threshold = 0.6
+
+但必须支持：
+    use_identity_bypass=True/False
+    keep_threshold 可调
+
+注意：
+- 不能让 keep_head 初始就强制大量改列；
+- 初始化偏向 identity 是合理的；
+- 但必须记录 changed_fraction，避免永远旁路。
+
+============================================================
+十四、训练损失：直接与联合指标结构对齐
+============================================================
+
+新 Stage 的训练输入必须是真实 GDTS 生成的 K=20 条完整轨迹。
+
+不要只在 goal endpoint 上训练新 coupler。
+
+------------------------------------------------------------
+14.1 Per-trajectory GT cost
+------------------------------------------------------------
+
+对于 candidate trajectory Y_i^a：
+
+    ADE_i^a
+    =
+    (1/T)
+    Σ_t ||Y_i^a(t)-Y_i^GT(t)||
+
+    FDE_i^a
+    =
+    ||Y_i^a(T)-Y_i^GT(T)||
+
+定义：
+
+    d_i^a
+    =
+    ADE_i^a
+    +
+    lambda_fde * FDE_i^a
+
+默认：
+    lambda_fde = 1.0
+
+------------------------------------------------------------
+14.2 L_alignment：soft joint best-of-K surrogate
+------------------------------------------------------------
+
+给 soft permutation P_i[a,s]：
+
+第 s 个联合列的 expected cost：
+
+    J_s
+    =
+    (1/N)
+    Σ_i
+    Σ_a
+    P_i[a,s] d_i^a
+
+然后对 K 个 joint columns 做 soft-min：
+
+    L_alignment
+    =
+    -tau_joint
+    log Σ_s exp(-J_s/tau_joint)
+
+可选减去常数 tau*logK，使尺度更直观，但保持全工程一致。
+
+默认：
+    tau_joint = 0.5
+
+这比直接把 soft P 用于轨迹坐标线性混合更干净：
+- 不生成“平均轨迹”；
+- 直接优化 expected joint assignment cost；
+- 与 JADE/JFDE “同一场景共享 sample index”结构一致。
+
+------------------------------------------------------------
+14.3 L_pair_score：监督 C_ij[a,b]
+------------------------------------------------------------
+
+对每条 edge 和每个轨迹 pair 构造 oracle pair cost。
+
+不要只用碰撞距离。
+
+推荐：
+
+    pair_gt_cost_ij^{ab}
+    =
+    0.5 * (d_i^a + d_j^b)
+    +
+    lambda_rel_geom * R_ij^{ab}
+
+其中 relation geometry error：
+
+    R_ij^{ab}
+    =
+    (1/T)
+    Σ_t
+    ||
+        (Y_i^a(t)-Y_j^b(t))
+        -
+        (Y_i^GT(t)-Y_j^GT(t))
+    ||
+
+可再加 endpoint relative error：
+
+    +
+    lambda_rel_end
+    ||
+        (Y_i^a(T)-Y_j^b(T))
+        -
+        (Y_i^GT(T)-Y_j^GT(T))
+    ||
+
+该形式不会预设“近=坏”：
+- 同行时，保持 GT relative formation 会得到低 cost；
+- crossing / yielding 时，只有正确 relative temporal geometry 才低 cost；
+- weak interaction 时 individual error 仍占主要部分。
+
+soft target：
+
+    T_ij[a,b]
+    =
+    softmax_{a,b}(
+        -pair_gt_cost_ij^{ab}
+        /
+        tau_pair_target
+    )
+
+predicted pair distribution：
+
+    S_ij[a,b]
+    =
+    softmax_{a,b}(
+        C_ij[a,b]
+        /
+        tau_pair_pred
+    )
+
+loss：
+
+    L_pair_score
+    =
+    mean_edges
+    KL(T_ij || S_ij)
+
+或 soft cross entropy。
+
+------------------------------------------------------------
+14.4 L_pair_assignment：直接监督同步后的 pair correspondence
+------------------------------------------------------------
+
+由 soft permutations：
+
+    Q_ij = P_i P_j^T
+
+Q_ij 也是近似 doubly stochastic 的 relative assignment。
+
+使用 oracle target T_ij：
+
+    L_pair_assignment
+    =
+    mean_edges
+    KL(
+        T_ij
+        ||
+        normalize(Q_ij)
+    )
+
+这个 loss 直接把 pair oracle information 传到 permutation synchronizer，
+不要只监督 pair scorer。
+
+新增开关：
+    use_pair_assignment_loss=True
+
+------------------------------------------------------------
+14.5 L_no_harm：只保护 joint surrogate，不再用于保护 marginal
+------------------------------------------------------------
+
+hard permutation 已经严格保护 marginal minADE/minFDE，
+所以不需要再用“冻结 + 小步长”去近似保护边际集合。
+
+但为了避免 coupler 无证据时让 joint 变差，保留：
+
+    J_identity_s
+    =
+    (1/N)
+    Σ_i d_i^s
+
+    L_identity
+    =
+    softmin_s(J_identity_s)
+
+如果：
+
+    L_alignment > L_identity
+
+惩罚：
+
+    L_no_harm
+    =
+    max(
+        0,
+        L_alignment - L_identity + margin
+    )
+
+默认 margin=0。
+
+------------------------------------------------------------
+14.6 L_perm_entropy
+------------------------------------------------------------
+
+为了缩小 soft-train / hard-test gap：
+
+    H(P_i)
+    =
+    -(1/K)
+    Σ_{a,s}
+    P_i[a,s] log(P_i[a,s]+eps)
+
+    L_perm_entropy
+    =
+    mean_i H(P_i)
+
+最小化该项，使 P 更接近 permutation vertex。
+
+权重必须小。
+
+------------------------------------------------------------
+14.7 L_relation_prior
+------------------------------------------------------------
+
+candidate-conditioned relation 不应无约束偏离 observation prior。
+
+可选：
+
+    L_relation_prior
+    =
+    mean_{e,a,b}
+    KL(
+        q(r_ij^{ab})
+        ||
+        q0(r_ij)
+    )
+
+权重很小，例如 0.01~0.05 量级，必须配置。
+
+------------------------------------------------------------
+14.8 Gate regularization
+------------------------------------------------------------
+
+不要强制所有 gate 平均等于 0.5。
+
+可选：
+- mild L1；
+- target sparsity；
+- top-k imitation；
+默认权重非常小或 0。
+
+核心是让 task loss 决定 gate。
+
+------------------------------------------------------------
+14.9 总损失
+------------------------------------------------------------
+
+建议默认：
+
+    L_total
+    =
+    1.0  * L_alignment
+    +
+    0.5  * L_pair_score
+    +
+    0.5  * L_pair_assignment
+    +
+    2.0  * L_no_harm
+    +
+    0.02 * L_perm_entropy
+    +
+    0.02 * L_relation_prior
+    +
+    0.00 * L_gate_reg
+
+所有权重必须写入 parser/config，不能硬编码。
+
+这只是建议初始值，不代表理论常数。
+
+============================================================
+十五、Stage 1 Joint Goal：保留，但不再强制作为主链
+============================================================
+
+不要删除现有：
+- LowRankJointGoal；
+- RelationInference；
+- GoalEnergy；
+- JointGoalSampler；
+- Stage 1 checkpoint。
+
+但新 V4 主网络必须支持上游来源开关：
+
+    upstream_generator=stage0_independent
+    upstream_generator=stage1_joint
+
+建议 V4 正式默认优先使用：
+
+    stage0_independent
+
+原因：
+- 新论文主线是 strong marginals + learned coupling；
+- 避免 scene-level z 对 UNIV 复杂场景产生过度耦合；
+- 可以直接检验 trajectory coupling 自身是否有效。
+
+但必须预留 2×2 消融：
+
+    Stage0 generator + no coupler
+    Stage0 generator + V4 coupler
+    Stage1 generator + no coupler
+    Stage1 generator + V4 coupler
+
+如果 Stage1 + V4 更好，可以最终采用；
+如果 Stage0 + V4 不差甚至更好，则论文主模型应优先简化为 Stage0 + V4。
+
+============================================================
+十六、Scene-level z 的处理
+============================================================
+
+现有 Stage1 的：
+
+    q(G|X)
+    =
+    Σ_z q(z|X) Π_i q(g_i|z,X)
+
+当前 z 是整个 synchronized scene/window 共享。
+
+新 V4 不要继续强化这个假设。
+
+若保留 Stage1 path：
+- 作为 upstream generator；
+- 或做 ablation；
+- 不要让 V4 synchronizer 再依赖全 scene z。
+
+若以后需要 group latent mode，预留：
+
+    social_mode_scope=scene/component/off
+
+但默认：
+    social_mode_scope=off_for_v4_coupling
+
+避免 UNIV 中多个独立小群体被同一个 scene-level z 强行耦合。
+
+============================================================
+十七、Graph 与 Connected Component 处理
+============================================================
+
+保留 synchronized window 和 world-coordinate graph。
+
+基础图继续支持：
+
+    full
+    radius_only
+    radius_ttc
+
+当前建议 default：
+    radius_ttc
+
+但所有阈值配置化：
+
+    graph_radius
+    ttc_threshold
+
+V4 需要新增诊断：
+- N；
+- E；
+- average degree；
+- max degree；
+- number of connected components；
+- max component size；
+- component size histogram。
+
+必须能够按 component size 分桶评测：
+
+    N=1
+    N=2
+    N=3~5
+    N=6~10
+    N>10
+
+以及：
+    comp_size=1
+    2
+    3~5
+    6~10
+    >10
+
+这是定位 ETH / UNIV 差异的重要工具。
+
+============================================================
+十八、非常重要的新诊断：Alignment Headroom
+============================================================
+
+新增指标。
+
+对于某 scene，设每个 agent 的 K 条 trajectory cost：
+
+    d_i^a = ADE_i^a + λ_FDE FDE_i^a
+
+理论上如果只允许对每个 agent 做任意 permutation，
+我们可以把每个 agent 自己最优的 trajectory 都安排到同一个 joint column。
+
+因此定义 marginal oracle lower bound：
+
+    J_oracle
+    =
+    (1/N)
+    Σ_i
+    min_a d_i^a
+
+raw joint best：
+
+    J_raw
+    =
+    min_s
+    (1/N)
+    Σ_i d_i^s
+
+aligned joint best：
+
+    J_aligned
+    =
+    min_s
+    (1/N)
+    Σ_i d_i^{π_i(s)}
+
+alignment headroom：
+
+    H_align
+    =
+    J_raw - J_oracle
+
+recovery ratio：
+
+    rho_recover
+    =
+    (J_raw - J_aligned)
+    /
+    max(J_raw - J_oracle, eps)
+
+记录：
+
+    alignment_oracle
+    alignment_headroom
+    alignment_recovery_ratio
+
+解释：
+- headroom 小：候选列本来已接近最优，aligner没有多少空间；
+- headroom 大但 recovery 小：coupling solver 不够强；
+- headroom 大且 recovery 大：V4有效。
+
+必须按 ETH / UNIV、N 和 component size 分桶。
+
+============================================================
+十九、Metrics
+============================================================
+
+保留全部现有：
+- minADE@K
+- minFDE@K
+- JADE
+- JFDE
+- collision rate
+- goal metrics
+
+新增或强化：
+
+1. Raw_minADE / Raw_minFDE
+2. Aligned_minADE / Aligned_minFDE
+3. assert：
+
+    abs(raw_minADE - aligned_minADE) < tolerance
+    abs(raw_minFDE - aligned_minFDE) < tolerance
+
+4. Raw_JADE / Raw_JFDE
+5. Aligned_JADE / Aligned_JFDE
+6. ΔJADE = Raw_JADE - Aligned_JADE
+7. ΔJFDE = Raw_JFDE - Aligned_JFDE
+8. alignment_headroom
+9. alignment_recovery_ratio
+10. changed_fraction
+11. keep_confidence
+12. mean_pair_gate
+13. pair_relation_entropy
+14. permutation_entropy
+15. soft-hard assignment gap
+16. Hungarian objective vs greedy objective（消融/诊断）
+
+============================================================
+二十、Soft / Hard Gap
+============================================================
+
+验证时同时记录：
+
+    soft_joint_surrogate
+    hard_hungarian_JADE
+    hard_hungarian_JFDE
+
+如果：
+    soft improvement 好
+但：
+    hard improvement 差
+
+说明 Sinkhorn -> Hungarian 投影 gap 仍然过大。
+
+新增：
+
+    soft_hard_gap
+
+并记录 P 的：
+- entropy；
+- max probability；
+- row/column residual。
+
+============================================================
+二十一、训练模式
+============================================================
+
+新增正式训练模式：
+
+    training_stage=multiway_coupling
+
+默认推荐：
+
+    upstream_generator=stage0_independent
+    freeze_upstream_generator=True
+    trajectory_pair_relation=True
+    pair_specific_gate=True
+    synchronizer=multiway
+    hard_projection=hungarian
+    use_identity_bypass=True
+
+说明：
+这里的“完整网络训练”指：
+- 完整 V4 coupling network 的所有新模块联合训练；
+- 上游 GDTS 作为固定 strong marginal generator；
+- 这是方法定义的一部分，不是临时冻结技巧。
+
+默认可训练：
+- trajectory encoder；
+- candidate-conditioned relation residual；
+- trajectory low-rank energy；
+- pair-specific gate；
+- permutation synchronizer 中有参数的部分；
+- keep/confidence head。
+
+默认冻结：
+- Goal U-Net；
+- GDTS history encoder；
+- diffusion denoiser；
+- Stage1 joint-goal modules（若 upstream=stage0 则不使用；若 stage1 则加载并冻结）。
+
+必须预留：
+
+    freeze_upstream_generator=False
+
+作为后续 ablation，但不作为 V4 默认。
+
+原因：
+若 unfreeze generator，则不同训练 epoch 的 marginal sample set 会变化，
+硬 permutation 只能保证“给定当前集合时”边际不变，
+不能再保证相对 pretrained GDTS 的 minADE/minFDE 不退化。
+
+============================================================
+二十二、训练速度优化
+============================================================
+
+当前 synchronized window 外层 batch_size=1，会导致大量小 kernel。
+
+本次实现至少完成：
+- 不要因为这个问题破坏同步语义；
+- 支持 gradient accumulation；
+- 预留多 scene packing。
+
+新增配置：
+
+    coupling_grad_accum_steps
+
+可选实现 trajectory bank cache：
+
+    cache_frozen_trajectory_banks=True/False
+    num_cached_seeds_per_window=4
+
+但默认可关闭，避免强制产生巨量中间文件。
+
+若开启：
+缓存：
+    raw trajectories
+    GT
+    agent_feat
+    edge_index
+    edge_feat
+    relation prior
+
+注意：
+- 每个 window 最好缓存多个随机 seed；
+- 训练时随机选 bank；
+- 不能用单一固定随机 seed 造成过拟合。
+
+这项为工程优化，不应改变模型定义。
+
+============================================================
+二十三、消融接口必须一次性预留
+============================================================
+
+parser/config 至少支持：
+
+    --trajectory_coupling none|reference_v3|multiway_v4
+
+    --upstream_generator stage0_independent|stage1_joint
+
+    --trajectory_conditioned_relation True|False
+
+    --pair_specific_gate True|False
+
+    --trajectory_energy_type mlp|lowrank
+
+    --trajectory_pair_rank 4|8|16
+
+    --synchronizer reference|multiway
+
+    --sync_iterations 1|2|3|5
+
+    --sinkhorn_iterations 4|8|16
+
+    --sync_temperature ...
+
+    --hard_projection greedy|hungarian
+
+    --use_identity_bypass True|False
+
+    --keep_threshold ...
+
+    --graph_type full|radius_only|radius_ttc
+
+    --graph_radius ...
+
+    --ttc_threshold ...
+
+    --use_pair_assignment_loss True|False
+
+    --lambda_alignment
+    --lambda_pair_score
+    --lambda_pair_assignment
+    --lambda_no_harm
+    --lambda_perm_entropy
+    --lambda_relation_prior
+    --lambda_gate_reg
+
+    --freeze_upstream_generator True|False
+
+    --use_component_mode True|False  # 仅预留，不要求本版主模型依赖
+    --social_mode_scope off|scene|component
+
+要求：
+旧 checkpoint 加载不被破坏。
+
+============================================================
+二十四、推荐新增/修改文件
+============================================================
+
+请先根据当前仓库实际结构调整，但建议：
+
+新增：
+
+    src/models/trajectory_pair_relation.py
+    src/models/trajectory_pair_energy.py
+    src/models/permutation_synchronizer.py
+    src/models/hungarian_projection.py
+    src/losses/multiway_coupling_loss.py
+
+可将现有：
+
+    src/models/trajectory_aligner.py
+
+保留为 V3 reference implementation，
+或者重构成 wrapper：
+    ReferenceTrajectoryAligner
+    MultiwayTrajectoryCoupler
+
+修改：
+
+    src/models/model.py
+    src/trainer.py
+    src/parser.py
+    src/metrics.py
+
+新增：
+
+    tools/diagnose_alignment_headroom.py
+    docs/MULTIWAY_COUPLING_V4.md
+
+新增启动脚本：
+
+    train_univ_multiway_coupling_v4.sh
+
+并最好同时给：
+
+    test_univ_multiway_coupling_v4.sh
+
+============================================================
+二十五、核心 forward 伪代码
+============================================================
+
+def forward_multiway_coupling(batch):
+
+    # --------------------------------------------------
+    # 1. synchronized observed scene
+    # --------------------------------------------------
+    obs_world, gt_world, scene_index = load_scene_window(batch)
+
+    # --------------------------------------------------
+    # 2. frozen GDTS marginal generator
+    # --------------------------------------------------
+    with torch.no_grad():
+        raw_predictions = gdts_generate(
+            batch,
+            K=20,
+            upstream_generator=args.upstream_generator
+        )
+        # [K,T_total,N,2]
+
+    raw_future = raw_predictions[:, obs_length:]
+    # [K,T_pred,N,2]
+
+    traj_bank = raw_future.permute(2,0,1,3)
+    # [N,K,T_pred,2]
+
+    # --------------------------------------------------
+    # 3. sparse graph + observation relation prior
+    # --------------------------------------------------
+    edge_index, edge_feat, base_edge_weight = graph_builder(obs_world)
+
+    with torch.no_grad() if freeze_old_social else nullcontext():
+        agent_feat = social_encoder(obs_world, edge_index, edge_feat)
+
+        q0_relation = old_relation_inference(
+            agent_feat,
+            edge_index,
+            edge_feat
+        )
+        # [E,M]
+
+    # --------------------------------------------------
+    # 4. encode every complete trajectory candidate
+    # --------------------------------------------------
+    traj_feat = trajectory_encoder(
+        traj_bank,
+        last_obs=obs_world[:,-1]
+    )
+    # [N,K,D]
+
+    # --------------------------------------------------
+    # 5. build all sparse edge trajectory-pair features
+    # --------------------------------------------------
+    pair_geom = build_pair_geometry(
+        traj_bank,
+        last_obs,
+        edge_index
+    )
+    # [E,K,K,D_pair]
+
+    # --------------------------------------------------
+    # 6. candidate-conditioned relation posterior
+    # --------------------------------------------------
+    relation_prob_ab = trajectory_relation(
+        traj_feat,
+        pair_geom,
+        edge_index,
+        edge_feat,
+        q0_relation
+    )
+    # [E,K,K,M]
+
+    # --------------------------------------------------
+    # 7. relation-conditioned low-rank energy
+    # --------------------------------------------------
+    pair_energy = trajectory_energy(
+        traj_feat,
+        pair_geom,
+        edge_index,
+        edge_feat,
+        relation_prob_ab
+    )
+    # effective energy [E,K,K]
+
+    # --------------------------------------------------
+    # 8. pair-specific gate
+    # --------------------------------------------------
+    pair_gate = pair_gate_module(
+        traj_feat,
+        pair_geom,
+        edge_index,
+        edge_feat,
+        relation_prob_ab
+    )
+    # [E,K,K]
+
+    pair_score = -pair_energy * pair_gate
+    # [E,K,K]
+
+    # --------------------------------------------------
+    # 9. graph-wide multiway permutation synchronization
+    # --------------------------------------------------
+    sync_output = synchronizer(
+        pair_score,
+        edge_index,
+        pair_gate.mean(dim=(1,2)),
+        scene_index
+    )
+
+    P_soft = sync_output["soft_permutation"]
+    # [N,K,K]
+
+    # --------------------------------------------------
+    # 10. training losses
+    # --------------------------------------------------
+    if training:
+        loss_dict = coupling_loss(
+            P_soft=P_soft,
+            pair_score=pair_score,
+            relation_prob_ab=relation_prob_ab,
+            relation_prior=q0_relation,
+            raw_future=traj_bank,
+            gt_future=gt_world[:,obs_length:] or normalized layout,
+            edge_index=edge_index,
+            pair_gate=pair_gate
+        )
+
+        return loss_dict, diagnostics
+
+    # --------------------------------------------------
+    # 11. hard inference
+    # --------------------------------------------------
+    hard_perm = hungarian_project(P_soft)
+
+    hard_perm = component_identity_bypass(
+        hard_perm,
+        confidence=sync_output["confidence"],
+        threshold=args.keep_threshold
+    )
+
+    aligned_future = gather_only(
+        traj_bank,
+        hard_perm
+    )
+
+    # exact set preservation check
+    assert_same_per_agent_sample_set(
+        traj_bank,
+        aligned_future
+    )
+
+    return aligned_future, raw_future, diagnostics
+
+============================================================
+二十六、Hungarian 伪代码
+============================================================
+
+def project_to_permutation(P):
+    # P [K,K], rows=original candidates, cols=joint slots
+
+    row_ind, col_ind = linear_sum_assignment(-P.detach().cpu().numpy())
+
+    # want perm[s] = original_candidate_a
+    perm = empty(K)
+    for a, s in zip(row_ind, col_ind):
+        perm[s] = a
+
+    assert sorted(perm) == list(range(K))
+    return perm
+
+aligned[i,s] = raw[i, perm_i[s]]
+
+============================================================
+二十七、Loss 伪代码
+============================================================
+
+def compute_loss(P, pair_score, raw_future, gt_future, edge_index):
+
+    # raw_future [N,K,T,2]
+    # gt_future  [N,T,2]
+
+    ade = norm(raw_future - gt_future[:,None], dim=-1).mean(dim=-1)
+    # [N,K]
+
+    fde = norm(raw_future[:,:,-1] - gt_future[:,-1,None,:]? fix actual layout)
+    # [N,K]
+
+    d = ade + lambda_fde * fde
+    # [N,K]
+
+    # expected cost per joint slot
+    # P[n,a,s]
+    J = einsum("nas,na->ns", P, d).mean(dim=0)
+    # [K]
+
+    L_alignment = softmin(J, tau_joint)
+
+    J_identity = d.mean(dim=0)
+    L_identity = softmin(J_identity, tau_joint)
+
+    L_no_harm = relu(L_alignment - L_identity)
+
+    pair_targets = []
+    pair_assign = []
+
+    for e=(i,j):
+        R = relative_geometry_error(
+            raw_future[i],
+            raw_future[j],
+            gt_future[i],
+            gt_future[j]
+        )
+        # [K,K]
+
+        pair_cost =
+            0.5*(d[i,:,None] + d[j,None,:])
+            + lambda_rel_geom*R
+
+        T_ij = softmax(-pair_cost/tau_pair_target)
+        S_ij = softmax(pair_score[e]/tau_pair_pred)
+
+        L_pair_score += cross_entropy_soft(T_ij, S_ij)
+
+        Q_ij = P[i] @ P[j].T
+        Q_ij = Q_ij / Q_ij.sum()
+        L_pair_assignment += KL(T_ij || Q_ij)
+
+    L_perm_entropy = entropy(P).mean()
+
+    L_relation_prior = KL(
+        relation_prob_ab,
+        relation_prior[:,None,None,:]
+    ).mean()
+
+    return (
+        lambda_alignment * L_alignment
+        + lambda_pair_score * L_pair_score
+        + lambda_pair_assignment * L_pair_assignment
+        + lambda_no_harm * L_no_harm
+        + lambda_perm_entropy * L_perm_entropy
+        + lambda_relation_prior * L_relation_prior
+    )
+
+注意上面 fde 的索引只是伪代码。
+实现时必须根据项目真实 tensor layout 修正，不允许照抄错误维度。
+
+============================================================
+二十八、Permutation Synchronization 的方向一致性
+============================================================
+
+这是容易写错的地方，必须单元测试。
+
+定义：
+    C_ij[a,b]
+    row = candidate of i
+    col = candidate of j
+
+目标：
+    <C_ij, P_i P_j^T>
+
+所以：
+
+    grad-like message to i:
+        C_ij @ P_j
+
+    message to j:
+        C_ij.T @ P_i
+
+不要把转置方向写反。
+
+必须加入人工小例子单测：
+- K=3；
+- 手工构造已知最优 permutation；
+- 检查 synchronizer + Hungarian 能恢复正确 mapping。
+
+============================================================
+二十九、Cycle / Global Consistency 诊断
+============================================================
+
+虽然新模型直接优化 P_i，因此理论上 pairwise relative assignment：
+
+    Q_ij = P_i P_j^T
+
+天然来自同一组 global P_i，
+比独立 pairwise matching 更一致。
+
+仍建议加入诊断：
+
+对三角形 i-j-k：
+
+    Q_ij Q_jk ≈ Q_ik
+
+记录：
+
+    cycle_consistency_error
+
+训练主损失默认不一定启用，
+但必须可计算。
+
+这对 UNIV 大 component 很重要。
+
+============================================================
+三十、必须保留的理论保护
+============================================================
+
+硬推理后必须保证：
+
+对每个 agent i：
+
+    sorted(permutation_i) == [0,1,...,K-1]
+
+不允许：
+- duplicate sample；
+- missing sample；
+- coordinate averaging；
+- soft interpolation；
+- continuous refinement；
+- 删除轨迹；
+- 添加新轨迹。
+
+因此最终 aligned set 与 raw set 完全相同。
+
+验证时加入自动 assert：
+- raw/aligned minADE 一致；
+- raw/aligned minFDE 一致。
+
+若不一致：
+    立即报错，而不是继续训练/测试。
+
+============================================================
+三十一、不要重新开启旧 Continuous Goal Refinement
+============================================================
+
+保持：
+
+    continuous_refinement=False
+
+原因：
+- 已经观察到大修正会伤 marginal；
+- 小修正又几乎没有 joint benefit；
+- V4 的理论优势恰好来自“不动轨迹，只学 coupling”。
+
+旧模块保留仅做 ablation。
+
+============================================================
+三十二、不要在 V4 内部再给 diffusion 加 social graph
+============================================================
+
+当前版本不要修改 GDTS diffusion denoiser。
+
+不要同时做：
+    joint trajectory denoising
+    +
+    permutation coupling
+
+否则：
+- 无法干净归因；
+- 边际保护失效；
+- 论文主线再次变复杂。
+
+V4 论文问题应保持：
+
+    given strong marginal samples,
+    can we learn a coherent multi-agent coupling?
+
+============================================================
+三十三、训练与模型选择协议
+============================================================
+
+必须检查当前 ETH/UCY validation/test protocol。
+
+不要使用 held-out test scene 同时做：
+    checkpoint selection
+    +
+    final reported test
+
+如果当前 valid/test 实际相同：
+- 新增 internal validation split；
+- 或固定 epoch / 使用 training scenes 内 validation；
+- 最终 held-out scene 只用于 final test。
+
+训练日志必须明确：
+    model_selection_split
+    final_test_split
+
+避免未来论文 protocol 不规范。
+
+============================================================
+三十四、正式 UNIV 训练建议
+============================================================
+
+新建独立输出目录，例如：
+
+    output/univ/coupling_v4/
+
+不要覆盖旧：
+    stage1
+    stage2
+    stage3_v3
+
+建议训练默认：
+    K=20
+    dt=0.4
+    graph=radius_ttc
+    radius=6.0
+    ttc=8.0
+    trajectory_dim=128
+    relation_modes=4
+    trajectory_pair_rank=8
+    sync_iterations=4
+    sinkhorn_iterations=8
+    sync_temperature=0.2
+    hard_projection=hungarian
+    pair_specific_gate=True
+    keep_threshold=0.6
+    learning_rate=3e-4
+    optimizer=AdamW
+    scheduler=CosineAnnealingLR
+
+epoch 不要硬限制为旧 Stage3 的 8。
+建议：
+    max_epochs=30
+    early_stopping_patience=5
+
+但如果工程实际数据量/一次 epoch 很大，请根据 runtime 合理设置。
+必须保留参数可调。
+
+best checkpoint：
+    默认按 JADE 选，
+但同时记录：
+    Raw_JADE
+    JFDE
+    recovery_ratio
+    changed_fraction
+
+若使用 internal validation，则只按 internal val JADE 选 best。
+
+============================================================
+三十五、最终必须自动运行的测试
+============================================================
+
+在启动正式训练前自动完成以下测试：
+
+1. N=1 / E=0：
+    输出 identity。
+
+2. 两 agent，已知 swap：
+    Hungarian 恢复 swap。
+
+3. 三 agent chain：
+    multiway synchronization 恢复全局一致 permutation。
+
+4. triangle cycle：
+    检查 Q_ij Q_jk ≈ Q_ik。
+
+5. permutation bijection：
+    每 agent 无重复、无缺失。
+
+6. set preservation：
+    hard aligned sample set == raw sample set。
+
+7. marginal metric preservation：
+    raw/aligned minADE/minFDE 相同。
+
+8. soft Sinkhorn：
+    row sum≈1，col sum≈1。
+
+9. scene isolation：
+    packed multi-scene 不跨 scene。
+
+10. gradient：
+    trajectory encoder / relation residual / pair energy / gate / synchronizer
+    都有有效 gradient。
+
+11. no NaN / Inf。
+
+12. compatibility orientation：
+    C_ij 与 C_ji^T 一致或符合设计预期。
+
+所有测试通过后，自动启动 UNIV 正式训练。
+不要在代码实现完成后停下来等待人工确认。
+
+============================================================
+三十六、训练日志必须新增
+============================================================
+
+每 epoch 至少输出：
+
+    loss_total
+    loss_alignment
+    loss_pair_score
+    loss_pair_assignment
+    loss_no_harm
+    loss_perm_entropy
+    loss_relation_prior
+
+    Raw_minADE
+    Aligned_minADE
+    Raw_minFDE
+    Aligned_minFDE
+
+    Raw_JADE
+    JADE
+    delta_JADE
+
+    Raw_JFDE
+    JFDE
+    delta_JFDE
+
+    alignment_oracle
+    alignment_headroom
+    alignment_recovery_ratio
+
+    changed_fraction
+    keep_confidence
+    mean_pair_gate
+    relation_entropy
+    permutation_entropy
+    sinkhorn_row_error
+    sinkhorn_col_error
+    soft_hard_gap
+
+    avg_num_agents
+    avg_num_edges
+    avg_degree
+    max_component_size
+
+并按 component size 分桶至少在 validation 结束时输出：
+    count
+    Raw_JADE
+    JADE
+    recovery_ratio
+
+============================================================
+三十七、正式训练结束后的自动报告
+============================================================
+
+训练结束后生成：
+
+    docs/UNIV_MULTIWAY_COUPLING_V4_RESULTS.md
+
+内容至少包括：
+
+1. best epoch；
+2. raw vs aligned；
+3. minADE/minFDE preservation check；
+4. JADE/JFDE improvement；
+5. alignment headroom / recovery ratio；
+6. 按 N 分桶结果；
+7. 按 connected component size 分桶结果；
+8. changed fraction；
+9. keep confidence；
+10. relation entropy；
+11. hard vs soft gap；
+12. Hungarian vs greedy 的当前离线对比；
+13. 是否存在大 component 仍显著失效；
+14. 是否建议继续保留 Stage1 joint goal upstream；
+15. 当前最值得做的下一步 ablation。
+
+============================================================
+三十八、建议的主模型命名
+============================================================
+
+代码内部暂用：
+
+    RelationAwareMultiwayCoupler
+
+或：
+
+    MultiwayTrajectoryCoupler
+
+不要现在强行确定论文最终名称。
+
+模型类建议：
+
+    class MultiwayTrajectoryCoupler(nn.Module):
+
+主要子模块：
+
+    trajectory_encoder
+    trajectory_relation_inference
+    trajectory_pair_energy
+    pair_gate
+    permutation_synchronizer
+    keep_head
+
+============================================================
+三十九、最终论文方法应能被代码严格支持的公式
+============================================================
+
+最终 hard joint empirical distribution：
+
+    γ
+    =
+    (1/K)
+    Σ_{s=1}^K
+    δ_(
+        Y_1^{π_1(s)},
+        ...,
+        Y_N^{π_N(s)}
+    )
+
+其中每个 marginal 保持：
+
+    γ_i = μ_i
+
+pairwise social score：
+
+    C_ij[a,b]
+    =
+    g_ij^{ab}
+    ×
+    log
+    Σ_m
+    q(r_ij^{ab}=m)
+    exp(
+        -E_ij^{m}(a,b)
+    )
+
+multiway synchronization：
+
+    max_{P_i ∈ B_K}
+    Σ_(i,j∈E)
+    w_ij
+    <C_ij, P_i P_j^T>
+
+训练：
+    P_i ∈ B_K
+    via differentiable Sinkhorn synchronization
+
+推理：
+    P_i -> Hungarian permutation
+
+最终：
+    hard permutation only
+    no trajectory coordinate modification
+
+============================================================
+四十、关键设计原则
+============================================================
+
+必须遵守：
+
+1. 解决 UNIV 问题优先依靠：
+   global multiway consistency，
+   而不是继续堆网络深度。
+
+2. reference agent 仅可作为 gauge anchor，
+   不能再成为所有人的唯一匹配中心。
+
+3. relation 必须能依赖具体 future hypothesis。
+
+4. interaction 不等于 collision avoidance。
+
+5. pair gate 训练时不能 detach 后裁边。
+
+6. hard inference 必须默认 Hungarian。
+
+7. 不再使用 continuous trajectory / goal coordinate refinement。
+
+8. 不重新设计 diffusion。
+
+9. 不显式枚举 K^N。
+
+10. 所有 social/coupling 计算只在同步 scene/window 内进行。
+
+11. world-coordinate 交互计算必须统一用米。
+
+12. 任何排列都必须严格双射。
+
+13. 所有旧方法必须可通过 config 恢复用于消融。
+
+14. 不要为了“看起来复杂”额外增加无必要模块。
+
+============================================================
+四十一、代码审计要求，但不要分批停顿
+============================================================
+
+开始修改前你可以自行快速审计：
+- src/models/model.py
+- src/models/trajectory_aligner.py
+- src/models/interaction_graph.py
+- src/models/social_encoder.py
+- src/models/relation_inference.py
+- src/models/joint_goal.py
+- src/models/goal_energy.py
+- src/models/joint_sampler.py
+- src/trainer.py
+- src/metrics.py
+- src/parser.py
+- 当前 stage3 shell 脚本
+
+但是：
+- 不要在审计结束后停下来询问我；
+- 直接根据真实 tensor shape 调整上述伪代码；
+- 以当前仓库接口为准；
+- 不要凭空假定不存在的 API；
+- 不要因为 prompt 中某个文件名与现有工程不同而机械创建重复模块。
+
+============================================================
+四十二、一步到位的交付要求
+============================================================
+
+本次任务不要按 Phase 1 / Phase 2 分批交付。
+
+请一次性完成：
+
+[ ] 代码审计
+[ ] V4 模型实现
+[ ] parser/config
+[ ] backward compatibility
+[ ] Hungarian
+[ ] multiway synchronizer
+[ ] pair-conditioned relation
+[ ] pair-specific gate
+[ ] trajectory pair low-rank energy
+[ ] losses
+[ ] metrics
+[ ] headroom/recovery diagnostics
+[ ] component-size diagnostics
+[ ] unit tests
+[ ] UNIV train script
+[ ] test script
+[ ] V4 design doc
+[ ] 运行全部测试
+[ ] 测试通过后直接启动 UNIV 训练
+
+完成后只需要向我报告：
+
+1. 修改了哪些文件；
+2. 新增了哪些文件；
+3. 最终网络真实 tensor flow；
+4. 总损失；
+5. multiway synchronization 的具体实现；
+6. Hungarian 的实现；
+7. 旧 Stage 3 reference aligner 是否完整保留；
+8. Stage0 / Stage1 upstream 如何切换；
+9. 所有消融开关；
+10. 单元测试结果；
+11. 正式训练命令；
+12. 训练是否已经成功启动；
+13. 当前日志路径；
+14. 若训练启动失败，给出真实报错和已经修复/尚未修复的问题。
+
+不要只回复“完成”。
+
+============================================================
+四十三、最终验收标准
+============================================================
+
+必须满足：
+
+[ ] 不修改 hard aligned trajectory 坐标；
+[ ] 每个 agent 的 K 条轨迹集合完全保持；
+[ ] raw/aligned minADE 一致；
+[ ] raw/aligned minFDE 一致；
+[ ] hard projection 默认 Hungarian；
+[ ] reference 仅为 gauge anchor；
+[ ] all graph edges 参与 multiway objective；
+[ ] relation 可依赖 trajectory pair；
+[ ] gate 可依赖 trajectory pair；
+[ ] training 中不 detach gate；
+[ ] Sinkhorn 可微；
+[ ] N=1 / E=0 安全；
+[ ] variable N 安全；
+[ ] 不跨 scene；
+[ ] 不枚举 K^N；
+[ ] no NaN / Inf；
+[ ] old V3 可以通过 config 复现；
+[ ] old Stage1 joint-goal 可以作为 upstream ablation；
+[ ] V4 正式训练能启动；
+[ ] validation 记录 headroom 与 recovery ratio；
+[ ] validation 记录 component-size bucket；
+[ ] protocol 不使用 held-out test scene 做最终模型选择（若当前工程存在该问题，必须修正）。
+
+============================================================
+四十四、最重要的最终目标
+============================================================
+
+这次修改的目标不是让网络变得更复杂，而是把当前方法收敛成一个更清晰、更有理论深度的模型：
+
+    GDTS learns strong marginal futures.
+    Our model learns a socially coherent coupling among those marginals.
+
+具体而言：
+
+    candidate-specific latent relation
+        +
+    relation-aware pair compatibility
+        +
+    graph-wide permutation synchronization
+        +
+    Birkhoff relaxation / Sinkhorn
+        +
+    Hungarian hard bijection
+
+在严格保持每个行人 marginal sample set 的同时，
+学习能够降低 JADE/JFDE 的 multi-agent joint distribution。
+
+如果 UNIV 的问题确实来自大 connected component、reference-centric alignment 和 edge-level relation，
+这个 V4 应该能够直接针对这些结构性缺陷进行修正。
+
+现在开始执行：
+不要分阶段等待确认；
+完整修改；
+运行测试；
+通过后直接启动 UNIV 正式训练。
