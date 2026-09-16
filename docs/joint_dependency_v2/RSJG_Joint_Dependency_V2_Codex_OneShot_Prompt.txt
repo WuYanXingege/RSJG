@@ -1,0 +1,56 @@
+Codex One-Shot Implementation Prompt
+
+Repository: WuYanXingege/RSJG
+
+Implement Joint Dependency V2 according to the specification.
+
+Requirements:
+
+1.  Create a clean research branch.
+2.  Do not break existing GDTS.
+3.  Add modules:
+
+src/models/joint_dependency_v2/
+
+scene_latent.py future_teacher.py unary_goal.py dynamic_relation.py
+joint_energy.py joint_sampler.py dependency_corrector.py
+
+4.  Add configuration:
+
+goal_model_type=joint_dependency_v2
+
+Training stages:
+
+joint_goal joint_trajectory joint_finetune
+
+5.  Cache preprocessing:
+
+-   candidate goals
+-   graph features
+-   heatmap priors
+-   teacher targets
+
+6.  Efficiency:
+
+Must use: - sparse graph - vectorized torch operations - AMP support
+
+Forbidden:
+
+-   K^N enumeration
+-   extra temporal transformer
+-   dense global attention
+
+7.  Add tests:
+
+-   permutation invariance
+-   zero-edge case
+-   checkpoint loading
+-   NaN checking
+
+8.  Add ablation flags:
+
+use_scene_latent use_dynamic_relation use_joint_energy
+use_dependency_corrector
+
+Implement all modules in one pass, then run tests and provide training
+commands.
