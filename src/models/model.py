@@ -698,9 +698,15 @@ class GDTS(torch.nn.Module):
             edge_index = cache['edge_index'].long()
             edge_feat = cache['edge_feat']
             edge_weight = cache['edge_weight']
-        agent_feat = self.social_encoder(
-            obs_world, edge_index, edge_feat, edge_weight,
-            scene_index=scene_index)
+        # Sparse message aggregation uses index_add_.  Keep both its
+        # accumulator and weighted messages in FP32 under AMP; otherwise
+        # autocast can create a BF16/FP16 agent accumulator while the FP32
+        # graph weights promote messages back to FP32.
+        with torch.autocast(
+                device_type=obs_world.device.type, enabled=False):
+            agent_feat = self.social_encoder(
+                obs_world.float(), edge_index, edge_feat.float(),
+                edge_weight.float(), scene_index=scene_index)
         # Relation probabilities are a mandatory FP32 island under AMP.
         with torch.autocast(
                 device_type=agent_feat.device.type, enabled=False):
@@ -2480,14 +2486,15 @@ class GDTS(torch.nn.Module):
         """Finish a scene-balanced PL reduction after edge-chunk accumulation."""
         _, compact = canonicalize_scene_index(
             scene_index, unary.shape[0], unary.device)
-        conditional_log_prob = F.log_softmax(
-            unary.float()[:, None, :] - local_energy.float(), dim=-1)
-        per_agent_mode = -torch.einsum(
-            'nk,nzk->nz', target.float(), conditional_log_prob)
-        probability = mode_probability.float()
-        probability = probability / probability.sum(
-            dim=-1, keepdim=True).clamp_min(1e-12)
-        per_agent = (per_agent_mode * probability[compact]).sum(dim=-1)
+        with torch.autocast(device_type=unary.device.type, enabled=False):
+            conditional_log_prob = F.log_softmax(
+                unary.float()[:, None, :] - local_energy.float(), dim=-1)
+            per_agent_mode = -torch.einsum(
+                'nk,nzk->nz', target.float(), conditional_log_prob.float())
+            probability = mode_probability.float()
+            probability = probability / probability.sum(
+                dim=-1, keepdim=True).clamp_min(1e-12)
+            per_agent = (per_agent_mode * probability[compact]).sum(dim=-1)
         return scene_balanced_mean(per_agent, compact)
 
     def _jdv2_goal_losses(self, inputs):
@@ -2555,14 +2562,20 @@ class GDTS(torch.nn.Module):
                 post_effective = torch.zeros_like(prior_effective)
 
             src, dst = chunk_edge.long()
-            local_prior.index_add_(0, src, torch.einsum(
-                'ezkl,el->ezk', prior_effective, target[dst].float()))
-            local_prior.index_add_(0, dst, torch.einsum(
-                'ezkl,ek->ezl', prior_effective, target[src].float()))
-            local_post.index_add_(0, src, torch.einsum(
-                'ezkl,el->ezk', post_effective, target[dst].float()))
-            local_post.index_add_(0, dst, torch.einsum(
-                'ezkl,ek->ezl', post_effective, target[src].float()))
+            with torch.autocast(
+                    device_type=unary.device.type, enabled=False):
+                local_prior.index_add_(0, src, torch.einsum(
+                    'ezkl,el->ezk', prior_effective.float(),
+                    target[dst].float()))
+                local_prior.index_add_(0, dst, torch.einsum(
+                    'ezkl,ek->ezl', prior_effective.float(),
+                    target[src].float()))
+                local_post.index_add_(0, src, torch.einsum(
+                    'ezkl,el->ezk', post_effective.float(),
+                    target[dst].float()))
+                local_post.index_add_(0, dst, torch.einsum(
+                    'ezkl,ek->ezl', post_effective.float(),
+                    target[src].float()))
 
             if self.args.use_dynamic_relation:
                 chunk_kl = jdv2_relation_kl(

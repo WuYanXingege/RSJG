@@ -97,12 +97,20 @@ class DynamicHypothesisRelation(nn.Module):
         destination_last = last_position[dst, None, None, :]
         geometry = self.geometry(
             source_goal, destination_goal, source_last, destination_last)
-        embedding = self.geometry_encoder(geometry)
-        query, bias = self._mode_query(mode_enabled)
-        residual = torch.einsum("eklh,zmh->ezklm", embedding, query.float())
-        residual = residual / math.sqrt(16.0) + bias.float()[None, :, None, None]
-        logits = base_relation_logits.float()[:, None, None, None, :] + residual
-        log_prob = F.log_softmax(logits, dim=-1)
+        # Relation geometry, its dot product and normalization are an FP32
+        # island.  In particular, einsum is autocast-eligible even when its
+        # inputs were explicitly converted with .float().
+        with torch.autocast(
+                device_type=geometry.device.type, enabled=False):
+            embedding = self.geometry_encoder(geometry.float())
+            query, bias = self._mode_query(mode_enabled)
+            residual = torch.einsum(
+                "eklh,zmh->ezklm", embedding.float(), query.float())
+            residual = residual / math.sqrt(16.0) + \
+                bias.float()[None, :, None, None]
+            logits = base_relation_logits.float()[
+                :, None, None, None, :] + residual
+            log_prob = F.log_softmax(logits, dim=-1)
         return {"geometry": geometry, "geometry_embedding": embedding,
                 "logits": logits, "log_prob": log_prob,
                 "prob": log_prob.exp()}
@@ -171,19 +179,23 @@ class DynamicHypothesisRelation(nn.Module):
             source_goal, destination_goal,
             last_position[src, None, None, :],
             last_position[dst, None, None, :])
-        embedding = self.geometry_encoder(geometry)
-        if mode_enabled:
-            query = self.query[edge_scene_mode.long()].float()  # [E,P,M,16]
-            bias = self.bias[edge_scene_mode.long()].float()    # [E,P,M]
-        else:
-            query = self.query.mean(dim=0)[None, None].expand(
-                edge_count, num_samples, -1, -1).float()
-            bias = self.bias.mean(dim=0)[None, None].expand(
-                edge_count, num_samples, -1).float()
-        residual = torch.einsum("epkh,epmh->epkm", embedding, query)
-        residual = residual / math.sqrt(16.0) + bias[:, :, None, :]
-        logits = base_relation_logits.float()[:, None, None, :] + residual
-        log_prob = F.log_softmax(logits, dim=-1)
+        with torch.autocast(
+                device_type=geometry.device.type, enabled=False):
+            embedding = self.geometry_encoder(geometry.float())
+            if mode_enabled:
+                query = self.query[
+                    edge_scene_mode.long()].float()  # [E,P,M,16]
+                bias = self.bias[edge_scene_mode.long()].float()  # [E,P,M]
+            else:
+                query = self.query.mean(dim=0)[None, None].expand(
+                    edge_count, num_samples, -1, -1).float()
+                bias = self.bias.mean(dim=0)[None, None].expand(
+                    edge_count, num_samples, -1).float()
+            residual = torch.einsum(
+                "epkh,epmh->epkm", embedding.float(), query.float())
+            residual = residual / math.sqrt(16.0) + bias[:, :, None, :]
+            logits = base_relation_logits.float()[:, None, None, :] + residual
+            log_prob = F.log_softmax(logits, dim=-1)
         return {"geometry": geometry, "geometry_embedding": embedding,
                 "logits": logits, "log_prob": log_prob,
                 "prob": log_prob.exp()}
@@ -213,9 +225,11 @@ class DynamicHypothesisRelation(nn.Module):
             probability = source_view["prob"].gather(
                 2, source_index[:, :, None, None].expand(-1, -1, 1, 4)
             ).squeeze(2)
-        expected_embedding = torch.einsum(
-            "epm,mh->eph", probability.float(),
-            self.relation_embedding.float())
+        with torch.autocast(
+                device_type=probability.device.type, enabled=False):
+            expected_embedding = torch.einsum(
+                "epm,mh->eph", probability.float(),
+                self.relation_embedding.float())
         return {"prob": probability,
                 "expected_embedding": expected_embedding}
 

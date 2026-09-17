@@ -642,22 +642,23 @@ def jdv2_pseudo_likelihood(
         raise ValueError("effective_pair_energy must be [E,Z,K,K]")
     local_energy = unary_score.new_zeros(
         (num_agents, num_modes, num_candidates), dtype=torch.float32)
-    if edge_count:
-        src, dst = edge_index.long()
-        source_energy = torch.einsum(
-            "ezkl,el->ezk", effective_pair_energy.float(), target[dst])
-        destination_energy = torch.einsum(
-            "ezkl,ek->ezl", effective_pair_energy.float(), target[src])
-        local_energy.index_add_(0, src, source_energy)
-        local_energy.index_add_(0, dst, destination_energy)
-    conditional_log_prob = F.log_softmax(
-        unary_score.float()[:, None, :] - local_energy, dim=-1)
-    per_agent_mode = -torch.einsum(
-        "nk,nzk->nz", target, conditional_log_prob)
-    mode_probability = scene_mode_probability.float()
-    mode_probability = mode_probability / mode_probability.sum(
-        dim=-1, keepdim=True).clamp_min(1e-12)
-    per_agent = (per_agent_mode * mode_probability[compact]).sum(dim=-1)
+    with torch.autocast(device_type=unary_score.device.type, enabled=False):
+        if edge_count:
+            src, dst = edge_index.long()
+            source_energy = torch.einsum(
+                "ezkl,el->ezk", effective_pair_energy.float(), target[dst])
+            destination_energy = torch.einsum(
+                "ezkl,ek->ezl", effective_pair_energy.float(), target[src])
+            local_energy.index_add_(0, src, source_energy)
+            local_energy.index_add_(0, dst, destination_energy)
+        conditional_log_prob = F.log_softmax(
+            unary_score.float()[:, None, :] - local_energy, dim=-1)
+        per_agent_mode = -torch.einsum(
+            "nk,nzk->nz", target, conditional_log_prob)
+        mode_probability = scene_mode_probability.float()
+        mode_probability = mode_probability / mode_probability.sum(
+            dim=-1, keepdim=True).clamp_min(1e-12)
+        per_agent = (per_agent_mode * mode_probability[compact]).sum(dim=-1)
     return scene_balanced_mean(per_agent, compact)
 
 
@@ -669,9 +670,11 @@ def jdv2_scene_kl(
     if posterior_log_prob.shape != prior_log_prob.shape or \
             posterior_log_prob.ndim != 2:
         raise ValueError("scene log probabilities must share shape [C,Z]")
-    q_log = F.log_softmax(posterior_log_prob.float(), dim=-1)
-    p_log = F.log_softmax(prior_log_prob.float(), dim=-1)
-    return (q_log.exp() * (q_log - p_log)).sum(dim=-1).mean()
+    with torch.autocast(
+            device_type=posterior_log_prob.device.type, enabled=False):
+        q_log = F.log_softmax(posterior_log_prob.float(), dim=-1)
+        p_log = F.log_softmax(prior_log_prob.float(), dim=-1)
+        return (q_log.exp() * (q_log - p_log)).sum(dim=-1).mean()
 
 
 def jdv2_relation_kl(
@@ -697,16 +700,20 @@ def jdv2_relation_kl(
         scene_index, target.shape[0], target.device)
     src, dst = edge_index.long()
     edge_scene = compact[src]
-    q_log = F.log_softmax(teacher_relation_log_prob.float(), dim=-1)
-    p_log = F.log_softmax(deployable_relation_log_prob.float(), dim=-1)
-    # KL per edge/mode/candidate pair: [E,Z,K,K].
-    kl = torch.sum(q_log[:, None, None, None, :].exp() * (
-        q_log[:, None, None, None, :] - p_log), dim=-1)
-    weighted_candidate = torch.einsum(
-        "ek,el,ezkl->ez", target[src], target[dst], kl)
-    qz = scene_posterior_probability.float()
-    qz = qz / qz.sum(dim=-1, keepdim=True).clamp_min(1e-12)
-    return (weighted_candidate * qz[edge_scene]).sum(dim=-1).mean()
+    with torch.autocast(
+            device_type=teacher_relation_log_prob.device.type,
+            enabled=False):
+        q_log = F.log_softmax(teacher_relation_log_prob.float(), dim=-1)
+        p_log = F.log_softmax(
+            deployable_relation_log_prob.float(), dim=-1)
+        # KL per edge/mode/candidate pair: [E,Z,K,K].
+        kl = torch.sum(q_log[:, None, None, None, :].exp() * (
+            q_log[:, None, None, None, :] - p_log), dim=-1)
+        weighted_candidate = torch.einsum(
+            "ek,el,ezkl->ez", target[src], target[dst], kl)
+        qz = scene_posterior_probability.float()
+        qz = qz / qz.sum(dim=-1, keepdim=True).clamp_min(1e-12)
+        return (weighted_candidate * qz[edge_scene]).sum(dim=-1).mean()
 
 
 def jdv2_warmup_beta(stage_progress: float) -> float:

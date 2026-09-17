@@ -169,6 +169,35 @@ def test_stage_b_corrector_gradient_and_branch_forward(tmp_path, model_module):
         1, 20, 16)
 
 
+@pytest.mark.parametrize("amp_dtype", [torch.bfloat16, torch.float16])
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable")
+def test_stage_a_full_loss_gpu_autocast_keeps_fp32_reductions(
+        amp_dtype, tmp_path, model_module):
+    """Regress mixed-dtype sparse index_add/einsum failures under AMP."""
+    args = _args(tmp_path, "joint_goal")
+    device = torch.device("cuda")
+    model = model_module.GDTS(args, device).to(device).train()
+    inputs, sequence = _inputs()
+    inputs = {
+        name: value.to(device) if torch.is_tensor(value) else value
+        for name, value in inputs.items()
+    }
+    sequence = sequence.to(device)
+    with torch.autocast(device_type="cuda", dtype=amp_dtype):
+        losses = model.get_loss(inputs, sequence)
+        total = sum(model.set_losses_coeffs()[name] * value
+                    for name, value in losses.items())
+    assert all(value.dtype == torch.float32 for value in losses.values())
+    assert torch.isfinite(total)
+    total.backward()
+    gradients = [
+        parameter.grad for parameter in model.parameters()
+        if parameter.requires_grad and parameter.grad is not None
+    ]
+    assert gradients
+    assert all(torch.isfinite(gradient).all() for gradient in gradients)
+
+
 @pytest.mark.parametrize("disabled,zero_loss", [
     ("use_scene_latent", "jdv2_scene_kl"),
     ("use_dynamic_relation", "jdv2_relation_kl"),

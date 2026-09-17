@@ -111,9 +111,11 @@ class RelationSpecificJointEnergy(nn.Module):
         if left_factor.shape != right_factor.shape or left_factor.ndim != 5:
             raise ValueError("factors must share shape [E,Z,M,K,R]")
         rank = left_factor.shape[-1]
-        energy = -torch.einsum(
-            "ezmkr,ezmlr->ezklm", left_factor.float(),
-            right_factor.float()) / math.sqrt(float(rank))
+        with torch.autocast(
+                device_type=left_factor.device.type, enabled=False):
+            energy = -torch.einsum(
+                "ezmkr,ezmlr->ezklm", left_factor.float(),
+                right_factor.float()) / math.sqrt(float(rank))
         return energy
 
     @staticmethod
@@ -124,8 +126,10 @@ class RelationSpecificJointEnergy(nn.Module):
         """Compute ``-logsumexp_m(log p(r)-E_r)`` in FP32."""
         if relation_energy.shape != relation_log_prob.shape:
             raise ValueError("energy and relation_log_prob shapes must match")
-        return -torch.logsumexp(
-            relation_log_prob.float() - relation_energy.float(), dim=-1)
+        with torch.autocast(
+                device_type=relation_energy.device.type, enabled=False):
+            return -torch.logsumexp(
+                relation_log_prob.float() - relation_energy.float(), dim=-1)
 
     def selected_effective_energy(
         self,
@@ -179,9 +183,11 @@ class RelationSpecificJointEnergy(nn.Module):
             variable_factor = self.factor_head(
                 self.fusion_norm(variable_hidden))
             fixed_factor = self.factor_head(self.fusion_norm(fixed_hidden))
-            energy = -torch.einsum(
-                "epmkr,epmr->epkm", variable_factor.float(),
-                fixed_factor.float()) / math.sqrt(float(self.rank))
+            with torch.autocast(
+                    device_type=variable_factor.device.type, enabled=False):
+                energy = -torch.einsum(
+                    "epmkr,epmr->epkm", variable_factor.float(),
+                    fixed_factor.float()) / math.sqrt(float(self.rank))
         else:
             fixed_hidden = (
                 forward[:, None, None, :] + source_fixed[:, :, None, :] +
@@ -193,9 +199,11 @@ class RelationSpecificJointEnergy(nn.Module):
             fixed_factor = self.factor_head(self.fusion_norm(fixed_hidden))
             variable_factor = self.factor_head(
                 self.fusion_norm(variable_hidden))
-            energy = -torch.einsum(
-                "epmr,epmkr->epkm", fixed_factor.float(),
-                variable_factor.float()) / math.sqrt(float(self.rank))
+            with torch.autocast(
+                    device_type=fixed_factor.device.type, enabled=False):
+                energy = -torch.einsum(
+                    "epmr,epmkr->epkm", fixed_factor.float(),
+                    variable_factor.float()) / math.sqrt(float(self.rank))
         return self.effective_energy(energy, relation_log_prob)
 
 
