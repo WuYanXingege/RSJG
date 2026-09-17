@@ -151,6 +151,82 @@ class trainer(object):
         return (abs(current[0] - best[0]) <= tolerance and
                 current[1] < best[1] - tolerance)
 
+    @staticmethod
+    def _accumulate_joint_diagnostics(sums, counts, diagnostics):
+        """Accumulate finite scalar diagnostics without retaining tensors."""
+        for name, value in diagnostics.items():
+            if torch.is_tensor(value):
+                if value.numel() != 1:
+                    continue
+                value = float(value.detach().cpu())
+            if not isinstance(value, (int, float, np.number)):
+                continue
+            value = float(value)
+            if not np.isfinite(value):
+                raise FloatingPointError(
+                    f'Non-finite joint diagnostic {name}={value}')
+            sums[name] = sums.get(name, 0.0) + value
+            counts[name] = counts.get(name, 0) + 1
+
+    @staticmethod
+    def _finalize_joint_diagnostics(sums, counts):
+        return {
+            name: sums[name] / counts[name]
+            for name in sorted(sums) if counts.get(name, 0) > 0
+        }
+
+    def _write_jdv2_epoch_diagnostics(
+            self, epoch, train_losses, valid_metrics, runtime_seconds):
+        """Persist one compact, auditable Stage-A/Stage-B epoch record."""
+        if not self.net.jdv2_active:
+            return
+        diagnostics_dir = os.path.join(self.args.model_dir, 'diagnostics')
+        os.makedirs(diagnostics_dir, exist_ok=True)
+        if self.device.type == 'cuda':
+            torch.cuda.synchronize(self.device)
+            peak_allocated = int(torch.cuda.max_memory_allocated(self.device))
+            peak_reserved = int(torch.cuda.max_memory_reserved(self.device))
+        else:
+            peak_allocated = 0
+            peak_reserved = 0
+        record = {
+            'epoch': int(epoch),
+            'training_stage': self.args.training_stage,
+            'stage_progress': float(self.args.jdv2_stage_progress),
+            'loss_coefficients': {
+                name: float(value)
+                for name, value in self.net.set_losses_coeffs().items()},
+            'train_losses': {
+                name: float(value) for name, value in train_losses.items()},
+            'validation_metrics': {
+                name: float(value) for name, value in valid_metrics.items()},
+            'train_joint_diagnostics': getattr(
+                self, 'last_train_joint_diagnostics', {}),
+            'validation_joint_diagnostics': getattr(
+                self, 'last_valid_joint_diagnostics', {}),
+            'system': {
+                'runtime_seconds': float(runtime_seconds),
+                'peak_cuda_allocated_bytes': peak_allocated,
+                'peak_cuda_reserved_bytes': peak_reserved,
+            },
+        }
+        epoch_path = os.path.join(
+            diagnostics_dir, f'epoch_{int(epoch):03d}.json')
+        with open(epoch_path, 'w') as handle:
+            json.dump(record, handle, indent=2, sort_keys=True)
+        with open(os.path.join(
+                self.args.model_dir, 'joint_diagnostics.jsonl'), 'a') as handle:
+            handle.write(json.dumps(record, sort_keys=True) + '\n')
+        if valid_metrics:
+            with open(os.path.join(
+                    self.args.model_dir, 'validation_log.jsonl'), 'a') as handle:
+                handle.write(json.dumps({
+                    'epoch': int(epoch),
+                    'metrics': record['validation_metrics'],
+                    'joint_diagnostics': record[
+                        'validation_joint_diagnostics'],
+                }, sort_keys=True) + '\n')
+
     def _write_evaluation_protocol(self):
         """Persist the exact model-selection/test separation used by a run."""
         protocol = {
@@ -589,6 +665,8 @@ class trainer(object):
                 # Checkpoint selection always uses cached seed index 0.
                 self.data_loaders['valid'].dataset.set_seed_index(0)
             self.net.configure_training_epoch(epoch)
+            if self.device.type == 'cuda':
+                torch.cuda.reset_peak_memory_stats(self.device)
             baseline_trainable = any(
                 parameter.requires_grad
                 for module in self.net._baseline_modules()
@@ -600,6 +678,7 @@ class trainer(object):
             start_time = time.time()  # time epoch
             train_losses = self._train_epoch(epoch)
             should_stop = False
+            epoch_valid_metrics = {}
 
             if epoch % self.args.save_every == 0:
                 self._save_checkpoint(epoch)  # save model
@@ -609,6 +688,7 @@ class trainer(object):
             train_rng_state = torch.get_rng_state()
             if epoch >= self.args.start_validation and epoch % self.args.validate_every == 0:
                 valid_metrics = self._evaluate_epoch(epoch, mode='valid')
+                epoch_valid_metrics = valid_metrics
                 current_selection = self._selection_tuple(valid_metrics)
                 selection_improved = self._selection_is_better(
                     current_selection, self._best_selection)
@@ -683,6 +763,10 @@ class trainer(object):
                     self.scheduler.step()
             learning_rate = self.optimizer.param_groups[0]['lr']
 
+            self._write_jdv2_epoch_diagnostics(
+                epoch, train_losses, epoch_valid_metrics,
+                time.time() - start_time)
+
             # save metrics to WandB
             if self.args.use_wandb and epoch >= self.args.start_validation:
                 wandb.log({'learning_rate': learning_rate}, step=epoch)
@@ -743,6 +827,8 @@ class trainer(object):
             if self.args.training_stage == 'multiway_coupling' else 1)
         pending_backward = 0
         total_loss_epoch = 0.0
+        diagnostic_sums = {}
+        diagnostic_counts = {}
         self.optimizer.zero_grad()
 
         def optimizer_step(pending, rescale_partial=False):
@@ -838,6 +924,8 @@ class trainer(object):
                     postfix['rel_use'] = '/'.join(
                         f'{value:.2f}' for value in relation_usage)
                 train_bar.set_postfix(postfix)
+                self._accumulate_joint_diagnostics(
+                    diagnostic_sums, diagnostic_counts, diag)
 
             # Update network weights
             # An isolated/single-agent Sparse-Energy window has no pairwise
@@ -867,6 +955,9 @@ class trainer(object):
         losses_epoch = add_dict_prefix(losses_epoch, prefix='train')
         losses_epoch['train_loss_total'] = (
             total_loss_epoch / max(num_train_batches, 1))
+        self.last_train_joint_diagnostics = \
+            self._finalize_joint_diagnostics(
+                diagnostic_sums, diagnostic_counts)
 
         return losses_epoch
 
@@ -999,6 +1090,8 @@ class trainer(object):
         metrics_epoch = self.net.init_test_metrics()
         v4_scalar_values = {name: [] for name in V4_DIAGNOSTIC_NAMES}
         v4_buckets = {'N_size_buckets': {}, 'component_size_buckets': {}}
+        diagnostic_sums = {}
+        diagnostic_counts = {}
 
         if self.args.use_wandb and wandb is None:
             raise ImportError('wandb is required only when --use_wandb True')
@@ -1028,6 +1121,10 @@ class trainer(object):
             with self._autocast_context():
                 all_output, all_aux_outputs = self.net.forward(
                     inputs, if_test=True)
+            if self.net.jdv2_active and self.args.joint_diagnostics:
+                self._accumulate_joint_diagnostics(
+                    diagnostic_sums, diagnostic_counts,
+                    self.net.last_joint_diagnostics)
             total_time = total_time + time.time() - st
             num_input = num_input + inputs["abs_pixel_coord"].shape[1]
 
@@ -1112,6 +1209,10 @@ class trainer(object):
                         for key, value in evaluate_metrics.items()},
                     **finalized_buckets,
                 }, handle, indent=2, sort_keys=True)
+        if self.net.jdv2_active:
+            self.last_valid_joint_diagnostics = \
+                self._finalize_joint_diagnostics(
+                    diagnostic_sums, diagnostic_counts)
         evaluate_metrics = add_dict_prefix(evaluate_metrics, prefix=mode)
         # print('total_time (ms): ', total_time*1000)
         # print('num_input: ', num_input)

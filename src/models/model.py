@@ -816,6 +816,63 @@ class GDTS(torch.nn.Module):
                 if base_relation_prob.numel() else
                 base_relation_prob.new_zeros(())).detach().cpu()),
         }
+        prior_mean = scene_prior['prob'].detach().float().mean(dim=0)
+        for index, value in enumerate(prior_mean):
+            self.last_joint_diagnostics[f'p_z_mean_{index}'] = float(
+                value.cpu())
+            # The deployable prior is also the expected scene-mode usage.
+            self.last_joint_diagnostics[f'scene_mode_usage_{index}'] = float(
+                value.cpu())
+        if scene_posterior is not None:
+            posterior_mean = scene_posterior['prob'].detach().float().mean(
+                dim=0)
+            self.last_joint_diagnostics['scene_posterior_entropy'] = float((
+                -(scene_posterior['prob'].float() *
+                  scene_posterior['log_prob'].float()).sum(-1).mean()
+            ).detach().cpu())
+            self.last_joint_diagnostics['q_z_prior_l1'] = float(
+                (scene_posterior['prob'].detach().float() -
+                 scene_prior['prob'].detach().float()).abs().mean().cpu())
+            for index, value in enumerate(posterior_mean):
+                self.last_joint_diagnostics[f'q_z_mean_{index}'] = float(
+                    value.cpu())
+        base_relation_mean = (
+            base_relation_prob.detach().float().mean(dim=0)
+            if base_relation_prob.numel() else
+            base_relation_prob.new_zeros((self.args.jdv2_relation_modes,))
+        )
+        for index, value in enumerate(base_relation_mean):
+            self.last_joint_diagnostics[
+                f'base_relation_usage_{index}'] = float(value.cpu())
+        if relation_teacher is not None:
+            teacher_prob = relation_teacher['prob'].detach().float()
+            teacher_mean = (
+                teacher_prob.mean(dim=0) if teacher_prob.numel() else
+                teacher_prob.new_zeros((self.args.jdv2_relation_modes,)))
+            self.last_joint_diagnostics['teacher_relation_entropy'] = float((
+                -(teacher_prob.clamp_min(1e-8) *
+                  teacher_prob.clamp_min(1e-8).log()).sum(-1).mean()
+                if teacher_prob.numel() else teacher_prob.new_zeros(())
+            ).cpu())
+            for index, value in enumerate(teacher_mean):
+                self.last_joint_diagnostics[
+                    f'teacher_relation_usage_{index}'] = float(value.cpu())
+        if sampled is not None:
+            sampled_mode = sampled['scene_mode'].detach().long()
+            sampled_mode_usage = F.one_hot(
+                sampled_mode, num_classes=self.args.jdv2_scene_modes
+            ).float().mean(dim=(0, 1))
+            for index, value in enumerate(sampled_mode_usage):
+                self.last_joint_diagnostics[
+                    f'sampled_scene_mode_usage_{index}'] = float(value.cpu())
+            sampled_relation = sampled['relation_prob'].detach().float()
+            sampled_relation_mean = (
+                sampled_relation.mean(dim=(0, 1))
+                if sampled_relation.numel() else
+                sampled_relation.new_zeros((self.args.jdv2_relation_modes,)))
+            for index, value in enumerate(sampled_relation_mean):
+                self.last_joint_diagnostics[
+                    f'sampled_relation_usage_{index}'] = float(value.cpu())
         return output
 
     def _jdv2_contexts(self, inputs, goal_points_map):
@@ -2518,6 +2575,14 @@ class GDTS(torch.nn.Module):
         edge_index = structured['edge_index']
         relation_kl_sum = unary.float().sum() * 0.0
         relation_kl_edges = 0
+        relation_usage_sum = unary.new_zeros(
+            (self.args.jdv2_relation_modes,), dtype=torch.float32)
+        relation_usage_count = 0
+        energy_sum = 0.0
+        energy_square_sum = 0.0
+        energy_count = 0
+        energy_min = float('inf')
+        energy_max = float('-inf')
         chunk_size = self.args.jdv2_edge_chunk_size
         for start in range(0, edge_index.shape[1], chunk_size):
             stop = min(start + chunk_size, edge_index.shape[1])
@@ -2560,6 +2625,24 @@ class GDTS(torch.nn.Module):
                     (stop - start, num_modes, num_candidates,
                      num_candidates), dtype=torch.float32)
                 post_effective = torch.zeros_like(prior_effective)
+
+            # Detached sufficient statistics keep formal diagnostics bounded
+            # to O(R) host state and do not alter the Stage-A objective.
+            relation_probability = full_relation['prob'].detach().float()
+            relation_usage_sum += relation_probability.sum(
+                dim=(0, 1, 2, 3))
+            relation_usage_count += relation_probability.numel() // \
+                max(self.args.jdv2_relation_modes, 1)
+            detached_energy = prior_effective.detach().float()
+            if detached_energy.numel():
+                energy_sum += float(detached_energy.sum().cpu())
+                energy_square_sum += float(
+                    detached_energy.square().sum().cpu())
+                energy_count += detached_energy.numel()
+                energy_min = min(
+                    energy_min, float(detached_energy.min().cpu()))
+                energy_max = max(
+                    energy_max, float(detached_energy.max().cpu()))
 
             src, dst = chunk_edge.long()
             with torch.autocast(
@@ -2606,6 +2689,36 @@ class GDTS(torch.nn.Module):
             'L_z': float(scene_kl.detach().cpu()),
             'L_r': float(relation_kl.detach().cpu()),
         })
+        coefficients = self.set_losses_coeffs()
+        self.last_joint_diagnostics['L_JG'] = float(sum(
+            coefficients[name] * value for name, value in losses.items()
+        ).detach().cpu())
+        self.last_joint_diagnostics['mean_KL_z'] = float(
+            scene_kl.detach().cpu())
+        self.last_joint_diagnostics['mean_KL_r'] = float(
+            relation_kl.detach().cpu())
+        if relation_usage_count:
+            relation_usage = relation_usage_sum / float(relation_usage_count)
+        else:
+            relation_usage = relation_usage_sum
+        for index, value in enumerate(relation_usage):
+            self.last_joint_diagnostics[
+                f'predicted_relation_usage_{index}'] = float(value.cpu())
+        if energy_count:
+            energy_mean = energy_sum / energy_count
+            energy_variance = max(
+                energy_square_sum / energy_count - energy_mean ** 2, 0.0)
+            self.last_joint_diagnostics.update({
+                'energy_mean': energy_mean,
+                'energy_std': energy_variance ** 0.5,
+                'energy_min': energy_min,
+                'energy_max': energy_max,
+            })
+        else:
+            self.last_joint_diagnostics.update({
+                'energy_mean': 0.0, 'energy_std': 0.0,
+                'energy_min': 0.0, 'energy_max': 0.0,
+            })
         return losses
 
     def _jdv2_noisy_velocity_world(self, noisy_velocity_map, inputs):

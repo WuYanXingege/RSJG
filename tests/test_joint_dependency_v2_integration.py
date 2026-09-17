@@ -149,6 +149,23 @@ def test_stage_a_integrated_loss_and_gradient(tmp_path, model_module):
     assert not any(parameter.requires_grad
                    for module in model._baseline_modules()
                    for parameter in module.parameters())
+    diagnostics = model.last_joint_diagnostics
+    required = {
+        "L_PL_post", "L_PL_prior", "L_z", "L_r", "L_JG",
+        "mean_KL_z", "mean_KL_r", "energy_mean", "energy_std",
+        "energy_min", "energy_max", "q_z_prior_l1",
+    }
+    assert required <= diagnostics.keys()
+    assert all(torch.isfinite(torch.tensor(diagnostics[name]))
+               for name in required)
+    assert sum(diagnostics[f"p_z_mean_{index}"]
+               for index in range(4)) == pytest.approx(1.0, abs=1e-5)
+    assert sum(diagnostics[f"q_z_mean_{index}"]
+               for index in range(4)) == pytest.approx(1.0, abs=1e-5)
+    assert sum(diagnostics[f"predicted_relation_usage_{index}"]
+               for index in range(4)) == pytest.approx(1.0, abs=1e-5)
+    assert sum(diagnostics[f"teacher_relation_usage_{index}"]
+               for index in range(4)) == pytest.approx(1.0, abs=1e-5)
 
 
 def test_stage_b_corrector_gradient_and_branch_forward(tmp_path, model_module):
@@ -167,6 +184,11 @@ def test_stage_b_corrector_gradient_and_branch_forward(tmp_path, model_module):
     assert auxiliary["sampled_scene_mode"].shape == (2, 20)
     assert auxiliary["dependency_state"]["relation_embedding"].shape == (
         1, 20, 16)
+    diagnostics = model.last_joint_diagnostics
+    assert sum(diagnostics[f"sampled_scene_mode_usage_{index}"]
+               for index in range(4)) == pytest.approx(1.0, abs=1e-5)
+    assert sum(diagnostics[f"sampled_relation_usage_{index}"]
+               for index in range(4)) == pytest.approx(1.0, abs=1e-5)
 
 
 @pytest.mark.parametrize("amp_dtype", [torch.bfloat16, torch.float16])
