@@ -9,12 +9,18 @@ CACHE_MANIFEST_FILENAME = 'cache_manifest.json'
 
 def requires_scene_window_batches(args):
     """Return whether an ablation requires valid simultaneous-agent groups."""
-    return getattr(args, 'goal_model_type', 'independent') != 'independent'
+    model_type = getattr(args, 'goal_model_type', 'independent')
+    if model_type == 'joint_dependency_v2':
+        return bool(getattr(args, 'jdv2_active', False))
+    return model_type != 'independent'
 
 
 def batch_cache_dirname(args):
     """Keep the original cache untouched and version social-window caches."""
-    if requires_scene_window_batches(args):
+    if (getattr(args, 'goal_model_type', None) == 'joint_dependency_v2' and
+            requires_scene_window_batches(args)):
+        dirname = f'data_batches_jdv2_v{SCENE_BATCH_FORMAT_VERSION}'
+    elif requires_scene_window_batches(args):
         dirname = f'data_batches_joint_v{SCENE_BATCH_FORMAT_VERSION}'
     else:
         dirname = 'data_batches'
@@ -37,6 +43,13 @@ def batch_cache_path(args):
             str(getattr(args, 'dataset', 'dataset')),
             str(getattr(args, 'test_set', 'test')),
             batch_cache_dirname(args))
+    if (getattr(args, 'goal_model_type', None) == 'joint_dependency_v2' and
+            not getattr(args, 'jdv2_active', False)):
+        # Exact all-off passthrough consumes the original GDTS cache even
+        # though logs/checkpoints may remain in an audit-specific directory.
+        return os.path.join(
+            getattr(args, 'base_dir', '.'), 'output',
+            str(getattr(args, 'test_set', 'test')), 'data_batches')
     save_dir = args.save_dir
     # Named runs isolate configs/logs/checkpoints but reuse the exact same
     # immutable preprocessing cache from their parent model ablation.
@@ -47,12 +60,16 @@ def batch_cache_path(args):
 
 def batch_cache_manifest(args):
     """Return preprocessing settings whose changes invalidate cached batches."""
+    model_type = getattr(args, 'goal_model_type', 'independent')
+    if model_type == 'joint_dependency_v2' and not getattr(
+            args, 'jdv2_active', False):
+        model_type = 'independent'
     manifest = {
         'manifest_version': CACHE_MANIFEST_VERSION,
         'batch_format_version': (
             SCENE_BATCH_FORMAT_VERSION
             if requires_scene_window_batches(args) else 1),
-        'goal_model_type': getattr(args, 'goal_model_type', 'independent'),
+        'goal_model_type': model_type,
         'dataset': getattr(args, 'dataset', None),
         'test_set': getattr(args, 'test_set', None),
         'obs_length': int(getattr(args, 'obs_length', 8)),

@@ -11,6 +11,7 @@ from src.parser import (
     load_args,
     save_args,
 )
+from src.data_grouping import batch_cache_manifest, batch_cache_path
 
 
 def _parse(*arguments):
@@ -180,3 +181,50 @@ def test_multiway_v4_contract_and_leak_free_validation_defaults():
             '--training_stage', 'multiway_coupling',
             '--trajectory_coupling', 'multiway_v4',
             '--continuous_refinement', 'True'))
+
+
+def test_jdv2_active_and_all_off_configuration_contracts():
+    active = check_and_add_additional_args(_parse(
+        '--device', 'cpu', '--goal_model_type', 'jdv2',
+        '--training_stage', 'joint_goal', '--data_augmentation', 'False'))
+    assert active.goal_model_type == 'joint_dependency_v2'
+    assert active.jdv2_active is True
+    assert active.num_samples == 20
+    assert active.num_goal_candidates == 21
+    assert os.path.normpath(active.save_dir).startswith(
+        os.path.normpath('outputs/joint_dependency_v2'))
+
+    all_off = check_and_add_additional_args(_parse(
+        '--device', 'cpu', '--goal_model_type', 'joint_dependency_v2',
+        '--training_stage', 'baseline',
+        '--use_scene_latent', 'False',
+        '--use_dynamic_relation', 'False',
+        '--use_joint_energy', 'False',
+        '--use_dependency_corrector', 'False'))
+    assert all_off.jdv2_active is False
+    assert all_off.data_augmentation is True
+    legacy = check_and_add_additional_args(_parse(
+        '--device', 'cpu', '--goal_model_type', 'independent'))
+    assert batch_cache_path(all_off) == batch_cache_path(legacy)
+    assert batch_cache_manifest(all_off) == batch_cache_manifest(legacy)
+
+    with pytest.raises(ValueError, match='invalid when all four'):
+        check_and_add_additional_args(_parse(
+            '--device', 'cpu', '--goal_model_type', 'jdv2',
+            '--training_stage', 'joint_goal',
+            '--use_scene_latent', 'False',
+            '--use_dynamic_relation', 'False',
+            '--use_joint_energy', 'False',
+            '--use_dependency_corrector', 'False'))
+
+
+def test_jdv2_rejects_noncanonical_dimensions_and_wrong_stage():
+    with pytest.raises(ValueError, match='frozen JDV2 dimensions'):
+        check_and_add_additional_args(_parse(
+            '--device', 'cpu', '--goal_model_type', 'jdv2',
+            '--training_stage', 'joint_goal', '--num_samples', '19',
+            '--data_augmentation', 'False'))
+    with pytest.raises(ValueError, match='requires training_stage'):
+        check_and_add_additional_args(_parse(
+            '--device', 'cpu', '--goal_model_type', 'jdv2',
+            '--training_stage', 'finetune', '--data_augmentation', 'False'))

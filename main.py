@@ -4,6 +4,7 @@ from src.data_pre_process import Trajectory_Data_Pre_Process
 from src.trainer import trainer
 from src.models.goal_pretrain import goal_pretrainer
 from src.trajectory_bank_builder import TrajectoryBankCacheBuilder
+from src.joint_dependency_v2_cache import JointDependencyV2CacheBuilder
 import os
 # os.environ["WANDB_MODE"]="offline"
 
@@ -27,6 +28,8 @@ def main():
         processor = None
     elif args.phase == 'trajectory_cache':
         processor = TrajectoryBankCacheBuilder(args)
+    elif args.phase == 'build-jdv2-cache':
+        processor = JointDependencyV2CacheBuilder(args)
     elif args.phase == 'goal_pretrain':
         processor = goal_pretrainer(args)
     else:
@@ -36,6 +39,8 @@ def main():
     if args.phase == 'pre-process':
         print("Data pre-processing and batches creation finished.")
     elif args.phase == 'trajectory_cache':
+        processor.build()
+    elif args.phase == 'build-jdv2-cache':
         processor.build()
     elif args.phase == 'goal_pretrain':
         processor.train_test()
@@ -49,7 +54,7 @@ def main():
         raise ValueError(
             f"Unsupported phase {args.phase}! args.phase can only take the "
             f"following values: 'train', 'test', 'train_test', "
-            "'trajectory_cache' or 'pre-process'")
+            "'trajectory_cache', 'build-jdv2-cache' or 'pre-process'")
 
 
 if __name__ == '__main__':

@@ -39,6 +39,18 @@ from src.models.multiway_trajectory_coupler import (
     RelationAwareMultiwayCoupler,
     gather_trajectory_bank,
 )
+from src.models.joint_dependency_v2 import (
+    DependencyCorrector,
+    DynamicHypothesisRelation,
+    ParallelConditionalSampler,
+    RelationSpecificJointEnergy,
+    SceneFutureTeacher,
+    SceneLatentPrior,
+    UnaryGoalResidual,
+)
+from src.models.joint_dependency_v2.future_teacher import (
+    future_pair_descriptor,
+)
 from src.multiway_coupling_loss import (
     assert_marginal_preservation,
     compute_multiway_coupling_loss,
@@ -52,6 +64,12 @@ from src.joint_goal_loss import (
     marginal_goal_log_prob,
     pseudo_likelihood_loss,
     scene_joint_ranking_loss,
+    jdv2_relation_kl,
+    jdv2_scene_kl,
+    jdv2_teacher_probability,
+    jdv2_warmup_beta,
+    scene_balanced_mean,
+    sparse_relative_motion_loss,
 )
 
 
@@ -99,12 +117,21 @@ class GDTS(torch.nn.Module):
         # These modules are created only for a social ablation.  Therefore
         # goal_model_type=independent has the same parameter namespace as the
         # original GDTS model and can still load legacy checkpoints strictly.
+        self.jdv2_requested = (
+            self.args.goal_model_type == 'joint_dependency_v2')
+        self.jdv2_active = bool(
+            self.jdv2_requested and getattr(self.args, 'jdv2_active', False))
         self.active_goal_model_type = self.args.goal_model_type
+        if self.jdv2_requested and not self.jdv2_active:
+            # Exact all-off gate: this branch is decided before constructing
+            # any V2 module, so initialization consumes no additional RNG.
+            self.active_goal_model_type = 'independent'
         if (self.args.goal_model_type != 'independent' and
                 self.args.training_stage == 'baseline'):
             self.active_goal_model_type = 'independent'
 
-        if self.args.goal_model_type != 'independent':
+        if (self.args.goal_model_type != 'independent' and
+                not self.jdv2_requested):
             graph_type = {
                 'full': 'full',
                 'radius': 'radius-only',
@@ -253,6 +280,42 @@ class GDTS(torch.nn.Module):
                 torch.zeros((), dtype=torch.long), persistent=False)
             self.last_joint_diagnostics = {}
 
+        if self.jdv2_active:
+            graph_type = {
+                'full': 'full',
+                'radius': 'radius-only',
+                'radius_only': 'radius-only',
+                'radius_ttc': 'radius+TTC',
+            }[self.args.graph_type]
+            # V2 caches and runs use the parameter-free sparse proposal graph.
+            self.interaction_graph = SparseInteractionGraph(
+                graph_type=graph_type,
+                radius=self.args.graph_radius,
+                ttc_threshold=self.args.ttc_threshold,
+                dt=self.args.trajectory_dt,
+                adaptive=False,
+            )
+            self.social_encoder = SocialMotionEncoder(
+                hidden_dim=128, output_dim=128, edge_dim=EDGE_FEATURE_DIM,
+                num_message_layers=self.args.social_attention_layers)
+            self.relation_inference = RelationInference(
+                agent_dim=128, num_relation_modes=4,
+                edge_dim=EDGE_FEATURE_DIM, hidden_dim=128, hard=False)
+            self.jdv2_scene_prior = SceneLatentPrior()
+            self.jdv2_future_teacher = SceneFutureTeacher()
+            self.jdv2_unary = UnaryGoalResidual(
+                prior_temperature=self.args.goal_candidate_temperature)
+            self.jdv2_dynamic_relation = DynamicHypothesisRelation(
+                graph_radius=self.args.graph_radius)
+            self.jdv2_joint_energy = RelationSpecificJointEnergy()
+            self.jdv2_sampler = ParallelConditionalSampler(
+                num_samples=20, num_refinement_steps=2,
+                temperature=self.args.joint_sampling_temperature,
+                minimum_active_mode=self.args.jdv2_minimum_active_mode)
+            self.jdv2_corrector = DependencyCorrector(
+                dt=self.args.trajectory_dt)
+            self.last_joint_diagnostics = {}
+
         self._configure_training_stage(epoch=1)
 
 
@@ -284,6 +347,27 @@ class GDTS(torch.nn.Module):
         ``goal_model_type=independent``.
         """
         stage = self.args.training_stage
+        if self.jdv2_active:
+            if stage not in {
+                    'joint_goal', 'joint_trajectory', 'joint_finetune'}:
+                raise ValueError(f'Unsupported JDV2 training_stage={stage!r}')
+            for module in self._baseline_modules():
+                for parameter in module.parameters():
+                    parameter.requires_grad_(False)
+            goal_names = (
+                'social_encoder', 'relation_inference', 'jdv2_scene_prior',
+                'jdv2_future_teacher', 'jdv2_unary',
+                'jdv2_dynamic_relation', 'jdv2_joint_energy')
+            goal_trainable = stage in {'joint_goal', 'joint_finetune'}
+            for name in goal_names:
+                for parameter in getattr(self, name).parameters():
+                    parameter.requires_grad_(goal_trainable)
+            corrector_trainable = stage in {
+                'joint_trajectory', 'joint_finetune'} and \
+                self.args.use_dependency_corrector
+            for parameter in self.jdv2_corrector.parameters():
+                parameter.requires_grad_(corrector_trainable)
+            return
         legacy_structured_names = (
             'interaction_graph', 'social_encoder', 'joint_goal_model',
             'relation_inference', 'goal_energy', 'continuous_goal_refiner')
@@ -323,6 +407,22 @@ class GDTS(torch.nn.Module):
     def train(self, mode=True):
         """Keep a frozen generator deterministic in alignment-only training."""
         super().train(mode)
+        if mode and self.jdv2_active:
+            # Frozen modules must be both gradient-frozen and state-frozen.
+            for module in self._baseline_modules():
+                module.eval()
+            if self.args.training_stage == 'joint_trajectory':
+                for name in (
+                        'social_encoder', 'relation_inference',
+                        'jdv2_scene_prior', 'jdv2_future_teacher',
+                        'jdv2_unary', 'jdv2_dynamic_relation',
+                        'jdv2_joint_energy'):
+                    getattr(self, name).eval()
+            self.jdv2_corrector.train(
+                self.args.training_stage in {
+                    'joint_trajectory', 'joint_finetune'} and
+                self.args.use_dependency_corrector)
+            return self
         if mode and getattr(self.args, 'training_stage', None) == 'alignment':
             frozen_modules = self._baseline_modules() + tuple(
                 getattr(self, name) for name in (
@@ -361,6 +461,32 @@ class GDTS(torch.nn.Module):
         are temporarily frozen, so delayed unfreezing does not rebuild the
         optimizer or reset its scheduler state.
         """
+        if self.jdv2_active:
+            baseline_parameters = [
+                parameter for module in self._baseline_modules()
+                for parameter in module.parameters()]
+            goal_names = (
+                'social_encoder', 'relation_inference', 'jdv2_scene_prior',
+                'jdv2_future_teacher', 'jdv2_unary',
+                'jdv2_dynamic_relation', 'jdv2_joint_energy')
+            goal_parameters = [
+                parameter for name in goal_names
+                for parameter in getattr(self, name).parameters()
+                if parameter.requires_grad]
+            corrector_parameters = [
+                parameter for parameter in self.jdv2_corrector.parameters()
+                if parameter.requires_grad]
+            all_ids = [id(parameter) for parameter in (
+                baseline_parameters + goal_parameters + corrector_parameters)]
+            if len(all_ids) != len(set(all_ids)):
+                raise RuntimeError('JDV2 optimizer parameter families overlap')
+            if any(parameter.requires_grad for parameter in baseline_parameters):
+                raise RuntimeError('Base GDTS must remain frozen in JDV2')
+            return {
+                'gdts_frozen_backbone': [],
+                'jdv2_goal_dependency': goal_parameters,
+                'jdv2_corrector': corrector_parameters,
+            }
         baseline_ids = {
             id(parameter)
             for module in self._baseline_modules()
@@ -529,6 +655,227 @@ class GDTS(torch.nn.Module):
             raise FloatingPointError(
                 f'Non-finite joint-goal diagnostics: {diagnostics}')
         self.last_joint_diagnostics = diagnostics
+
+    def _jdv2_goal_outputs(self, inputs, goal_prob_map, *, sample=False,
+                           include_teacher=False):
+        """Build the frozen JDV2 information chain without dense agent pairs.
+
+        Training pseudocode::
+
+            h = SocialMotionEncoder(history, sparse_edges)
+            p_z = scene_prior(h)
+            q_z, q_r = future_teachers(history, future)  # training only
+            unary = log frozen candidate prior + zero-init residual
+            p_r = dynamic_relation(base_relation, z, candidate geometry)
+            goals = Parallel Conditional Refinement(p_z, unary, p_r, energy)
+        """
+        cache = inputs.get('jdv2_cache')
+        if cache is None and not (
+                self.args.phase == 'build-jdv2-cache' or
+                self.args.fast_debug):
+            raise RuntimeError(
+                'Active JDV2 requires its explicit frozen cache; run '
+                '--phase build-jdv2-cache')
+        if cache is None:
+            goal_candidates_map, candidate_prob = generate_goal_candidates(
+                goal_prob_map, num_candidates=21, device=self.device,
+                use_ttst=self.args.use_ttst)
+            candidate_log_prior = candidate_prob.float().clamp_min(1e-8).log()
+            goal_candidates_world = self._map_goals_to_world(
+                goal_candidates_map, inputs['scene'])
+        else:
+            goal_candidates_map = cache['goal_candidates_map']
+            goal_candidates_world = cache['goal_candidates_world']
+            candidate_log_prior = cache['candidate_log_prior'].float()
+            candidate_prob = F.softmax(candidate_log_prior, dim=-1)
+        candidate_mask = torch.ones_like(candidate_prob, dtype=torch.bool)
+        obs_world = inputs['obs_traj_world']
+        scene_index = inputs['scene_index']
+        if cache is None:
+            edge_index, edge_feat, edge_weight = self.interaction_graph(
+                obs_world, scene_index=scene_index)
+        else:
+            edge_index = cache['edge_index'].long()
+            edge_feat = cache['edge_feat']
+            edge_weight = cache['edge_weight']
+        agent_feat = self.social_encoder(
+            obs_world, edge_index, edge_feat, edge_weight,
+            scene_index=scene_index)
+        # Relation probabilities are a mandatory FP32 island under AMP.
+        with torch.autocast(
+                device_type=agent_feat.device.type, enabled=False):
+            base_relation_prob, base_relation_logits = self.relation_inference(
+                agent_feat.float(), edge_index, edge_feat.float(), hard=False,
+                return_logits=True)
+
+        if self.args.use_scene_latent:
+            scene_prior = self.jdv2_scene_prior(agent_feat, scene_index)
+        else:
+            scene_ids, compact = canonicalize_scene_index(
+                scene_index, agent_feat.shape[0], agent_feat.device)
+            history_scene = agent_feat.new_zeros((scene_ids.numel(), 128))
+            scene_prior = {
+                'scene_ids': scene_ids,
+                'compact_scene_index': compact,
+                'history_scene': history_scene,
+                'logits': history_scene.new_zeros((scene_ids.numel(), 1)),
+                'log_prob': history_scene.new_zeros((scene_ids.numel(), 1)),
+                'prob': history_scene.new_ones((scene_ids.numel(), 1)),
+                'attention': agent_feat.new_zeros((agent_feat.shape[0],)),
+            }
+        unary = self.jdv2_unary(
+            agent_feat, goal_candidates_world, obs_world[:, -1],
+            candidate_log_prior, candidate_mask=candidate_mask)
+
+        scene_posterior = None
+        relation_teacher = None
+        relation_descriptor = None
+        if include_teacher:
+            future_position = inputs['world_coord'][
+                self.args.obs_length:].permute(1, 0, 2).contiguous()
+            position_with_anchor = torch.cat((
+                obs_world[:, -1:].float(), future_position.float()), dim=1)
+            future_velocity = torch.diff(
+                position_with_anchor, dim=1) / float(self.args.trajectory_dt)
+            if self.args.use_scene_latent:
+                scene_posterior = self.jdv2_future_teacher.scene_posterior(
+                    future_position, future_velocity, obs_world[:, -1],
+                    scene_prior['history_scene'], scene_index)
+            else:
+                scene_posterior = {
+                    'logits': scene_prior['logits'],
+                    'log_prob': scene_prior['log_prob'],
+                    'prob': scene_prior['prob'],
+                }
+            teacher_cache = inputs.get('jdv2_teacher_cache')
+            relation_descriptor = (
+                teacher_cache['future_pair_descriptor']
+                if teacher_cache is not None else
+                future_pair_descriptor(
+                    future_position, obs_world[:, -1], edge_index))
+            relation_teacher = self.jdv2_future_teacher.relation_posterior(
+                relation_descriptor)
+
+        sampled = None
+        if sample:
+            sampled = self.jdv2_sampler(
+                unary['score'], goal_candidates_world, scene_prior['prob'],
+                scene_index, edge_index, edge_feat, agent_feat,
+                obs_world[:, -1], base_relation_logits,
+                self.jdv2_dynamic_relation, self.jdv2_joint_energy,
+                candidate_mask=candidate_mask,
+                sampling_mode=self.args.joint_sampling_mode,
+                use_scene_latent=self.args.use_scene_latent,
+                use_dynamic_relation=self.args.use_dynamic_relation,
+                use_joint_energy=self.args.use_joint_energy)
+
+        output = {
+            'goal_candidates_map': goal_candidates_map,
+            'goal_candidates_world': goal_candidates_world,
+            'candidate_prob': candidate_prob,
+            'candidate_log_prior': candidate_log_prior,
+            'candidate_mask': candidate_mask,
+            'agent_feat': agent_feat,
+            'scene_prior': scene_prior,
+            'scene_posterior': scene_posterior,
+            'edge_index': edge_index,
+            'edge_feat': edge_feat,
+            'edge_weight': edge_weight,
+            'base_relation_prob': base_relation_prob,
+            'base_relation_logits': base_relation_logits,
+            'relation_teacher': relation_teacher,
+            'relation_descriptor': relation_descriptor,
+            'unary_score': unary['score'],
+            'sampled': sampled,
+        }
+        floating = {
+            name: value for name, value in output.items()
+            if torch.is_tensor(value) and value.is_floating_point()}
+        if any(not torch.isfinite(value).all()
+               for value in floating.values()):
+            bad = [name for name, value in floating.items()
+                   if not torch.isfinite(value).all()]
+            raise FloatingPointError(f'Non-finite JDV2 tensors: {bad}')
+        self.last_joint_diagnostics = {
+            'num_agents': float(agent_feat.shape[0]),
+            'num_edges': float(edge_index.shape[1]),
+            'avg_degree': (2.0 * edge_index.shape[1] /
+                           max(agent_feat.shape[0], 1)),
+            'scene_latent_entropy': float((
+                -(scene_prior['prob'].float() *
+                  scene_prior['log_prob'].float()).sum(-1).mean()).detach().cpu()),
+            'relation_entropy': float((
+                -(base_relation_prob.float().clamp_min(1e-8) *
+                  base_relation_prob.float().clamp_min(1e-8).log()).sum(-1).mean()
+                if base_relation_prob.numel() else
+                base_relation_prob.new_zeros(())).detach().cpu()),
+        }
+        return output
+
+    def _jdv2_contexts(self, inputs, goal_points_map):
+        """Run the unchanged GDTS goal-relative history encoder."""
+        x = inputs['x_augmented'].detach()
+        num_agents, num_worlds = goal_points_map.shape[:2]
+        contexts = []
+        for sample_index in range(num_worlds):
+            goal = goal_points_map[:, sample_index].detach()
+            current_agents = torch.zeros(
+                (num_agents, self.args.obs_length, 8), device=self.device,
+                dtype=x.dtype)
+            current_agents[:, :, 2:] = x[
+                :self.args.obs_length, :, :6].permute(1, 0, 2)
+            current_agents[:, :, :2] = x[
+                :self.args.obs_length, :, 6:8].permute(1, 0, 2) - \
+                goal[:, None]
+            contexts.append(self.encoder.encode_hist(
+                node_hist=current_agents,
+                dropout_keep_prob=1).unsqueeze(1))
+        return torch.stack(contexts)
+
+    def _jdv2_encode(self, inputs, goal_logit_map, goal_prob_map, if_test,
+                     for_loss):
+        structured = self._jdv2_goal_outputs(
+            inputs, goal_prob_map, sample=if_test,
+            include_teacher=for_loss)
+        if if_test:
+            sampled = structured['sampled']
+            branch_world = sampled['goals']
+            branch_map = self._map_goals_to_map(branch_world, inputs['scene'])
+            # Keep the heatmap argmax as the internal trunk endpoint.  It is
+            # never exposed as a 21st evaluation sample.
+            trunk_index = structured['candidate_prob'].argmax(
+                dim=-1, keepdim=True)
+            trunk_world = structured['goal_candidates_world'].gather(
+                1, trunk_index[:, :, None].expand(-1, -1, 2))
+            trunk_map = self._map_goals_to_map(trunk_world, inputs['scene'])
+            all_goal_map = torch.cat((branch_map, trunk_map), dim=1)
+            all_goal_world = torch.cat((branch_world, trunk_world), dim=1)
+            structured.update({
+                'joint_candidate_index': torch.cat((
+                    sampled['candidate_index'], trunk_index), dim=1),
+                'joint_goal_points_world': all_goal_world,
+                'joint_goal_points_map': all_goal_map,
+                'sampled_scene_mode': sampled['scene_mode'],
+                'relation_prob': sampled['relation_prob'],
+                'dependency_state': {
+                    'edge_index': structured['edge_index'],
+                    'edge_weight': structured['edge_weight'],
+                    'relation_embedding': sampled['relation_embedding'],
+                    'last_position_world': inputs['obs_traj_world'][:, -1],
+                    'last_position_map': inputs['x_augmented'][
+                        self.args.obs_length - 1, :, 6:8],
+                    'scene': inputs['scene'],
+                },
+            })
+            goal_points_map = all_goal_map
+        else:
+            goal_points_map = inputs['x_augmented'][
+                -1, :, 6:8].unsqueeze(1)
+        contexts = self._jdv2_contexts(inputs, goal_points_map)
+        structured['goal_logit_map'] = goal_logit_map.unsqueeze(0).expand(
+            goal_points_map.shape[1], -1, -1, -1, -1)
+        structured['goal_point'] = goal_points_map.permute(1, 0, 2)
+        return contexts, structured
 
     def _structured_goal_outputs(self, inputs, goal_prob_map,
                                  if_test=False, for_loss=False):
@@ -764,12 +1111,18 @@ class GDTS(torch.nn.Module):
         integer_inputs = {
             "scene_index", "scene_ptr", "frame_ids", "batch_format_version"
         }
-        selected_inputs = {}
-        for key, value in batch_data.items():
+        def prepare_value(key, value):
+            if isinstance(value, dict):
+                return {nested_key: prepare_value(nested_key, nested_value)
+                        for nested_key, nested_value in value.items()}
             if torch.is_tensor(value):
                 value = value.squeeze(0).to(self.device)
-                value = value.long() if key in integer_inputs else value.float()
-            selected_inputs[key] = value
+                return value.long() if key in integer_inputs else value.float()
+            return value
+
+        selected_inputs = {}
+        for key, value in batch_data.items():
+            selected_inputs[key] = prepare_value(key, value)
         # extract seq_list
         seq_list = selected_inputs["seq_list"]
 
@@ -802,7 +1155,7 @@ class GDTS(torch.nn.Module):
         if "scene_index" not in selected_inputs:
             selected_inputs["scene_index"] = torch.zeros(
                 num_agents, dtype=torch.long, device=self.device)
-        if self.args.goal_model_type != 'independent':
+        if self.active_goal_model_type != 'independent':
             version = selected_inputs.get("batch_format_version")
             if version is None or int(version.item()) != 2:
                 raise RuntimeError(
@@ -829,6 +1182,22 @@ class GDTS(torch.nn.Module):
         return selected_inputs, seq_list.detach()
 
     def init_losses(self):
+        if self.jdv2_active:
+            stage = self.args.training_stage
+            if stage == 'joint_goal':
+                return {
+                    'jdv2_pl_post': 0, 'jdv2_pl_prior': 0,
+                    'jdv2_scene_kl': 0, 'jdv2_relation_kl': 0}
+            if stage == 'joint_trajectory':
+                return {'jdv2_diffusion_loss': 0,
+                        'jdv2_relative_loss': 0}
+            losses = {
+                'jdv2_pl_post': 0, 'jdv2_pl_prior': 0,
+                'jdv2_scene_kl': 0, 'jdv2_relation_kl': 0}
+            if self.args.use_dependency_corrector:
+                losses.update({'jdv2_diffusion_loss': 0,
+                               'jdv2_relative_loss': 0})
+            return losses
         if self.args.training_stage == 'multiway_coupling':
             return {
                 'loss_alignment': 0,
@@ -893,6 +1262,29 @@ class GDTS(torch.nn.Module):
         return losses
 
     def set_losses_coeffs(self):
+
+        if self.jdv2_active:
+            beta = (0.1 if self.args.training_stage == 'joint_finetune'
+                    else jdv2_warmup_beta(self.args.jdv2_stage_progress))
+            goal_scale = (self.args.lambda_JG
+                          if self.args.training_stage == 'joint_finetune'
+                          else 1.0)
+            coefficients = {}
+            if self.args.training_stage in {'joint_goal', 'joint_finetune'}:
+                coefficients.update({
+                    'jdv2_pl_post': 0.5 * goal_scale,
+                    'jdv2_pl_prior': 0.5 * goal_scale,
+                    'jdv2_scene_kl': beta * goal_scale,
+                    'jdv2_relation_kl': beta * goal_scale,
+                })
+            if self.args.training_stage in {
+                    'joint_trajectory', 'joint_finetune'} and \
+                    self.args.use_dependency_corrector:
+                coefficients.update({
+                    'jdv2_diffusion_loss': self.args.lambda_diff,
+                    'jdv2_relative_loss': self.args.lambda_relative,
+                })
+            return coefficients
 
         if self.args.training_stage == 'multiway_coupling':
             return {
@@ -1000,7 +1392,7 @@ class GDTS(torch.nn.Module):
             "minADE@K": [],
             "minFDE@K": [],
         }
-        if self.args.goal_model_type != 'independent':
+        if self.active_goal_model_type != 'independent':
             test_metrics.update({
                 "JADE": [],
                 "JFDE": [],
@@ -1008,6 +1400,8 @@ class GDTS(torch.nn.Module):
                 "Joint_Goal_Endpoint_Error": [],
                 "Joint_Goal_Compatibility": [],
             })
+            if self.jdv2_active:
+                test_metrics['Relative_Motion_Error'] = []
             if self.args.trajectory_alignment:
                 test_metrics.update({
                     "Raw_JADE": [],
@@ -1028,7 +1422,7 @@ class GDTS(torch.nn.Module):
             "minADE@K": 1e9,
             "minFDE@K": 1e9,
         }
-        if self.args.goal_model_type != 'independent':
+        if self.active_goal_model_type != 'independent':
             best_metrics.update({"JADE": 1e9, "JFDE": 1e9})
         return best_metrics
 
@@ -1037,8 +1431,12 @@ class GDTS(torch.nn.Module):
             return self.args.best_metric
         # Legacy GDTS retains its historical pixel ADE selection. Structured
         # experiments default to a coherent, world-coordinate scene metric.
-        return ('ADE' if self.args.goal_model_type == 'independent'
-                else 'JADE')
+        if not self.jdv2_active:
+            return ('ADE' if self.active_goal_model_type == 'independent'
+                    else 'JADE')
+        if self.args.training_stage == 'joint_goal':
+            return 'JFDE'
+        return 'JADE'
 
     def compute_loss_mask(self, seq_list, obs_length: int = 8):
         """
@@ -1157,6 +1555,29 @@ class GDTS(torch.nn.Module):
                 method='segment',
                 interpolation_steps=self.args.collision_interpolation_steps,
             )
+        elif metric_name == 'Relative_Motion_Error':
+            edge_index = all_aux_outputs['edge_index'].long()
+            if edge_index.shape[1] == 0:
+                return [0.0]
+            src, dst = edge_index
+            predicted_relative = (
+                pred_world[:, obs_length:, dst] -
+                pred_world[:, obs_length:, src])
+            target_relative = GT_world[obs_length:, dst] - \
+                GT_world[obs_length:, src]
+            error = torch.linalg.vector_norm(
+                predicted_relative - target_relative[None], dim=-1)
+            _, compact = canonicalize_scene_index(
+                scene_index, GT_world.shape[1], GT_world.device)
+            values = []
+            for scene_id in range(int(compact.max().item()) + 1):
+                scene_edges = compact[src].eq(scene_id)
+                if not bool(scene_edges.any()):
+                    values.append(0.0)
+                    continue
+                per_sample = error[:, :, scene_edges].mean(dim=(1, 2))
+                values.append(float(per_sample.min().detach().cpu()))
+            return values
         elif metric_name in {'Goal_minFDE', 'Goal_Recall@K'}:
             # Candidate recall measures the K heatmap candidates, independently
             # of how many joint diffusion branches S are requested.
@@ -1262,6 +1683,9 @@ class GDTS(torch.nn.Module):
         goal_module_input = torch.cat((tensor_image, obs_traj_maps), dim=1)
         goal_logit_map = self.goal_module(goal_module_input)    # [N,Tf,H,W]
         goal_prob_map = torch.sigmoid(goal_logit_map[:, -1:])   # [N,1,H,W]
+        if self.jdv2_active:
+            return self._jdv2_encode(
+                inputs, goal_logit_map, goal_prob_map, if_test, for_loss)
         structured = self._structured_goal_outputs(
             inputs, goal_prob_map, if_test=if_test, for_loss=for_loss)
 
@@ -1922,7 +2346,11 @@ class GDTS(torch.nn.Module):
 
         all_context, all_aux_outputs = self.encode(inputs, if_test=if_test) 
 
-        vy = self.ts_sample(all_context=all_context) # [20, B, 1, 512] -> [20, B, Tf, 2]
+        vy = self.ts_sample(
+            all_context=all_context,
+            dependency_state=(
+                all_aux_outputs.get('dependency_state')
+                if self.jdv2_active else None))
         y = torch.zeros([self.args.num_samples, self.args.seq_length, num_agents, 2]).to(self.device)
         y[:, :self.args.obs_length] = x[:self.args.obs_length,:,6:8].repeat(self.args.num_samples, 1, 1, 1)
         # y[:, self.args.obs_length:] = vy.permute(0,2,1,3) # (20, Tp+Tf, B, 2) -> (20, B, Tp+Tf, 2)
@@ -2047,6 +2475,237 @@ class GDTS(torch.nn.Module):
             raise FloatingPointError(f'Non-finite V4 loss: {losses}')
         return losses
 
+    def _jdv2_pl_from_local(self, unary, target, mode_probability,
+                            scene_index, local_energy):
+        """Finish a scene-balanced PL reduction after edge-chunk accumulation."""
+        _, compact = canonicalize_scene_index(
+            scene_index, unary.shape[0], unary.device)
+        conditional_log_prob = F.log_softmax(
+            unary.float()[:, None, :] - local_energy.float(), dim=-1)
+        per_agent_mode = -torch.einsum(
+            'nk,nzk->nz', target.float(), conditional_log_prob)
+        probability = mode_probability.float()
+        probability = probability / probability.sum(
+            dim=-1, keepdim=True).clamp_min(1e-12)
+        per_agent = (per_agent_mode * probability[compact]).sum(dim=-1)
+        return scene_balanced_mean(per_agent, compact)
+
+    def _jdv2_goal_losses(self, inputs):
+        """Compute dual pseudo-likelihood and teacher distillation in chunks."""
+        _, structured = self.encode(inputs, if_test=False, for_loss=True)
+        target = build_soft_goal_target(
+            structured['goal_candidates_world'], inputs['world_coord'][-1],
+            sigma_goal=self.args.goal_soft_sigma,
+            candidate_mask=structured['candidate_mask'])
+        unary = structured['unary_score']
+        pz = structured['scene_prior']['prob']
+        qz = structured['scene_posterior']['prob']
+        pz_log = structured['scene_prior']['log_prob']
+        qz_log = structured['scene_posterior']['log_prob']
+        scene_index = inputs['scene_index']
+        num_agents, num_candidates = unary.shape
+        num_modes = pz.shape[1]
+        local_prior = unary.new_zeros(
+            (num_agents, num_modes, num_candidates), dtype=torch.float32)
+        local_post = torch.zeros_like(local_prior)
+        edge_index = structured['edge_index']
+        relation_kl_sum = unary.float().sum() * 0.0
+        relation_kl_edges = 0
+        chunk_size = self.args.jdv2_edge_chunk_size
+        for start in range(0, edge_index.shape[1], chunk_size):
+            stop = min(start + chunk_size, edge_index.shape[1])
+            chunk_edge = edge_index[:, start:stop]
+            chunk_feat = structured['edge_feat'][start:stop]
+            chunk_base = structured['base_relation_logits'][start:stop]
+            full_relation = self.jdv2_dynamic_relation.full_pair_relation(
+                chunk_base, structured['goal_candidates_world'],
+                inputs['obs_traj_world'][:, -1], chunk_edge,
+                mode_enabled=self.args.use_scene_latent)
+            if not self.args.use_dynamic_relation:
+                shape = (stop - start, num_modes, num_candidates,
+                         num_candidates, 4)
+                base_log = F.log_softmax(chunk_base.float(), dim=-1)
+                prior_relation_log = base_log[:, None, None, None].expand(shape)
+            else:
+                prior_relation_log = full_relation['log_prob']
+
+            if self.args.use_joint_energy:
+                factors = self.jdv2_joint_energy.factors(
+                    structured['agent_feat'],
+                    structured['goal_candidates_world'],
+                    inputs['obs_traj_world'][:, -1], chunk_edge, chunk_feat,
+                    mode_enabled=self.args.use_scene_latent)
+                relation_energy = self.jdv2_joint_energy.relation_energy(
+                    factors['left_factor'], factors['right_factor'])
+                prior_effective = self.jdv2_joint_energy.effective_energy(
+                    relation_energy, prior_relation_log)
+                if self.args.use_dynamic_relation:
+                    teacher_log = structured['relation_teacher']['log_prob'][
+                        start:stop]
+                    post_relation_log = teacher_log[
+                        :, None, None, None, :].expand_as(relation_energy)
+                else:
+                    post_relation_log = prior_relation_log
+                post_effective = self.jdv2_joint_energy.effective_energy(
+                    relation_energy, post_relation_log)
+            else:
+                prior_effective = unary.new_zeros(
+                    (stop - start, num_modes, num_candidates,
+                     num_candidates), dtype=torch.float32)
+                post_effective = torch.zeros_like(prior_effective)
+
+            src, dst = chunk_edge.long()
+            local_prior.index_add_(0, src, torch.einsum(
+                'ezkl,el->ezk', prior_effective, target[dst].float()))
+            local_prior.index_add_(0, dst, torch.einsum(
+                'ezkl,ek->ezl', prior_effective, target[src].float()))
+            local_post.index_add_(0, src, torch.einsum(
+                'ezkl,el->ezk', post_effective, target[dst].float()))
+            local_post.index_add_(0, dst, torch.einsum(
+                'ezkl,ek->ezl', post_effective, target[src].float()))
+
+            if self.args.use_dynamic_relation:
+                chunk_kl = jdv2_relation_kl(
+                    structured['relation_teacher']['log_prob'][start:stop],
+                    full_relation['log_prob'], qz, target, chunk_edge,
+                    scene_index)
+                relation_kl_sum = relation_kl_sum + \
+                    chunk_kl * float(stop - start)
+                relation_kl_edges += stop - start
+
+        relation_kl = (
+            relation_kl_sum / float(relation_kl_edges)
+            if relation_kl_edges else relation_kl_sum)
+        scene_kl = (jdv2_scene_kl(qz_log, pz_log)
+                    if self.args.use_scene_latent
+                    else pz_log.sum() * 0.0)
+        losses = {
+            'jdv2_pl_post': self._jdv2_pl_from_local(
+                unary, target, qz, scene_index, local_post),
+            'jdv2_pl_prior': self._jdv2_pl_from_local(
+                unary, target, pz, scene_index, local_prior),
+            'jdv2_scene_kl': scene_kl,
+            'jdv2_relation_kl': relation_kl,
+        }
+        self.last_joint_diagnostics.update({
+            'L_PL_post': float(losses['jdv2_pl_post'].detach().cpu()),
+            'L_PL_prior': float(losses['jdv2_pl_prior'].detach().cpu()),
+            'L_z': float(scene_kl.detach().cpu()),
+            'L_r': float(relation_kl.detach().cpu()),
+        })
+        return losses
+
+    def _jdv2_noisy_velocity_world(self, noisy_velocity_map, inputs):
+        """Convert only the corrector geometry adapter to world m/s."""
+        last_map = inputs['x_augmented'][
+            self.args.obs_length - 1, :, 6:8]
+        position_map = last_map[:, None] + torch.cumsum(
+            noisy_velocity_map, dim=1)
+        position_world = inputs['scene'].make_world_coord_torch(
+            position_map * float(self.args.down_factor))
+        anchored = torch.cat((
+            inputs['obs_traj_world'][:, -1:].float(),
+            position_world.float()), dim=1)
+        velocity_world = torch.diff(anchored, dim=1) / float(
+            self.args.trajectory_dt)
+        return velocity_world, position_world
+
+    def _jdv2_dependency_losses(self, inputs, t=None):
+        """Train branch residual with the frozen teacher/deployable curriculum."""
+        progress = (0.0 if self.args.training_stage == 'joint_finetune'
+                    else self.args.jdv2_stage_progress)
+        teacher_probability = (0.0 if self.args.training_stage ==
+                               'joint_finetune' else
+                               jdv2_teacher_probability(progress))
+        use_teacher = bool(
+            torch.rand((), device=self.device).item() < teacher_probability)
+        context_manager = (torch.no_grad()
+                           if self.args.training_stage == 'joint_trajectory'
+                           else nullcontext())
+        with context_manager:
+            # The deployable half uses the exact inference sampler.  Teacher
+            # conditioning uses GT-near goals and q_relation.
+            x = inputs['x_augmented']
+            num_agents = x.shape[1]
+            image = inputs['tensor_image'].unsqueeze(0).repeat(
+                num_agents, 1, 1, 1)
+            maps = inputs['input_traj_maps'][:, :self.args.obs_length]
+            goal_logits = self.goal_module(torch.cat((image, maps), dim=1))
+            goal_prob = torch.sigmoid(goal_logits[:, -1:])
+            structured = self._jdv2_goal_outputs(
+                inputs, goal_prob, sample=not use_teacher,
+                include_teacher=True)
+            if use_teacher:
+                target = build_soft_goal_target(
+                    structured['goal_candidates_world'],
+                    inputs['world_coord'][-1],
+                    sigma_goal=self.args.goal_soft_sigma,
+                    candidate_mask=structured['candidate_mask'])
+                selected_index = target.argmax(dim=-1, keepdim=True)
+                selected_goal = structured['goal_candidates_world'].gather(
+                    1, selected_index[:, :, None].expand(-1, -1, 2))
+                relation_probability = structured[
+                    'relation_teacher']['prob']
+                relation_embedding = torch.einsum(
+                    'em,mh->eh', relation_probability.float(),
+                    self.jdv2_dynamic_relation.relation_embedding.float())
+            else:
+                selected_goal = structured['sampled']['goals'][:, :1]
+                relation_embedding = structured['sampled'][
+                    'relation_embedding'][:, 0]
+            selected_goal_map = self._map_goals_to_map(
+                selected_goal, inputs['scene'])
+            context = self._jdv2_contexts(inputs, selected_goal_map)[0]
+
+        x = inputs['x_augmented']
+        velocity_target = x[self.args.obs_length:, :, 2:4].permute(
+            1, 0, 2).contiguous()
+        batch_size = velocity_target.shape[0]
+        if t is None:
+            t = self.var_sched.uniform_sample_t(batch_size)
+        timestep = torch.as_tensor(
+            t, dtype=torch.long, device=velocity_target.device)
+        if timestep.ndim == 0:
+            timestep = timestep.expand(batch_size)
+        alpha_bar = self.var_sched.alpha_bars[timestep]
+        beta = self.var_sched.betas[timestep]
+        c0 = torch.sqrt(alpha_bar).view(-1, 1, 1)
+        c1 = torch.sqrt(1 - alpha_bar).view(-1, 1, 1)
+        noise = torch.randn_like(velocity_target)
+        noisy_velocity = c0 * velocity_target + c1 * noise
+        with torch.no_grad():
+            epsilon_base = self.diffnet(
+                noisy_velocity, beta=beta, context=context)
+        if self.args.use_dependency_corrector:
+            noisy_world, _ = self._jdv2_noisy_velocity_world(
+                noisy_velocity, inputs)
+            delta = self.jdv2_corrector(
+                noisy_world, inputs['obs_traj_world'][:, -1],
+                structured['edge_index'], relation_embedding, timestep,
+                edge_weight=structured['edge_weight'])
+        else:
+            delta = torch.zeros_like(epsilon_base)
+        epsilon_joint = epsilon_base + delta
+        diffusion_loss = F.mse_loss(
+            epsilon_joint.float(), noise.float(), reduction='mean')
+        predicted_clean = (
+            noisy_velocity.float() - c1.float() * epsilon_joint.float()) / \
+            c0.float().clamp_min(1e-8)
+        _, predicted_world = self._jdv2_noisy_velocity_world(
+            predicted_clean, inputs)
+        target_world = inputs['world_coord'][
+            self.args.obs_length:].permute(1, 0, 2).contiguous()
+        relative_loss = sparse_relative_motion_loss(
+            predicted_world, target_world, structured['edge_index'])
+        self.last_joint_diagnostics.update({
+            'teacher_probability': teacher_probability,
+            'teacher_condition_used': float(use_teacher),
+            'L_diff': float(diffusion_loss.detach().cpu()),
+            'L_relative': float(relative_loss.detach().cpu()),
+        })
+        return {'jdv2_diffusion_loss': diffusion_loss,
+                'jdv2_relative_loss': relative_loss}
+
 
     def _base_loss_components(self, inputs, seq_list, t=None, if_test=False):
         """Compute the two unchanged GDTS objectives and return auxiliaries."""
@@ -2094,6 +2753,23 @@ class GDTS(torch.nn.Module):
 
     def get_loss(self, inputs, seq_list, t=None, if_test=False):
         """Return baseline plus ablation-specific structured goal losses."""
+        if self.jdv2_active:
+            losses = {}
+            if self.args.training_stage in {'joint_goal', 'joint_finetune'}:
+                losses.update(self._jdv2_goal_losses(inputs))
+            if self.args.training_stage in {
+                    'joint_trajectory', 'joint_finetune'} and \
+                    self.args.use_dependency_corrector:
+                losses.update(self._jdv2_dependency_losses(inputs, t=t))
+            if any(not torch.isfinite(value).all()
+                   for value in losses.values()):
+                bad = {
+                    name: (tuple(value.shape), str(value.dtype))
+                    for name, value in losses.items()
+                    if not torch.isfinite(value).all()}
+                raise FloatingPointError(
+                    f'Non-finite JDV2 loss tensors: {bad}')
+            return losses
         if self.args.training_stage == 'multiway_coupling':
             return self._multiway_coupling_training_losses(inputs, seq_list)
         if self.args.training_stage == 'alignment':
@@ -2423,7 +3099,7 @@ class GDTS(torch.nn.Module):
         all_outputs = torch.stack(all_outputs)
         return all_outputs # (B, 12, 2)
     
-    def ts_sample(self, all_context):
+    def ts_sample(self, all_context, dependency_state=None):
         all_outputs = []
 
         # trunk stage 
@@ -2460,6 +3136,27 @@ class GDTS(torch.nn.Module):
                 ab_prev = self.var_sched.alpha_bars[prev_t] if prev_t >= 0 else 1
                 beta = self.var_sched.betas[[cur_t] * batch_size]
                 eps = self.diffnet(x_t, beta=beta, context=context)
+                if (dependency_state is not None and
+                        self.args.use_dependency_corrector):
+                    last_map = dependency_state['last_position_map']
+                    position_map = last_map[:, None] + torch.cumsum(x_t, dim=1)
+                    position_world = dependency_state[
+                        'scene'].make_world_coord_torch(
+                            position_map * float(self.args.down_factor))
+                    anchor = dependency_state['last_position_world'][:, None]
+                    noisy_world_velocity = torch.diff(
+                        torch.cat((anchor.float(), position_world.float()),
+                                  dim=1), dim=1) / float(
+                                      self.args.trajectory_dt)
+                    relation_embedding = dependency_state[
+                        'relation_embedding'][:, sample_idx]
+                    delta = self.jdv2_corrector(
+                        noisy_world_velocity,
+                        dependency_state['last_position_world'],
+                        dependency_state['edge_index'], relation_embedding,
+                        torch.tensor(cur_t, device=x_t.device),
+                        edge_weight=dependency_state['edge_weight'])
+                    eps = eps + delta
                 var = eta * (1 - ab_prev) / (1 - ab_cur) * (1 - ab_cur / ab_prev)
                 noise = torch.randn_like(x_t)
 

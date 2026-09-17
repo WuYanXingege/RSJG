@@ -2,6 +2,7 @@ import os
 import time
 import datetime
 import json
+from contextlib import nullcontext
 import torch
 import numpy as np
 from tqdm import tqdm
@@ -48,6 +49,15 @@ class trainer(object):
         self.data_loaders['test'] = loader_factory(args, split='test') \
             if args.use_trajectory_bank_cache else \
             loader_factory(args, set_name='test')
+        if (getattr(args, 'goal_model_type', None) == 'joint_dependency_v2'
+                and getattr(args, 'jdv2_active', False)):
+            manifest = getattr(
+                self.data_loaders['train'].dataset, 'jdv2_manifest', None)
+            if manifest is None:
+                raise RuntimeError('Active JDV2 loader has no validated cache')
+            args.jdv2_cache_manifest_hash = manifest['manifest_hash']
+            args.jdv2_source_checkpoint_hash = manifest[
+                'goal_checkpoint_hash']
         if args.use_trajectory_bank_cache:
             for split, loader in self.data_loaders.items():
                 stats = pack_statistics(loader)
@@ -65,10 +75,16 @@ class trainer(object):
         self._write_evaluation_protocol()
         # initialize device
         self.device = self._set_device()
+        self._configure_amp()
+        self._pending_training_state = None
         # initialize network
         self.net = GDTS(self.args, self.device).to(self.device)
-        if self.args.pretrain_path:
-            self._load_state_file(self.args.pretrain_path, baseline_initialization=True)
+        initialization_checkpoint = self.args.pretrain_path
+        if self.net.jdv2_active and initialization_checkpoint is None:
+            initialization_checkpoint = self.args.jdv2_source_checkpoint
+        if initialization_checkpoint:
+            self._load_state_file(
+                initialization_checkpoint, baseline_initialization=True)
 
         # Prepare log curve file and initialize best validation metrics
         self.log_curve_file = os.path.join(self.args.model_dir, 'log_curve.txt')
@@ -76,6 +92,64 @@ class trainer(object):
         # Best metrics
         self.best_metrics = self.net.init_best_metrics()
         self.best_metrics_epochs = {k: -1 for k in self.best_metrics.keys()}
+        self._best_selection = (float('inf'), float('inf'))
+
+    def _configure_amp(self):
+        """Configure the frozen FP16/BF16 policy without changing legacy."""
+        self.amp_enabled = bool(getattr(self.args, 'amp_enabled', False))
+        dtype_name = getattr(self.args, 'amp_dtype', 'fp32')
+        self.amp_dtype = {
+            'fp32': torch.float32,
+            'fp16': torch.float16,
+            'bf16': torch.bfloat16,
+        }[dtype_name]
+        if self.amp_enabled and dtype_name == 'fp16' and \
+                self.device.type != 'cuda':
+            raise RuntimeError('FP16 AMP requires CUDA')
+        if (self.amp_enabled and dtype_name == 'bf16' and
+                self.device.type == 'cuda' and
+                not torch.cuda.is_bf16_supported()):
+            raise RuntimeError('Requested BF16 is unsupported by this GPU')
+        self.scaler = torch.cuda.amp.GradScaler(
+            enabled=self.amp_enabled and dtype_name == 'fp16')
+
+    def _autocast_context(self):
+        if not self.amp_enabled:
+            return nullcontext()
+        return torch.autocast(
+            device_type=self.device.type, dtype=self.amp_dtype, enabled=True)
+
+    def _jdv2_architecture_config(self):
+        return {
+            'scene_modes': self.args.jdv2_scene_modes,
+            'relation_modes': self.args.jdv2_relation_modes,
+            'goal_candidates': self.args.num_goal_candidates,
+            'joint_samples': self.args.num_samples,
+            'prediction_steps': self.args.pred_length,
+            'energy_rank': self.args.jdv2_energy_rank,
+            'agent_dim': self.args.social_feature_dim,
+        }
+
+    def _jdv2_ablation_config(self):
+        return {name: bool(getattr(self.args, name)) for name in (
+            'use_scene_latent', 'use_dynamic_relation', 'use_joint_energy',
+            'use_dependency_corrector')}
+
+    def _selection_tuple(self, valid_metrics):
+        primary_name = self.net.best_valid_metric()
+        primary = float(valid_metrics['valid_' + primary_name])
+        tie = float('inf')
+        if (self.net.jdv2_active and
+                self.args.training_stage == 'joint_trajectory'):
+            tie = float(valid_metrics['valid_JFDE'])
+        return primary, tie
+
+    @staticmethod
+    def _selection_is_better(current, best, tolerance=1e-12):
+        if current[0] < best[0] - tolerance:
+            return True
+        return (abs(current[0] - best[0]) <= tolerance and
+                current[1] < best[1] - tolerance)
 
     def _write_evaluation_protocol(self):
         """Persist the exact model-selection/test separation used by a run."""
@@ -138,10 +212,36 @@ class trainer(object):
         else:  # best model name
             saved_model_name = os.path.join(
                 saved_models_path, 'best_model.pt')
-        torch.save({
+        payload = {
             'epoch': epoch,
             'model_state_dict': self.net.state_dict(),
-        }, saved_model_name)
+        }
+        if self.net.jdv2_active:
+            payload.update({
+                'optimizer_state_dict': (
+                    self.optimizer.state_dict()
+                    if hasattr(self, 'optimizer') else None),
+                'scheduler_state_dict': (
+                    self.scheduler.state_dict()
+                    if getattr(self, 'scheduler', None) is not None else None),
+                'grad_scaler_state_dict': (
+                    self.scaler.state_dict() if self.scaler.is_enabled()
+                    else None),
+                'architecture_config': self._jdv2_architecture_config(),
+                'ablation_config': self._jdv2_ablation_config(),
+                'training_stage': self.args.training_stage,
+                'stage_progress': self.args.jdv2_stage_progress,
+                'cache_manifest_hash': self.args.jdv2_cache_manifest_hash,
+                'source_checkpoint_hash': (
+                    self.args.jdv2_source_checkpoint_hash),
+                'best_metric': {
+                    'name': self.net.best_valid_metric(),
+                    'primary': self._best_selection[0],
+                    'tie_break': self._best_selection[1],
+                    'seed': self.args.seed,
+                },
+            })
+        torch.save(payload, saved_model_name)
 
     def _load_state_file(self, saved_model_name, baseline_initialization=False):
         """Load a checkpoint with explicit legacy-to-joint compatibility."""
@@ -150,16 +250,55 @@ class trainer(object):
         # Only a legacy baseline used to initialize a larger structured model
         # is intentionally partial. Resuming/testing any current checkpoint
         # must be strict so missing joint modules cannot remain random silently.
-        strict = (not baseline_initialization or
-                  self.args.goal_model_type == 'independent')
+        if not self.net.jdv2_active:
+            strict = True
+        else:
+            source_is_v2 = any(
+                key.startswith('jdv2_') for key in state_dict)
+            strict = source_is_v2 or not baseline_initialization
         incompatible = self.net.load_state_dict(state_dict, strict=strict)
         if not strict:
             missing = list(incompatible.missing_keys)
             unexpected = list(incompatible.unexpected_keys)
-            if missing or unexpected:
-                context = 'baseline initialization' if baseline_initialization \
-                    else 'non-strict joint checkpoint load'
-                print(f'{context}: missing={missing}, unexpected={unexpected}')
+            allowed_prefixes = (
+                'interaction_graph.', 'social_encoder.',
+                'relation_inference.', 'jdv2_')
+            invalid_missing = [
+                key for key in missing
+                if not key.startswith(allowed_prefixes)]
+            if invalid_missing or unexpected:
+                raise RuntimeError(
+                    'Legacy -> JDV2 checkpoint incompatibility: '
+                    f'invalid_missing={invalid_missing}, '
+                    f'unexpected={unexpected}')
+            print('Legacy baseline initialization: allowed JDV2 missing '
+                  f'keys={missing}')
+        if self.net.jdv2_active and strict:
+            expected_architecture = self._jdv2_architecture_config()
+            expected_ablation = self._jdv2_ablation_config()
+            if checkpoint.get('architecture_config') != expected_architecture:
+                raise RuntimeError('V2 checkpoint architecture mismatch')
+            if checkpoint.get('ablation_config') != expected_ablation:
+                raise RuntimeError('V2 checkpoint ablation mismatch')
+            if checkpoint.get('cache_manifest_hash') != \
+                    self.args.jdv2_cache_manifest_hash:
+                raise RuntimeError('V2 checkpoint cache manifest mismatch')
+            if checkpoint.get('source_checkpoint_hash') != \
+                    self.args.jdv2_source_checkpoint_hash:
+                raise RuntimeError('V2 checkpoint source checkpoint mismatch')
+            source_stage = checkpoint.get('training_stage')
+            target_stage = self.args.training_stage
+            allowed_transition = (
+                source_stage == target_stage or
+                (source_stage == 'joint_goal' and
+                 target_stage == 'joint_trajectory') or
+                (source_stage in {'joint_goal', 'joint_trajectory'} and
+                 target_stage == 'joint_finetune'))
+            if not allowed_transition:
+                raise RuntimeError(
+                    f'Invalid V2 stage transition {source_stage!r} -> '
+                    f'{target_stage!r}')
+            self._pending_training_state = checkpoint
         return checkpoint.get('epoch', 0)
 
     def _load_checkpoint(self, load_checkpoint):
@@ -204,6 +343,8 @@ class trainer(object):
             start_epoch = 1
             # log_file header only the first time
             curve_metrics = ['ADE', 'FDE']
+            if self.net.jdv2_active:
+                curve_metrics = list(self.net.init_test_metrics().keys())
             if self.args.trajectory_alignment:
                 curve_metrics.extend([
                     'ADE_world', 'FDE_world', 'JADE', 'JFDE',
@@ -223,6 +364,9 @@ class trainer(object):
                         "\n")
         if not hasattr(self, 'curve_metric_names'):
             self.curve_metric_names = ['ADE', 'FDE']
+            if self.net.jdv2_active:
+                self.curve_metric_names = list(
+                    self.net.init_test_metrics().keys())
             if self.args.trajectory_alignment:
                 self.curve_metric_names.extend([
                     'ADE_world', 'FDE_world', 'JADE', 'JFDE',
@@ -319,9 +463,11 @@ class trainer(object):
         families = self.net.optimizer_parameter_families()
         groups = []
         specifications = (
-            ('structured', self.args.structured_lr_scale),
-            ('baseline', self.args.baseline_lr_scale),
-        )
+            (('jdv2_goal_dependency', self.args.structured_lr_scale),
+             ('jdv2_corrector', self.args.structured_lr_scale))
+            if self.net.jdv2_active else
+            (('structured', self.args.structured_lr_scale),
+             ('baseline', self.args.baseline_lr_scale)))
         for name, scale in specifications:
             parameters = families[name]
             if not parameters:
@@ -370,6 +516,24 @@ class trainer(object):
         self.optimizer = self._set_optimizer(
             self._optimizer_parameter_groups())
         self.scheduler = self._set_scheduler(self.optimizer)
+        if self._pending_training_state is not None:
+            checkpoint = self._pending_training_state
+            same_stage = checkpoint.get('training_stage') == \
+                self.args.training_stage
+            if same_stage and checkpoint.get('optimizer_state_dict') is not None:
+                self.optimizer.load_state_dict(
+                    checkpoint['optimizer_state_dict'])
+            if (same_stage and self.scheduler is not None and
+                    checkpoint.get('scheduler_state_dict') is not None):
+                self.scheduler.load_state_dict(
+                    checkpoint['scheduler_state_dict'])
+            if (same_stage and self.scaler.is_enabled() and
+                    checkpoint.get('grad_scaler_state_dict') is not None):
+                self.scaler.load_state_dict(
+                    checkpoint['grad_scaler_state_dict'])
+            self.args.jdv2_stage_progress = float(
+                checkpoint.get('stage_progress',
+                               self.args.jdv2_stage_progress))
 
         # start training
         self._train_loop(start_epoch=start_epoch, end_epoch=self.args.num_epochs)
@@ -445,7 +609,9 @@ class trainer(object):
             train_rng_state = torch.get_rng_state()
             if epoch >= self.args.start_validation and epoch % self.args.validate_every == 0:
                 valid_metrics = self._evaluate_epoch(epoch, mode='valid')
-                previous_selection_best = self.best_metrics[best_metric_name]
+                current_selection = self._selection_tuple(valid_metrics)
+                selection_improved = self._selection_is_better(
+                    current_selection, self._best_selection)
 
                 # comment some of this print, if it is too long
                 print(f'----Epoch {epoch},',
@@ -465,10 +631,13 @@ class trainer(object):
                     if current_metric_loss < v:
                         self.best_metrics[k] = current_metric_loss
                         self.best_metrics_epochs[k] = epoch
-                        # save best model on best metric
-                        if k == best_metric_name:
-                            self._save_checkpoint(epoch, best_epoch=True)
-                            print(f"Saved best model at epoch {epoch}")
+                if selection_improved:
+                    self._best_selection = current_selection
+                    self._save_checkpoint(epoch, best_epoch=True)
+                    print(
+                        f"Saved best model at epoch {epoch}: "
+                        f"primary={current_selection[0]:.6g}, "
+                        f"tie_break={current_selection[1]:.6g}")
 
                 print(', '.join([f"best_{metric_name}={metric_value:.3f}" for
                                  metric_name, metric_value in
@@ -478,8 +647,7 @@ class trainer(object):
                                  metric_name, metric_epoch in
                                  self.best_metrics_epochs.items()]))
 
-                if valid_metrics['valid_' + best_metric_name] < \
-                        previous_selection_best:
+                if selection_improved:
                     validations_without_improvement = 0
                 else:
                     validations_without_improvement += 1
@@ -580,20 +748,38 @@ class trainer(object):
         def optimizer_step(pending, rescale_partial=False):
             if pending == 0:
                 return
+            if self.scaler.is_enabled():
+                self.scaler.unscale_(self.optimizer)
             if rescale_partial and pending < accumulation_steps:
                 correction = float(accumulation_steps) / float(pending)
                 for parameter in self.net.parameters():
                     if parameter.grad is not None:
                         parameter.grad.mul_(correction)
+            for name, parameter in self.net.named_parameters():
+                if parameter.grad is not None and \
+                        not torch.isfinite(parameter.grad).all():
+                    raise FloatingPointError(
+                        f'Non-finite gradient: module/parameter={name}, '
+                        f'shape={tuple(parameter.grad.shape)}, '
+                        f'dtype={parameter.grad.dtype}')
             torch.nn.utils.clip_grad_norm_(
                 self.net.parameters(), self.args.clip)
-            self.optimizer.step()
+            if self.scaler.is_enabled():
+                self.scaler.step(self.optimizer)
+                self.scaler.update()
+            else:
+                self.optimizer.step()
             self.optimizer.zero_grad()
 
         for batch_index, batch in enumerate(train_bar):
+            if self.net.jdv2_active:
+                completed = ((epoch - 1) * num_train_batches + batch_index)
+                total = max(self.args.num_epochs * num_train_batches, 1)
+                self.args.jdv2_stage_progress = min(completed / total, 1.0)
             if self.args.use_trajectory_bank_cache:
                 inputs = self.net.prepare_cached_trajectory_pack(batch)
-                losses, coupling = self.net.get_cached_multiway_loss(inputs)
+                with self._autocast_context():
+                    losses, coupling = self.net.get_cached_multiway_loss(inputs)
                 seq_list = None
                 batch_id = None
                 del batch, coupling
@@ -602,7 +788,12 @@ class trainer(object):
                 inputs, seq_list = self.net.prepare_inputs(
                     batch_data, batch_id)
                 del batch_data
-                losses = self.net.get_loss(inputs, seq_list)
+                with self._autocast_context():
+                    losses = self.net.get_loss(inputs, seq_list)
+            if self.net.jdv2_active:
+                # KL coefficients follow completed optimizer-step progress,
+                # not an epoch-frozen approximation.
+                losses_coeffs = self.net.set_losses_coeffs()
             loss = torch.zeros(1).to(self.device)
             for loss_name, loss_value in losses.items():
                 loss += losses_coeffs[loss_name]*loss_value
@@ -653,7 +844,11 @@ class trainer(object):
             # trainable signal while the baseline is frozen. It is a valid
             # degeneracy, so skip only that optimizer step instead of failing.
             if loss.requires_grad:
-                (loss / accumulation_steps).backward()
+                scaled_loss = loss / accumulation_steps
+                if self.scaler.is_enabled():
+                    self.scaler.scale(scaled_loss).backward()
+                else:
+                    scaled_loss.backward()
                 pending_backward += 1
                 if pending_backward == accumulation_steps:
                     optimizer_step(pending_backward)
@@ -830,7 +1025,9 @@ class trainer(object):
             # compute metric_mask
             metric_mask = compute_metric_mask(seq_list)
             st = time.time()
-            all_output, all_aux_outputs = self.net.forward(inputs, if_test=True) # (21,Tp+Tf,B,2) 
+            with self._autocast_context():
+                all_output, all_aux_outputs = self.net.forward(
+                    inputs, if_test=True)
             total_time = total_time + time.time() - st
             num_input = num_input + inputs["abs_pixel_coord"].shape[1]
 

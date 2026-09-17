@@ -1,6 +1,7 @@
 import os
 import random
 import math
+import json
 
 import torch
 import numpy as np
@@ -10,7 +11,19 @@ from torch.utils.data import Dataset as BaseDataset
 from torch.utils.data import Subset
 
 from src.data_grouping import batch_cache_path
-from src.batch_cache_io import is_batch_cache_file, load_batch_cache
+from src.batch_cache_io import (
+    batch_cache_files,
+    is_batch_cache_file,
+    load_batch_cache,
+)
+from src.joint_dependency_v2_cache import (
+    JDV2_MANIFEST,
+    build_manifest,
+    jdv2_cache_root,
+    load_cache_record,
+    stable_json_hash,
+    validate_manifest,
+)
 
 
 # OpenCV treats arrays with more than CV_CN_MAX channels as higher-dimensional
@@ -19,6 +32,45 @@ from src.batch_cache_io import is_batch_cache_file, load_batch_cache
 # replay the same sampled augmentation over bounded channel chunks.
 CV2_SAFE_CHANNEL_CHUNK = 256
 _SOURCE_BLOCK_SPLIT_CACHE = {}
+_JDV2_MANIFEST_CACHE = {}
+
+
+def _validated_jdv2_manifest(args):
+    """Validate the explicit cache once per process/configuration."""
+    checkpoint = args.jdv2_source_checkpoint or args.pretrain_path
+    if checkpoint is None:
+        raise RuntimeError(
+            'Active JDV2 requires --jdv2_source_checkpoint and an explicit '
+            'build-jdv2-cache phase')
+    root = jdv2_cache_root(args)
+    manifest_path = os.path.join(root, JDV2_MANIFEST)
+    key = (manifest_path, os.path.abspath(os.path.expanduser(checkpoint)))
+    if key in _JDV2_MANIFEST_CACHE:
+        return _JDV2_MANIFEST_CACHE[key]
+    try:
+        with open(manifest_path, 'r') as handle:
+            actual = json.load(handle)
+    except (FileNotFoundError, json.JSONDecodeError, OSError) as exc:
+        raise RuntimeError(
+            f'Missing/incomplete JDV2 cache manifest at {manifest_path}; '
+            'run --phase build-jdv2-cache') from exc
+    source_root = batch_cache_path(args)
+    source_files = {
+        split: batch_cache_files(os.path.join(
+            source_root, f'{split}_batches'))
+        for split in ('train', 'valid', 'test')}
+    expected = build_manifest(
+        args, source_files,
+        os.path.abspath(os.path.expanduser(checkpoint)),
+        completed_splits=('train', 'valid', 'test'))
+    validate_manifest(actual, expected)
+    if set(actual.get('completed_splits', ())) != {'train', 'valid', 'test'}:
+        raise RuntimeError(
+            'JDV2 cache is not complete for train/valid/test; rebuild it')
+    actual = dict(actual)
+    actual['manifest_hash'] = stable_json_hash(actual)
+    _JDV2_MANIFEST_CACHE[key] = actual
+    return actual
 
 
 def _batch_source_identifier(dataset, index):
@@ -74,8 +126,14 @@ class dataset_set_name(BaseDataset):
         self.ids = sorted(name for name in os.listdir(self.path_to_folder)
                           if is_batch_cache_file(name))
         self.args = args
+        self.set_name = set_name
         self.data_augmentation = args.data_augmentation \
             if set_name == 'train' else False
+        self.jdv2_manifest = None
+        if (getattr(args, 'goal_model_type', None) == 'joint_dependency_v2'
+                and getattr(args, 'jdv2_active', False)
+                and getattr(args, 'phase', None) != 'build-jdv2-cache'):
+            self.jdv2_manifest = _validated_jdv2_manifest(args)
 
         print(f"{set_name.title()} dataset contains {len(self.ids)} data "
               f"batches.")
@@ -196,6 +254,17 @@ class dataset_set_name(BaseDataset):
 
         if self.data_augmentation:
             batch_data = self.augment_traj_and_images(batch_data)
+
+        if self.jdv2_manifest is not None:
+            cache_dir = os.path.join(jdv2_cache_root(self.args), self.set_name)
+            batch_data['jdv2_cache'] = load_cache_record(
+                os.path.join(cache_dir, f'{i:06d}.pt'),
+                allow_future_supervision=False)
+            if (self.set_name == 'train' and
+                    self.args.phase in {'train', 'train_test'}):
+                batch_data['jdv2_teacher_cache'] = load_cache_record(
+                    os.path.join(cache_dir, f'{i:06d}.teacher.pt'),
+                    allow_future_supervision=True)
 
         return batch_data, batch_id
 

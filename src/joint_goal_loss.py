@@ -594,6 +594,159 @@ class JointGoalLoss(nn.Module):
         return result
 
 
+def scene_balanced_mean(
+        per_agent_value: torch.Tensor,
+        scene_index: Optional[torch.Tensor],
+) -> torch.Tensor:
+    """Average agents within scenes, then average equally across scenes."""
+    if per_agent_value.ndim != 1:
+        raise ValueError("per_agent_value must have shape [N]")
+    _, compact = canonicalize_scene_index(
+        scene_index, per_agent_value.shape[0], per_agent_value.device)
+    scene_count = int(compact.max().item()) + 1
+    total = per_agent_value.new_zeros((scene_count,), dtype=torch.float32)
+    total.index_add_(0, compact, per_agent_value.float())
+    count = torch.bincount(compact, minlength=scene_count).float().to(
+        per_agent_value.device)
+    return (total / count.clamp_min(1)).mean()
+
+
+def jdv2_pseudo_likelihood(
+        unary_score: torch.Tensor,
+        soft_goal_target: torch.Tensor,
+        scene_mode_probability: torch.Tensor,
+        scene_index: torch.Tensor,
+        edge_index: torch.Tensor,
+        effective_pair_energy: torch.Tensor,
+) -> torch.Tensor:
+    """Structured/composite pseudo-likelihood for one relation path.
+
+    Parameters use ``N`` agents, ``Z`` modes, ``K`` candidates and ``E``
+    canonical edges.  The energy has shape ``[E,Z,K,K]``.  Each edge adds an
+    expected neighbour energy to both endpoints, without degree averaging.
+    """
+    if unary_score.ndim != 2:
+        raise ValueError("unary_score must have shape [N,K]")
+    num_agents, num_candidates = unary_score.shape
+    target = _normalize_soft_target(soft_goal_target.float())
+    _, compact = canonicalize_scene_index(
+        scene_index, num_agents, unary_score.device)
+    scene_count = int(compact.max().item()) + 1
+    if scene_mode_probability.ndim != 2 or \
+            scene_mode_probability.shape[0] != scene_count:
+        raise ValueError("scene_mode_probability must have shape [C,Z]")
+    num_modes = scene_mode_probability.shape[1]
+    edge_count = edge_index.shape[1]
+    if effective_pair_energy.shape != (
+            edge_count, num_modes, num_candidates, num_candidates):
+        raise ValueError("effective_pair_energy must be [E,Z,K,K]")
+    local_energy = unary_score.new_zeros(
+        (num_agents, num_modes, num_candidates), dtype=torch.float32)
+    if edge_count:
+        src, dst = edge_index.long()
+        source_energy = torch.einsum(
+            "ezkl,el->ezk", effective_pair_energy.float(), target[dst])
+        destination_energy = torch.einsum(
+            "ezkl,ek->ezl", effective_pair_energy.float(), target[src])
+        local_energy.index_add_(0, src, source_energy)
+        local_energy.index_add_(0, dst, destination_energy)
+    conditional_log_prob = F.log_softmax(
+        unary_score.float()[:, None, :] - local_energy, dim=-1)
+    per_agent_mode = -torch.einsum(
+        "nk,nzk->nz", target, conditional_log_prob)
+    mode_probability = scene_mode_probability.float()
+    mode_probability = mode_probability / mode_probability.sum(
+        dim=-1, keepdim=True).clamp_min(1e-12)
+    per_agent = (per_agent_mode * mode_probability[compact]).sum(dim=-1)
+    return scene_balanced_mean(per_agent, compact)
+
+
+def jdv2_scene_kl(
+        posterior_log_prob: torch.Tensor,
+        prior_log_prob: torch.Tensor,
+) -> torch.Tensor:
+    """Return scene-mean ``KL(q_z || p_z)`` in FP32."""
+    if posterior_log_prob.shape != prior_log_prob.shape or \
+            posterior_log_prob.ndim != 2:
+        raise ValueError("scene log probabilities must share shape [C,Z]")
+    q_log = F.log_softmax(posterior_log_prob.float(), dim=-1)
+    p_log = F.log_softmax(prior_log_prob.float(), dim=-1)
+    return (q_log.exp() * (q_log - p_log)).sum(dim=-1).mean()
+
+
+def jdv2_relation_kl(
+        teacher_relation_log_prob: torch.Tensor,
+        deployable_relation_log_prob: torch.Tensor,
+        scene_posterior_probability: torch.Tensor,
+        soft_goal_target: torch.Tensor,
+        edge_index: torch.Tensor,
+        scene_index: torch.Tensor,
+) -> torch.Tensor:
+    """Exact soft-target relation distillation from the frozen specification."""
+    edge_count = edge_index.shape[1]
+    if teacher_relation_log_prob.shape != (edge_count, 4):
+        raise ValueError("teacher relation must have shape [E,4]")
+    if deployable_relation_log_prob.ndim != 5 or \
+            deployable_relation_log_prob.shape[0] != edge_count or \
+            deployable_relation_log_prob.shape[-1] != 4:
+        raise ValueError("deployable relation must have shape [E,Z,K,K,4]")
+    if edge_count == 0:
+        return deployable_relation_log_prob.sum() * 0.0
+    target = _normalize_soft_target(soft_goal_target.float())
+    _, compact = canonicalize_scene_index(
+        scene_index, target.shape[0], target.device)
+    src, dst = edge_index.long()
+    edge_scene = compact[src]
+    q_log = F.log_softmax(teacher_relation_log_prob.float(), dim=-1)
+    p_log = F.log_softmax(deployable_relation_log_prob.float(), dim=-1)
+    # KL per edge/mode/candidate pair: [E,Z,K,K].
+    kl = torch.sum(q_log[:, None, None, None, :].exp() * (
+        q_log[:, None, None, None, :] - p_log), dim=-1)
+    weighted_candidate = torch.einsum(
+        "ek,el,ezkl->ez", target[src], target[dst], kl)
+    qz = scene_posterior_probability.float()
+    qz = qz / qz.sum(dim=-1, keepdim=True).clamp_min(1e-12)
+    return (weighted_candidate * qz[edge_scene]).sum(dim=-1).mean()
+
+
+def jdv2_warmup_beta(stage_progress: float) -> float:
+    """Linear 0 -> 0.1 KL warm-up over the first 20% of Stage A."""
+    if not 0.0 <= float(stage_progress) <= 1.0:
+        raise ValueError("stage_progress must lie in [0,1]")
+    return 0.1 * min(float(stage_progress) / 0.20, 1.0)
+
+
+def jdv2_teacher_probability(stage_progress: float) -> float:
+    """Frozen Stage-B teacher/deployable curriculum."""
+    progress = float(stage_progress)
+    if not 0.0 <= progress <= 1.0:
+        raise ValueError("stage_progress must lie in [0,1]")
+    if progress < 0.20:
+        return 1.0
+    if progress < 0.60:
+        return 1.0 - (progress - 0.20) / 0.40
+    return 0.0
+
+
+def sparse_relative_motion_loss(
+        predicted_position: torch.Tensor,
+        target_position: torch.Tensor,
+        edge_index: torch.Tensor,
+) -> torch.Tensor:
+    """MSE of sparse-edge relative future displacement in world units."""
+    if predicted_position.shape != target_position.shape or \
+            predicted_position.ndim != 3 or \
+            predicted_position.shape[-1] != 2:
+        raise ValueError("positions must share shape [N,T,2]")
+    if edge_index.shape[1] == 0:
+        return predicted_position.sum() * 0.0
+    src, dst = edge_index.long()
+    predicted_relative = predicted_position[dst] - predicted_position[src]
+    target_relative = target_position[dst] - target_position[src]
+    return F.mse_loss(
+        predicted_relative.float(), target_relative.float(), reduction="mean")
+
+
 # Compatibility aliases for concise integration code.
 build_soft_goal_targets = build_soft_goal_target
 low_rank_mode_nll = low_rank_social_mode_loss
@@ -612,4 +765,11 @@ __all__ = [
     "pseudo_likelihood_loss",
     "pseudo_likelihood_goal_loss",
     "JointGoalLoss",
+    "jdv2_pseudo_likelihood",
+    "jdv2_relation_kl",
+    "jdv2_scene_kl",
+    "jdv2_teacher_probability",
+    "jdv2_warmup_beta",
+    "scene_balanced_mean",
+    "sparse_relative_motion_loss",
 ]

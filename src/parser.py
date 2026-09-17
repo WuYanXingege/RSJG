@@ -26,6 +26,9 @@ GOAL_MODEL_ALIASES = {
     'sparse-energy': 'energy',
     'joint': 'joint',
     'full-joint': 'joint',
+    'joint-dependency-v2': 'joint_dependency_v2',
+    'jdv2': 'joint_dependency_v2',
+    'rsjg-v2': 'joint_dependency_v2',
 }
 
 # Execution controls must come from the current command, not leak from a
@@ -35,6 +38,7 @@ TRANSIENT_CONFIG_DEFAULTS = {
     'load_checkpoint': None,
     'pretrain_path': None,
     'force_reprocess': False,
+    'jdv2_active': None,
 }
 
 
@@ -70,8 +74,8 @@ def get_parser():
     # Training/testing parameters
     ##############################################################
     parser.add_argument('--phase', '-ph', default='train_test', type=str,
-        choices=['pre-process', 'trajectory_cache', 'train', 'test',
-                 'train_test', 'goal_pretrain'],
+        choices=['pre-process', 'trajectory_cache', 'build-jdv2-cache',
+                 'train', 'test', 'train_test', 'goal_pretrain'],
         help='Phase selection. During test phase you need to load a pre-trained model')
     parser.add_argument('--load_checkpoint', '-lc', default=None, type=str,
         help="Load pre-trained model for testing or resume training. Specify "
@@ -132,10 +136,39 @@ def get_parser():
     parser.add_argument(
         '--goal_model_type', default='independent',
         type=normalize_goal_model_type,
-        choices=['independent', 'social', 'lowrank', 'energy', 'joint'],
+        choices=['independent', 'social', 'lowrank', 'energy', 'joint',
+                 'joint_dependency_v2'],
         help=("Goal ablation: independent (GDTS-Base), social "
               "(Social-GDTS), lowrank (LR-Goal), energy "
               "(Sparse-Energy), or joint (Full-Joint)."))
+    parser.add_argument('--use_scene_latent', default=True, type=str2bool,
+                        const=True, nargs='?')
+    parser.add_argument('--use_dynamic_relation', default=True, type=str2bool,
+                        const=True, nargs='?')
+    parser.add_argument('--use_joint_energy', default=True, type=str2bool,
+                        const=True, nargs='?')
+    parser.add_argument('--use_dependency_corrector', default=True,
+                        type=str2bool, const=True, nargs='?')
+    parser.add_argument('--jdv2_active', default=None, type=str2bool,
+                        help=argparse.SUPPRESS)
+    parser.add_argument('--jdv2_scene_modes', default=4, type=int)
+    parser.add_argument('--jdv2_relation_modes', default=4, type=int)
+    parser.add_argument('--jdv2_energy_rank', default=8, type=int)
+    parser.add_argument('--jdv2_edge_chunk_size', default=256, type=int)
+    parser.add_argument('--jdv2_minimum_active_mode', default=False,
+                        type=str2bool, const=True, nargs='?')
+    parser.add_argument('--jdv2_cache_root', default=None)
+    parser.add_argument('--jdv2_cache_schema', default='jdv2-cache-v1')
+    parser.add_argument('--jdv2_source_checkpoint', default=None)
+    parser.add_argument('--jdv2_cache_manifest_hash', default=None)
+    parser.add_argument('--jdv2_source_checkpoint_hash', default=None)
+    parser.add_argument('--jdv2_stage_progress', default=0.0, type=float)
+    parser.add_argument('--lambda_JG', default=1.0, type=float)
+    parser.add_argument('--lambda_relative', default=0.05, type=float)
+    parser.add_argument('--amp_enabled', default=False, type=str2bool,
+                        const=True, nargs='?')
+    parser.add_argument('--amp_dtype', default='fp32',
+                        choices=['fp32', 'fp16', 'bf16'])
     parser.add_argument(
         '--use_social_encoder', default=True, type=str2bool, const=True,
         nargs='?', help='Use sparse social message passing after temporal encoding.')
@@ -237,7 +270,8 @@ def get_parser():
     parser.add_argument(
         '--training_stage', default='finetune', type=str,
         choices=['baseline', 'joint', 'finetune', 'alignment',
-                 'multiway_coupling'],
+                 'multiway_coupling', 'joint_goal', 'joint_trajectory',
+                 'joint_finetune'],
         help=('baseline reproduces GDTS; joint freezes GDTS; finetune trains '
               'all modules; alignment freezes the trajectory generator and '
               'trains the reference-centric V3 aligner; multiway_coupling '
@@ -509,6 +543,9 @@ def check_and_add_additional_args(args):
     Add default paths, device and other additional args to parsed args
     """
     args.goal_model_type = normalize_goal_model_type(args.goal_model_type)
+    args.jdv2_active = bool(
+        args.use_scene_latent or args.use_dynamic_relation or
+        args.use_joint_energy or args.use_dependency_corrector)
     if (args.run_name is not None and
             re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*', args.run_name) is None):
         raise ValueError(
@@ -550,6 +587,10 @@ def check_and_add_additional_args(args):
         'max_agents_per_pack': (args.max_agents_per_pack, 1),
         'max_edges_per_pack': (args.max_edges_per_pack, 0),
         'max_scenes_per_pack': (args.max_scenes_per_pack, 1),
+        'jdv2_scene_modes': (args.jdv2_scene_modes, 1),
+        'jdv2_relation_modes': (args.jdv2_relation_modes, 1),
+        'jdv2_energy_rank': (args.jdv2_energy_rank, 1),
+        'jdv2_edge_chunk_size': (args.jdv2_edge_chunk_size, 1),
     }
     invalid_integers = [
         name for name, (value, minimum) in integer_minimums.items()
@@ -568,7 +609,11 @@ def check_and_add_additional_args(args):
         raise ValueError('learning_rate must be positive and clip non-negative')
     if args.save_every is not None and args.save_every <= 0:
         raise ValueError('save_every must be positive when specified')
-    if args.goal_model_type != 'independent' and args.data_augmentation:
+    needs_synchronized_scene = (
+        args.goal_model_type != 'independent' and not (
+            args.goal_model_type == 'joint_dependency_v2' and
+            not args.jdv2_active))
+    if needs_synchronized_scene and args.data_augmentation:
         # Legacy pixel-space augmentation does not update a scene's metric
         # homography. Using it for TTC/energy/metric losses would silently mix
         # transformed pixels with the original world-coordinate calibration.
@@ -612,6 +657,8 @@ def check_and_add_additional_args(args):
         'lambda_PL': args.lambda_PL,
         'lambda_joint_rank': args.lambda_joint_rank,
         'lambda_diff': args.lambda_diff,
+        'lambda_JG': args.lambda_JG,
+        'lambda_relative': args.lambda_relative,
         'lambda_relation_entropy': args.lambda_relation_entropy,
         'lambda_relation_balance': args.lambda_relation_balance,
         'lambda_mode_balance': args.lambda_mode_balance,
@@ -645,6 +692,57 @@ def check_and_add_additional_args(args):
         raise ValueError(
             'These weights must be non-negative: ' +
             ', '.join(invalid_nonnegative))
+    if not 0.0 <= args.jdv2_stage_progress <= 1.0:
+        raise ValueError('jdv2_stage_progress must lie in [0,1]')
+    if args.goal_model_type == 'joint_dependency_v2':
+        if args.jdv2_cache_schema != 'jdv2-cache-v1':
+            raise ValueError('Unsupported jdv2_cache_schema')
+        if (args.phase == 'build-jdv2-cache' and
+                args.training_stage not in {
+                    'joint_goal', 'joint_trajectory', 'joint_finetune'}):
+            args.training_stage = 'joint_goal'
+        frozen = {
+            'jdv2_scene_modes': (args.jdv2_scene_modes, 4),
+            'jdv2_relation_modes': (args.jdv2_relation_modes, 4),
+            'jdv2_energy_rank': (args.jdv2_energy_rank, 8),
+            'num_goal_candidates': (args.num_goal_candidates, 21),
+            'num_samples': (args.num_samples, 20),
+            'num_refinement_steps': (args.num_refinement_steps, 2),
+            'social_feature_dim': (args.social_feature_dim, 128),
+        }
+        invalid = [name for name, (value, expected) in frozen.items()
+                   if value != expected]
+        if invalid:
+            details = ', '.join(
+                f'{name}={frozen[name][0]} (required {frozen[name][1]})'
+                for name in invalid)
+            raise ValueError('Invalid frozen JDV2 dimensions: ' + details)
+        v2_stages = {'joint_goal', 'joint_trajectory', 'joint_finetune'}
+        if args.jdv2_active and args.training_stage not in v2_stages:
+            raise ValueError(
+                'Active joint_dependency_v2 requires training_stage in '
+                'joint_goal, joint_trajectory, joint_finetune')
+        if not args.jdv2_active and args.training_stage in v2_stages:
+            raise ValueError(
+                'JDV2 training stages are invalid when all four modules are '
+                'disabled; use legacy baseline semantics')
+        if args.phase == 'build-jdv2-cache' and not args.jdv2_active:
+            raise ValueError('build-jdv2-cache requires active JDV2 modules')
+        if args.adaptive_graph:
+            raise ValueError(
+                'Canonical JDV2 uses the parameter-free sparse proposal graph')
+        if (args.training_stage == 'joint_trajectory' and
+                not args.use_dependency_corrector):
+            raise ValueError(
+                'joint_trajectory requires use_dependency_corrector=True')
+    elif args.training_stage in {
+            'joint_goal', 'joint_trajectory', 'joint_finetune'}:
+        raise ValueError(
+            'JDV2 training stages require goal_model_type=joint_dependency_v2')
+    if args.amp_enabled and args.amp_dtype == 'fp32':
+        raise ValueError('amp_enabled requires amp_dtype=fp16 or bf16')
+    if not args.amp_enabled and args.amp_dtype != 'fp32':
+        raise ValueError('amp_dtype requires amp_enabled=True')
     positive_lr_scales = {
         'baseline_lr_scale': args.baseline_lr_scale,
         'structured_lr_scale': args.structured_lr_scale,
@@ -768,7 +866,9 @@ def check_and_add_additional_args(args):
 
     if args.joint_goal_enabled is None:
         args.joint_goal_enabled = args.goal_model_type in {
-            'lowrank', 'energy', 'joint'}
+            'lowrank', 'energy', 'joint'} or (
+                args.goal_model_type == 'joint_dependency_v2' and
+                args.jdv2_active)
     if args.goal_model_type == 'independent' and args.joint_goal_enabled:
         raise ValueError(
             'joint_goal_enabled=True requires a non-independent goal model')
@@ -781,6 +881,8 @@ def check_and_add_additional_args(args):
         raise ValueError(
             'training_stage=alignment requires a social goal_model_type')
     if (args.goal_model_type != 'independent' and
+            not (args.goal_model_type == 'joint_dependency_v2' and
+                 not args.jdv2_active) and
             args.training_stage == 'baseline'):
         raise ValueError(
             'training_stage=baseline is reserved for goal_model_type='
@@ -829,7 +931,10 @@ def check_and_add_additional_args(args):
         args.start_validation = 0
     # set directories
     args.base_dir = '.'  # base directory
-    args.save_base_dir = 'output'  # for saving output and models
+    args.save_base_dir = (
+        os.path.join('outputs', 'joint_dependency_v2')
+        if args.goal_model_type == 'joint_dependency_v2' and args.jdv2_active
+        else 'output')
     args.save_dir = os.path.join(
         args.base_dir, args.save_base_dir, str(args.test_set))
     # Preserve the exact legacy output path for GDTS-Base while isolating all
