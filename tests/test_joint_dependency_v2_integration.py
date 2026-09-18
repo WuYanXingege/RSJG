@@ -1,12 +1,16 @@
 import importlib
+import random
 import sys
 from types import ModuleType, SimpleNamespace
 
+import numpy as np
 import pytest
 import torch
 from torch import nn
 
 from src import parser as parser_module
+from src.jdv2_audit import summarize_repeated_metrics
+from src.utils import isolated_random_seed
 
 
 class _IdentityScene:
@@ -138,7 +142,7 @@ def test_stage_a_integrated_loss_and_gradient(tmp_path, model_module):
     inputs, sequence = _inputs()
     losses = model.get_loss(inputs, sequence)
     assert set(losses) == {
-        "jdv2_pl_post", "jdv2_pl_prior", "jdv2_scene_kl",
+        "jdv2_mixture_pl", "jdv2_posterior_distill",
         "jdv2_relation_kl"}
     total = sum(model.set_losses_coeffs()[name] * value
                 for name, value in losses.items())
@@ -151,9 +155,10 @@ def test_stage_a_integrated_loss_and_gradient(tmp_path, model_module):
                    for parameter in module.parameters())
     diagnostics = model.last_joint_diagnostics
     required = {
-        "L_PL_post", "L_PL_prior", "L_z", "L_r", "L_JG",
+        "L_mix", "L_q", "L_PL_post", "L_PL_prior", "L_r", "L_JG",
         "mean_KL_z", "mean_KL_r", "energy_mean", "energy_std",
-        "energy_min", "energy_max", "q_z_prior_l1",
+        "energy_min", "energy_max", "q_z_prior_l1", "KL_gamma_q",
+        "between_z_log_score_variance_e_gt0",
     }
     assert required <= diagnostics.keys()
     assert all(torch.isfinite(torch.tensor(diagnostics[name]))
@@ -161,6 +166,8 @@ def test_stage_a_integrated_loss_and_gradient(tmp_path, model_module):
     assert sum(diagnostics[f"p_z_mean_{index}"]
                for index in range(4)) == pytest.approx(1.0, abs=1e-5)
     assert sum(diagnostics[f"q_z_mean_{index}"]
+               for index in range(4)) == pytest.approx(1.0, abs=1e-5)
+    assert sum(diagnostics[f"gamma_z_mean_{index}"]
                for index in range(4)) == pytest.approx(1.0, abs=1e-5)
     assert sum(diagnostics[f"predicted_relation_usage_{index}"]
                for index in range(4)) == pytest.approx(1.0, abs=1e-5)
@@ -221,7 +228,7 @@ def test_stage_a_full_loss_gpu_autocast_keeps_fp32_reductions(
 
 
 @pytest.mark.parametrize("disabled,zero_loss", [
-    ("use_scene_latent", "jdv2_scene_kl"),
+    ("use_scene_latent", "jdv2_posterior_distill"),
     ("use_dynamic_relation", "jdv2_relation_kl"),
     ("use_joint_energy", None),
 ])
@@ -233,10 +240,8 @@ def test_stage_a_partial_ablation_contracts(
     losses = model.get_loss(*_inputs())
     assert all(torch.isfinite(value) for value in losses.values())
     if zero_loss is not None:
-        assert losses[zero_loss].item() == 0
-    if disabled == "use_joint_energy":
-        assert torch.allclose(
-            losses["jdv2_pl_post"], losses["jdv2_pl_prior"], atol=1e-6)
+        assert losses[zero_loss].item() == pytest.approx(0.0, abs=1e-6)
+    assert "jdv2_mixture_pl" in losses
 
 
 def test_stage_c_corrector_off_keeps_explicit_goal_objective(
@@ -246,7 +251,7 @@ def test_stage_c_corrector_off_keeps_explicit_goal_objective(
     model = model_module.GDTS(args, torch.device("cpu"))
     losses = model.get_loss(*_inputs())
     assert set(losses) == {
-        "jdv2_pl_post", "jdv2_pl_prior", "jdv2_scene_kl",
+        "jdv2_mixture_pl", "jdv2_posterior_distill",
         "jdv2_relation_kl"}
 
 
@@ -304,6 +309,7 @@ def test_legacy_checkpoint_allowlist_and_v2_resume_validation(
         "architecture_config": shell._jdv2_architecture_config(),
         "ablation_config": shell._jdv2_ablation_config(),
         "training_stage": "joint_goal",
+        "latent_objective": args.jdv2_latent_objective,
         "cache_manifest_hash": "cache-hash",
         "source_checkpoint_hash": "source-hash",
     }, v2_path)
@@ -317,3 +323,153 @@ def test_legacy_checkpoint_allowlist_and_v2_resume_validation(
     torch.save(incompatible, bad_path)
     with pytest.raises(RuntimeError, match="architecture mismatch"):
         shell._load_state_file(str(bad_path))
+
+
+def test_isolated_validation_rng_is_reproducible_and_restores_all_cpu_rngs():
+    random.seed(17)
+    np.random.seed(18)
+    torch.manual_seed(19)
+    python_state = random.getstate()
+    numpy_state = np.random.get_state()
+    torch_state = torch.get_rng_state()
+
+    with isolated_random_seed(2035, use_cuda=False):
+        first = (random.random(), np.random.rand(), torch.rand(4))
+    after = (random.random(), np.random.rand(), torch.rand(4))
+
+    random.setstate(python_state)
+    np.random.set_state(numpy_state)
+    torch.set_rng_state(torch_state)
+    expected_after = (random.random(), np.random.rand(), torch.rand(4))
+    assert after[0] == expected_after[0]
+    assert after[1] == expected_after[1]
+    assert torch.equal(after[2], expected_after[2])
+
+    with isolated_random_seed(2035, use_cuda=False):
+        second = (random.random(), np.random.rand(), torch.rand(4))
+    assert first[0] == second[0]
+    assert first[1] == second[1]
+    assert torch.equal(first[2], second[2])
+
+
+@pytest.mark.skipif(not torch.cuda.is_available(), reason="CUDA unavailable")
+def test_isolated_validation_rng_restores_all_cuda_rngs():
+    before = torch.cuda.get_rng_state_all()
+    with isolated_random_seed(2035, use_cuda=True):
+        first = torch.rand(4, device="cuda")
+    after = torch.cuda.get_rng_state_all()
+    assert all(torch.equal(left, right) for left, right in zip(before, after))
+    with isolated_random_seed(2035, use_cuda=True):
+        second = torch.rand(4, device="cuda")
+    assert torch.equal(first, second)
+
+
+def test_repeated_validation_summary_uses_population_mean_and_std():
+    summary = summarize_repeated_metrics([
+        {"JFDE": 1.0, "JADE": 2.0},
+        {"JFDE": 3.0, "JADE": 4.0},
+    ])
+    assert summary["JFDE"] == {"mean": 2.0, "std": 1.0}
+    assert summary["JADE"] == {"mean": 3.0, "std": 1.0}
+
+
+def test_checkpoint_persists_selection_tables_and_explicit_last(
+        tmp_path, model_module):
+    trainer_module = importlib.import_module("src.trainer")
+    args = _args(tmp_path, "joint_goal")
+    args.jdv2_cache_manifest_hash = "cache-hash"
+    args.jdv2_source_checkpoint_hash = "source-hash"
+    shell = trainer_module.trainer.__new__(trainer_module.trainer)
+    shell.args = args
+    shell.net = model_module.GDTS(args, torch.device("cpu"))
+    shell.scaler = torch.amp.GradScaler("cuda", enabled=False)
+    shell._best_selection = (0.7, 0.8)
+    shell._stage_optimizer_steps_completed = 123
+    shell.best_metrics = {"JADE": 0.4, "JFDE": 0.7}
+    shell.best_metrics_epochs = {"JADE": 10, "JFDE": 11}
+    shell._save_checkpoint(12, last_epoch=True)
+    checkpoint = torch.load(
+        tmp_path / "joint_goal" / "saved_models" / "last_model.pt",
+        map_location="cpu")
+    assert checkpoint["best_selection"] == {
+        "primary": 0.7, "tie_break": 0.8}
+    assert checkpoint["best_metrics"] == {"JADE": 0.4, "JFDE": 0.7}
+    assert checkpoint["best_metrics_epochs"] == {"JADE": 10, "JFDE": 11}
+    assert checkpoint["stage_optimizer_steps_completed"] == 123
+    assert checkpoint["latent_objective"] == "v2_marginal_responsibility"
+
+
+def test_early_collapse_gate_requires_joint_same_mode_signature():
+    trainer_module = importlib.import_module("src.trainer")
+    diagnostics = {
+        "p_entropy_e_gt0": 1e-5,
+        "q_entropy_e_gt0": 1e-5,
+        "gamma_entropy_e_gt0": 1e-5,
+        "future_shuffle_l1_e_gt0": 1e-9,
+    }
+    for family in ("p", "q", "gamma"):
+        for mode in range(4):
+            diagnostics[f"{family}_usage_{mode}_e_gt0"] = (
+                0.997 if mode == 1 else 0.001)
+    for mode in range(4):
+        diagnostics[f"gamma_hard_usage_{mode}_e_gt0"] = (
+            0.97 if mode == 1 else 0.01)
+    collapsed, evidence = \
+        trainer_module.trainer._jdv2_early_collapse_signature(diagnostics)
+    assert collapsed
+    assert evidence["dominant_modes"] == {"p": 1, "q": 1, "gamma": 1}
+    diagnostics["future_shuffle_l1_e_gt0"] = 1e-3
+    collapsed, _ = \
+        trainer_module.trainer._jdv2_early_collapse_signature(diagnostics)
+    assert not collapsed
+
+
+def test_old_checkpoint_restores_selection_and_reconstructs_metric_tables(
+        tmp_path):
+    trainer_module = importlib.import_module("src.trainer")
+    curve = tmp_path / "log_curve.txt"
+    curve.write_text(
+        "epoch,valid_JADE,valid_JFDE\n"
+        "1,0.6,0.9\n"
+        "11,0.4,0.7\n"
+        "12,0.5,0.8\n")
+    shell = trainer_module.trainer.__new__(trainer_module.trainer)
+    shell.log_curve_file = str(curve)
+    shell.best_metrics = {"JADE": 1e9, "JFDE": 1e9}
+    shell.best_metrics_epochs = {"JADE": -1, "JFDE": -1}
+    shell._best_selection = (float("inf"), float("inf"))
+    shell._restore_best_state({
+        "epoch": 11,
+        "best_metric": {"primary": 0.7, "tie_break": 0.4},
+    })
+    assert shell._best_selection == (0.7, 0.4)
+    assert shell.best_metrics == {"JADE": 0.4, "JFDE": 0.7}
+    assert shell.best_metrics_epochs == {"JADE": 11, "JFDE": 11}
+    assert not shell._selection_is_better((0.8, 0.3), shell._best_selection)
+
+
+def test_cross_stage_load_resets_epoch_and_progress_while_same_stage_resumes():
+    trainer_module = importlib.import_module("src.trainer")
+    shell = trainer_module.trainer.__new__(trainer_module.trainer)
+    shell.args = SimpleNamespace(
+        load_checkpoint="best", training_stage="joint_trajectory",
+        jdv2_stage_progress=0.75)
+    shell._pending_training_state = {
+        "training_stage": "joint_goal", "stage_progress": 0.25}
+    shell._load_checkpoint = lambda _: 11
+    shell.curve_metric_names = []
+    shell.curve_loss_names = []
+    assert shell._load_or_restart() == 1
+    assert shell.args.jdv2_stage_progress == 0.0
+
+    shell.args.training_stage = "joint_goal"
+    shell.args.jdv2_stage_progress = 0.25
+    shell._pending_training_state = {
+        "training_stage": "joint_goal", "stage_progress": 0.25}
+    assert shell._load_or_restart() == 12
+    assert shell.args.jdv2_stage_progress == 0.25
+
+
+def test_validation_seed_defaults_to_training_seed(tmp_path):
+    args = _args(tmp_path)
+    assert args.validation_seed == args.seed

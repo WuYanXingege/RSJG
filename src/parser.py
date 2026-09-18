@@ -163,6 +163,17 @@ def get_parser():
     parser.add_argument('--jdv2_cache_manifest_hash', default=None)
     parser.add_argument('--jdv2_source_checkpoint_hash', default=None)
     parser.add_argument('--jdv2_stage_progress', default=0.0, type=float)
+    parser.add_argument(
+        '--jdv2_latent_objective',
+        default='v2_marginal_responsibility',
+        choices=['v2_marginal_responsibility'],
+        help=('Frozen Stage-A latent objective version stored in JDV2 '
+              'checkpoints.'))
+    parser.add_argument(
+        '--jdv2_early_collapse_gate', default=True, type=str2bool,
+        const=True, nargs='?',
+        help=('Stop Stage-A V2 after two consecutive early E>0 collapse '
+              'diagnostics; this never changes the objective.'))
     parser.add_argument('--lambda_JG', default=1.0, type=float)
     parser.add_argument('--lambda_relative', default=0.05, type=float)
     parser.add_argument('--amp_enabled', default=False, type=str2bool,
@@ -487,6 +498,10 @@ def get_parser():
     parser.add_argument(
         '--seed', default=2025, type=int, help="Random seed for reproducibility")
     parser.add_argument(
+        '--validation_seed', default=None, type=int,
+        help=('Fixed seed for an isolated stochastic validation stream. '
+              'Defaults to --seed and does not alter deployed-policy sampling.'))
+    parser.add_argument(
         '--pretrain_path', default=None, help="Path to the pre-trained model checkpoint")
     # parser.add_argument(
     #     '--if_plot', default=False, type=str2bool, const=True, nargs='?', help="Set to True to plot the results")
@@ -543,6 +558,8 @@ def check_and_add_additional_args(args):
     Add default paths, device and other additional args to parsed args
     """
     args.goal_model_type = normalize_goal_model_type(args.goal_model_type)
+    if args.validation_seed is None:
+        args.validation_seed = args.seed
     args.jdv2_active = bool(
         args.use_scene_latent or args.use_dynamic_relation or
         args.use_joint_energy or args.use_dependency_corrector)
@@ -561,6 +578,7 @@ def check_and_add_additional_args(args):
         'start_validation': (args.start_validation, 0),
         'early_stopping_patience': (args.early_stopping_patience, 0),
         'num_test_runs': (args.num_test_runs, 1),
+        'validation_seed': (args.validation_seed, 0),
         'ddpm_step': (args.ddpm_step, 1),
         'ddim_step': (args.ddim_step, 1),
         'trunk_stage_step': (args.trunk_stage_step, 0),
@@ -697,6 +715,8 @@ def check_and_add_additional_args(args):
     if args.goal_model_type == 'joint_dependency_v2':
         if args.jdv2_cache_schema != 'jdv2-cache-v1':
             raise ValueError('Unsupported jdv2_cache_schema')
+        if args.jdv2_latent_objective != 'v2_marginal_responsibility':
+            raise ValueError('Unsupported JDV2 latent objective')
         if (args.phase == 'build-jdv2-cache' and
                 args.training_stage not in {
                     'joint_goal', 'joint_trajectory', 'joint_finetune'}):

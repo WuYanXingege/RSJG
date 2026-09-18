@@ -53,7 +53,7 @@ class SceneFutureTeacher(nn.Module):
         self.future_projection = nn.Sequential(nn.Linear(4, 64), nn.SiLU())
         self.future_gru = nn.GRU(64, 128, batch_first=True)
         self.posterior_head = nn.Sequential(
-            nn.Linear(256, 128), nn.SiLU(), nn.LayerNorm(128),
+            nn.Linear(128, 128), nn.SiLU(), nn.LayerNorm(128),
             nn.Linear(128, 4))
         self.relation_teacher = nn.Sequential(
             nn.Linear(6, 64), nn.SiLU(), nn.Linear(64, 64), nn.SiLU(),
@@ -77,7 +77,7 @@ class SceneFutureTeacher(nn.Module):
         future_position: torch.Tensor,
         future_velocity: torch.Tensor,
         last_position: torch.Tensor,
-        history_scene: torch.Tensor,
+        prior_logits: torch.Tensor,
         scene_index: Optional[torch.Tensor],
     ) -> Dict[str, torch.Tensor]:
         """Encode exact future inputs and return posterior tensors ``[C,4]``."""
@@ -88,8 +88,8 @@ class SceneFutureTeacher(nn.Module):
             raise ValueError("last_position must be [N,2]")
         scene_ids, compact = canonicalize_scene_index(
             scene_index, future_position.shape[0], future_position.device)
-        if history_scene.shape != (scene_ids.numel(), 128):
-            raise ValueError("history_scene must have shape [C,128]")
+        if prior_logits.shape != (scene_ids.numel(), 4):
+            raise ValueError("prior_logits must have shape [C,4]")
         future_input = torch.cat((
             future_position - last_position[:, None], future_velocity), dim=-1)
         projected = self.future_projection(future_input)
@@ -97,12 +97,38 @@ class SceneFutureTeacher(nn.Module):
         future_agent = hidden[-1]
         future_scene = self._scene_mean(
             future_agent, compact, scene_ids.numel())
-        logits = self.posterior_head(
-            torch.cat((history_scene, future_scene), dim=-1))
-        log_prob = F.log_softmax(logits.float(), dim=-1)
-        return {
+        posterior = self.posterior_from_future_scene(
+            future_scene, prior_logits)
+        posterior.update({
             "future_agent": future_agent,
             "future_scene": future_scene,
+        })
+        return posterior
+
+    def posterior_from_future_scene(
+        self,
+        future_scene: torch.Tensor,
+        prior_logits: torch.Tensor,
+    ) -> Dict[str, torch.Tensor]:
+        """Combine detached history prior with future-only evidence.
+
+        This is the only route into ``q_phi``.  In particular, trainable
+        history features are not concatenated into the evidence head, and
+        posterior distillation cannot update the prior through this branch.
+        """
+        if future_scene.ndim != 2 or future_scene.shape[1] != 128:
+            raise ValueError("future_scene must have shape [C,128]")
+        if prior_logits.shape != (future_scene.shape[0], 4):
+            raise ValueError("prior_logits must have shape [C,4]")
+        evidence_logits = self.posterior_head(future_scene)
+        centered_evidence_logits = evidence_logits - \
+            evidence_logits.mean(dim=-1, keepdim=True)
+        logits = prior_logits.detach().float() + \
+            centered_evidence_logits.float()
+        log_prob = F.log_softmax(logits.float(), dim=-1)
+        return {
+            "evidence_logits": evidence_logits,
+            "centered_evidence_logits": centered_evidence_logits,
             "logits": logits,
             "log_prob": log_prob,
             "prob": log_prob.exp(),

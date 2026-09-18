@@ -9,6 +9,7 @@ import math
 import random
 import argparse
 import datetime
+from contextlib import contextmanager
 
 import numpy
 import torch
@@ -187,6 +188,35 @@ def set_seed(seed_value, use_cuda: bool = True):
         torch.cuda.manual_seed(seed_value)
         torch.backends.cudnn.deterministic = True
         torch.backends.cudnn.benchmark = False
+
+
+@contextmanager
+def isolated_random_seed(seed_value, use_cuda: bool = True):
+    """Run a block with a reproducible RNG stream, then restore all RNGs.
+
+    Validation must not consume the training process' Python, NumPy, CPU
+    Torch, or CUDA random streams.  The context also restores cuDNN flags so
+    callers observe exactly the same process state after evaluation, including
+    when evaluation raises an exception.
+    """
+    python_state = random.getstate()
+    numpy_state = numpy.random.get_state()
+    torch_state = torch.get_rng_state()
+    cuda_available = bool(use_cuda and torch.cuda.is_available())
+    cuda_states = torch.cuda.get_rng_state_all() if cuda_available else None
+    cudnn_deterministic = torch.backends.cudnn.deterministic
+    cudnn_benchmark = torch.backends.cudnn.benchmark
+    try:
+        set_seed(int(seed_value), use_cuda=cuda_available)
+        yield
+    finally:
+        random.setstate(python_state)
+        numpy.random.set_state(numpy_state)
+        torch.set_rng_state(torch_state)
+        if cuda_states is not None:
+            torch.cuda.set_rng_state_all(cuda_states)
+        torch.backends.cudnn.deterministic = cudnn_deterministic
+        torch.backends.cudnn.benchmark = cudnn_benchmark
 
 
 def find_trainable_layers(model, verbose=False):

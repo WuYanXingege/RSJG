@@ -611,6 +611,103 @@ def scene_balanced_mean(
     return (total / count.clamp_min(1)).mean()
 
 
+def jdv2_scene_mode_log_score(
+        unary_score: torch.Tensor,
+        soft_goal_target: torch.Tensor,
+        scene_index: torch.Tensor,
+        local_energy: torch.Tensor,
+) -> torch.Tensor:
+    """Return the scene-balanced composite log-score ``[C,Z]``.
+
+    The score is the agent mean of the soft-target conditional goal
+    log-probability for each enumerated scene mode.  It is deliberately a
+    geometric-mean composite score rather than an exact ``K**N`` likelihood.
+    All probability and reduction operations are FP32 islands.
+    """
+    if unary_score.ndim != 2:
+        raise ValueError("unary_score must have shape [N,K]")
+    num_agents, num_candidates = unary_score.shape
+    if local_energy.ndim != 3 or local_energy.shape[0] != num_agents or \
+            local_energy.shape[2] != num_candidates:
+        raise ValueError("local_energy must have shape [N,Z,K]")
+    target = _normalize_soft_target(soft_goal_target.float())
+    if target.shape != (num_agents, num_candidates):
+        raise ValueError("soft_goal_target must have shape [N,K]")
+    _, compact = canonicalize_scene_index(
+        scene_index, num_agents, unary_score.device)
+    scene_count = int(compact.max().item()) + 1
+    mode_count = local_energy.shape[1]
+    with torch.autocast(device_type=unary_score.device.type, enabled=False):
+        conditional_log_prob = F.log_softmax(
+            unary_score.float()[:, None, :] - local_energy.float(), dim=-1)
+        # Avoid undefined 0 * -inf products for masked candidates.
+        weighted = torch.where(
+            target[:, None, :] > 0,
+            target[:, None, :] * conditional_log_prob,
+            torch.zeros_like(conditional_log_prob))
+        per_agent_mode_log_score = weighted.sum(dim=-1)       # [N,Z]
+        scene_mode_log_score = unary_score.new_zeros(
+            (scene_count, mode_count), dtype=torch.float32)
+        scene_mode_log_score.index_add_(
+            0, compact, per_agent_mode_log_score.float())
+        count = torch.bincount(compact, minlength=scene_count).to(
+            device=unary_score.device, dtype=torch.float32)
+        scene_mode_log_score = scene_mode_log_score / \
+            count.clamp_min(1.0).unsqueeze(-1)
+    return scene_mode_log_score
+
+
+def jdv2_mixture_composite_loss(
+        prior_log_prob: torch.Tensor,
+        post_log_score: torch.Tensor,
+        prior_log_score: torch.Tensor,
+) -> Dict[str, torch.Tensor]:
+    """Marginalize one shared scene mode across the two composite paths.
+
+    Returns the scalar mixture NLL, non-detached responsibility and the
+    underlying per-scene tensors.  Callers must detach ``responsibility``
+    whenever it is used as an auxiliary teacher or relation-loss weight.
+    """
+    if prior_log_prob.ndim != 2 or \
+            post_log_score.shape != prior_log_prob.shape or \
+            prior_log_score.shape != prior_log_prob.shape:
+        raise ValueError("prior and mode scores must share shape [C,Z]")
+    with torch.autocast(
+            device_type=prior_log_prob.device.type, enabled=False):
+        log_p = F.log_softmax(prior_log_prob.float(), dim=-1)
+        combined_log_score = 0.5 * (
+            post_log_score.float() + prior_log_score.float())
+        joint_log_score = log_p + combined_log_score
+        log_marginal = torch.logsumexp(joint_log_score, dim=-1)
+        responsibility = F.softmax(joint_log_score, dim=-1)
+        per_scene_nll = -log_marginal
+    return {
+        "loss": per_scene_nll.mean(),
+        "per_scene_nll": per_scene_nll,
+        "combined_log_score": combined_log_score,
+        "responsibility": responsibility,
+    }
+
+
+def jdv2_posterior_distillation(
+        responsibility: torch.Tensor,
+        posterior_log_prob: torch.Tensor,
+        reduction: str = "mean",
+) -> torch.Tensor:
+    """Forward ``KL(stopgrad(gamma) || q_phi)`` in FP32."""
+    if responsibility.ndim != 2 or \
+            posterior_log_prob.shape != responsibility.shape:
+        raise ValueError("responsibility and posterior must share shape [C,Z]")
+    with torch.autocast(
+            device_type=responsibility.device.type, enabled=False):
+        gamma = responsibility.detach().float()
+        gamma = gamma / gamma.sum(dim=-1, keepdim=True).clamp_min(1e-12)
+        q_log = F.log_softmax(posterior_log_prob.float(), dim=-1)
+        gamma_log = gamma.clamp_min(1e-12).log()
+        per_scene = (gamma * (gamma_log - q_log)).sum(dim=-1)
+    return _reduce_loss(per_scene, reduction)
+
+
 def jdv2_pseudo_likelihood(
         unary_score: torch.Tensor,
         soft_goal_target: torch.Tensor,
@@ -677,15 +774,13 @@ def jdv2_scene_kl(
         return (q_log.exp() * (q_log - p_log)).sum(dim=-1).mean()
 
 
-def jdv2_relation_kl(
+def jdv2_relation_kl_per_edge_mode(
         teacher_relation_log_prob: torch.Tensor,
         deployable_relation_log_prob: torch.Tensor,
-        scene_posterior_probability: torch.Tensor,
         soft_goal_target: torch.Tensor,
         edge_index: torch.Tensor,
-        scene_index: torch.Tensor,
 ) -> torch.Tensor:
-    """Exact soft-target relation distillation from the frozen specification."""
+    """Return candidate-averaged relation KL for every edge/mode ``[E,Z]``."""
     edge_count = edge_index.shape[1]
     if teacher_relation_log_prob.shape != (edge_count, 4):
         raise ValueError("teacher relation must have shape [E,4]")
@@ -694,12 +789,10 @@ def jdv2_relation_kl(
             deployable_relation_log_prob.shape[-1] != 4:
         raise ValueError("deployable relation must have shape [E,Z,K,K,4]")
     if edge_count == 0:
-        return deployable_relation_log_prob.sum() * 0.0
+        return deployable_relation_log_prob.new_empty(
+            (0, deployable_relation_log_prob.shape[1]), dtype=torch.float32)
     target = _normalize_soft_target(soft_goal_target.float())
-    _, compact = canonicalize_scene_index(
-        scene_index, target.shape[0], target.device)
     src, dst = edge_index.long()
-    edge_scene = compact[src]
     with torch.autocast(
             device_type=teacher_relation_log_prob.device.type,
             enabled=False):
@@ -711,9 +804,38 @@ def jdv2_relation_kl(
             q_log[:, None, None, None, :] - p_log), dim=-1)
         weighted_candidate = torch.einsum(
             "ek,el,ezkl->ez", target[src], target[dst], kl)
-        qz = scene_posterior_probability.float()
-        qz = qz / qz.sum(dim=-1, keepdim=True).clamp_min(1e-12)
-        return (weighted_candidate * qz[edge_scene]).sum(dim=-1).mean()
+    return weighted_candidate
+
+
+def jdv2_relation_kl(
+        teacher_relation_log_prob: torch.Tensor,
+        deployable_relation_log_prob: torch.Tensor,
+        scene_mode_weight: torch.Tensor,
+        soft_goal_target: torch.Tensor,
+        edge_index: torch.Tensor,
+        scene_index: torch.Tensor,
+) -> torch.Tensor:
+    """Relation distillation weighted by detached mixture responsibility."""
+    weighted_candidate = jdv2_relation_kl_per_edge_mode(
+        teacher_relation_log_prob, deployable_relation_log_prob,
+        soft_goal_target, edge_index)
+    edge_count = edge_index.shape[1]
+    if edge_count == 0:
+        return deployable_relation_log_prob.sum() * 0.0
+    _, compact = canonicalize_scene_index(
+        scene_index, soft_goal_target.shape[0], soft_goal_target.device)
+    edge_scene = compact[edge_index.long()[0]]
+    with torch.autocast(
+            device_type=teacher_relation_log_prob.device.type,
+            enabled=False):
+        # Auxiliary relation distillation may not train the scene prior,
+        # component scores, or future posterior through its mode weights.
+        gamma = scene_mode_weight.detach().float()
+        if gamma.ndim != 2 or gamma.shape[1] != weighted_candidate.shape[1] or \
+                gamma.shape[0] <= int(edge_scene.max().item()):
+            raise ValueError("scene_mode_weight must have shape [C,Z]")
+        gamma = gamma / gamma.sum(dim=-1, keepdim=True).clamp_min(1e-12)
+        return (weighted_candidate * gamma[edge_scene]).sum(dim=-1).mean()
 
 
 def jdv2_warmup_beta(stage_progress: float) -> float:

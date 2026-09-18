@@ -64,8 +64,10 @@ from src.joint_goal_loss import (
     marginal_goal_log_prob,
     pseudo_likelihood_loss,
     scene_joint_ranking_loss,
-    jdv2_relation_kl,
-    jdv2_scene_kl,
+    jdv2_mixture_composite_loss,
+    jdv2_posterior_distillation,
+    jdv2_relation_kl_per_edge_mode,
+    jdv2_scene_mode_log_score,
     jdv2_teacher_probability,
     jdv2_warmup_beta,
     scene_balanced_mean,
@@ -746,7 +748,7 @@ class GDTS(torch.nn.Module):
             if self.args.use_scene_latent:
                 scene_posterior = self.jdv2_future_teacher.scene_posterior(
                     future_position, future_velocity, obs_world[:, -1],
-                    scene_prior['history_scene'], scene_index)
+                    scene_prior['logits'], scene_index)
             else:
                 scene_posterior = {
                     'logits': scene_prior['logits'],
@@ -1249,14 +1251,16 @@ class GDTS(torch.nn.Module):
             stage = self.args.training_stage
             if stage == 'joint_goal':
                 return {
-                    'jdv2_pl_post': 0, 'jdv2_pl_prior': 0,
-                    'jdv2_scene_kl': 0, 'jdv2_relation_kl': 0}
+                    'jdv2_mixture_pl': 0,
+                    'jdv2_posterior_distill': 0,
+                    'jdv2_relation_kl': 0}
             if stage == 'joint_trajectory':
                 return {'jdv2_diffusion_loss': 0,
                         'jdv2_relative_loss': 0}
             losses = {
-                'jdv2_pl_post': 0, 'jdv2_pl_prior': 0,
-                'jdv2_scene_kl': 0, 'jdv2_relation_kl': 0}
+                'jdv2_mixture_pl': 0,
+                'jdv2_posterior_distill': 0,
+                'jdv2_relation_kl': 0}
             if self.args.use_dependency_corrector:
                 losses.update({'jdv2_diffusion_loss': 0,
                                'jdv2_relative_loss': 0})
@@ -1335,9 +1339,8 @@ class GDTS(torch.nn.Module):
             coefficients = {}
             if self.args.training_stage in {'joint_goal', 'joint_finetune'}:
                 coefficients.update({
-                    'jdv2_pl_post': 0.5 * goal_scale,
-                    'jdv2_pl_prior': 0.5 * goal_scale,
-                    'jdv2_scene_kl': beta * goal_scale,
+                    'jdv2_mixture_pl': goal_scale,
+                    'jdv2_posterior_distill': beta * goal_scale,
                     'jdv2_relation_kl': beta * goal_scale,
                 })
             if self.args.training_stage in {
@@ -2555,7 +2558,7 @@ class GDTS(torch.nn.Module):
         return scene_balanced_mean(per_agent, compact)
 
     def _jdv2_goal_losses(self, inputs):
-        """Compute dual pseudo-likelihood and teacher distillation in chunks."""
+        """Compute the V2 marginalized composite objective in edge chunks."""
         _, structured = self.encode(inputs, if_test=False, for_loss=True)
         target = build_soft_goal_target(
             structured['goal_candidates_world'], inputs['world_coord'][-1],
@@ -2563,7 +2566,6 @@ class GDTS(torch.nn.Module):
             candidate_mask=structured['candidate_mask'])
         unary = structured['unary_score']
         pz = structured['scene_prior']['prob']
-        qz = structured['scene_posterior']['prob']
         pz_log = structured['scene_prior']['log_prob']
         qz_log = structured['scene_posterior']['log_prob']
         scene_index = inputs['scene_index']
@@ -2573,8 +2575,8 @@ class GDTS(torch.nn.Module):
             (num_agents, num_modes, num_candidates), dtype=torch.float32)
         local_post = torch.zeros_like(local_prior)
         edge_index = structured['edge_index']
-        relation_kl_sum = unary.float().sum() * 0.0
-        relation_kl_edges = 0
+        relation_kl_by_mode = []
+        relation_kl_edge_scene = []
         relation_usage_sum = unary.new_zeros(
             (self.args.jdv2_relation_modes,), dtype=torch.float32)
         relation_usage_count = 0
@@ -2661,42 +2663,157 @@ class GDTS(torch.nn.Module):
                     target[src].float()))
 
             if self.args.use_dynamic_relation:
-                chunk_kl = jdv2_relation_kl(
+                chunk_kl = jdv2_relation_kl_per_edge_mode(
                     structured['relation_teacher']['log_prob'][start:stop],
-                    full_relation['log_prob'], qz, target, chunk_edge,
-                    scene_index)
-                relation_kl_sum = relation_kl_sum + \
-                    chunk_kl * float(stop - start)
-                relation_kl_edges += stop - start
+                    full_relation['log_prob'], target, chunk_edge)
+                relation_kl_by_mode.append(chunk_kl)
+                _, compact = canonicalize_scene_index(
+                    scene_index, num_agents, unary.device)
+                relation_kl_edge_scene.append(compact[chunk_edge[0].long()])
 
-        relation_kl = (
-            relation_kl_sum / float(relation_kl_edges)
-            if relation_kl_edges else relation_kl_sum)
-        scene_kl = (jdv2_scene_kl(qz_log, pz_log)
-                    if self.args.use_scene_latent
-                    else pz_log.sum() * 0.0)
+        log_score_prior = jdv2_scene_mode_log_score(
+            unary, target, scene_index, local_prior)
+        log_score_post = jdv2_scene_mode_log_score(
+            unary, target, scene_index, local_post)
+        mixture = jdv2_mixture_composite_loss(
+            pz_log, log_score_post, log_score_prior)
+        gamma = mixture['responsibility']
+        gamma_teacher = gamma.detach()
+        posterior_distill_per_scene = jdv2_posterior_distillation(
+            gamma_teacher, qz_log, reduction='none')
+        posterior_distill = posterior_distill_per_scene.mean()
+
+        if relation_kl_by_mode:
+            edge_mode_kl = torch.cat(relation_kl_by_mode, dim=0)
+            edge_scene = torch.cat(relation_kl_edge_scene, dim=0)
+            with torch.autocast(
+                    device_type=unary.device.type, enabled=False):
+                relation_kl = (
+                    edge_mode_kl.float() *
+                    gamma_teacher.float()[edge_scene]
+                ).sum(dim=-1).mean()
+        else:
+            relation_kl = unary.float().sum() * 0.0
+
         losses = {
-            'jdv2_pl_post': self._jdv2_pl_from_local(
-                unary, target, qz, scene_index, local_post),
-            'jdv2_pl_prior': self._jdv2_pl_from_local(
-                unary, target, pz, scene_index, local_prior),
-            'jdv2_scene_kl': scene_kl,
+            'jdv2_mixture_pl': mixture['loss'],
+            'jdv2_posterior_distill': posterior_distill,
             'jdv2_relation_kl': relation_kl,
         }
+        pl_post_diag = -(gamma_teacher * log_score_post.detach()).sum(
+            dim=-1).mean()
+        pl_prior_diag = -(gamma_teacher * log_score_prior.detach()).sum(
+            dim=-1).mean()
+        qz = qz_log.detach().float().exp()
+        pz_detached = pz.detach().float()
+        gamma_detached = gamma_teacher.float()
+        q_p_kl_per_scene = (
+            qz * (qz.clamp_min(1e-12).log() -
+                  pz_detached.clamp_min(1e-12).log())).sum(dim=-1)
+        gamma_q_kl_per_scene = posterior_distill_per_scene.detach().float()
         self.last_joint_diagnostics.update({
-            'L_PL_post': float(losses['jdv2_pl_post'].detach().cpu()),
-            'L_PL_prior': float(losses['jdv2_pl_prior'].detach().cpu()),
-            'L_z': float(scene_kl.detach().cpu()),
+            'L_mix': float(mixture['loss'].detach().cpu()),
+            'L_q': float(posterior_distill.detach().cpu()),
+            'L_PL_post': float(pl_post_diag.cpu()),
+            'L_PL_prior': float(pl_prior_diag.cpu()),
             'L_r': float(relation_kl.detach().cpu()),
+            'KL_gamma_q': float(gamma_q_kl_per_scene.mean().cpu()),
+            'diagnostic_KL_q_p': float(q_p_kl_per_scene.mean().cpu()),
+            'q_z_prior_l1': float(
+                (qz - pz_detached).abs().mean().cpu()),
         })
         coefficients = self.set_losses_coeffs()
         self.last_joint_diagnostics['L_JG'] = float(sum(
             coefficients[name] * value for name, value in losses.items()
         ).detach().cpu())
         self.last_joint_diagnostics['mean_KL_z'] = float(
-            scene_kl.detach().cpu())
+            q_p_kl_per_scene.mean().cpu())
         self.last_joint_diagnostics['mean_KL_r'] = float(
             relation_kl.detach().cpu())
+
+        # Read-only latent diagnostics, reported separately for scenes with
+        # and without sparse interaction edges.
+        _, compact = canonicalize_scene_index(
+            scene_index, num_agents, unary.device)
+        scene_count = pz.shape[0]
+        scene_edge_count = torch.zeros(
+            scene_count, dtype=torch.long, device=unary.device)
+        if edge_index.shape[1]:
+            scene_edge_count.index_add_(
+                0, compact[edge_index[0].long()],
+                torch.ones(edge_index.shape[1], dtype=torch.long,
+                           device=unary.device))
+        p_entropy = -(pz_detached * pz_detached.clamp_min(1e-12).log()).sum(-1)
+        q_entropy = -(qz * qz.clamp_min(1e-12).log()).sum(-1)
+        gamma_entropy = -(gamma_detached *
+                          gamma_detached.clamp_min(1e-12).log()).sum(-1)
+        score_variance = mixture['combined_log_score'].detach().float().var(
+            dim=-1, unbiased=False)
+        mean_abs_q_p = (qz - pz_detached).abs().mean(dim=-1)
+
+        # Reuse the future encoder for a no-gradient within-scene compatible
+        # shuffle. This changes only diagnostics, never the optimized loss.
+        with torch.no_grad():
+            future = inputs['world_coord'][self.args.obs_length:].permute(
+                1, 0, 2).contiguous().float()
+            shuffled = future.clone()
+            for scene_id in torch.unique(scene_index, sorted=True):
+                indices = torch.nonzero(
+                    scene_index.eq(scene_id), as_tuple=False).flatten()
+                if indices.numel() > 1:
+                    shuffled[indices] = future[indices.roll(1)]
+            anchor = inputs['obs_traj_world'][:, -1].float()
+            shuffled_velocity = torch.diff(
+                torch.cat((anchor[:, None], shuffled), dim=1), dim=1
+            ) / float(self.args.trajectory_dt)
+            if self.args.use_scene_latent:
+                shuffled_q = self.jdv2_future_teacher.scene_posterior(
+                    shuffled, shuffled_velocity, anchor,
+                    structured['scene_prior']['logits'], scene_index)['prob']
+                future_shuffle_l1 = (
+                    shuffled_q.float() - qz).abs().sum(dim=-1)
+            else:
+                future_shuffle_l1 = qz.new_zeros((scene_count,))
+
+        for label, mask in (
+                ('e_gt0', scene_edge_count > 0),
+                ('e_eq0', scene_edge_count == 0)):
+            count = int(mask.sum().item())
+            self.last_joint_diagnostics[f'scene_count_{label}'] = float(count)
+            if count == 0:
+                continue
+            diagnostics = {
+                f'L_mix_{label}': mixture['per_scene_nll'].detach()[mask].mean(),
+                f'L_q_{label}': posterior_distill_per_scene.detach()[mask].mean(),
+                f'p_entropy_{label}': p_entropy[mask].mean(),
+                f'q_entropy_{label}': q_entropy[mask].mean(),
+                f'gamma_entropy_{label}': gamma_entropy[mask].mean(),
+                f'between_z_log_score_variance_{label}':
+                    score_variance[mask].mean(),
+                f'KL_gamma_q_{label}': gamma_q_kl_per_scene[mask].mean(),
+                f'diagnostic_KL_q_p_{label}': q_p_kl_per_scene[mask].mean(),
+                f'mean_abs_q_p_{label}': mean_abs_q_p[mask].mean(),
+                f'future_shuffle_l1_{label}': future_shuffle_l1[mask].mean(),
+            }
+            for name, value in diagnostics.items():
+                self.last_joint_diagnostics[name] = float(value.cpu())
+            for name, probability in (
+                    ('p', pz_detached), ('q', qz),
+                    ('gamma', gamma_detached)):
+                usage = probability[mask].mean(dim=0)
+                hard = F.one_hot(
+                    probability[mask].argmax(dim=-1),
+                    num_classes=num_modes).float().mean(dim=0)
+                for index in range(num_modes):
+                    self.last_joint_diagnostics[
+                        f'{name}_usage_{index}_{label}'] = float(
+                            usage[index].cpu())
+                    self.last_joint_diagnostics[
+                        f'{name}_hard_usage_{index}_{label}'] = float(
+                            hard[index].cpu())
+        for index, value in enumerate(gamma_detached.mean(dim=0)):
+            self.last_joint_diagnostics[f'gamma_z_mean_{index}'] = float(
+                value.cpu())
         if relation_usage_count:
             relation_usage = relation_usage_sum / float(relation_usage_count)
         else:

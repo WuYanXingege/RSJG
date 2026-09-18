@@ -6,8 +6,11 @@ import torch
 
 from src.joint_goal_loss import (
     build_soft_goal_target,
+    jdv2_mixture_composite_loss,
+    jdv2_posterior_distillation,
     jdv2_pseudo_likelihood,
     jdv2_relation_kl,
+    jdv2_scene_mode_log_score,
     jdv2_scene_kl,
     jdv2_teacher_probability,
     jdv2_warmup_beta,
@@ -60,12 +63,15 @@ def test_future_teacher_shapes_finite_and_reversal_consistency():
     scene, edge, _, last, _, _, _ = _tiny()
     future = last[:, None] + torch.randn(4, 12, 2)
     velocity = torch.randn_like(future)
-    history_scene = torch.randn(2, 128)
+    prior_logits = torch.randn(2, 4, requires_grad=True)
     teacher = SceneFutureTeacher().eval()
     posterior = teacher.scene_posterior(
-        future, velocity, last, history_scene, scene)
+        future, velocity, last, prior_logits, scene)
     assert posterior["prob"].shape == (2, 4)
     assert torch.isfinite(posterior["prob"]).all()
+    posterior["prob"].square().sum().backward()
+    assert prior_logits.grad is None
+    assert teacher.posterior_head[0].in_features == 128
     descriptor = future_pair_descriptor(future, last, edge)
     relation = teacher.relation_posterior(descriptor)["prob"]
     reversed_edge = edge.flip(0)
@@ -172,6 +178,73 @@ def test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced():
     assert torch.allclose(loss, expected, atol=1e-6)
 
 
+def test_scene_mode_score_and_mixture_match_manual_enumeration():
+    torch.manual_seed(4)
+    scene = torch.tensor([0, 0, 0, 1])
+    unary = torch.randn(4, 3, requires_grad=True)
+    target = torch.softmax(torch.randn(4, 3), dim=-1)
+    local = torch.randn(4, 4, 3, requires_grad=True)
+    score = jdv2_scene_mode_log_score(unary, target, scene, local)
+    conditional = torch.log_softmax(unary[:, None] - local, dim=-1)
+    per_agent = (target[:, None] * conditional).sum(dim=-1)
+    expected = torch.stack((per_agent[:3].mean(0), per_agent[3:].mean(0)))
+    torch.testing.assert_close(score, expected)
+
+    prior_logits = torch.randn(2, 4, requires_grad=True)
+    post = score + 0.2
+    result = jdv2_mixture_composite_loss(prior_logits, post, score)
+    combined = 0.5 * (post + score)
+    expected_joint = torch.log_softmax(prior_logits, -1) + combined
+    torch.testing.assert_close(
+        result["loss"], -torch.logsumexp(expected_joint, -1).mean())
+    torch.testing.assert_close(
+        result["responsibility"], torch.softmax(expected_joint, -1))
+    assert result["responsibility"].shape == (2, 4)
+
+
+def test_mixture_and_posterior_distillation_gradient_ownership():
+    prior_logits = torch.tensor(
+        [[0.2, -0.1, 0.4, -0.3]], requires_grad=True)
+    post_score = torch.tensor(
+        [[-1.0, -0.2, -0.7, -1.3]], requires_grad=True)
+    prior_score = torch.tensor(
+        [[-0.8, -0.3, -0.9, -1.1]], requires_grad=True)
+    mixture = jdv2_mixture_composite_loss(
+        prior_logits, post_score, prior_score)
+    mixture["loss"].backward(retain_graph=True)
+    p = torch.softmax(prior_logits.detach(), -1)
+    gamma = mixture["responsibility"].detach()
+    torch.testing.assert_close(prior_logits.grad, p - gamma)
+    assert post_score.grad is not None and prior_score.grad is not None
+
+    prior_logits.grad = None
+    post_score.grad = None
+    prior_score.grad = None
+    q_logits = torch.randn(1, 4, requires_grad=True)
+    q_loss = jdv2_posterior_distillation(
+        mixture["responsibility"], q_logits)
+    q_loss.backward()
+    assert q_logits.grad is not None
+    assert prior_logits.grad is None
+    assert post_score.grad is None
+    assert prior_score.grad is None
+
+
+def test_future_posterior_uses_future_evidence_not_history_features():
+    teacher = SceneFutureTeacher().eval()
+    prior_logits = torch.randn(2, 4)
+    future_a = torch.randn(2, 128)
+    future_b = future_a.clone()
+    future_b[0] += 1.0
+    output_a = teacher.posterior_from_future_scene(future_a, prior_logits)
+    output_b = teacher.posterior_from_future_scene(future_b, prior_logits)
+    assert not torch.equal(output_a["prob"][0], output_b["prob"][0])
+    assert torch.equal(output_a["prob"][1], output_b["prob"][1])
+    torch.testing.assert_close(
+        output_a["centered_evidence_logits"].mean(-1),
+        torch.zeros(2), atol=1e-6, rtol=0)
+
+
 def test_relation_kl_and_scene_kl_are_finite_with_empty_edge():
     scene, _, _, _, goals, _, _ = _tiny()
     target = build_soft_goal_target(goals, goals[:, 0], sigma_goal=1.0)
@@ -184,6 +257,24 @@ def test_relation_kl_and_scene_kl_are_finite_with_empty_edge():
     loss = jdv2_relation_kl(qrel, prel, qz_log.exp(), target, edge, scene)
     assert loss.item() == 0
     assert loss.requires_grad
+
+
+def test_relation_kl_detaches_scene_responsibility_weight():
+    scene = torch.tensor([0, 0])
+    edge = torch.tensor([[0], [1]])
+    target = torch.softmax(torch.randn(2, 3), dim=-1)
+    teacher_log = torch.log_softmax(
+        torch.randn(1, 4, requires_grad=True), dim=-1)
+    deploy_logits = torch.randn(1, 4, 3, 3, 4, requires_grad=True)
+    deploy_log = torch.log_softmax(deploy_logits, dim=-1)
+    gamma = torch.softmax(
+        torch.randn(1, 4, requires_grad=True), dim=-1)
+    gamma.retain_grad()
+    loss = jdv2_relation_kl(
+        teacher_log, deploy_log, gamma, target, edge, scene)
+    loss.backward()
+    assert gamma.grad is None
+    assert deploy_logits.grad is not None
 
 
 def test_mode_allocation_and_sampler_joint_columns():

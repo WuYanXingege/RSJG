@@ -12,12 +12,16 @@ except ImportError:  # WandB is optional when --use_wandb False.
     wandb = None
 from src.data_loader import get_dataloader
 from src.metrics import compute_metric_mask
-from src.utils import add_dict_prefix, formatted_time, print_model_summary
+from src.utils import (
+    add_dict_prefix, formatted_time, isolated_random_seed,
+    print_model_summary,
+)
 from src.models.model import GDTS   
 from src.trajectory_bank_cache import (
     get_trajectory_bank_dataloader,
     pack_statistics,
 )
+from src.joint_dependency_v2_cache import load_cache_record
 
 
 V4_DIAGNOSTIC_NAMES = (
@@ -128,6 +132,7 @@ class trainer(object):
             'prediction_steps': self.args.pred_length,
             'energy_rank': self.args.jdv2_energy_rank,
             'agent_dim': self.args.social_feature_dim,
+            'latent_objective': self.args.jdv2_latent_objective,
         }
 
     def _jdv2_ablation_config(self):
@@ -165,14 +170,65 @@ class trainer(object):
             if not np.isfinite(value):
                 raise FloatingPointError(
                     f'Non-finite joint diagnostic {name}={value}')
-            sums[name] = sums.get(name, 0.0) + value
-            counts[name] = counts.get(name, 0) + 1
+            weight = 1.0
+            if name.endswith('_e_gt0') and name != 'scene_count_e_gt0':
+                weight = float(diagnostics.get('scene_count_e_gt0', 0.0))
+            elif name.endswith('_e_eq0') and name != 'scene_count_e_eq0':
+                weight = float(diagnostics.get('scene_count_e_eq0', 0.0))
+            if weight <= 0:
+                continue
+            sums[name] = sums.get(name, 0.0) + value * weight
+            counts[name] = counts.get(name, 0.0) + weight
 
     @staticmethod
     def _finalize_joint_diagnostics(sums, counts):
         return {
             name: sums[name] / counts[name]
             for name in sorted(sums) if counts.get(name, 0) > 0
+        }
+
+    @staticmethod
+    def _jdv2_early_collapse_signature(diagnostics):
+        """Return the locked E>0 collapse signature and supporting values."""
+        required = [
+            'p_entropy_e_gt0', 'q_entropy_e_gt0',
+            'gamma_entropy_e_gt0', 'future_shuffle_l1_e_gt0',
+        ]
+        for family in ('p', 'q', 'gamma'):
+            required.extend(
+                f'{family}_usage_{mode}_e_gt0' for mode in range(4))
+        required.extend(
+            f'gamma_hard_usage_{mode}_e_gt0' for mode in range(4))
+        if any(name not in diagnostics for name in required):
+            return False, {'reason': 'insufficient_e_gt0_diagnostics'}
+        usage = {
+            family: [diagnostics[f'{family}_usage_{mode}_e_gt0']
+                     for mode in range(4)]
+            for family in ('p', 'q', 'gamma')}
+        dominant = {family: int(np.argmax(values))
+                    for family, values in usage.items()}
+        same_mode = len(set(dominant.values())) == 1
+        mode = dominant['gamma']
+        signature = (
+            same_mode and
+            all(max(values) > 0.99 for values in usage.values()) and
+            diagnostics['p_entropy_e_gt0'] < 1e-3 and
+            diagnostics['q_entropy_e_gt0'] < 1e-3 and
+            diagnostics['gamma_entropy_e_gt0'] < 1e-3 and
+            diagnostics['future_shuffle_l1_e_gt0'] < 1e-6 and
+            diagnostics[f'gamma_hard_usage_{mode}_e_gt0'] >= 0.95)
+        return signature, {
+            'dominant_modes': dominant,
+            'maximum_soft_usage': {
+                family: float(max(values))
+                for family, values in usage.items()},
+            'p_entropy': float(diagnostics['p_entropy_e_gt0']),
+            'q_entropy': float(diagnostics['q_entropy_e_gt0']),
+            'gamma_entropy': float(diagnostics['gamma_entropy_e_gt0']),
+            'future_shuffle_l1': float(
+                diagnostics['future_shuffle_l1_e_gt0']),
+            'gamma_dominant_hard_usage': float(
+                diagnostics[f'gamma_hard_usage_{mode}_e_gt0']),
         }
 
     def _write_jdv2_epoch_diagnostics(
@@ -253,6 +309,8 @@ class trainer(object):
             'scene_balanced_loss': self.args.scene_balanced_loss,
             'num_cached_seeds_per_window': (
                 self.args.num_cached_seeds_per_window),
+            'validation_seed': self.args.validation_seed,
+            'jdv2_latent_objective': self.args.jdv2_latent_objective,
         }
         if self.args.use_trajectory_bank_cache:
             protocol['trajectory_bank_manifest'] = \
@@ -275,7 +333,7 @@ class trainer(object):
             f'{self.args.model_selection_split}, '
             f'final_test_split={self.args.final_test_split}')
 
-    def _save_checkpoint(self, epoch, best_epoch=False):
+    def _save_checkpoint(self, epoch, best_epoch=False, last_epoch=False):
         """
         Save model and optimizer states
         """
@@ -283,11 +341,16 @@ class trainer(object):
         if not os.path.exists(saved_models_path):
             os.makedirs(saved_models_path)
         # Save current checkpoint
-        if not best_epoch:
-            saved_model_name = os.path.join(saved_models_path, 'epoch_' +str(epoch).zfill(3) + '.pt')
-        else:  # best model name
+        if best_epoch and last_epoch:
+            raise ValueError('A checkpoint cannot be both best and last')
+        if best_epoch:
             saved_model_name = os.path.join(
                 saved_models_path, 'best_model.pt')
+        elif last_epoch:
+            saved_model_name = os.path.join(
+                saved_models_path, 'last_model.pt')
+        else:
+            saved_model_name = os.path.join(saved_models_path, 'epoch_' +str(epoch).zfill(3) + '.pt')
         payload = {
             'epoch': epoch,
             'model_state_dict': self.net.state_dict(),
@@ -306,7 +369,10 @@ class trainer(object):
                 'architecture_config': self._jdv2_architecture_config(),
                 'ablation_config': self._jdv2_ablation_config(),
                 'training_stage': self.args.training_stage,
+                'latent_objective': self.args.jdv2_latent_objective,
                 'stage_progress': self.args.jdv2_stage_progress,
+                'stage_optimizer_steps_completed': int(getattr(
+                    self, '_stage_optimizer_steps_completed', 0)),
                 'cache_manifest_hash': self.args.jdv2_cache_manifest_hash,
                 'source_checkpoint_hash': (
                     self.args.jdv2_source_checkpoint_hash),
@@ -316,8 +382,61 @@ class trainer(object):
                     'tie_break': self._best_selection[1],
                     'seed': self.args.seed,
                 },
+                'best_selection': {
+                    'primary': self._best_selection[0],
+                    'tie_break': self._best_selection[1],
+                },
+                'best_metrics': {
+                    key: float(value)
+                    for key, value in self.best_metrics.items()},
+                'best_metrics_epochs': dict(self.best_metrics_epochs),
             })
         torch.save(payload, saved_model_name)
+
+    def _restore_best_state(self, checkpoint):
+        """Restore checkpoint-selection history, including old checkpoints."""
+        selection = checkpoint.get('best_selection')
+        if selection is None:
+            selection = checkpoint.get('best_metric', {})
+        if 'primary' in selection:
+            self._best_selection = (
+                float(selection['primary']),
+                float(selection.get('tie_break', float('inf'))))
+        saved_metrics = checkpoint.get('best_metrics')
+        saved_epochs = checkpoint.get('best_metrics_epochs')
+        if saved_metrics is not None:
+            for key in self.best_metrics:
+                if key in saved_metrics:
+                    self.best_metrics[key] = float(saved_metrics[key])
+        if saved_epochs is not None:
+            for key in self.best_metrics_epochs:
+                if key in saved_epochs:
+                    self.best_metrics_epochs[key] = int(saved_epochs[key])
+        else:
+            self._restore_best_tables_from_curve(int(checkpoint.get('epoch', 0)))
+
+    def _restore_best_tables_from_curve(self, through_epoch):
+        """Reconstruct historical per-metric minima for legacy JDV2 files."""
+        if through_epoch <= 0 or not os.path.isfile(self.log_curve_file):
+            return
+        with open(self.log_curve_file) as handle:
+            header = handle.readline().strip().split(',')
+            rows = [line.strip().split(',') for line in handle if line.strip()]
+        index = {name: offset for offset, name in enumerate(header)}
+        for row in rows:
+            if len(row) != len(header):
+                continue
+            epoch = int(float(row[index['epoch']]))
+            if epoch > through_epoch:
+                continue
+            for key in self.best_metrics:
+                column = 'valid_' + key
+                if column not in index:
+                    continue
+                value = float(row[index[column]])
+                if value < self.best_metrics[key]:
+                    self.best_metrics[key] = value
+                    self.best_metrics_epochs[key] = epoch
 
     def _load_state_file(self, saved_model_name, baseline_initialization=False):
         """Load a checkpoint with explicit legacy-to-joint compatibility."""
@@ -350,6 +469,9 @@ class trainer(object):
             print('Legacy baseline initialization: allowed JDV2 missing '
                   f'keys={missing}')
         if self.net.jdv2_active and strict:
+            if checkpoint.get('latent_objective') != \
+                    self.args.jdv2_latent_objective:
+                raise RuntimeError('V2 checkpoint latent objective mismatch')
             expected_architecture = self._jdv2_architecture_config()
             expected_ablation = self._jdv2_ablation_config()
             if checkpoint.get('architecture_config') != expected_architecture:
@@ -413,8 +535,17 @@ class trainer(object):
         # load pre-trained model to resume training
         if self.args.load_checkpoint is not None:
             loaded_epoch = self._load_checkpoint(self.args.load_checkpoint)
-            # start from the following epoch
-            start_epoch = int(loaded_epoch) + 1
+            source_stage = (self._pending_training_state or {}).get(
+                'training_stage')
+            if source_stage is not None and source_stage != \
+                    self.args.training_stage:
+                # A cross-stage checkpoint initializes weights only. Epoch,
+                # curriculum progress, optimizer, and scheduler are local to
+                # the target stage.
+                self.args.jdv2_stage_progress = 0.0
+                start_epoch = 1
+            else:
+                start_epoch = int(loaded_epoch) + 1
         else:
             start_epoch = 1
             # log_file header only the first time
@@ -592,6 +723,7 @@ class trainer(object):
         self.optimizer = self._set_optimizer(
             self._optimizer_parameter_groups())
         self.scheduler = self._set_scheduler(self.optimizer)
+        self._stage_optimizer_steps_completed = 0
         if self._pending_training_state is not None:
             checkpoint = self._pending_training_state
             same_stage = checkpoint.get('training_stage') == \
@@ -607,9 +739,23 @@ class trainer(object):
                     checkpoint.get('grad_scaler_state_dict') is not None):
                 self.scaler.load_state_dict(
                     checkpoint['grad_scaler_state_dict'])
-            self.args.jdv2_stage_progress = float(
-                checkpoint.get('stage_progress',
-                               self.args.jdv2_stage_progress))
+            if same_stage:
+                self.args.jdv2_stage_progress = float(
+                    checkpoint.get('stage_progress',
+                                   self.args.jdv2_stage_progress))
+                saved_steps = checkpoint.get(
+                    'stage_optimizer_steps_completed')
+                if saved_steps is None:
+                    total_steps = max(
+                        self.args.num_epochs *
+                        len(self.data_loaders['train']), 1)
+                    saved_steps = round(
+                        self.args.jdv2_stage_progress * total_steps)
+                self._stage_optimizer_steps_completed = int(saved_steps)
+                self._restore_best_state(checkpoint)
+            else:
+                self.args.jdv2_stage_progress = 0.0
+                self._stage_optimizer_steps_completed = 0
 
         # start training
         self._train_loop(start_epoch=start_epoch, end_epoch=self.args.num_epochs)
@@ -655,6 +801,7 @@ class trainer(object):
                        tags=None, name=f'{self.args.test_set}_{self.current_date}_{self.current_time}')
 
         validations_without_improvement = 0
+        collapse_signature_epochs = 0
         previous_baseline_trainable = None
         for epoch in range(start_epoch, end_epoch + 1):
             if self.args.use_trajectory_bank_cache:
@@ -678,6 +825,7 @@ class trainer(object):
             start_time = time.time()  # time epoch
             train_losses = self._train_epoch(epoch)
             should_stop = False
+            stop_reason = None
             epoch_valid_metrics = {}
 
             if epoch % self.args.save_every == 0:
@@ -685,7 +833,6 @@ class trainer(object):
                 print(f"Saved checkpoint at epoch {epoch}")
 
             # validation
-            train_rng_state = torch.get_rng_state()
             if epoch >= self.args.start_validation and epoch % self.args.validate_every == 0:
                 valid_metrics = self._evaluate_epoch(epoch, mode='valid')
                 epoch_valid_metrics = valid_metrics
@@ -735,6 +882,9 @@ class trainer(object):
                         validations_without_improvement >=
                         self.args.early_stopping_patience):
                     should_stop = True
+                    stop_reason = (
+                        f'{best_metric_name} did not improve for '
+                        f'{validations_without_improvement} validation checks')
                 
                 # save metrics to log_curve.txt
                 with open(self.log_curve_file, 'a') as f:
@@ -751,8 +901,6 @@ class trainer(object):
                       ', '.join([f"{loss_name}={loss_value:.5f}" for
                                  loss_name, loss_value in
                                  train_losses.items()]))
-            # restore train rng state
-            torch.set_rng_state(train_rng_state)
             if self.scheduler is not None:
                 if self.args.scheduler == 'ReduceLROnPlateau':
                     if (epoch >= self.args.start_validation and
@@ -767,6 +915,43 @@ class trainer(object):
                 epoch, train_losses, epoch_valid_metrics,
                 time.time() - start_time)
 
+            if (self.net.jdv2_active and
+                    self.args.training_stage == 'joint_goal' and
+                    self.args.jdv2_latent_objective ==
+                    'v2_marginal_responsibility' and
+                    self.args.jdv2_early_collapse_gate and epoch >= 2):
+                collapse, evidence = self._jdv2_early_collapse_signature(
+                    self.last_train_joint_diagnostics)
+                collapse_signature_epochs = (
+                    collapse_signature_epochs + 1 if collapse else 0)
+                if collapse:
+                    print(
+                        'JDV2 early collapse diagnostic hit '
+                        f'{collapse_signature_epochs}/2: {evidence}')
+                if collapse_signature_epochs >= 2:
+                    should_stop = True
+                    stop_reason = (
+                        'Stage-A V2 E>0 latent collapse signature persisted '
+                        'for two consecutive epochs')
+                    with open(os.path.join(
+                            self.args.model_dir,
+                            'early_collapse_gate.json'), 'w') as handle:
+                        json.dump({
+                            'epoch': int(epoch),
+                            'consecutive_epochs': collapse_signature_epochs,
+                            'thresholds': {
+                                'aggregate_soft_usage': '>0.99',
+                                'entropy': '<1e-3',
+                                'future_shuffle_l1': '<1e-6',
+                                'hard_usage': '>=0.95',
+                            },
+                            'evidence': evidence,
+                        }, handle, indent=2, sort_keys=True)
+
+            # The explicit last checkpoint is written only after the epoch's
+            # optimizer and scheduler work has completed.
+            self._save_checkpoint(epoch, last_epoch=True)
+
             # save metrics to WandB
             if self.args.use_wandb and epoch >= self.args.start_validation:
                 wandb.log({'learning_rate': learning_rate}, step=epoch)
@@ -780,10 +965,7 @@ class trainer(object):
                     for k, v in self.best_metrics_epochs.items():
                         wandb.run.summary["best_epoch_" + k] = v
             if should_stop:
-                print(
-                    f'Early stopping at epoch {epoch}: '
-                    f'{best_metric_name} did not improve for '
-                    f'{validations_without_improvement} validation checks.')
+                print(f'Early stopping at epoch {epoch}: {stop_reason}.')
                 break
         if self.args.trajectory_coupling == 'multiway_v4':
             summary_path = os.path.join(
@@ -822,6 +1004,8 @@ class trainer(object):
         train_bar = tqdm(self.data_loaders['train'], ascii=True, ncols=100,
                          desc=f'Epoch {epoch}. Train batches')
         num_train_batches = len(self.data_loaders['train'])
+        total_stage_optimizer_steps = max(
+            self.args.num_epochs * num_train_batches, 1)
         accumulation_steps = (
             self.args.coupling_grad_accum_steps
             if self.args.training_stage == 'multiway_coupling' else 1)
@@ -855,13 +1039,17 @@ class trainer(object):
                 self.scaler.update()
             else:
                 self.optimizer.step()
+            if self.net.jdv2_active:
+                self._stage_optimizer_steps_completed += 1
             self.optimizer.zero_grad()
 
         for batch_index, batch in enumerate(train_bar):
             if self.net.jdv2_active:
-                completed = ((epoch - 1) * num_train_batches + batch_index)
-                total = max(self.args.num_epochs * num_train_batches, 1)
-                self.args.jdv2_stage_progress = min(completed / total, 1.0)
+                # Curriculum state is a stage-local count of successful
+                # optimizer steps. Cross-stage loading initializes this at 0.
+                self.args.jdv2_stage_progress = min(
+                    self._stage_optimizer_steps_completed /
+                    total_stage_optimizer_steps, 1.0)
             if self.args.use_trajectory_bank_cache:
                 inputs = self.net.prepare_cached_trajectory_pack(batch)
                 with self._autocast_context():
@@ -947,6 +1135,10 @@ class trainer(object):
 
         # Do not discard the last incomplete accumulation group.
         optimizer_step(pending_backward, rescale_partial=True)
+        if self.net.jdv2_active:
+            self.args.jdv2_stage_progress = min(
+                self._stage_optimizer_steps_completed /
+                total_stage_optimizer_steps, 1.0)
 
         # update losses
         for loss_name in losses_epoch.keys():
@@ -1077,7 +1269,23 @@ class trainer(object):
         return add_dict_prefix(evaluate_metrics, prefix=mode)
 
     @torch.no_grad()
-    def _evaluate_epoch(self, epoch, mode='valid'):
+    def _evaluate_epoch(self, epoch, mode='valid', evaluation_seed=None,
+                        metric_names=None, external_edge_cache_root=None):
+        """Evaluate with an isolated, reproducible stochastic RNG stream."""
+        if evaluation_seed is None:
+            if mode != 'valid':
+                return self._evaluate_epoch_unseeded(
+                    epoch, mode=mode, metric_names=metric_names,
+                    external_edge_cache_root=external_edge_cache_root)
+            evaluation_seed = self.args.validation_seed
+        with isolated_random_seed(
+                evaluation_seed, use_cuda=self.device.type == 'cuda'):
+            return self._evaluate_epoch_unseeded(
+                epoch, mode=mode, metric_names=metric_names,
+                external_edge_cache_root=external_edge_cache_root)
+
+    def _evaluate_epoch_unseeded(self, epoch, mode='valid', metric_names=None,
+                                 external_edge_cache_root=None):
         """
         Loop over the validation or test set once. Compute metrics and save
         output trajectories.
@@ -1087,7 +1295,8 @@ class trainer(object):
         self.net.eval()  # evaluation mode
 
         # INIT LOSSES and METRICS
-        metrics_epoch = self.net.init_test_metrics()
+        metrics_epoch = (self.net.init_test_metrics() if metric_names is None
+                         else {name: [] for name in metric_names})
         v4_scalar_values = {name: [] for name in V4_DIAGNOSTIC_NAMES}
         v4_buckets = {'N_size_buckets': {}, 'component_size_buckets': {}}
         diagnostic_sums = {}
@@ -1110,7 +1319,7 @@ class trainer(object):
         # loop over batches
         total_time = 0
         num_input = 0
-        for batch_data, batch_id in evaluate_bar:
+        for batch_index, (batch_data, batch_id) in enumerate(evaluate_bar):
 
             inputs, seq_list = self.net.prepare_inputs(batch_data, batch_id)
             del batch_data
@@ -1121,6 +1330,22 @@ class trainer(object):
             with self._autocast_context():
                 all_output, all_aux_outputs = self.net.forward(
                     inputs, if_test=True)
+            if (self.net.jdv2_active and
+                    self.args.training_stage == 'joint_goal' and
+                    self.args.joint_diagnostics):
+                # Validation predictions retain the deployed stochastic
+                # policy. This separate no-gradient teacher pass records the
+                # latent mixture health without changing sampled outputs.
+                with self._autocast_context():
+                    self.net._jdv2_goal_losses(inputs)
+            if (external_edge_cache_root is not None and
+                    'Relative_Motion_Error' in metrics_epoch and
+                    'edge_index' not in all_aux_outputs):
+                edge_record = load_cache_record(os.path.join(
+                    external_edge_cache_root, mode,
+                    f'{batch_index:06d}.pt'), allow_future_supervision=False)
+                all_aux_outputs['edge_index'] = edge_record[
+                    'edge_index'].to(self.device)
             if self.net.jdv2_active and self.args.joint_diagnostics:
                 self._accumulate_joint_diagnostics(
                     diagnostic_sums, diagnostic_counts,
