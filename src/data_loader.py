@@ -44,7 +44,9 @@ def _validated_jdv2_manifest(args):
             'build-jdv2-cache phase')
     root = jdv2_cache_root(args)
     manifest_path = os.path.join(root, JDV2_MANIFEST)
-    key = (manifest_path, os.path.abspath(os.path.expanduser(checkpoint)))
+    pinned_source_commit = getattr(args, 'jdv2_cache_source_commit', None)
+    key = (manifest_path, os.path.abspath(os.path.expanduser(checkpoint)),
+           pinned_source_commit)
     if key in _JDV2_MANIFEST_CACHE:
         return _JDV2_MANIFEST_CACHE[key]
     try:
@@ -63,6 +65,11 @@ def _validated_jdv2_manifest(args):
         args, source_files,
         os.path.abspath(os.path.expanduser(checkpoint)),
         completed_splits=('train', 'valid', 'test'))
+    if pinned_source_commit is not None:
+        # Objective-only revisions do not invalidate frozen candidates,
+        # graphs, coordinates or teacher sidecars. The override is explicit
+        # and exact; every other manifest field remains strictly checked.
+        expected['source_commit'] = pinned_source_commit
     validate_manifest(actual, expected)
     if set(actual.get('completed_splits', ())) != {'train', 'valid', 'test'}:
         raise RuntimeError(

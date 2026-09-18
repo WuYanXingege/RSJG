@@ -162,6 +162,10 @@ def get_parser():
     parser.add_argument('--jdv2_source_checkpoint', default=None)
     parser.add_argument('--jdv2_cache_manifest_hash', default=None)
     parser.add_argument('--jdv2_source_checkpoint_hash', default=None)
+    parser.add_argument(
+        '--jdv2_cache_source_commit', default=None,
+        help=('Explicitly pin the commit that built a reusable JDV2 cache. '
+              'All data/checkpoint/graph fields remain strictly validated.'))
     parser.add_argument('--jdv2_stage_progress', default=0.0, type=float)
     parser.add_argument(
         '--jdv2_latent_objective',
@@ -717,6 +721,11 @@ def check_and_add_additional_args(args):
             raise ValueError('Unsupported jdv2_cache_schema')
         if args.jdv2_latent_objective != 'v2_marginal_responsibility':
             raise ValueError('Unsupported JDV2 latent objective')
+        if (args.jdv2_cache_source_commit is not None and
+                re.fullmatch(r'[0-9a-f]{40}',
+                             args.jdv2_cache_source_commit) is None):
+            raise ValueError(
+                'jdv2_cache_source_commit must be a full lowercase git SHA')
         if (args.phase == 'build-jdv2-cache' and
                 args.training_stage not in {
                     'joint_goal', 'joint_trajectory', 'joint_finetune'}):

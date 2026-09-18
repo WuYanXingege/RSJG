@@ -76,3 +76,38 @@ def test_atomic_json_write_is_complete(tmp_path):
     atomic_json_save({"complete": True}, str(path))
     assert json.loads(path.read_text()) == {"complete": True}
     assert not list(tmp_path.glob("*.tmp"))
+
+
+def test_loader_accepts_only_explicitly_pinned_cache_source_commit(
+        tmp_path, monkeypatch):
+    from src import data_loader
+
+    old_commit = "1" * 40
+    new_commit = "2" * 40
+    actual = {
+        "source_commit": old_commit,
+        "invariant": "same",
+        "completed_splits": ["test", "train", "valid"],
+    }
+    (tmp_path / "manifest.json").write_text(json.dumps(actual))
+    checkpoint = tmp_path / "goal.pt"
+    checkpoint.write_bytes(b"goal")
+    args = SimpleNamespace(
+        jdv2_source_checkpoint=str(checkpoint), pretrain_path=None,
+        jdv2_cache_source_commit=old_commit)
+    monkeypatch.setattr(data_loader, "jdv2_cache_root", lambda _args: str(tmp_path))
+    monkeypatch.setattr(data_loader, "batch_cache_path", lambda _args: str(tmp_path))
+    monkeypatch.setattr(data_loader, "batch_cache_files", lambda _path: [])
+    monkeypatch.setattr(data_loader, "build_manifest", lambda *args, **kwargs: {
+        "source_commit": new_commit,
+        "invariant": "same",
+        "completed_splits": ["test", "train", "valid"],
+    })
+    data_loader._JDV2_MANIFEST_CACHE.clear()
+    loaded = data_loader._validated_jdv2_manifest(args)
+    assert loaded["source_commit"] == old_commit
+    assert loaded["manifest_hash"] == stable_json_hash(actual)
+
+    args.jdv2_cache_source_commit = "3" * 40
+    with pytest.raises(RuntimeError, match="source_commit"):
+        data_loader._validated_jdv2_manifest(args)

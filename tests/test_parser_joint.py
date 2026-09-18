@@ -219,6 +219,11 @@ def test_jdv2_active_and_all_off_configuration_contracts():
 
 
 def test_jdv2_rejects_noncanonical_dimensions_and_wrong_stage():
+    with pytest.raises(ValueError, match='full lowercase git SHA'):
+        check_and_add_additional_args(_parse(
+            '--device', 'cpu', '--goal_model_type', 'jdv2',
+            '--training_stage', 'joint_goal', '--data_augmentation', 'False',
+            '--jdv2_cache_source_commit', 'not-a-commit'))
     with pytest.raises(ValueError, match='frozen JDV2 dimensions'):
         check_and_add_additional_args(_parse(
             '--device', 'cpu', '--goal_model_type', 'jdv2',
