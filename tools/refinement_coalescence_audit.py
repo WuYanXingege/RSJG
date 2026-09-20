@@ -487,6 +487,7 @@ def _agent_and_decomposition_records(
             row = {
                 **metadata[agent],
                 "round": int(round_index),
+                "is_final": bool(round_index == len(round_ids) - 1),
                 "unique_count": unique_count,
                 "duplicate_count": int(ids[agent].numel() - unique_count),
                 "unique_ratio": unique_count / float(ids[agent].numel()),
@@ -567,6 +568,9 @@ def _summarize_round_records(rows):
         local = [row for row in rows if row["round"] == round_index]
         result[f"round{round_index}"] = _stratified(
             local, lambda group: _group_summary(group, scalar, boolean))
+    final = [row for row in rows if row["is_final"]]
+    result["final"] = _stratified(
+        final, lambda group: _group_summary(group, scalar, boolean))
     return result
 
 
@@ -710,13 +714,13 @@ def baseline_reproduction_gate(r2, reference, tolerance=1e-10):
                 "absolute_error": abs(actual - target),
             }
     round0 = r2["round_candidate_summary"]["round0"]["overall"]["scalars"]
-    round2 = r2["round_candidate_summary"]["round2"]["overall"]["scalars"]
+    final = r2["round_candidate_summary"]["final"]["overall"]["scalars"]
     decomposition = r2["error_decomposition"]["overall"]["scalars"]
     actual_values = {
         "initial_unique": round0["unique_count"]["mean"],
-        "final_unique": round2["unique_count"]["mean"],
+        "final_unique": final["unique_count"]["mean"],
         "initial_oracle": round0["goal_oracle_error"]["mean"],
-        "final_oracle": round2["goal_oracle_error"]["mean"],
+        "final_oracle": decomposition["final_goal_oracle"]["mean"],
         "trajectory_minFDE": decomposition["trajectory_minFDE"]["mean"],
     }
     for name, actual in actual_values.items():
