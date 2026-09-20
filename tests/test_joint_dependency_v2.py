@@ -150,6 +150,83 @@ def test_relation_specific_energy_and_logsumexp_reference():
     assert torch.equal(effective, reference)
 
 
+def test_strict_no_z_component_shapes_and_parameter_namespace():
+    scene, edge, agent, last, goals, edge_feat, base = _tiny()
+    teacher = SceneFutureTeacher(use_scene_latent=False)
+    unary = UnaryGoalResidual(use_scene_latent=False)
+    relation = DynamicHypothesisRelation(
+        graph_radius=6.0, use_scene_latent=False).eval()
+    energy = RelationSpecificJointEnergy(use_scene_latent=False).eval()
+    sampler = ParallelConditionalSampler(strict_no_z=True).eval()
+
+    assert set(teacher.state_dict()) == {
+        'relation_teacher.0.weight', 'relation_teacher.0.bias',
+        'relation_teacher.2.weight', 'relation_teacher.2.bias',
+        'relation_teacher.4.weight', 'relation_teacher.4.bias'}
+    assert not any('scene' in key or 'posterior' in key
+                   for key in unary.state_dict())
+    assert relation.query.shape == (4, 16)
+    assert relation.bias.shape == (4,)
+    assert not any('scene_embedding' in key for key in energy.state_dict())
+
+    full_relation = relation.full_pair_relation(
+        base, goals, last, edge, mode_enabled=False)
+    assert full_relation['prob'].shape == (2, 5, 5, 4)
+    factors = energy.factors(
+        agent, goals, last, edge, edge_feat, mode_enabled=False)
+    assert factors['left_factor'].shape == (2, 4, 5, 8)
+    relation_energy = energy.relation_energy(
+        factors['left_factor'], factors['right_factor'])
+    assert relation_energy.shape == (2, 5, 5, 4)
+    effective = energy.effective_energy(
+        relation_energy, full_relation['log_prob'])
+    assert effective.shape == (2, 5, 5)
+
+    sampled = sampler(
+        torch.randn(4, 5), goals, None, scene, edge, edge_feat, agent, last,
+        base, relation, energy, sampling_mode='map',
+        use_scene_latent=False)
+    assert sampled['candidate_index'].shape == (4, 20)
+    assert sampled['initial_candidate_index'].shape == (4, 20)
+    assert sampled['relation_prob'].shape == (2, 20, 4)
+    assert not ({'scene_mode', 'agent_scene_mode', 'edge_scene_mode'} &
+                sampled.keys())
+
+
+def test_strict_no_z_empty_edge_and_permutation_contracts():
+    scene, edge, agent, last, goals, edge_feat, base = _tiny()
+    relation = DynamicHypothesisRelation(
+        graph_radius=6.0, use_scene_latent=False).eval()
+    energy = RelationSpecificJointEnergy(use_scene_latent=False).eval()
+    original = relation.full_pair_relation(
+        base, goals, last, edge, mode_enabled=False)['prob']
+
+    permutation = torch.tensor([2, 0, 3, 1])
+    inverse = torch.empty_like(permutation)
+    inverse[permutation] = torch.arange(4)
+    new_edge = inverse[edge]
+    flip = new_edge[0] > new_edge[1]
+    new_edge[:, flip] = new_edge.flip(0)[:, flip]
+    order = torch.argsort(new_edge[0] * 4 + new_edge[1])
+    new_edge = new_edge[:, order]
+    permuted = relation.full_pair_relation(
+        base[order], goals[permutation], last[permutation], new_edge,
+        mode_enabled=False)['prob']
+    assert torch.allclose(original[order], permuted, atol=1e-6)
+
+    empty_edge = torch.empty((2, 0), dtype=torch.long)
+    empty_base = torch.empty((0, 4))
+    empty_feat = torch.empty((0, EDGE_FEATURE_DIM))
+    empty_relation = relation.full_pair_relation(
+        empty_base, goals[:1], last[:1], empty_edge,
+        mode_enabled=False)['prob']
+    empty_factors = energy.factors(
+        agent[:1], goals[:1], last[:1], empty_edge, empty_feat,
+        mode_enabled=False)
+    assert empty_relation.shape == (0, 5, 5, 4)
+    assert empty_factors['left_factor'].shape == (0, 4, 5, 8)
+
+
 def test_energy_endpoint_reversal_transposes_candidate_axes():
     _, edge, agent, last, goals, edge_feat, _ = _tiny()
     model = RelationSpecificJointEnergy().eval()

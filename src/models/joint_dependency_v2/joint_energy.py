@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import math
-from typing import Dict
+from typing import Dict, Optional
 
 import torch
 from torch import nn
@@ -15,18 +15,21 @@ class RelationSpecificJointEnergy(nn.Module):
     """Produce rank-eight factors without reusing unary/prior features."""
 
     def __init__(self, agent_dim: int = 128, num_scene_modes: int = 4,
-                 num_relation_modes: int = 4, rank: int = 8) -> None:
+                 num_relation_modes: int = 4, rank: int = 8,
+                 use_scene_latent: bool = True) -> None:
         super().__init__()
         if (agent_dim, num_scene_modes, num_relation_modes, rank) != \
                 (128, 4, 4, 8):
             raise ValueError("JDV2 requires D=128, Z=M=4, rank=8")
         self.rank = rank
+        self.use_scene_latent = bool(use_scene_latent)
         self.candidate_encoder = nn.Sequential(
             nn.Linear(4, 64), nn.SiLU(), nn.Linear(64, 64))
         self.pair_encoder = nn.Sequential(
             nn.Linear(2 * agent_dim + EDGE_FEATURE_DIM, 128), nn.SiLU(),
             nn.Linear(128, 64), nn.LayerNorm(64))
-        self.scene_embedding = nn.Embedding(4, 64)
+        if self.use_scene_latent:
+            self.scene_embedding = nn.Embedding(4, 64)
         self.relation_embedding = nn.Embedding(4, 64)
         self.fusion_norm = nn.LayerNorm(64)
         self.factor_head = nn.Sequential(nn.SiLU(), nn.Linear(64, rank))
@@ -70,33 +73,43 @@ class RelationSpecificJointEnergy(nn.Module):
         edge_feat: torch.Tensor,
         mode_enabled: bool = True,
     ) -> Dict[str, torch.Tensor]:
-        """Return left/right factors ``[E,Z,M,K,8]``."""
+        """Return ``[E,Z,M,K,8]`` or strict no-z ``[E,M,K,8]``."""
         edge_count = edge_index.shape[1]
         num_candidates = goal_candidates.shape[1]
         num_modes = 4 if mode_enabled else 1
         if edge_count == 0:
-            empty = goal_candidates.new_empty(
-                (0, num_modes, 4, num_candidates, self.rank))
+            shape = ((0, num_modes, 4, num_candidates, self.rank)
+                     if self.use_scene_latent else
+                     (0, 4, num_candidates, self.rank))
+            empty = goal_candidates.new_empty(shape)
             return {"left_factor": empty, "right_factor": empty}
         source, destination = self._candidate_hidden(
             goal_candidates, last_position, edge_index)
         forward, reverse = self._pair_hidden(
             agent_feat, edge_index, edge_feat)
-        if mode_enabled:
-            scene = self.scene_embedding.weight
-        else:
-            scene = self.scene_embedding.weight.new_zeros((1, 64))
         relation = self.relation_embedding.weight
-        left_hidden = (
-            forward[:, None, None, None, :] +
-            source[:, None, None, :, :] +
-            scene[None, :, None, None, :] +
-            relation[None, None, :, None, :])
-        right_hidden = (
-            reverse[:, None, None, None, :] +
-            destination[:, None, None, :, :] +
-            scene[None, :, None, None, :] +
-            relation[None, None, :, None, :])
+        if self.use_scene_latent:
+            if mode_enabled:
+                scene = self.scene_embedding.weight
+            else:
+                scene = self.scene_embedding.weight.new_zeros((1, 64))
+            left_hidden = (
+                forward[:, None, None, None, :] +
+                source[:, None, None, :, :] +
+                scene[None, :, None, None, :] +
+                relation[None, None, :, None, :])
+            right_hidden = (
+                reverse[:, None, None, None, :] +
+                destination[:, None, None, :, :] +
+                scene[None, :, None, None, :] +
+                relation[None, None, :, None, :])
+        else:
+            left_hidden = (
+                forward[:, None, None, :] + source[:, None, :, :] +
+                relation[None, :, None, :])
+            right_hidden = (
+                reverse[:, None, None, :] + destination[:, None, :, :] +
+                relation[None, :, None, :])
         return {
             "left_factor": self.factor_head(self.fusion_norm(left_hidden)),
             "right_factor": self.factor_head(self.fusion_norm(right_hidden)),
@@ -107,15 +120,22 @@ class RelationSpecificJointEnergy(nn.Module):
         left_factor: torch.Tensor,
         right_factor: torch.Tensor,
     ) -> torch.Tensor:
-        """Return exact relation-specific energy ``[E,Z,K,K,M]`` in FP32."""
-        if left_factor.shape != right_factor.shape or left_factor.ndim != 5:
-            raise ValueError("factors must share shape [E,Z,M,K,R]")
+        """Return relation energy with or without a scene-mode axis."""
+        if left_factor.shape != right_factor.shape or left_factor.ndim not in {
+                4, 5}:
+            raise ValueError(
+                "factors must share [E,Z,M,K,R] or [E,M,K,R]")
         rank = left_factor.shape[-1]
         with torch.autocast(
                 device_type=left_factor.device.type, enabled=False):
-            energy = -torch.einsum(
-                "ezmkr,ezmlr->ezklm", left_factor.float(),
-                right_factor.float()) / math.sqrt(float(rank))
+            if left_factor.ndim == 5:
+                energy = -torch.einsum(
+                    "ezmkr,ezmlr->ezklm", left_factor.float(),
+                    right_factor.float()) / math.sqrt(float(rank))
+            else:
+                energy = -torch.einsum(
+                    "emkr,emlr->eklm", left_factor.float(),
+                    right_factor.float()) / math.sqrt(float(rank))
         return energy
 
     @staticmethod
@@ -139,7 +159,7 @@ class RelationSpecificJointEnergy(nn.Module):
         edge_index: torch.Tensor,
         edge_feat: torch.Tensor,
         selected_candidate: torch.Tensor,
-        edge_scene_mode: torch.Tensor,
+        edge_scene_mode: Optional[torch.Tensor],
         relation_log_prob: torch.Tensor,
         conditioned_side: str,
         mode_enabled: bool = True,
@@ -156,6 +176,12 @@ class RelationSpecificJointEnergy(nn.Module):
         if edge_count == 0:
             return relation_log_prob.new_empty(
                 (0, num_samples, num_candidates))
+        if self.use_scene_latent:
+            if edge_scene_mode is None or edge_scene_mode.shape != (
+                    edge_count, num_samples):
+                raise ValueError("edge_scene_mode must have shape [E,P]")
+        elif edge_scene_mode is not None:
+            raise ValueError("Strict no-z energy accepts no scene modes")
         source, destination = self._candidate_hidden(
             goal_candidates, last_position, edge_index)
         forward, reverse = self._pair_hidden(
@@ -167,12 +193,16 @@ class RelationSpecificJointEnergy(nn.Module):
             1, source_index[:, :, None].expand(-1, -1, 64))
         destination_fixed = destination.gather(
             1, destination_index[:, :, None].expand(-1, -1, 64))
-        if mode_enabled:
+        if not self.use_scene_latent:
+            common = self.relation_embedding.weight[None, None, :, :]
+        elif mode_enabled:
             scene = self.scene_embedding(edge_scene_mode.long())
+            common = scene[:, :, None, :] + \
+                self.relation_embedding.weight[None, None, :, :]
         else:
             scene = forward.new_zeros((edge_count, num_samples, 64))
-        relation = self.relation_embedding.weight
-        common = scene[:, :, None, :] + relation[None, None, :, :]
+            common = scene[:, :, None, :] + \
+                self.relation_embedding.weight[None, None, :, :]
         if conditioned_side == "source":
             variable_hidden = (
                 forward[:, None, None, None, :] +

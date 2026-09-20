@@ -124,8 +124,9 @@ class trainer(object):
             device_type=self.device.type, dtype=self.amp_dtype, enabled=True)
 
     def _jdv2_architecture_config(self):
-        return {
-            'scene_modes': self.args.jdv2_scene_modes,
+        strict_no_z = self.args.jdv2_latent_objective == 'strict_no_z'
+        config = {
+            'scene_modes': 0 if strict_no_z else self.args.jdv2_scene_modes,
             'relation_modes': self.args.jdv2_relation_modes,
             'goal_candidates': self.args.num_goal_candidates,
             'joint_samples': self.args.num_samples,
@@ -134,6 +135,9 @@ class trainer(object):
             'agent_dim': self.args.social_feature_dim,
             'latent_objective': self.args.jdv2_latent_objective,
         }
+        if strict_no_z:
+            config['architecture_variant'] = 'strict_no_z'
+        return config
 
     def _jdv2_ablation_config(self):
         return {name: bool(getattr(self.args, name)) for name in (
@@ -451,6 +455,16 @@ class trainer(object):
             source_is_v2 = any(
                 key.startswith('jdv2_') for key in state_dict)
             strict = source_is_v2 or not baseline_initialization
+        if self.net.jdv2_active and strict and source_is_v2:
+            if checkpoint.get('latent_objective') != \
+                    self.args.jdv2_latent_objective:
+                raise RuntimeError('V2 checkpoint latent objective mismatch')
+            expected_architecture = self._jdv2_architecture_config()
+            expected_ablation = self._jdv2_ablation_config()
+            if checkpoint.get('architecture_config') != expected_architecture:
+                raise RuntimeError('V2 checkpoint architecture mismatch')
+            if checkpoint.get('ablation_config') != expected_ablation:
+                raise RuntimeError('V2 checkpoint ablation mismatch')
         incompatible = self.net.load_state_dict(state_dict, strict=strict)
         if not strict:
             missing = list(incompatible.missing_keys)
@@ -469,15 +483,6 @@ class trainer(object):
             print('Legacy baseline initialization: allowed JDV2 missing '
                   f'keys={missing}')
         if self.net.jdv2_active and strict:
-            if checkpoint.get('latent_objective') != \
-                    self.args.jdv2_latent_objective:
-                raise RuntimeError('V2 checkpoint latent objective mismatch')
-            expected_architecture = self._jdv2_architecture_config()
-            expected_ablation = self._jdv2_ablation_config()
-            if checkpoint.get('architecture_config') != expected_architecture:
-                raise RuntimeError('V2 checkpoint architecture mismatch')
-            if checkpoint.get('ablation_config') != expected_ablation:
-                raise RuntimeError('V2 checkpoint ablation mismatch')
             if checkpoint.get('cache_manifest_hash') != \
                     self.args.jdv2_cache_manifest_hash:
                 raise RuntimeError('V2 checkpoint cache manifest mismatch')

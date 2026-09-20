@@ -170,7 +170,7 @@ def get_parser():
     parser.add_argument(
         '--jdv2_latent_objective',
         default='v2_marginal_responsibility',
-        choices=['v2_marginal_responsibility'],
+        choices=['v2_marginal_responsibility', 'strict_no_z'],
         help=('Frozen Stage-A latent objective version stored in JDV2 '
               'checkpoints.'))
     parser.add_argument(
@@ -719,8 +719,16 @@ def check_and_add_additional_args(args):
     if args.goal_model_type == 'joint_dependency_v2':
         if args.jdv2_cache_schema != 'jdv2-cache-v1':
             raise ValueError('Unsupported jdv2_cache_schema')
-        if args.jdv2_latent_objective != 'v2_marginal_responsibility':
-            raise ValueError('Unsupported JDV2 latent objective')
+        if args.jdv2_latent_objective == 'strict_no_z':
+            if args.use_scene_latent:
+                raise ValueError(
+                    'strict_no_z requires use_scene_latent=False')
+            if not args.use_dynamic_relation or not args.use_joint_energy:
+                raise ValueError(
+                    'strict_no_z requires dynamic relation and joint energy')
+            if args.training_stage != 'joint_goal':
+                raise ValueError(
+                    'strict_no_z is authorized for joint_goal Stage-A only')
         if (args.jdv2_cache_source_commit is not None and
                 re.fullmatch(r'[0-9a-f]{40}',
                              args.jdv2_cache_source_commit) is None):

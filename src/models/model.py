@@ -65,6 +65,8 @@ from src.joint_goal_loss import (
     pseudo_likelihood_loss,
     scene_joint_ranking_loss,
     jdv2_mixture_composite_loss,
+    jdv2_no_z_pseudo_likelihood_from_local,
+    jdv2_no_z_relation_kl_per_edge,
     jdv2_posterior_distillation,
     jdv2_relation_kl_per_edge_mode,
     jdv2_scene_mode_log_score,
@@ -123,6 +125,9 @@ class GDTS(torch.nn.Module):
             self.args.goal_model_type == 'joint_dependency_v2')
         self.jdv2_active = bool(
             self.jdv2_requested and getattr(self.args, 'jdv2_active', False))
+        self.strict_no_z = bool(
+            self.jdv2_active and
+            self.args.jdv2_latent_objective == 'strict_no_z')
         self.active_goal_model_type = self.args.goal_model_type
         if self.jdv2_requested and not self.jdv2_active:
             # Exact all-off gate: this branch is decided before constructing
@@ -303,17 +308,23 @@ class GDTS(torch.nn.Module):
             self.relation_inference = RelationInference(
                 agent_dim=128, num_relation_modes=4,
                 edge_dim=EDGE_FEATURE_DIM, hidden_dim=128, hard=False)
-            self.jdv2_scene_prior = SceneLatentPrior()
-            self.jdv2_future_teacher = SceneFutureTeacher()
+            self.jdv2_scene_prior = (
+                None if self.strict_no_z else SceneLatentPrior())
+            self.jdv2_future_teacher = SceneFutureTeacher(
+                use_scene_latent=not self.strict_no_z)
             self.jdv2_unary = UnaryGoalResidual(
-                prior_temperature=self.args.goal_candidate_temperature)
+                prior_temperature=self.args.goal_candidate_temperature,
+                use_scene_latent=not self.strict_no_z)
             self.jdv2_dynamic_relation = DynamicHypothesisRelation(
-                graph_radius=self.args.graph_radius)
-            self.jdv2_joint_energy = RelationSpecificJointEnergy()
+                graph_radius=self.args.graph_radius,
+                use_scene_latent=not self.strict_no_z)
+            self.jdv2_joint_energy = RelationSpecificJointEnergy(
+                use_scene_latent=not self.strict_no_z)
             self.jdv2_sampler = ParallelConditionalSampler(
                 num_samples=20, num_refinement_steps=2,
                 temperature=self.args.joint_sampling_temperature,
-                minimum_active_mode=self.args.jdv2_minimum_active_mode)
+                minimum_active_mode=self.args.jdv2_minimum_active_mode,
+                strict_no_z=self.strict_no_z)
             self.jdv2_corrector = DependencyCorrector(
                 dt=self.args.trajectory_dt)
             self.last_joint_diagnostics = {}
@@ -339,6 +350,14 @@ class GDTS(torch.nn.Module):
         """Return the original GDTS modules as one optimizer/freeze family."""
         return (self.goal_module, self.registrar, self.diffnet)
 
+    def _jdv2_goal_module_names(self):
+        names = [
+            'social_encoder', 'relation_inference', 'jdv2_future_teacher',
+            'jdv2_unary', 'jdv2_dynamic_relation', 'jdv2_joint_energy']
+        if not self.strict_no_z:
+            names.insert(2, 'jdv2_scene_prior')
+        return tuple(names)
+
     def _configure_training_stage(self, epoch=1):
         """Apply the staged-training freeze policy without changing modules.
 
@@ -356,10 +375,7 @@ class GDTS(torch.nn.Module):
             for module in self._baseline_modules():
                 for parameter in module.parameters():
                     parameter.requires_grad_(False)
-            goal_names = (
-                'social_encoder', 'relation_inference', 'jdv2_scene_prior',
-                'jdv2_future_teacher', 'jdv2_unary',
-                'jdv2_dynamic_relation', 'jdv2_joint_energy')
+            goal_names = self._jdv2_goal_module_names()
             goal_trainable = stage in {'joint_goal', 'joint_finetune'}
             for name in goal_names:
                 for parameter in getattr(self, name).parameters():
@@ -414,11 +430,7 @@ class GDTS(torch.nn.Module):
             for module in self._baseline_modules():
                 module.eval()
             if self.args.training_stage == 'joint_trajectory':
-                for name in (
-                        'social_encoder', 'relation_inference',
-                        'jdv2_scene_prior', 'jdv2_future_teacher',
-                        'jdv2_unary', 'jdv2_dynamic_relation',
-                        'jdv2_joint_energy'):
+                for name in self._jdv2_goal_module_names():
                     getattr(self, name).eval()
             self.jdv2_corrector.train(
                 self.args.training_stage in {
@@ -467,10 +479,7 @@ class GDTS(torch.nn.Module):
             baseline_parameters = [
                 parameter for module in self._baseline_modules()
                 for parameter in module.parameters()]
-            goal_names = (
-                'social_encoder', 'relation_inference', 'jdv2_scene_prior',
-                'jdv2_future_teacher', 'jdv2_unary',
-                'jdv2_dynamic_relation', 'jdv2_joint_energy')
+            goal_names = self._jdv2_goal_module_names()
             goal_parameters = [
                 parameter for name in goal_names
                 for parameter in getattr(self, name).parameters()
@@ -716,7 +725,9 @@ class GDTS(torch.nn.Module):
                 agent_feat.float(), edge_index, edge_feat.float(), hard=False,
                 return_logits=True)
 
-        if self.args.use_scene_latent:
+        if self.strict_no_z:
+            scene_prior = None
+        elif self.args.use_scene_latent:
             scene_prior = self.jdv2_scene_prior(agent_feat, scene_index)
         else:
             scene_ids, compact = canonicalize_scene_index(
@@ -745,7 +756,9 @@ class GDTS(torch.nn.Module):
                 obs_world[:, -1:].float(), future_position.float()), dim=1)
             future_velocity = torch.diff(
                 position_with_anchor, dim=1) / float(self.args.trajectory_dt)
-            if self.args.use_scene_latent:
+            if self.strict_no_z:
+                scene_posterior = None
+            elif self.args.use_scene_latent:
                 scene_posterior = self.jdv2_future_teacher.scene_posterior(
                     future_position, future_velocity, obs_world[:, -1],
                     scene_prior['logits'], scene_index)
@@ -767,7 +780,8 @@ class GDTS(torch.nn.Module):
         sampled = None
         if sample:
             sampled = self.jdv2_sampler(
-                unary['score'], goal_candidates_world, scene_prior['prob'],
+                unary['score'], goal_candidates_world,
+                None if self.strict_no_z else scene_prior['prob'],
                 scene_index, edge_index, edge_feat, agent_feat,
                 obs_world[:, -1], base_relation_logits,
                 self.jdv2_dynamic_relation, self.jdv2_joint_energy,
@@ -784,8 +798,6 @@ class GDTS(torch.nn.Module):
             'candidate_log_prior': candidate_log_prior,
             'candidate_mask': candidate_mask,
             'agent_feat': agent_feat,
-            'scene_prior': scene_prior,
-            'scene_posterior': scene_posterior,
             'edge_index': edge_index,
             'edge_feat': edge_feat,
             'edge_weight': edge_weight,
@@ -796,6 +808,11 @@ class GDTS(torch.nn.Module):
             'unary_score': unary['score'],
             'sampled': sampled,
         }
+        if not self.strict_no_z:
+            output.update({
+                'scene_prior': scene_prior,
+                'scene_posterior': scene_posterior,
+            })
         floating = {
             name: value for name, value in output.items()
             if torch.is_tensor(value) and value.is_floating_point()}
@@ -809,35 +826,37 @@ class GDTS(torch.nn.Module):
             'num_edges': float(edge_index.shape[1]),
             'avg_degree': (2.0 * edge_index.shape[1] /
                            max(agent_feat.shape[0], 1)),
-            'scene_latent_entropy': float((
-                -(scene_prior['prob'].float() *
-                  scene_prior['log_prob'].float()).sum(-1).mean()).detach().cpu()),
             'relation_entropy': float((
                 -(base_relation_prob.float().clamp_min(1e-8) *
                   base_relation_prob.float().clamp_min(1e-8).log()).sum(-1).mean()
                 if base_relation_prob.numel() else
                 base_relation_prob.new_zeros(())).detach().cpu()),
         }
-        prior_mean = scene_prior['prob'].detach().float().mean(dim=0)
-        for index, value in enumerate(prior_mean):
-            self.last_joint_diagnostics[f'p_z_mean_{index}'] = float(
-                value.cpu())
-            # The deployable prior is also the expected scene-mode usage.
-            self.last_joint_diagnostics[f'scene_mode_usage_{index}'] = float(
-                value.cpu())
-        if scene_posterior is not None:
-            posterior_mean = scene_posterior['prob'].detach().float().mean(
-                dim=0)
-            self.last_joint_diagnostics['scene_posterior_entropy'] = float((
-                -(scene_posterior['prob'].float() *
-                  scene_posterior['log_prob'].float()).sum(-1).mean()
+        if not self.strict_no_z:
+            self.last_joint_diagnostics['scene_latent_entropy'] = float((
+                -(scene_prior['prob'].float() *
+                  scene_prior['log_prob'].float()).sum(-1).mean()
             ).detach().cpu())
-            self.last_joint_diagnostics['q_z_prior_l1'] = float(
-                (scene_posterior['prob'].detach().float() -
-                 scene_prior['prob'].detach().float()).abs().mean().cpu())
-            for index, value in enumerate(posterior_mean):
-                self.last_joint_diagnostics[f'q_z_mean_{index}'] = float(
+            prior_mean = scene_prior['prob'].detach().float().mean(dim=0)
+            for index, value in enumerate(prior_mean):
+                self.last_joint_diagnostics[f'p_z_mean_{index}'] = float(
                     value.cpu())
+                self.last_joint_diagnostics[
+                    f'scene_mode_usage_{index}'] = float(value.cpu())
+            if scene_posterior is not None:
+                posterior_mean = scene_posterior['prob'].detach().float().mean(
+                    dim=0)
+                self.last_joint_diagnostics[
+                    'scene_posterior_entropy'] = float((
+                        -(scene_posterior['prob'].float() *
+                          scene_posterior['log_prob'].float()).sum(-1).mean()
+                    ).detach().cpu())
+                self.last_joint_diagnostics['q_z_prior_l1'] = float(
+                    (scene_posterior['prob'].detach().float() -
+                     scene_prior['prob'].detach().float()).abs().mean().cpu())
+                for index, value in enumerate(posterior_mean):
+                    self.last_joint_diagnostics[f'q_z_mean_{index}'] = float(
+                        value.cpu())
         base_relation_mean = (
             base_relation_prob.detach().float().mean(dim=0)
             if base_relation_prob.numel() else
@@ -860,13 +879,15 @@ class GDTS(torch.nn.Module):
                 self.last_joint_diagnostics[
                     f'teacher_relation_usage_{index}'] = float(value.cpu())
         if sampled is not None:
-            sampled_mode = sampled['scene_mode'].detach().long()
-            sampled_mode_usage = F.one_hot(
-                sampled_mode, num_classes=self.args.jdv2_scene_modes
-            ).float().mean(dim=(0, 1))
-            for index, value in enumerate(sampled_mode_usage):
-                self.last_joint_diagnostics[
-                    f'sampled_scene_mode_usage_{index}'] = float(value.cpu())
+            if not self.strict_no_z:
+                sampled_mode = sampled['scene_mode'].detach().long()
+                sampled_mode_usage = F.one_hot(
+                    sampled_mode, num_classes=self.args.jdv2_scene_modes
+                ).float().mean(dim=(0, 1))
+                for index, value in enumerate(sampled_mode_usage):
+                    self.last_joint_diagnostics[
+                        f'sampled_scene_mode_usage_{index}'] = float(
+                            value.cpu())
             sampled_relation = sampled['relation_prob'].detach().float()
             sampled_relation_mean = (
                 sampled_relation.mean(dim=(0, 1))
@@ -875,6 +896,43 @@ class GDTS(torch.nn.Module):
             for index, value in enumerate(sampled_relation_mean):
                 self.last_joint_diagnostics[
                     f'sampled_relation_usage_{index}'] = float(value.cpu())
+            with torch.no_grad():
+                initial = sampled['initial_candidate_index'].long()
+                selected = sampled['candidate_index'].long()
+                order = torch.argsort(
+                    candidate_log_prior.float(), dim=-1,
+                    descending=True, stable=True)
+                rank = torch.empty_like(order)
+                positions = torch.arange(
+                    1, order.shape[1] + 1, device=order.device
+                )[None].expand_as(order)
+                rank.scatter_(1, order, positions)
+                initial_rank = rank.gather(1, initial)
+                initial_unique = initial.new_tensor([
+                    torch.unique(row).numel() for row in initial],
+                    dtype=torch.float32)
+                gt_goal = inputs['world_coord'][-1].float()
+                candidate_error = torch.linalg.vector_norm(
+                    goal_candidates_world.float() - gt_goal[:, None], dim=-1)
+                initial_error = candidate_error.gather(1, initial).min(-1).values
+                selected_error = candidate_error.gather(
+                    1, selected).min(-1).values
+                suffix = 'e_gt0' if edge_index.shape[1] else 'e_eq0'
+                sampler_diagnostics = {
+                    'sampler_initial_unique_candidates': initial_unique.mean(),
+                    'sampler_rank1_coverage':
+                        (initial_rank <= 1).any(-1).float().mean(),
+                    'sampler_top3_coverage':
+                        (initial_rank <= 3).any(-1).float().mean(),
+                    'sampler_top5_coverage':
+                        (initial_rank <= 5).any(-1).float().mean(),
+                    'sampler_initial_goal_oracle': initial_error.mean(),
+                    'sampler_selected_goal_oracle': selected_error.mean(),
+                }
+                for name, value in sampler_diagnostics.items():
+                    scalar = float(value.cpu())
+                    self.last_joint_diagnostics[name] = scalar
+                    self.last_joint_diagnostics[f'{name}_{suffix}'] = scalar
         return output
 
     def _jdv2_contexts(self, inputs, goal_points_map):
@@ -920,7 +978,6 @@ class GDTS(torch.nn.Module):
                     sampled['candidate_index'], trunk_index), dim=1),
                 'joint_goal_points_world': all_goal_world,
                 'joint_goal_points_map': all_goal_map,
-                'sampled_scene_mode': sampled['scene_mode'],
                 'relation_prob': sampled['relation_prob'],
                 'dependency_state': {
                     'edge_index': structured['edge_index'],
@@ -932,6 +989,8 @@ class GDTS(torch.nn.Module):
                     'scene': inputs['scene'],
                 },
             })
+            if not self.strict_no_z:
+                structured['sampled_scene_mode'] = sampled['scene_mode']
             goal_points_map = all_goal_map
         else:
             goal_points_map = inputs['x_augmented'][
@@ -1250,6 +1309,11 @@ class GDTS(torch.nn.Module):
         if self.jdv2_active:
             stage = self.args.training_stage
             if stage == 'joint_goal':
+                if self.strict_no_z:
+                    return {
+                        'jdv2_pl_post': 0,
+                        'jdv2_pl_prior': 0,
+                        'jdv2_relation_kl': 0}
                 return {
                     'jdv2_mixture_pl': 0,
                     'jdv2_posterior_distill': 0,
@@ -1338,11 +1402,18 @@ class GDTS(torch.nn.Module):
                           else 1.0)
             coefficients = {}
             if self.args.training_stage in {'joint_goal', 'joint_finetune'}:
-                coefficients.update({
-                    'jdv2_mixture_pl': goal_scale,
-                    'jdv2_posterior_distill': beta * goal_scale,
-                    'jdv2_relation_kl': beta * goal_scale,
-                })
+                if self.strict_no_z:
+                    coefficients.update({
+                        'jdv2_pl_post': 0.5 * goal_scale,
+                        'jdv2_pl_prior': 0.5 * goal_scale,
+                        'jdv2_relation_kl': beta * goal_scale,
+                    })
+                else:
+                    coefficients.update({
+                        'jdv2_mixture_pl': goal_scale,
+                        'jdv2_posterior_distill': beta * goal_scale,
+                        'jdv2_relation_kl': beta * goal_scale,
+                    })
             if self.args.training_stage in {
                     'joint_trajectory', 'joint_finetune'} and \
                     self.args.use_dependency_corrector:
@@ -2557,8 +2628,167 @@ class GDTS(torch.nn.Module):
             per_agent = (per_agent_mode * probability[compact]).sum(dim=-1)
         return scene_balanced_mean(per_agent, compact)
 
+    def _jdv2_no_z_goal_losses(self, inputs):
+        """Compute the strict no-z dual composite objective."""
+        _, structured = self.encode(inputs, if_test=False, for_loss=True)
+        target = build_soft_goal_target(
+            structured['goal_candidates_world'], inputs['world_coord'][-1],
+            sigma_goal=self.args.goal_soft_sigma,
+            candidate_mask=structured['candidate_mask'])
+        unary = structured['unary_score']
+        scene_index = inputs['scene_index']
+        num_agents, num_candidates = unary.shape
+        local_prior = unary.new_zeros(
+            (num_agents, num_candidates), dtype=torch.float32)
+        local_post = torch.zeros_like(local_prior)
+        edge_index = structured['edge_index']
+        relation_kl_parts = []
+        relation_usage_sum = unary.new_zeros(
+            (self.args.jdv2_relation_modes,), dtype=torch.float32)
+        relation_entropy_sum = 0.0
+        relation_usage_count = 0
+        energy_sum = 0.0
+        energy_square_sum = 0.0
+        energy_count = 0
+        energy_min = float('inf')
+        energy_max = float('-inf')
+        chunk_size = self.args.jdv2_edge_chunk_size
+        for start in range(0, edge_index.shape[1], chunk_size):
+            stop = min(start + chunk_size, edge_index.shape[1])
+            chunk_edge = edge_index[:, start:stop]
+            chunk_feat = structured['edge_feat'][start:stop]
+            chunk_base = structured['base_relation_logits'][start:stop]
+            full_relation = self.jdv2_dynamic_relation.full_pair_relation(
+                chunk_base, structured['goal_candidates_world'],
+                inputs['obs_traj_world'][:, -1], chunk_edge,
+                mode_enabled=False)
+            if full_relation['log_prob'].ndim != 4:
+                raise RuntimeError(
+                    'Strict no-z relation must have shape [E,K,K,M]')
+            if not self.args.use_dynamic_relation:
+                base_log = F.log_softmax(chunk_base.float(), dim=-1)
+                prior_relation_log = base_log[:, None, None, :].expand(
+                    stop - start, num_candidates, num_candidates,
+                    self.args.jdv2_relation_modes)
+            else:
+                prior_relation_log = full_relation['log_prob']
+
+            if self.args.use_joint_energy:
+                factors = self.jdv2_joint_energy.factors(
+                    structured['agent_feat'],
+                    structured['goal_candidates_world'],
+                    inputs['obs_traj_world'][:, -1], chunk_edge, chunk_feat,
+                    mode_enabled=False)
+                if factors['left_factor'].ndim != 4:
+                    raise RuntimeError(
+                        'Strict no-z energy factors must be [E,M,K,R]')
+                relation_energy = self.jdv2_joint_energy.relation_energy(
+                    factors['left_factor'], factors['right_factor'])
+                prior_effective = self.jdv2_joint_energy.effective_energy(
+                    relation_energy, prior_relation_log)
+                if self.args.use_dynamic_relation:
+                    teacher_log = structured['relation_teacher']['log_prob'][
+                        start:stop]
+                    post_relation_log = teacher_log[:, None, None, :].expand_as(
+                        relation_energy)
+                else:
+                    post_relation_log = prior_relation_log
+                post_effective = self.jdv2_joint_energy.effective_energy(
+                    relation_energy, post_relation_log)
+            else:
+                prior_effective = unary.new_zeros(
+                    (stop - start, num_candidates, num_candidates),
+                    dtype=torch.float32)
+                post_effective = torch.zeros_like(prior_effective)
+
+            probability = full_relation['prob'].detach().float()
+            relation_usage_sum += probability.sum(dim=(0, 1, 2))
+            relation_usage_count += probability.numel() // \
+                max(self.args.jdv2_relation_modes, 1)
+            if probability.numel():
+                relation_entropy_sum += float((
+                    -(probability.clamp_min(1e-8) *
+                      probability.clamp_min(1e-8).log()).sum(-1)
+                ).sum().cpu())
+            detached_energy = prior_effective.detach().float()
+            if detached_energy.numel():
+                energy_sum += float(detached_energy.sum().cpu())
+                energy_square_sum += float(
+                    detached_energy.square().sum().cpu())
+                energy_count += detached_energy.numel()
+                energy_min = min(energy_min, float(detached_energy.min().cpu()))
+                energy_max = max(energy_max, float(detached_energy.max().cpu()))
+
+            src, dst = chunk_edge.long()
+            with torch.autocast(
+                    device_type=unary.device.type, enabled=False):
+                local_prior.index_add_(0, src, torch.einsum(
+                    'ekl,el->ek', prior_effective.float(), target[dst].float()))
+                local_prior.index_add_(0, dst, torch.einsum(
+                    'ekl,ek->el', prior_effective.float(), target[src].float()))
+                local_post.index_add_(0, src, torch.einsum(
+                    'ekl,el->ek', post_effective.float(), target[dst].float()))
+                local_post.index_add_(0, dst, torch.einsum(
+                    'ekl,ek->el', post_effective.float(), target[src].float()))
+            if self.args.use_dynamic_relation:
+                relation_kl_parts.append(jdv2_no_z_relation_kl_per_edge(
+                    structured['relation_teacher']['log_prob'][start:stop],
+                    full_relation['log_prob'], target, chunk_edge))
+
+        pl_post = jdv2_no_z_pseudo_likelihood_from_local(
+            unary, target, scene_index, local_post)
+        pl_prior = jdv2_no_z_pseudo_likelihood_from_local(
+            unary, target, scene_index, local_prior)
+        if relation_kl_parts:
+            relation_kl = torch.cat(relation_kl_parts).mean()
+        else:
+            relation_kl = unary.float().sum() * 0.0
+        losses = {
+            'jdv2_pl_post': pl_post,
+            'jdv2_pl_prior': pl_prior,
+            'jdv2_relation_kl': relation_kl,
+        }
+        coefficients = self.set_losses_coeffs()
+        self.last_joint_diagnostics.update({
+            'L_PL_post': float(pl_post.detach().cpu()),
+            'L_PL_prior': float(pl_prior.detach().cpu()),
+            'L_r': float(relation_kl.detach().cpu()),
+            'mean_KL_r': float(relation_kl.detach().cpu()),
+            'L_no_z': float(sum(
+                coefficients[name] * value for name, value in losses.items()
+            ).detach().cpu()),
+        })
+        if relation_usage_count:
+            relation_usage = relation_usage_sum / float(relation_usage_count)
+            self.last_joint_diagnostics['dynamic_relation_entropy'] = \
+                relation_entropy_sum / float(relation_usage_count)
+        else:
+            relation_usage = relation_usage_sum
+            self.last_joint_diagnostics['dynamic_relation_entropy'] = 0.0
+        for index, value in enumerate(relation_usage):
+            self.last_joint_diagnostics[
+                f'predicted_relation_usage_{index}'] = float(value.cpu())
+        if energy_count:
+            energy_mean = energy_sum / energy_count
+            energy_variance = max(
+                energy_square_sum / energy_count - energy_mean ** 2, 0.0)
+            self.last_joint_diagnostics.update({
+                'energy_mean': energy_mean,
+                'energy_std': energy_variance ** 0.5,
+                'energy_min': energy_min,
+                'energy_max': energy_max,
+            })
+        else:
+            self.last_joint_diagnostics.update({
+                'energy_mean': 0.0, 'energy_std': 0.0,
+                'energy_min': 0.0, 'energy_max': 0.0,
+            })
+        return losses
+
     def _jdv2_goal_losses(self, inputs):
         """Compute the V2 marginalized composite objective in edge chunks."""
+        if self.strict_no_z:
+            return self._jdv2_no_z_goal_losses(inputs)
         _, structured = self.encode(inputs, if_test=False, for_loss=True)
         target = build_soft_goal_target(
             structured['goal_candidates_world'], inputs['world_coord'][-1],

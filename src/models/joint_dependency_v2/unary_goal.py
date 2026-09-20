@@ -12,18 +12,21 @@ class UnaryGoalResidual(nn.Module):
     """Score candidate endpoints while preserving the frozen prior at init."""
 
     def __init__(self, agent_dim: int = 128,
-                 prior_temperature: float = 1.0) -> None:
+                 prior_temperature: float = 1.0,
+                 use_scene_latent: bool = True) -> None:
         super().__init__()
         if agent_dim != 128:
             raise ValueError("JDV2 requires agent_dim=128")
         if prior_temperature <= 0:
             raise ValueError("prior_temperature must be positive")
         self.prior_temperature = float(prior_temperature)
+        self.use_scene_latent = bool(use_scene_latent)
         self.goal_encoder = nn.Sequential(
             nn.Linear(4, 64), nn.SiLU(), nn.Linear(64, 64),
             nn.LayerNorm(64))
         self.agent_projection = nn.Linear(128, 64)
-        self.scene_embedding = nn.Embedding(4, 64)
+        if self.use_scene_latent:
+            self.scene_embedding = nn.Embedding(4, 64)
         self.context_norm = nn.LayerNorm(64)
         self.residual_head = nn.Sequential(
             nn.Linear(192, 64), nn.SiLU(), nn.Linear(64, 1))
@@ -65,6 +68,9 @@ class UnaryGoalResidual(nn.Module):
                 (context, goal_hidden, context * goal_hidden), dim=-1)
             residual = self.residual_head(interaction).squeeze(-1)
         else:
+            if not self.use_scene_latent:
+                raise RuntimeError(
+                    "Strict no-z unary has no scene embedding")
             if scene_mode.ndim != 1 or scene_mode.shape[0] != num_agents:
                 raise ValueError("scene_mode must have shape [N]")
             context = self.context_norm(

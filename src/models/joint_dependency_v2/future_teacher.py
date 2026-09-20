@@ -46,15 +46,19 @@ class SceneFutureTeacher(nn.Module):
     """Compute ``q(z|X,Y*)`` and the future relation posterior."""
 
     def __init__(self, num_scene_modes: int = 4,
-                 num_relation_modes: int = 4) -> None:
+                 num_relation_modes: int = 4,
+                 use_scene_latent: bool = True) -> None:
         super().__init__()
         if num_scene_modes != 4 or num_relation_modes != 4:
             raise ValueError("JDV2 requires four scene/relation modes")
-        self.future_projection = nn.Sequential(nn.Linear(4, 64), nn.SiLU())
-        self.future_gru = nn.GRU(64, 128, batch_first=True)
-        self.posterior_head = nn.Sequential(
-            nn.Linear(128, 128), nn.SiLU(), nn.LayerNorm(128),
-            nn.Linear(128, 4))
+        self.use_scene_latent = bool(use_scene_latent)
+        if self.use_scene_latent:
+            self.future_projection = nn.Sequential(
+                nn.Linear(4, 64), nn.SiLU())
+            self.future_gru = nn.GRU(64, 128, batch_first=True)
+            self.posterior_head = nn.Sequential(
+                nn.Linear(128, 128), nn.SiLU(), nn.LayerNorm(128),
+                nn.Linear(128, 4))
         self.relation_teacher = nn.Sequential(
             nn.Linear(6, 64), nn.SiLU(), nn.Linear(64, 64), nn.SiLU(),
             nn.Linear(64, 4))
@@ -81,6 +85,9 @@ class SceneFutureTeacher(nn.Module):
         scene_index: Optional[torch.Tensor],
     ) -> Dict[str, torch.Tensor]:
         """Encode exact future inputs and return posterior tensors ``[C,4]``."""
+        if not self.use_scene_latent:
+            raise RuntimeError(
+                "Strict no-z relation teacher has no scene posterior")
         if future_position.shape != future_velocity.shape or \
                 future_position.ndim != 3 or future_position.shape[-1] != 2:
             raise ValueError("future positions/velocities must be [N,T,2]")
@@ -116,6 +123,9 @@ class SceneFutureTeacher(nn.Module):
         history features are not concatenated into the evidence head, and
         posterior distillation cannot update the prior through this branch.
         """
+        if not self.use_scene_latent:
+            raise RuntimeError(
+                "Strict no-z relation teacher has no posterior head")
         if future_scene.ndim != 2 or future_scene.shape[1] != 128:
             raise ValueError("future_scene must have shape [C,128]")
         if prior_logits.shape != (future_scene.shape[0], 4):

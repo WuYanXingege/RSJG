@@ -86,7 +86,8 @@ class ParallelConditionalSampler(nn.Module):
 
     def __init__(self, num_samples: int = 20, num_refinement_steps: int = 2,
                  temperature: float = 1.0,
-                 minimum_active_mode: bool = False) -> None:
+                 minimum_active_mode: bool = False,
+                 strict_no_z: bool = False) -> None:
         super().__init__()
         if num_samples != 20 or num_refinement_steps != 2:
             raise ValueError("canonical JDV2 requires P=20 and two rounds")
@@ -96,12 +97,13 @@ class ParallelConditionalSampler(nn.Module):
         self.num_refinement_steps = num_refinement_steps
         self.temperature = float(temperature)
         self.minimum_active_mode = bool(minimum_active_mode)
+        self.strict_no_z = bool(strict_no_z)
 
     def forward(
         self,
         unary_score: torch.Tensor,
         goal_candidates: torch.Tensor,
-        scene_probability: torch.Tensor,
+        scene_probability: Optional[torch.Tensor],
         scene_index: torch.Tensor,
         edge_index: torch.Tensor,
         edge_feat: torch.Tensor,
@@ -125,26 +127,37 @@ class ParallelConditionalSampler(nn.Module):
             raise ValueError("goal_candidates must have shape [N,K,2]")
         mask = sanitize_candidate_mask(
             candidate_mask, num_agents, num_candidates, unary_score.device)
-        scene_ids, compact = canonicalize_scene_index(
-            scene_index, num_agents, unary_score.device)
-        if scene_probability.shape[0] != scene_ids.numel():
-            raise ValueError("scene_probability has wrong C axis")
-        scene_mode = mode_stratified_allocation(
-            scene_probability, self.num_samples,
-            minimum_active_mode=self.minimum_active_mode)
-        if not use_scene_latent:
-            scene_mode.zero_()
-        agent_mode = scene_mode[compact]
+        scene_mode = None
+        agent_mode = None
+        edge_mode = None
+        if self.strict_no_z:
+            if use_scene_latent or scene_probability is not None:
+                raise ValueError(
+                    "Strict no-z sampler accepts no scene probability/mode")
+        else:
+            scene_ids, compact = canonicalize_scene_index(
+                scene_index, num_agents, unary_score.device)
+            if scene_probability is None or \
+                    scene_probability.shape[0] != scene_ids.numel():
+                raise ValueError("scene_probability has wrong C axis")
+            scene_mode = mode_stratified_allocation(
+                scene_probability, self.num_samples,
+                minimum_active_mode=self.minimum_active_mode)
+            if not use_scene_latent:
+                scene_mode.zero_()
+            agent_mode = scene_mode[compact]
         score = unary_score[:, None, :].expand(
             num_agents, self.num_samples, num_candidates)
         expanded_mask = mask[:, None, :].expand_as(score)
         selected = _categorical(
             score, expanded_mask, self.temperature, sampling_mode, generator)
+        initial_selected = selected.clone()
 
         edge_count = edge_index.shape[1]
         src, dst = edge_index.long()
-        edge_mode = agent_mode[src] if edge_count else scene_mode.new_empty(
-            (0, self.num_samples))
+        if not self.strict_no_z:
+            edge_mode = agent_mode[src] if edge_count else \
+                scene_mode.new_empty((0, self.num_samples))
         if use_joint_energy and edge_count:
             # The sole Python loop is the frozen two-round algorithm.  Agents,
             # samples and candidates remain tensor axes throughout.
@@ -186,15 +199,20 @@ class ParallelConditionalSampler(nn.Module):
             base_relation_logits, goal_candidates, last_position, edge_index,
             selected, edge_mode, dynamic_enabled=use_dynamic_relation,
             mode_enabled=use_scene_latent)
-        return {
+        output = {
             "candidate_index": selected,
+            "initial_candidate_index": initial_selected,
             "goals": goals,
-            "scene_mode": scene_mode,
-            "agent_scene_mode": agent_mode,
-            "edge_scene_mode": edge_mode,
             "relation_prob": relation["prob"],
             "relation_embedding": relation["expected_embedding"],
         }
+        if not self.strict_no_z:
+            output.update({
+                "scene_mode": scene_mode,
+                "agent_scene_mode": agent_mode,
+                "edge_scene_mode": edge_mode,
+            })
+        return output
 
 
 __all__ = ["ParallelConditionalSampler", "mode_stratified_allocation"]

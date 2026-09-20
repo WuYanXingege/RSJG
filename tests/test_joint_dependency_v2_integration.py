@@ -112,6 +112,24 @@ def _legacy_args(tmp_path):
     return args
 
 
+def _strict_no_z_args(tmp_path):
+    values = [
+        "--dataset", "sdd", "--device", "cpu",
+        "--goal_model_type", "joint_dependency_v2",
+        "--training_stage", "joint_goal", "--data_augmentation", "False",
+        "--use_scene_latent", "False",
+        "--jdv2_latent_objective", "strict_no_z",
+        "--use_wandb", "False", "--fast_debug", "True",
+        "--e_dim", "8", "--ddpm_step", "4", "--ddim_step", "2",
+        "--trunk_stage_step", "2", "--graph_type", "full",
+        "--down_factor", "1", "--use_ttst", "False",
+    ]
+    args = parser_module.get_parser().parse_args(values)
+    args = parser_module.check_and_add_additional_args(args)
+    args.model_dir = str(tmp_path / "strict_no_z")
+    return args
+
+
 def _inputs(n=3, size=8):
     time = torch.arange(20).float()
     agent = torch.arange(n).float()
@@ -123,7 +141,8 @@ def _inputs(n=3, size=8):
     augmented[1:, :, 2:4] = absolute[1:] - absolute[:-1]
     augmented[0, :, 2:4] = augmented[1, :, 2:4]
     trajectory_maps = torch.zeros(n, 20, size, size)
-    scene_index = torch.tensor([0, 0, 1])
+    scene_index = (torch.tensor([0, 0, 1]) if n == 3 else
+                   torch.zeros(n, dtype=torch.long))
     return {
         "x_augmented": augmented,
         "tensor_image": torch.zeros(6, size, size),
@@ -173,6 +192,49 @@ def test_stage_a_integrated_loss_and_gradient(tmp_path, model_module):
                for index in range(4)) == pytest.approx(1.0, abs=1e-5)
     assert sum(diagnostics[f"teacher_relation_usage_{index}"]
                for index in range(4)) == pytest.approx(1.0, abs=1e-5)
+
+
+def test_strict_no_z_stage_a_loss_state_and_single_agent(
+        tmp_path, model_module):
+    torch.manual_seed(29)
+    args = _strict_no_z_args(tmp_path)
+    model = model_module.GDTS(args, torch.device("cpu"))
+    state_keys = tuple(model.state_dict())
+    forbidden = (
+        'jdv2_scene_prior', 'future_projection', 'future_gru',
+        'posterior_head', 'scene_embedding')
+    assert not any(token in key for key in state_keys for token in forbidden)
+    assert model.jdv2_scene_prior is None
+    assert model.jdv2_dynamic_relation.query.shape == (4, 16)
+    assert model.jdv2_dynamic_relation.bias.shape == (4,)
+
+    losses = model.get_loss(*_inputs())
+    assert set(losses) == {
+        'jdv2_pl_post', 'jdv2_pl_prior', 'jdv2_relation_kl'}
+    coefficients = model.set_losses_coeffs()
+    assert coefficients['jdv2_pl_post'] == pytest.approx(0.5)
+    assert coefficients['jdv2_pl_prior'] == pytest.approx(0.5)
+    total = sum(coefficients[name] * value for name, value in losses.items())
+    assert torch.isfinite(total)
+    total.backward()
+    assert any(parameter.grad is not None
+               for parameter in model.jdv2_joint_energy.parameters())
+    diagnostics = model.last_joint_diagnostics
+    assert {'L_PL_post', 'L_PL_prior', 'L_r', 'L_no_z',
+            'dynamic_relation_entropy'} <= diagnostics.keys()
+    assert not any(name.startswith(('p_z_', 'q_z_', 'gamma_'))
+                   for name in diagnostics)
+
+    single_model = model_module.GDTS(
+        _strict_no_z_args(tmp_path), torch.device("cpu"))
+    single_losses = single_model.get_loss(*_inputs(n=1))
+    assert all(torch.isfinite(value) for value in single_losses.values())
+    assert single_losses['jdv2_relation_kl'].item() == pytest.approx(0.0)
+    single_model.eval()
+    prediction, auxiliary = single_model(_inputs(n=1)[0], if_test=True)
+    assert prediction.shape == (20, 20, 1, 2)
+    assert auxiliary['joint_candidate_index'].shape == (1, 21)
+    assert 'sampled_scene_mode' not in auxiliary
 
 
 def test_stage_b_corrector_gradient_and_branch_forward(tmp_path, model_module):
@@ -323,6 +385,45 @@ def test_legacy_checkpoint_allowlist_and_v2_resume_validation(
     torch.save(incompatible, bad_path)
     with pytest.raises(RuntimeError, match="architecture mismatch"):
         shell._load_state_file(str(bad_path))
+
+
+def test_strict_no_z_checkpoint_metadata_rejects_scene_latent_resume(
+        tmp_path, model_module):
+    trainer_module = importlib.import_module("src.trainer")
+    latent_args = _args(tmp_path, "joint_goal")
+    latent_args.jdv2_cache_manifest_hash = "cache-hash"
+    latent_args.jdv2_source_checkpoint_hash = "source-hash"
+    latent = model_module.GDTS(latent_args, torch.device("cpu"))
+    latent_shell = trainer_module.trainer.__new__(trainer_module.trainer)
+    latent_shell.args = latent_args
+    latent_shell.net = latent
+
+    path = tmp_path / "scene_latent.pt"
+    torch.save({
+        "epoch": 4,
+        "model_state_dict": latent.state_dict(),
+        "architecture_config": latent_shell._jdv2_architecture_config(),
+        "ablation_config": latent_shell._jdv2_ablation_config(),
+        "training_stage": "joint_goal",
+        "latent_objective": latent_args.jdv2_latent_objective,
+        "cache_manifest_hash": "cache-hash",
+        "source_checkpoint_hash": "source-hash",
+    }, path)
+
+    strict_args = _strict_no_z_args(tmp_path)
+    strict_args.jdv2_cache_manifest_hash = "cache-hash"
+    strict_args.jdv2_source_checkpoint_hash = "source-hash"
+    strict = model_module.GDTS(strict_args, torch.device("cpu"))
+    before = {key: value.clone() for key, value in strict.state_dict().items()}
+    shell = trainer_module.trainer.__new__(trainer_module.trainer)
+    shell.args = strict_args
+    shell.device = torch.device("cpu")
+    shell.net = strict
+    shell._pending_training_state = None
+    with pytest.raises(RuntimeError, match="latent objective mismatch"):
+        shell._load_state_file(str(path))
+    for key, value in strict.state_dict().items():
+        assert torch.equal(value, before[key])
 
 
 def test_isolated_validation_rng_is_reproducible_and_restores_all_cpu_rngs():

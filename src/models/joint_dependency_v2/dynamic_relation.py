@@ -11,10 +11,16 @@ import torch.nn.functional as F
 
 
 class DynamicHypothesisRelation(nn.Module):
-    """Model ``p(r_ij | X,z,g_i,g_j)`` with the frozen four scalars."""
+    """Model hypothesis-conditioned sparse relation probabilities.
+
+    The canonical model uses ``p(r_ij | X,z,g_i,g_j)``.  The strict no-z
+    ablation constructs a different parameterization for
+    ``p(r_ij | X,g_i,g_j)``: its query and bias have no latent-mode axis.
+    """
 
     def __init__(self, graph_radius: float, num_scene_modes: int = 4,
-                 num_relation_modes: int = 4, eps: float = 1e-8) -> None:
+                 num_relation_modes: int = 4, eps: float = 1e-8,
+                 use_scene_latent: bool = True) -> None:
         super().__init__()
         if graph_radius <= 0:
             raise ValueError("graph_radius must be positive")
@@ -24,10 +30,15 @@ class DynamicHypothesisRelation(nn.Module):
         self.num_scene_modes = num_scene_modes
         self.num_relation_modes = num_relation_modes
         self.eps = float(eps)
+        self.use_scene_latent = bool(use_scene_latent)
         self.geometry_encoder = nn.Sequential(
             nn.Linear(4, 32), nn.SiLU(), nn.Linear(32, 16))
-        self.query = nn.Parameter(torch.empty(4, 4, 16))
-        self.bias = nn.Parameter(torch.zeros(4, 4))
+        if self.use_scene_latent:
+            self.query = nn.Parameter(torch.empty(4, 4, 16))
+            self.bias = nn.Parameter(torch.zeros(4, 4))
+        else:
+            self.query = nn.Parameter(torch.empty(4, 16))
+            self.bias = nn.Parameter(torch.zeros(4))
         self.relation_embedding = nn.Parameter(torch.empty(4, 16))
         nn.init.normal_(self.query, std=16 ** -0.5)
         nn.init.normal_(self.relation_embedding, std=16 ** -0.5)
@@ -71,6 +82,8 @@ class DynamicHypothesisRelation(nn.Module):
         ), dim=-1)
 
     def _mode_query(self, mode_enabled: bool) -> tuple[torch.Tensor, torch.Tensor]:
+        if not self.use_scene_latent:
+            return self.query, self.bias
         if mode_enabled:
             return self.query, self.bias
         return self.query.mean(dim=0, keepdim=True), \
@@ -84,7 +97,7 @@ class DynamicHypothesisRelation(nn.Module):
         edge_index: torch.Tensor,
         mode_enabled: bool = True,
     ) -> Dict[str, torch.Tensor]:
-        """Return full probabilities ``[E,Z,K,K,M]`` for loss/reference use."""
+        """Return ``[E,Z,K,K,M]`` or strict no-z ``[E,K,K,M]``."""
         if base_relation_logits.ndim != 2 or \
                 base_relation_logits.shape[1] != 4:
             raise ValueError("base_relation_logits must have shape [E,4]")
@@ -104,12 +117,20 @@ class DynamicHypothesisRelation(nn.Module):
                 device_type=geometry.device.type, enabled=False):
             embedding = self.geometry_encoder(geometry.float())
             query, bias = self._mode_query(mode_enabled)
-            residual = torch.einsum(
-                "eklh,zmh->ezklm", embedding.float(), query.float())
-            residual = residual / math.sqrt(16.0) + \
-                bias.float()[None, :, None, None]
-            logits = base_relation_logits.float()[
-                :, None, None, None, :] + residual
+            if self.use_scene_latent:
+                residual = torch.einsum(
+                    "eklh,zmh->ezklm", embedding.float(), query.float())
+                residual = residual / math.sqrt(16.0) + \
+                    bias.float()[None, :, None, None]
+                logits = base_relation_logits.float()[
+                    :, None, None, None, :] + residual
+            else:
+                residual = torch.einsum(
+                    "eklh,mh->eklm", embedding.float(), query.float())
+                residual = residual / math.sqrt(16.0) + \
+                    bias.float()[None, None, None, :]
+                logits = base_relation_logits.float()[
+                    :, None, None, :] + residual
             log_prob = F.log_softmax(logits, dim=-1)
         return {"geometry": geometry, "geometry_embedding": embedding,
                 "logits": logits, "log_prob": log_prob,
@@ -132,7 +153,7 @@ class DynamicHypothesisRelation(nn.Module):
         last_position: torch.Tensor,
         edge_index: torch.Tensor,
         selected_candidate: torch.Tensor,
-        edge_scene_mode: torch.Tensor,
+        edge_scene_mode: Optional[torch.Tensor],
         conditioned_side: str,
         dynamic_enabled: bool = True,
         mode_enabled: bool = True,
@@ -149,8 +170,12 @@ class DynamicHypothesisRelation(nn.Module):
             raise ValueError("base_relation_logits must be [E,4]")
         if selected_candidate.ndim != 2:
             raise ValueError("selected_candidate must be [N,P]")
-        if edge_scene_mode.shape != (edge_count, selected_candidate.shape[1]):
-            raise ValueError("edge_scene_mode must be [E,P]")
+        if self.use_scene_latent:
+            if edge_scene_mode is None or edge_scene_mode.shape != (
+                    edge_count, selected_candidate.shape[1]):
+                raise ValueError("edge_scene_mode must be [E,P]")
+        elif edge_scene_mode is not None:
+            raise ValueError("Strict no-z relation accepts no scene modes")
         num_samples = selected_candidate.shape[1]
         num_candidates = goal_candidates.shape[1]
         if edge_count == 0:
@@ -182,7 +207,14 @@ class DynamicHypothesisRelation(nn.Module):
         with torch.autocast(
                 device_type=geometry.device.type, enabled=False):
             embedding = self.geometry_encoder(geometry.float())
-            if mode_enabled:
+            if not self.use_scene_latent:
+                query = self.query.float()
+                bias = self.bias.float()
+                residual = torch.einsum(
+                    "epkh,mh->epkm", embedding.float(), query)
+                residual = residual / math.sqrt(16.0) + \
+                    bias[None, None, None, :]
+            elif mode_enabled:
                 query = self.query[
                     edge_scene_mode.long()].float()  # [E,P,M,16]
                 bias = self.bias[edge_scene_mode.long()].float()  # [E,P,M]
@@ -191,9 +223,10 @@ class DynamicHypothesisRelation(nn.Module):
                     edge_count, num_samples, -1, -1).float()
                 bias = self.bias.mean(dim=0)[None, None].expand(
                     edge_count, num_samples, -1).float()
-            residual = torch.einsum(
-                "epkh,epmh->epkm", embedding.float(), query.float())
-            residual = residual / math.sqrt(16.0) + bias[:, :, None, :]
+            if self.use_scene_latent:
+                residual = torch.einsum(
+                    "epkh,epmh->epkm", embedding.float(), query.float())
+                residual = residual / math.sqrt(16.0) + bias[:, :, None, :]
             logits = base_relation_logits.float()[:, None, None, :] + residual
             log_prob = F.log_softmax(logits, dim=-1)
         return {"geometry": geometry, "geometry_embedding": embedding,
@@ -207,7 +240,7 @@ class DynamicHypothesisRelation(nn.Module):
         last_position: torch.Tensor,
         edge_index: torch.Tensor,
         selected_candidate: torch.Tensor,
-        edge_scene_mode: torch.Tensor,
+        edge_scene_mode: Optional[torch.Tensor],
         dynamic_enabled: bool = True,
         mode_enabled: bool = True,
     ) -> Dict[str, torch.Tensor]:

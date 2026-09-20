@@ -807,6 +807,59 @@ def jdv2_relation_kl_per_edge_mode(
     return weighted_candidate
 
 
+def jdv2_no_z_pseudo_likelihood_from_local(
+        unary_score: torch.Tensor,
+        soft_goal_target: torch.Tensor,
+        scene_index: torch.Tensor,
+        local_energy: torch.Tensor,
+) -> torch.Tensor:
+    """Strict no-z scene-balanced composite NLL from ``[N,K]`` energy."""
+    if unary_score.ndim != 2 or local_energy.shape != unary_score.shape:
+        raise ValueError("unary_score/local_energy must share shape [N,K]")
+    target = _normalize_soft_target(soft_goal_target.float())
+    if target.shape != unary_score.shape:
+        raise ValueError("soft_goal_target must have shape [N,K]")
+    with torch.autocast(
+            device_type=unary_score.device.type, enabled=False):
+        conditional_log_prob = F.log_softmax(
+            unary_score.float() - local_energy.float(), dim=-1)
+        weighted = torch.where(
+            target > 0, target * conditional_log_prob,
+            torch.zeros_like(conditional_log_prob))
+        per_agent = -weighted.sum(dim=-1)
+    return scene_balanced_mean(per_agent, scene_index)
+
+
+def jdv2_no_z_relation_kl_per_edge(
+        teacher_relation_log_prob: torch.Tensor,
+        deployable_relation_log_prob: torch.Tensor,
+        soft_goal_target: torch.Tensor,
+        edge_index: torch.Tensor,
+) -> torch.Tensor:
+    """Return strict no-z candidate-averaged relation KL ``[E]``."""
+    edge_count = edge_index.shape[1]
+    if teacher_relation_log_prob.shape != (edge_count, 4):
+        raise ValueError("teacher relation must have shape [E,4]")
+    if deployable_relation_log_prob.ndim != 4 or \
+            deployable_relation_log_prob.shape[0] != edge_count or \
+            deployable_relation_log_prob.shape[-1] != 4:
+        raise ValueError("deployable relation must have shape [E,K,K,4]")
+    if edge_count == 0:
+        return deployable_relation_log_prob.new_empty(
+            (0,), dtype=torch.float32)
+    target = _normalize_soft_target(soft_goal_target.float())
+    src, dst = edge_index.long()
+    with torch.autocast(
+            device_type=teacher_relation_log_prob.device.type,
+            enabled=False):
+        q_log = F.log_softmax(teacher_relation_log_prob.float(), dim=-1)
+        p_log = F.log_softmax(
+            deployable_relation_log_prob.float(), dim=-1)
+        kl = torch.sum(q_log[:, None, None, :].exp() * (
+            q_log[:, None, None, :] - p_log), dim=-1)
+        return torch.einsum("ek,el,ekl->e", target[src], target[dst], kl)
+
+
 def jdv2_relation_kl(
         teacher_relation_log_prob: torch.Tensor,
         deployable_relation_log_prob: torch.Tensor,
@@ -895,6 +948,8 @@ __all__ = [
     "pseudo_likelihood_goal_loss",
     "JointGoalLoss",
     "jdv2_pseudo_likelihood",
+    "jdv2_no_z_pseudo_likelihood_from_local",
+    "jdv2_no_z_relation_kl_per_edge",
     "jdv2_relation_kl",
     "jdv2_scene_kl",
     "jdv2_teacher_probability",
