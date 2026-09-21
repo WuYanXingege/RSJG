@@ -324,7 +324,8 @@ class GDTS(torch.nn.Module):
                 num_samples=20, num_refinement_steps=2,
                 temperature=self.args.joint_sampling_temperature,
                 minimum_active_mode=self.args.jdv2_minimum_active_mode,
-                strict_no_z=self.strict_no_z)
+                strict_no_z=self.strict_no_z,
+                refinement_policy=self.args.jdv2_refinement_policy)
             self.jdv2_corrector = DependencyCorrector(
                 dt=self.args.trajectory_dt)
             self.last_joint_diagnostics = {}

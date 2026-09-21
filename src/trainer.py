@@ -144,6 +144,15 @@ class trainer(object):
             'use_scene_latent', 'use_dynamic_relation', 'use_joint_energy',
             'use_dependency_corrector')}
 
+    def _jdv2_inference_sampler_config(self):
+        return {
+            'refinement_policy': self.args.jdv2_refinement_policy,
+            'num_samples': self.args.num_samples,
+            'num_candidates': self.args.num_goal_candidates,
+            'num_refinement_steps': self.args.num_refinement_steps,
+            'temperature': self.args.joint_sampling_temperature,
+        }
+
     def _selection_tuple(self, valid_metrics):
         primary_name = self.net.best_valid_metric()
         primary = float(valid_metrics['valid_' + primary_name])
@@ -315,6 +324,10 @@ class trainer(object):
                 self.args.num_cached_seeds_per_window),
             'validation_seed': self.args.validation_seed,
             'jdv2_latent_objective': self.args.jdv2_latent_objective,
+            'jdv2_inference_sampler_config': (
+                self._jdv2_inference_sampler_config()
+                if (self.args.goal_model_type == 'joint_dependency_v2' and
+                    self.args.jdv2_active) else None),
         }
         if self.args.use_trajectory_bank_cache:
             protocol['trajectory_bank_manifest'] = \
@@ -372,6 +385,8 @@ class trainer(object):
                     else None),
                 'architecture_config': self._jdv2_architecture_config(),
                 'ablation_config': self._jdv2_ablation_config(),
+                'inference_sampler_config': (
+                    self._jdv2_inference_sampler_config()),
                 'training_stage': self.args.training_stage,
                 'latent_objective': self.args.jdv2_latent_objective,
                 'stage_progress': self.args.jdv2_stage_progress,
@@ -1278,16 +1293,26 @@ class trainer(object):
                         metric_names=None, external_edge_cache_root=None):
         """Evaluate with an isolated, reproducible stochastic RNG stream."""
         if evaluation_seed is None:
-            if mode != 'valid':
+            structured_policy = (
+                self.net.jdv2_active and
+                self.args.jdv2_refinement_policy ==
+                'structured_gumbel_assignment')
+            if mode != 'valid' and not structured_policy:
                 return self._evaluate_epoch_unseeded(
                     epoch, mode=mode, metric_names=metric_names,
                     external_edge_cache_root=external_edge_cache_root)
-            evaluation_seed = self.args.validation_seed
-        with isolated_random_seed(
-                evaluation_seed, use_cuda=self.device.type == 'cuda'):
-            return self._evaluate_epoch_unseeded(
-                epoch, mode=mode, metric_names=metric_names,
-                external_edge_cache_root=external_edge_cache_root)
+            evaluation_seed = (self.args.validation_seed
+                               if mode == 'valid' else self.args.seed)
+        previous_seed = getattr(self, '_active_evaluation_seed', None)
+        self._active_evaluation_seed = int(evaluation_seed)
+        try:
+            with isolated_random_seed(
+                    evaluation_seed, use_cuda=self.device.type == 'cuda'):
+                return self._evaluate_epoch_unseeded(
+                    epoch, mode=mode, metric_names=metric_names,
+                    external_edge_cache_root=external_edge_cache_root)
+        finally:
+            self._active_evaluation_seed = previous_seed
 
     def _evaluate_epoch_unseeded(self, epoch, mode='valid', metric_names=None,
                                  external_edge_cache_root=None):
@@ -1332,6 +1357,15 @@ class trainer(object):
             # compute metric_mask
             metric_mask = compute_metric_mask(seq_list)
             st = time.time()
+            if (self.net.jdv2_active and
+                    self.args.jdv2_refinement_policy ==
+                    'structured_gumbel_assignment'):
+                active_seed = getattr(self, '_active_evaluation_seed', None)
+                if active_seed is None:
+                    raise RuntimeError(
+                        'CPSR evaluation requires an explicit evaluation seed')
+                self.net.jdv2_sampler.set_sampling_context(
+                    active_seed, batch_index)
             with self._autocast_context():
                 all_output, all_aux_outputs = self.net.forward(
                     inputs, if_test=True)
