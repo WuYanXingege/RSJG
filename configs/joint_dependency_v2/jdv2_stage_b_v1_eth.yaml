@@ -1,6 +1,6 @@
-# Canonical JDV2 Stage-B V1 preflight/training-review configuration.
-# This file does not authorize training. It initializes strictly from the
-# frozen Stage-A epoch-13 checkpoint and trains only DependencyCorrector.
+# Canonical JDV2 Stage-B V1 formal-training configuration.
+# It initializes strictly from the frozen Stage-A epoch-13 checkpoint and
+# trains only DependencyCorrector.
 
 dataset: eth5
 test_set: eth
@@ -71,6 +71,13 @@ learning_rate: 0.0001
 optimizer: Adam
 scheduler: ExponentialLR
 clip: 1
+num_epochs: 100
+start_validation: 5
+validate_every: 5
+early_stopping_patience: 6
+# Keep only the overwritten last checkpoint, automatically selected best,
+# and a final periodic epoch-100 checkpoint if early stopping does not fire.
+save_every: 100
 
 amp_enabled: true
 amp_dtype: bf16
@@ -83,6 +90,6 @@ data_augmentation: false
 num_workers: 0
 model_selection_split: dataset_valid
 final_test_split: heldout_test
-best_metric: JFDE
+best_metric: auto
 joint_diagnostics: true
 use_wandb: false
