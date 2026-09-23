@@ -1295,8 +1295,9 @@ class trainer(object):
         if evaluation_seed is None:
             structured_policy = (
                 self.net.jdv2_active and
-                self.args.jdv2_refinement_policy ==
-                'structured_gumbel_assignment')
+                self.args.jdv2_refinement_policy in {
+                    'structured_gumbel_assignment',
+                    'exact_lexicographic_persistent_tie'})
             if mode != 'valid' and not structured_policy:
                 return self._evaluate_epoch_unseeded(
                     epoch, mode=mode, metric_names=metric_names,
@@ -1358,8 +1359,9 @@ class trainer(object):
             metric_mask = compute_metric_mask(seq_list)
             st = time.time()
             if (self.net.jdv2_active and
-                    self.args.jdv2_refinement_policy ==
-                    'structured_gumbel_assignment'):
+                    self.args.jdv2_refinement_policy in {
+                        'structured_gumbel_assignment',
+                        'exact_lexicographic_persistent_tie'}):
                 active_seed = getattr(self, '_active_evaluation_seed', None)
                 if active_seed is None:
                     raise RuntimeError(

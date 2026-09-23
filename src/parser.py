@@ -175,7 +175,11 @@ def get_parser():
               'checkpoints.'))
     parser.add_argument(
         '--jdv2_refinement_policy', default='categorical',
-        choices=['categorical', 'structured_gumbel_assignment'],
+        choices=[
+            'categorical',
+            'structured_gumbel_assignment',
+            'exact_lexicographic_persistent_tie',
+        ],
         help=('Inference-only JDV2 refinement policy. The default preserves '
               'the historical categorical sampler tensor-exactly.'))
     parser.add_argument(
@@ -734,16 +738,20 @@ def check_and_add_additional_args(args):
             if args.training_stage != 'joint_goal':
                 raise ValueError(
                     'strict_no_z is authorized for joint_goal Stage-A only')
-        if args.jdv2_refinement_policy == 'structured_gumbel_assignment':
+        if args.jdv2_refinement_policy in {
+                'structured_gumbel_assignment',
+                'exact_lexicographic_persistent_tie'}:
             if args.jdv2_latent_objective != 'strict_no_z':
-                raise ValueError('CPSR V1 requires strict_no_z')
+                raise ValueError('structured refinement requires strict_no_z')
             if args.num_samples > args.num_goal_candidates:
-                raise ValueError('CPSR V1 requires P<=K')
+                raise ValueError('structured refinement requires P<=K')
             if args.num_refinement_steps != 2:
-                raise ValueError('CPSR V1 requires two refinement rounds')
+                raise ValueError(
+                    'structured refinement requires two refinement rounds')
             if args.joint_sampling_mode != 'sample':
                 raise ValueError(
-                    'CPSR V1 requires stochastic joint_sampling_mode=sample')
+                    'structured refinement requires stochastic '
+                    'joint_sampling_mode=sample')
         if (args.jdv2_cache_source_commit is not None and
                 re.fullmatch(r'[0-9a-f]{40}',
                              args.jdv2_cache_source_commit) is None):

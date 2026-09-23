@@ -9,11 +9,20 @@ import torch.nn.functional as F
 from scipy.optimize import linear_sum_assignment
 
 from src.models.joint_goal import canonicalize_scene_index, sanitize_candidate_mask
+from src.models.joint_dependency_v2.exact_lexicographic_assignment import (
+    exact_persistent_refinement,
+)
 
 
 REFINEMENT_POLICIES = (
     "categorical",
     "structured_gumbel_assignment",
+    "exact_lexicographic_persistent_tie",
+)
+
+STRUCTURED_REFINEMENT_POLICIES = (
+    "structured_gumbel_assignment",
+    "exact_lexicographic_persistent_tie",
 )
 
 
@@ -283,9 +292,9 @@ class ParallelConditionalSampler(nn.Module):
         if refinement_policy not in REFINEMENT_POLICIES:
             raise ValueError(
                 f"unknown JDV2 refinement policy: {refinement_policy}")
-        if (refinement_policy == "structured_gumbel_assignment" and
+        if (refinement_policy in STRUCTURED_REFINEMENT_POLICIES and
                 not strict_no_z):
-            raise ValueError("CPSR V1 requires strict_no_z")
+            raise ValueError("structured refinement requires strict_no_z")
         self.num_samples = num_samples
         self.num_refinement_steps = num_refinement_steps
         self.temperature = float(temperature)
@@ -296,7 +305,7 @@ class ParallelConditionalSampler(nn.Module):
         self._sampling_context: Optional[tuple[int, int]] = None
 
     def set_sampling_context(self, seed: int, window_index: int) -> None:
-        """Set the explicit per-window CPSR RNG context for one forward."""
+        """Set the explicit per-window structured-policy context."""
         self._sampling_context = (int(seed), int(window_index))
 
     def _resolve_sampling_generators(
@@ -365,11 +374,13 @@ class ParallelConditionalSampler(nn.Module):
                   else refinement_policy)
         if policy not in REFINEMENT_POLICIES:
             raise ValueError(f"unknown JDV2 refinement policy: {policy}")
-        if policy == "structured_gumbel_assignment":
+        if policy in STRUCTURED_REFINEMENT_POLICIES:
             if not self.strict_no_z:
-                raise ValueError("CPSR V1 requires strict_no_z")
+                raise ValueError("structured refinement requires strict_no_z")
             if sampling_mode != "sample":
-                raise ValueError("CPSR requires stochastic sampling_mode=sample")
+                raise ValueError(
+                    "structured refinement requires stochastic "
+                    "sampling_mode=sample")
         num_agents, num_candidates = unary_score.shape
         if goal_candidates.shape != (num_agents, num_candidates, 2):
             raise ValueError("goal_candidates must have shape [N,K,2]")
@@ -398,7 +409,14 @@ class ParallelConditionalSampler(nn.Module):
             num_agents, self.num_samples, num_candidates)
         expanded_mask = mask[:, None, :].expand_as(score)
         structured_generators = None
-        if policy == "structured_gumbel_assignment":
+        exact_context = None
+        if policy == "exact_lexicographic_persistent_tie":
+            if self._sampling_context is None:
+                raise RuntimeError(
+                    "exact persistent refinement requires an explicit "
+                    "(seed, window) sampling context")
+            exact_context = self._sampling_context
+        if policy in STRUCTURED_REFINEMENT_POLICIES:
             structured_generators = self._resolve_sampling_generators(
                 unary_score.device, sampling_generators)
             selected = weighted_gumbel_top_p(
@@ -414,6 +432,14 @@ class ParallelConditionalSampler(nn.Module):
 
         edge_count = edge_index.shape[1]
         src, dst = edge_index.long()
+        degree = None
+        if policy == "exact_lexicographic_persistent_tie":
+            degree = torch.zeros(
+                num_agents, dtype=torch.long, device=unary_score.device)
+            if edge_count:
+                one = torch.ones_like(src, dtype=degree.dtype)
+                degree.index_add_(0, src, one)
+                degree.index_add_(0, dst, one)
         if not self.strict_no_z:
             edge_mode = agent_mode[src] if edge_count else \
                 scene_mode.new_empty((0, self.num_samples))
@@ -453,6 +479,12 @@ class ParallelConditionalSampler(nn.Module):
                     selected = structured_gumbel_assignment(
                         conditional_score, expanded_mask, self.temperature,
                         structured_generators[f"round_{round_index}"])
+                elif policy == "exact_lexicographic_persistent_tie":
+                    selected = exact_persistent_refinement(
+                        conditional_score, expanded_mask, previous_selected,
+                        goal_candidates, degree,
+                        evaluation_seed=exact_context[0],
+                        window_index=exact_context[1])
                 else:
                     selected = _categorical(
                         conditional_score, expanded_mask, self.temperature,
@@ -486,6 +518,7 @@ class ParallelConditionalSampler(nn.Module):
 __all__ = [
     "ParallelConditionalSampler",
     "REFINEMENT_POLICIES",
+    "STRUCTURED_REFINEMENT_POLICIES",
     "make_sampling_generators",
     "maximum_weight_injective_assignment",
     "mode_stratified_allocation",
