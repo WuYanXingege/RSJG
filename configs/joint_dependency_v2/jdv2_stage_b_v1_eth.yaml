@@ -1,0 +1,88 @@
+# Canonical JDV2 Stage-B V1 preflight/training-review configuration.
+# This file does not authorize training. It initializes strictly from the
+# frozen Stage-A epoch-13 checkpoint and trains only DependencyCorrector.
+
+dataset: eth5
+test_set: eth
+phase: train
+run_name: jdv2_stage_b_v1_eth_seed2035
+
+goal_model_type: joint_dependency_v2
+training_stage: joint_trajectory
+stage_b_architecture_version: jdv2-stage-b-v1
+jdv2_latent_objective: strict_no_z
+use_scene_latent: false
+use_dynamic_relation: true
+use_joint_energy: true
+use_dependency_corrector: true
+use_social_encoder: true
+
+jdv2_scene_modes: 4
+jdv2_relation_modes: 4
+num_relation_modes: 4
+num_goal_candidates: 21
+num_samples: 20
+num_joint_samples: null
+jdv2_energy_rank: 8
+goal_pair_rank: 8
+social_feature_dim: 128
+social_attention_layers: 1
+
+jdv2_refinement_policy: exact_lexicographic_persistent_tie
+num_refinement_steps: 2
+joint_sampling_mode: sample
+joint_sampling_strategy: coverage
+joint_sampling_temperature: 1.0
+goal_candidate_prior: heatmap
+goal_candidate_temperature: 1.0
+use_ttst: true
+
+graph_type: radius_ttc
+graph_radius: 6.0
+ttc_threshold: 8.0
+adaptive_graph: false
+pair_energy_normalization: mean
+energy_weight: 1.0
+trajectory_dt: 0.4
+
+ddpm_step: 100
+ddim_step: 20
+trunk_stage_step: 30
+down_factor: 8
+freeze_upstream_generator: true
+trajectory_coupling: none
+
+batch_cache_root: outputs/joint_dependency_v2/cache/source_batches
+jdv2_cache_root: outputs/joint_dependency_v2/cache/eth_full_stage_a
+jdv2_cache_schema: jdv2-cache-v1
+jdv2_cache_source_commit: 4b75110a571e6fd200938ff951a3a218ca4eb1e8
+jdv2_cache_manifest_hash: 2d525a0f441a148dc6ff25c8f14eae3bd10d45b764cac17a25553ab76b93b949
+jdv2_source_checkpoint: ../GDTS/output/eth/saved_models/best_model.pt
+jdv2_source_checkpoint_hash: 126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950
+
+pretrain_path: outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt
+stage_a_parent_checkpoint_sha256: 699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb
+stage_a_freeze_manifest_sha256: ecce9f937717794eadc5e84be486372f01ef9c7727a4e59c36b70e09df06ec79
+stage_a_freeze_source_commit: ad35a440695a4b4eb23ad3e900eb27af9b3b8909
+
+lambda_diff: 1.0
+lambda_relative: 0.05
+learning_rate: 0.0001
+optimizer: Adam
+scheduler: ExponentialLR
+clip: 1
+
+amp_enabled: true
+amp_dtype: bf16
+seed: 2035
+validation_seed: 2035
+num_test_runs: 5
+reproducibility: true
+shuffle_test_batches: false
+data_augmentation: false
+num_workers: 0
+model_selection_split: dataset_valid
+final_test_split: heldout_test
+best_metric: JFDE
+joint_diagnostics: true
+use_wandb: false

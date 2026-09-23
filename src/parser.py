@@ -162,6 +162,10 @@ def get_parser():
     parser.add_argument('--jdv2_source_checkpoint', default=None)
     parser.add_argument('--jdv2_cache_manifest_hash', default=None)
     parser.add_argument('--jdv2_source_checkpoint_hash', default=None)
+    parser.add_argument('--stage_a_parent_checkpoint_sha256', default=None)
+    parser.add_argument('--stage_a_freeze_manifest_sha256', default=None)
+    parser.add_argument('--stage_a_freeze_source_commit', default=None)
+    parser.add_argument('--stage_b_architecture_version', default=None)
     parser.add_argument(
         '--jdv2_cache_source_commit', default=None,
         help=('Explicitly pin the commit that built a reusable JDV2 cache. '
@@ -735,9 +739,10 @@ def check_and_add_additional_args(args):
             if not args.use_dynamic_relation or not args.use_joint_energy:
                 raise ValueError(
                     'strict_no_z requires dynamic relation and joint energy')
-            if args.training_stage != 'joint_goal':
+            if args.training_stage not in {'joint_goal', 'joint_trajectory'}:
                 raise ValueError(
-                    'strict_no_z is authorized for joint_goal Stage-A only')
+                    'strict_no_z authorizes only frozen Stage-A joint_goal '
+                    'or Stage-B joint_trajectory')
         if args.jdv2_refinement_policy in {
                 'structured_gumbel_assignment',
                 'exact_lexicographic_persistent_tie'}:
@@ -757,6 +762,28 @@ def check_and_add_additional_args(args):
                              args.jdv2_cache_source_commit) is None):
             raise ValueError(
                 'jdv2_cache_source_commit must be a full lowercase git SHA')
+        for name in (
+                'stage_a_parent_checkpoint_sha256',
+                'stage_a_freeze_manifest_sha256'):
+            value = getattr(args, name)
+            if value is not None and re.fullmatch(r'[0-9a-f]{64}', value) is None:
+                raise ValueError(f'{name} must be a lowercase SHA256')
+        if (args.stage_a_freeze_source_commit is not None and
+                re.fullmatch(r'[0-9a-f]{40}',
+                             args.stage_a_freeze_source_commit) is None):
+            raise ValueError(
+                'stage_a_freeze_source_commit must be a full lowercase git SHA')
+        if (args.stage_b_architecture_version is not None and
+                args.stage_b_architecture_version != 'jdv2-stage-b-v1'):
+            raise ValueError('Unsupported stage_b_architecture_version')
+        if args.training_stage == 'joint_trajectory' and \
+                args.stage_b_architecture_version is not None:
+            if args.jdv2_latent_objective != 'strict_no_z':
+                raise ValueError('Stage-B V1 requires strict_no_z')
+            if args.jdv2_refinement_policy != \
+                    'exact_lexicographic_persistent_tie':
+                raise ValueError(
+                    'Stage-B V1 requires the frozen exact Stage-A sampler')
         if (args.phase == 'build-jdv2-cache' and
                 args.training_stage not in {
                     'joint_goal', 'joint_trajectory', 'joint_finetune'}):

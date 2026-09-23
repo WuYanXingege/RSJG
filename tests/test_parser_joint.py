@@ -235,7 +235,7 @@ def test_jdv2_rejects_noncanonical_dimensions_and_wrong_stage():
             '--training_stage', 'finetune', '--data_augmentation', 'False'))
 
 
-def test_strict_no_z_configuration_is_explicit_and_stage_a_only():
+def test_strict_no_z_configuration_allows_frozen_stage_a_and_stage_b_only():
     args = check_and_add_additional_args(_parse(
         '--device', 'cpu', '--goal_model_type', 'jdv2',
         '--training_stage', 'joint_goal', '--data_augmentation', 'False',
@@ -250,10 +250,17 @@ def test_strict_no_z_configuration_is_explicit_and_stage_a_only():
             '--device', 'cpu', '--goal_model_type', 'jdv2',
             '--training_stage', 'joint_goal', '--data_augmentation', 'False',
             '--jdv2_latent_objective', 'strict_no_z'))
-    with pytest.raises(ValueError, match='Stage-A only'):
+    trajectory = check_and_add_additional_args(_parse(
+        '--device', 'cpu', '--goal_model_type', 'jdv2',
+        '--training_stage', 'joint_trajectory',
+        '--data_augmentation', 'False',
+        '--use_scene_latent', 'False',
+        '--jdv2_latent_objective', 'strict_no_z'))
+    assert trajectory.training_stage == 'joint_trajectory'
+    with pytest.raises(ValueError, match='authorizes only'):
         check_and_add_additional_args(_parse(
             '--device', 'cpu', '--goal_model_type', 'jdv2',
-            '--training_stage', 'joint_trajectory',
+            '--training_stage', 'joint_finetune',
             '--data_augmentation', 'False',
             '--use_scene_latent', 'False',
             '--jdv2_latent_objective', 'strict_no_z'))

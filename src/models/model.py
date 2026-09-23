@@ -77,6 +77,114 @@ from src.joint_goal_loss import (
 )
 
 
+def jdv2_active_corrector_timesteps(
+        ddpm_steps: int, ddim_steps: int,
+        branch_stage_step: int) -> tuple[int, ...]:
+    """Return the exact branch timesteps at which ``ts_sample`` corrects."""
+    if ddpm_steps < 1 or ddim_steps < 1:
+        raise ValueError("diffusion schedule lengths must be positive")
+    if not 0 <= int(branch_stage_step) < int(ddim_steps):
+        raise ValueError("branch_stage_step must lie in [0, ddim_steps)")
+    schedule = np.linspace(int(ddpm_steps), 0, int(ddim_steps) + 1)
+    return tuple(
+        int(schedule[index - 1])
+        for index in range(int(branch_stage_step) + 1,
+                           int(ddim_steps) + 1))
+
+
+def jdv2_select_scene_oracle_branch(
+        goals: torch.Tensor,
+        target_goal: torch.Tensor,
+        scene_index: torch.Tensor,
+        edge_index: torch.Tensor,
+        relation_embedding: torch.Tensor,
+) -> dict[str, torch.Tensor]:
+    """Select one shared Stage-A world per scene and gather its edge state."""
+    if goals.ndim != 3 or goals.shape[-1] != 2:
+        raise ValueError("goals must have shape [N,P,2]")
+    num_agents, num_worlds, _ = goals.shape
+    if target_goal.shape != (num_agents, 2):
+        raise ValueError("target_goal must have shape [N,2]")
+    scene_ids, compact = canonicalize_scene_index(
+        scene_index, num_agents, goals.device)
+    squared_error = (goals.float() - target_goal.float()[:, None]).square()
+    squared_error = squared_error.sum(dim=-1)
+    scene_error = squared_error.new_zeros((scene_ids.numel(), num_worlds))
+    scene_error.index_add_(0, compact, squared_error)
+    counts = torch.bincount(
+        compact, minlength=scene_ids.numel()).to(scene_error.dtype)
+    scene_error = scene_error / counts[:, None].clamp_min(1)
+    scene_branch = scene_error.argmin(dim=-1)
+    agent_branch = scene_branch[compact]
+    selected_goal = goals.gather(
+        1, agent_branch[:, None, None].expand(-1, 1, 2))
+
+    if edge_index.ndim != 2 or edge_index.shape[0] != 2:
+        raise ValueError("edge_index must have shape [2,E]")
+    edge_count = edge_index.shape[1]
+    if relation_embedding.shape != (edge_count, num_worlds, 16):
+        raise ValueError("relation_embedding must have shape [E,P,16]")
+    if edge_count:
+        src, dst = edge_index.long()
+        if not torch.equal(compact[src], compact[dst]):
+            raise ValueError("JDV2 edges may not cross scene boundaries")
+        edge_branch = scene_branch[compact[src]]
+        selected_relation = relation_embedding.gather(
+            1, edge_branch[:, None, None].expand(-1, 1, 16)).squeeze(1)
+    else:
+        edge_branch = scene_branch.new_empty((0,))
+        selected_relation = relation_embedding.new_empty((0, 16))
+    return {
+        'scene_ids': scene_ids,
+        'compact_scene_index': compact,
+        'scene_error': scene_error,
+        'scene_branch': scene_branch,
+        'agent_branch': agent_branch,
+        'edge_branch': edge_branch,
+        'selected_goal': selected_goal,
+        'selected_relation_embedding': selected_relation,
+    }
+
+
+def jdv2_scene_timesteps(
+        scene_index: torch.Tensor,
+        active_timesteps: tuple[int, ...],
+        *,
+        supplied_t=None,
+) -> torch.Tensor:
+    """Choose one inference-active timestep per scene and broadcast to agents."""
+    scene_ids, compact = canonicalize_scene_index(
+        scene_index, scene_index.numel(), scene_index.device)
+    active = torch.as_tensor(
+        active_timesteps, dtype=torch.long, device=scene_index.device)
+    if active.numel() == 0:
+        raise ValueError("Stage B has no inference-active timesteps")
+    if supplied_t is None:
+        choice = torch.randint(
+            active.numel(), (scene_ids.numel(),), device=scene_index.device)
+        scene_timestep = active[choice]
+    else:
+        supplied = torch.as_tensor(
+            supplied_t, dtype=torch.long, device=scene_index.device)
+        if supplied.ndim == 0:
+            scene_timestep = supplied.expand(scene_ids.numel())
+        elif supplied.shape == (scene_ids.numel(),):
+            scene_timestep = supplied
+        elif supplied.shape == (scene_index.numel(),):
+            scene_timestep = supplied.new_empty((scene_ids.numel(),))
+            for scene in range(scene_ids.numel()):
+                values = torch.unique(supplied[compact == scene])
+                if values.numel() != 1:
+                    raise ValueError(
+                        "all agents in a scene must share one timestep")
+                scene_timestep[scene] = values[0]
+        else:
+            raise ValueError("t must be scalar, [C], or [N]")
+    if not torch.isin(scene_timestep, active).all():
+        raise ValueError("Stage-B timestep is not inference-active")
+    return scene_timestep[compact]
+
+
 class GDTS(torch.nn.Module):
     def __init__(self, args, device):
         super().__init__()
@@ -3084,21 +3192,29 @@ class GDTS(torch.nn.Module):
             self.args.trajectory_dt)
         return velocity_world, position_world
 
+    def set_jdv2_training_sampling_context(
+            self, seed: int, epoch: int, batch_index: int,
+            batches_per_epoch: int) -> int:
+        """Set a stable, resume-safe Stage-A sampler context for Stage B."""
+        if epoch < 1 or batch_index < 0 or batches_per_epoch < 1:
+            raise ValueError("invalid Stage-B training batch coordinates")
+        serial = (int(epoch) - 1) * int(batches_per_epoch) + int(batch_index)
+        self.jdv2_sampler.set_sampling_context(int(seed), serial)
+        return serial
+
+    def _jdv2_corrector_zero(self):
+        """Return an exact differentiable zero connected to every corrector."""
+        zero = next(self.jdv2_corrector.parameters()).new_zeros(())
+        for parameter in self.jdv2_corrector.parameters():
+            zero = zero + parameter.sum() * 0.0
+        return zero
+
     def _jdv2_dependency_losses(self, inputs, t=None):
-        """Train branch residual with the frozen teacher/deployable curriculum."""
-        progress = (0.0 if self.args.training_stage == 'joint_finetune'
-                    else self.args.jdv2_stage_progress)
-        teacher_probability = (0.0 if self.args.training_stage ==
-                               'joint_finetune' else
-                               jdv2_teacher_probability(progress))
-        use_teacher = bool(
-            torch.rand((), device=self.device).item() < teacher_probability)
-        context_manager = (torch.no_grad()
-                           if self.args.training_stage == 'joint_trajectory'
-                           else nullcontext())
-        with context_manager:
-            # The deployable half uses the exact inference sampler.  Teacher
-            # conditioning uses GT-near goals and q_relation.
+        """Train V1 on one frozen Stage-A oracle joint world per scene."""
+        if self.args.training_stage != 'joint_trajectory':
+            raise RuntimeError(
+                'Stage-B V1 is defined only for joint_trajectory')
+        with torch.no_grad():
             x = inputs['x_augmented']
             num_agents = x.shape[1]
             image = inputs['tensor_image'].unsqueeze(0).repeat(
@@ -3107,26 +3223,14 @@ class GDTS(torch.nn.Module):
             goal_logits = self.goal_module(torch.cat((image, maps), dim=1))
             goal_prob = torch.sigmoid(goal_logits[:, -1:])
             structured = self._jdv2_goal_outputs(
-                inputs, goal_prob, sample=not use_teacher,
-                include_teacher=True)
-            if use_teacher:
-                target = build_soft_goal_target(
-                    structured['goal_candidates_world'],
-                    inputs['world_coord'][-1],
-                    sigma_goal=self.args.goal_soft_sigma,
-                    candidate_mask=structured['candidate_mask'])
-                selected_index = target.argmax(dim=-1, keepdim=True)
-                selected_goal = structured['goal_candidates_world'].gather(
-                    1, selected_index[:, :, None].expand(-1, -1, 2))
-                relation_probability = structured[
-                    'relation_teacher']['prob']
-                relation_embedding = torch.einsum(
-                    'em,mh->eh', relation_probability.float(),
-                    self.jdv2_dynamic_relation.relation_embedding.float())
-            else:
-                selected_goal = structured['sampled']['goals'][:, :1]
-                relation_embedding = structured['sampled'][
-                    'relation_embedding'][:, 0]
+                inputs, goal_prob, sample=True, include_teacher=False)
+            sampled = structured['sampled']
+            selection = jdv2_select_scene_oracle_branch(
+                sampled['goals'], inputs['world_coord'][-1],
+                inputs['scene_index'], structured['edge_index'],
+                sampled['relation_embedding'])
+            selected_goal = selection['selected_goal']
+            relation_embedding = selection['selected_relation_embedding']
             selected_goal_map = self._map_goals_to_map(
                 selected_goal, inputs['scene'])
             context = self._jdv2_contexts(inputs, selected_goal_map)[0]
@@ -3135,12 +3239,16 @@ class GDTS(torch.nn.Module):
         velocity_target = x[self.args.obs_length:, :, 2:4].permute(
             1, 0, 2).contiguous()
         batch_size = velocity_target.shape[0]
-        if t is None:
-            t = self.var_sched.uniform_sample_t(batch_size)
-        timestep = torch.as_tensor(
-            t, dtype=torch.long, device=velocity_target.device)
-        if timestep.ndim == 0:
-            timestep = timestep.expand(batch_size)
+        active_timesteps = jdv2_active_corrector_timesteps(
+            self.var_sched.num_steps, self.args.ddim_step,
+            self.args.branch_stage_step)
+        timestep = jdv2_scene_timesteps(
+            inputs['scene_index'], active_timesteps, supplied_t=t)
+        edge_index = structured['edge_index']
+        if edge_index.shape[1]:
+            src, dst = edge_index.long()
+            if not torch.equal(timestep[src], timestep[dst]):
+                raise RuntimeError('edge endpoints have inconsistent timestep')
         alpha_bar = self.var_sched.alpha_bars[timestep]
         beta = self.var_sched.betas[timestep]
         c0 = torch.sqrt(alpha_bar).view(-1, 1, 1)
@@ -3150,18 +3258,28 @@ class GDTS(torch.nn.Module):
         with torch.no_grad():
             epsilon_base = self.diffnet(
                 noisy_velocity, beta=beta, context=context)
-        if self.args.use_dependency_corrector:
-            noisy_world, _ = self._jdv2_noisy_velocity_world(
-                noisy_velocity, inputs)
-            delta = self.jdv2_corrector(
-                noisy_world, inputs['obs_traj_world'][:, -1],
-                structured['edge_index'], relation_embedding, timestep,
-                edge_weight=structured['edge_weight'])
-        else:
-            delta = torch.zeros_like(epsilon_base)
+        noisy_world, _ = self._jdv2_noisy_velocity_world(
+            noisy_velocity, inputs)
+        delta = self.jdv2_corrector(
+            noisy_world, inputs['obs_traj_world'][:, -1],
+            edge_index, relation_embedding, timestep,
+            edge_weight=structured['edge_weight'])
         epsilon_joint = epsilon_base + delta
-        diffusion_loss = F.mse_loss(
-            epsilon_joint.float(), noise.float(), reduction='mean')
+        degree = torch.zeros(
+            batch_size, dtype=torch.long, device=velocity_target.device)
+        if edge_index.shape[1]:
+            ones = torch.ones(
+                edge_index.shape[1], dtype=torch.long,
+                device=velocity_target.device)
+            degree.index_add_(0, edge_index[0].long(), ones)
+            degree.index_add_(0, edge_index[1].long(), ones)
+        active_agent = degree > 0
+        if active_agent.any():
+            diffusion_loss = F.mse_loss(
+                epsilon_joint[active_agent].float(),
+                noise[active_agent].float(), reduction='mean')
+        else:
+            diffusion_loss = self._jdv2_corrector_zero()
         predicted_clean = (
             noisy_velocity.float() - c1.float() * epsilon_joint.float()) / \
             c0.float().clamp_min(1e-8)
@@ -3169,14 +3287,36 @@ class GDTS(torch.nn.Module):
             predicted_clean, inputs)
         target_world = inputs['world_coord'][
             self.args.obs_length:].permute(1, 0, 2).contiguous()
-        relative_loss = sparse_relative_motion_loss(
-            predicted_world, target_world, structured['edge_index'])
+        relative_loss = (sparse_relative_motion_loss(
+            predicted_world, target_world, edge_index)
+            if edge_index.shape[1] else self._jdv2_corrector_zero())
+        oracle_error = selection['scene_error'].gather(
+            1, selection['scene_branch'][:, None]).mean()
+        timestep_histogram = torch.bincount(
+            timestep, minlength=self.var_sched.num_steps + 1)
         self.last_joint_diagnostics.update({
-            'teacher_probability': teacher_probability,
-            'teacher_condition_used': float(use_teacher),
+            'trainable_parameter_count': float(sum(
+                parameter.numel()
+                for parameter in self.jdv2_corrector.parameters()
+                if parameter.requires_grad)),
+            'oracle_branch_goal_error': float(oracle_error.cpu()),
+            'degree_positive_agent_count': float(active_agent.sum().item()),
+            'e0_skipped_count': float(edge_index.shape[1] == 0),
+            'delta_epsilon_rms': float(
+                delta.detach().float().square().mean().sqrt().cpu()),
+            'epsilon_base_rms': float(
+                epsilon_base.detach().float().square().mean().sqrt().cpu()),
+            'delta_base_rms_ratio': float((
+                delta.detach().float().square().mean().sqrt() /
+                epsilon_base.detach().float().square().mean().sqrt().clamp_min(
+                    1e-12)).cpu()),
             'L_diff': float(diffusion_loss.detach().cpu()),
             'L_relative': float(relative_loss.detach().cpu()),
         })
+        for active_timestep in active_timesteps:
+            self.last_joint_diagnostics[
+                f'active_timestep_count_{active_timestep}'] = float(
+                    timestep_histogram[active_timestep].item())
         return {'jdv2_diffusion_loss': diffusion_loss,
                 'jdv2_relative_loss': relative_loss}
 

@@ -21,7 +21,7 @@ from src.trajectory_bank_cache import (
     get_trajectory_bank_dataloader,
     pack_statistics,
 )
-from src.joint_dependency_v2_cache import load_cache_record
+from src.joint_dependency_v2_cache import load_cache_record, sha256_file
 
 
 V4_DIAGNOSTIC_NAMES = (
@@ -395,6 +395,14 @@ class trainer(object):
                 'cache_manifest_hash': self.args.jdv2_cache_manifest_hash,
                 'source_checkpoint_hash': (
                     self.args.jdv2_source_checkpoint_hash),
+                'stage_a_parent_checkpoint_sha256': getattr(
+                    self.args, 'stage_a_parent_checkpoint_sha256', None),
+                'stage_a_freeze_manifest_sha256': getattr(
+                    self.args, 'stage_a_freeze_manifest_sha256', None),
+                'stage_a_freeze_source_commit': getattr(
+                    self.args, 'stage_a_freeze_source_commit', None),
+                'stage_b_architecture_version': getattr(
+                    self.args, 'stage_b_architecture_version', None),
                 'best_metric': {
                     'name': self.net.best_valid_metric(),
                     'primary': self._best_selection[0],
@@ -516,6 +524,50 @@ class trainer(object):
                 raise RuntimeError(
                     f'Invalid V2 stage transition {source_stage!r} -> '
                     f'{target_stage!r}')
+            if (target_stage == 'joint_trajectory' and
+                    source_stage == 'joint_goal' and
+                    getattr(self.args, 'stage_b_architecture_version', None) ==
+                    'jdv2-stage-b-v1'):
+                expected_parent = self.args.stage_a_parent_checkpoint_sha256
+                if expected_parent is None:
+                    raise RuntimeError(
+                        'Stage-B V1 requires its Stage-A parent SHA256')
+                actual_parent = sha256_file(saved_model_name)
+                if actual_parent != expected_parent:
+                    raise RuntimeError(
+                        'Stage-B V1 parent checkpoint SHA256 mismatch')
+                repository_root = os.path.dirname(os.path.dirname(
+                    os.path.abspath(__file__)))
+                manifest_path = os.path.join(
+                    repository_root, 'outputs', 'joint_dependency_v2', 'eth',
+                    'joint_dependency_v2', 'stage_a_freeze', 'manifest.json')
+                expected_manifest = self.args.stage_a_freeze_manifest_sha256
+                if expected_manifest is None or not os.path.isfile(
+                        manifest_path):
+                    raise RuntimeError(
+                        'Stage-B V1 requires the frozen Stage-A manifest')
+                if sha256_file(manifest_path) != expected_manifest:
+                    raise RuntimeError(
+                        'Stage-B V1 freeze manifest SHA256 mismatch')
+                with open(manifest_path) as handle:
+                    freeze_manifest = json.load(handle)
+                if freeze_manifest.get('freeze_source_commit') != \
+                        self.args.stage_a_freeze_source_commit:
+                    raise RuntimeError(
+                        'Stage-B V1 freeze source commit mismatch')
+            if (target_stage == 'joint_trajectory' and
+                    source_stage == 'joint_trajectory' and
+                    getattr(self.args, 'stage_b_architecture_version', None) ==
+                    'jdv2-stage-b-v1'):
+                for name in (
+                        'stage_a_parent_checkpoint_sha256',
+                        'stage_a_freeze_manifest_sha256',
+                        'stage_a_freeze_source_commit',
+                        'stage_b_architecture_version'):
+                    if checkpoint.get(name) != getattr(self.args, name):
+                        raise RuntimeError(
+                            f'Stage-B V1 checkpoint provenance mismatch: '
+                            f'{name}')
             self._pending_training_state = checkpoint
         return checkpoint.get('epoch', 0)
 
@@ -1082,6 +1134,13 @@ class trainer(object):
                 inputs, seq_list = self.net.prepare_inputs(
                     batch_data, batch_id)
                 del batch_data
+                if (self.net.jdv2_active and
+                        self.args.training_stage == 'joint_trajectory' and
+                        self.args.jdv2_refinement_policy ==
+                        'exact_lexicographic_persistent_tie'):
+                    self.net.set_jdv2_training_sampling_context(
+                        self.args.seed, epoch, batch_index,
+                        num_train_batches)
                 with self._autocast_context():
                     losses = self.net.get_loss(inputs, seq_list)
             if self.net.jdv2_active:
@@ -1139,7 +1198,12 @@ class trainer(object):
             # An isolated/single-agent Sparse-Energy window has no pairwise
             # trainable signal while the baseline is frozen. It is a valid
             # degeneracy, so skip only that optimizer step instead of failing.
-            if loss.requires_grad:
+            stage_b_has_signal = not (
+                self.net.jdv2_active and
+                self.args.training_stage == 'joint_trajectory' and
+                self.net.last_joint_diagnostics.get(
+                    'degree_positive_agent_count', 0.0) == 0.0)
+            if loss.requires_grad and stage_b_has_signal:
                 scaled_loss = loss / accumulation_steps
                 if self.scaler.is_enabled():
                     self.scaler.scale(scaled_loss).backward()
