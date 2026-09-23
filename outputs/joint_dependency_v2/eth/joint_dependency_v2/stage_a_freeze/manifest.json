@@ -1,0 +1,156 @@
+{
+  "architecture": {
+    "architecture_variant": "strict_no_z",
+    "goal_model_type": "joint_dependency_v2",
+    "scene_modes": 0,
+    "training_stage": "joint_goal"
+  },
+  "branch": "research/joint-dependency-v2-clean",
+  "canonical_config": {
+    "path": "configs/joint_dependency_v2/jdv2_stage_a_frozen_eth.yaml",
+    "sha256": "bf5d4a692b0a9e841de8523f2780013147ec3e9bcb78877cc3c352571bc63e62"
+  },
+  "checkpoint": {
+    "epoch": 13,
+    "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt",
+    "sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb"
+  },
+  "created_at": "2026-09-23T17:13:50+08:00",
+  "dataset_protocol": {
+    "dataset": "ETH",
+    "evaluation_seeds": [2035, 2036, 2037, 2038, 2039],
+    "split": "validation",
+    "windows": 139
+  },
+  "freeze_source_commit": "ad35a440695a4b4eb23ad3e900eb27af9b3b8909",
+  "frozen_boundary": {
+    "immutable": [
+      "strict_no_z architecture",
+      "Stage-A epoch-13 checkpoint bytes",
+      "frozen Goal U-Net candidate bank and candidate ordering",
+      "SocialMotionEncoder",
+      "RelationInference and hypothesis-conditioned dynamic relation",
+      "RelationSpecificJointEnergy",
+      "conditional score S_i[s,k] = unary_i[k] - accumulated_pair_energy_i[s,k]",
+      "parameter-free radius+TTC sparse graph semantics",
+      "K/P/M/energy rank",
+      "weighted Gumbel-Top-P Round-0 allocation without replacement",
+      "degree-zero identity refinement",
+      "exact (J,C_stay,C_geom,R) injective refinement",
+      "persistent exchangeable R state across both rounds",
+      "two synchronous refinement rounds",
+      "Stage-A output interface",
+      "frozen GDTS history encoder, Goal U-Net and diffusion denoiser"
+    ],
+    "stage_b_may_add_or_train": [
+      "trajectory-level dependency corrector and explicitly Stage-B-local trajectory modules",
+      "Stage-B-local optimizer, scheduler, checkpoints and diagnostics"
+    ],
+    "stage_b_must_not": [
+      "modify or backpropagate through Stage-A weights",
+      "modify the Stage-A sampler, relation, energy, graph or candidate semantics",
+      "overwrite the frozen Stage-A checkpoint"
+    ]
+  },
+  "known_non_blocking_behaviors": [
+    {
+      "label": "KNOWN_NON_BLOCKING_BEHAVIOR",
+      "name": "synchronous_two_cycle",
+      "value": 0.4066,
+      "reason": "Preserves 20/20 coverage and passed semantic, metric and end-to-end adoption gates."
+    },
+    {
+      "label": "KNOWN_NON_BLOCKING_BEHAVIOR",
+      "name": "historical_D0_CUDA_FP32_recomputation_drift_max",
+      "value": 0.0010189769936980175,
+      "reason": "Upstream CUDA FP32 recomputation drift, not a sampler semantic mismatch."
+    },
+    {
+      "label": "KNOWN_NON_BLOCKING_BEHAVIOR",
+      "name": "sampler_runtime_overhead_vs_D0",
+      "value": 1.6174445286686683,
+      "reason": "Sampler-only cost is higher, while end-to-end full-forward change was -1.11% and passed the adoption gate."
+    }
+  ],
+  "method_constants": {
+    "K": 21,
+    "M": 4,
+    "P": 20,
+    "energy_rank": 8,
+    "refinement_rounds": 2
+  },
+  "production_adoption_result": {
+    "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/audits/exact_persistent_refinement_production_validation/results.json",
+    "sha256": "89856d15ce8829aa4dac1d97f695e7482b9c9bfd55af00347b5db05508ba3574",
+    "status": "ADOPTION_VALIDATION_PASSED"
+  },
+  "production_policy": {
+    "global_parser_default": "categorical",
+    "name": "exact_lexicographic_persistent_tie",
+    "refinement": {
+      "degree_eq_0": "identity",
+      "degree_gt_0": "exact injective lexicographic assignment (J,C_stay,C_geom,R)",
+      "rounds": 2,
+      "synchronous": true,
+      "tie_state": "persistent across both rounds"
+    },
+    "round_0": "weighted Gumbel-Top-P without replacement"
+  },
+  "reference_metrics": {
+    "coverage_unique_candidates": 20.0,
+    "five_seed_mean": {
+      "JADE": 0.4131992939350416,
+      "JFDE": 0.7021253722431741,
+      "Joint_Goal_Compatibility": 0.48730886015210223,
+      "Joint_Goal_Endpoint_Error": 0.689827065159091,
+      "Relative_Motion_Error": 0.30181329901055465,
+      "minADE": 0.27551551555769277,
+      "minFDE": 0.38264789698802376
+    },
+    "relative_change_vs_exact_protocol_GDTS": {
+      "JADE": -0.11706096633623075,
+      "JFDE": -0.1389922045057863,
+      "Joint_Goal_Endpoint_Error": -0.13735981165612532,
+      "Relative_Motion_Error": -0.20674263415599858,
+      "minADE": -0.03777608523750475,
+      "minFDE": -0.029807978816341563
+    }
+  },
+  "regression_requirements": [
+    "canonical config loads and explicitly selects the frozen policy",
+    "global parser default remains categorical",
+    "strict_no_z and K=21/P=20/M=4/rank=8/two-round contracts hold",
+    "checkpoint and authoritative adoption artifact hashes match",
+    "degree-zero refinement remains tensor-exact identity",
+    "exact solver, categorical and CPSR paths remain callable",
+    "all-off JDV2 remains the bitwise legacy GDTS passthrough",
+    "real CUDA/BF16 canonical production-policy smoke passes",
+    "full pytest, compileall and git diff --check pass"
+  ],
+  "source_provenance": {
+    "cache_manifest_hash": "2d525a0f441a148dc6ff25c8f14eae3bd10d45b764cac17a25553ab76b93b949",
+    "frozen_legacy_GDTS_checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950"
+  },
+  "stage_a_output_interface": {
+    "candidate_index": "int64 [N,20], deployed joint-world branch candidate IDs",
+    "dependency_state.edge_index": "int64 [2,E], canonical sparse edges",
+    "dependency_state.edge_weight": "float32 [E]",
+    "dependency_state.last_position_map": "float32 [N,2]",
+    "dependency_state.last_position_world": "float32 [N,2] world_m",
+    "dependency_state.relation_embedding": "float32 [E,20,16]",
+    "joint_candidate_index": "int64 [N,21]; first 20 deployed branches plus one internal GDTS trunk endpoint",
+    "joint_goal_points_map": "float32 [N,21,2]",
+    "joint_goal_points_world": "float32 [N,21,2] world_m",
+    "predictions": "float32 [20,20,N,2] map coordinates; exactly 20 evaluation branches"
+  },
+  "status": "STAGE_A_FROZEN",
+  "verification": {
+    "compileall": "PASS",
+    "freeze_contract_tests": "6 passed",
+    "full_pytest": "375 passed, 12 skipped",
+    "git_diff_check": "PASS",
+    "real_cuda_bf16_canonical_policy": "2 passed",
+    "freeze_review": "PASS",
+    "full_five_seed_rerun": "not repeated; authoritative adoption artifact hash-checked"
+  }
+}
