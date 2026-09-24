@@ -1,0 +1,41 @@
+{
+  "e0_contract_failure": {
+    "affected_windows": 47,
+    "max_abs": 0.009775876998901367,
+    "mean_of_window_mean_abs": 0.0008914269769485009,
+    "mechanism": "BF16 epsilon_base plus FP32 exact-zero delta promotes the correction expression and changes downstream arithmetic.",
+    "raw_delta_max_abs": 0.0
+  },
+  "interpretation_state": "INCONCLUSIVE",
+  "parity": {
+    "coverage_min": 20,
+    "e0_windows": 47,
+    "e_gt0_windows": 92,
+    "finite_goals": true,
+    "full_local_vs_production_max_abs": 0.0,
+    "none_local_vs_production_max_abs": 0.0
+  },
+  "protocol": {
+    "checkpoint_epoch": 10,
+    "paired_noise_tape": true,
+    "seed": 2035,
+    "split": "ETH validation",
+    "windows": 139
+  },
+  "provenance": {
+    "stage_a_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt",
+    "stage_a_sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+    "stage_b_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_b_v1_eth_seed2035/saved_models/best_model.pt",
+    "stage_b_sha256": "e24a1cbfc5760db57bcb5cacd64c66a4afd1aed0f11bb1efefa8549933d21c1a"
+  },
+  "reason": "Production FULL_V1 is not tensor-exact Stage A on E=0 despite exact-zero residual, because eps + FP32 zero changes mixed-precision branch arithmetic. The required E=0 parity contract and FULL production parity cannot both be satisfied without a production source change, which this task forbids.",
+  "runtime_seconds": 260.25932097435,
+  "scientific_audit": {
+    "branch_distribution": "NOT_RUN_AFTER_FAILED_GATE",
+    "gradient": "NOT_RUN_AFTER_FAILED_GATE",
+    "paired_counterfactual": "NOT_RUN_AFTER_FAILED_GATE",
+    "relation_sensitivity": "NOT_RUN_AFTER_FAILED_GATE"
+  },
+  "stage_b_v2_status": "stage_b_v2_design_not_yet_justified",
+  "status": "AUDIT_IMPLEMENTATION_BLOCKED"
+}
