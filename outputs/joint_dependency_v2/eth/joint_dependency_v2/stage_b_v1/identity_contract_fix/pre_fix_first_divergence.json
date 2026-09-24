@@ -1,0 +1,597 @@
+{
+  "delta_dtype": "torch.float32",
+  "epsilon_base_dtype": "torch.bfloat16",
+  "final_velocity": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0035017728805541992,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "first_divergence": {
+    "detail": {
+      "differing_elements": 0,
+      "dtype_equal": false,
+      "max_abs_difference": 0.0,
+      "shape": [
+        1,
+        12,
+        2
+      ],
+      "stage_a_dtype": "torch.bfloat16",
+      "stage_b_dtype": "torch.float32"
+    },
+    "operator": "epsilon_after_zero_add",
+    "timestep": 30
+  },
+  "step10.delta": {
+    "dtype": "torch.float32",
+    "max_abs": 0.0,
+    "nonzero_elements": 0,
+    "shape": [
+      1,
+      12,
+      2
+    ]
+  },
+  "step10.epsilon_after_zero_add": {
+    "differing_elements": 17,
+    "dtype_equal": false,
+    "max_abs_difference": 0.0390625,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step10.epsilon_base": {
+    "differing_elements": 17,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0390625,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.bfloat16"
+  },
+  "step10.first_term": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.006571531295776367,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step10.second_term": {
+    "differing_elements": 24,
+    "dtype_equal": false,
+    "max_abs_difference": 0.004732787609100342,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step10.third_term": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step10.x_next": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.003627181053161621,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step10.x_t_before": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.006512045860290527,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step15.delta": {
+    "dtype": "torch.float32",
+    "max_abs": 0.0,
+    "nonzero_elements": 0,
+    "shape": [
+      1,
+      12,
+      2
+    ]
+  },
+  "step15.epsilon_after_zero_add": {
+    "differing_elements": 16,
+    "dtype_equal": false,
+    "max_abs_difference": 0.0625,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step15.epsilon_base": {
+    "differing_elements": 16,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0625,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.bfloat16"
+  },
+  "step15.first_term": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0019478797912597656,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step15.second_term": {
+    "differing_elements": 24,
+    "dtype_equal": false,
+    "max_abs_difference": 0.008459925651550293,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step15.third_term": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step15.x_next": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.006512045860290527,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step15.x_t_before": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0019180774688720703,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step20.delta": {
+    "dtype": "torch.float32",
+    "max_abs": 0.0,
+    "nonzero_elements": 0,
+    "shape": [
+      1,
+      12,
+      2
+    ]
+  },
+  "step20.epsilon_after_zero_add": {
+    "differing_elements": 7,
+    "dtype_equal": false,
+    "max_abs_difference": 0.0078125,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step20.epsilon_base": {
+    "differing_elements": 7,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0078125,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.bfloat16"
+  },
+  "step20.first_term": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0004962235689163208,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step20.second_term": {
+    "differing_elements": 24,
+    "dtype_equal": false,
+    "max_abs_difference": 0.0019051134586334229,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step20.third_term": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step20.x_next": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0019180774688720703,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step20.x_t_before": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.00048553943634033203,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step25.delta": {
+    "dtype": "torch.float32",
+    "max_abs": 0.0,
+    "nonzero_elements": 0,
+    "shape": [
+      1,
+      12,
+      2
+    ]
+  },
+  "step25.epsilon_after_zero_add": {
+    "differing_elements": 0,
+    "dtype_equal": false,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step25.epsilon_base": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.bfloat16"
+  },
+  "step25.first_term": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 8.976459503173828e-05,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step25.second_term": {
+    "differing_elements": 24,
+    "dtype_equal": false,
+    "max_abs_difference": 0.0004895031452178955,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step25.third_term": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step25.x_next": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.00048553943634033203,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step25.x_t_before": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 8.726119995117188e-05,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step30.delta": {
+    "dtype": "torch.float32",
+    "max_abs": 0.0,
+    "nonzero_elements": 0,
+    "shape": [
+      1,
+      12,
+      2
+    ]
+  },
+  "step30.epsilon_after_zero_add": {
+    "differing_elements": 0,
+    "dtype_equal": false,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step30.epsilon_base": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.bfloat16"
+  },
+  "step30.first_term": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step30.second_term": {
+    "differing_elements": 24,
+    "dtype_equal": false,
+    "max_abs_difference": 8.725747466087341e-05,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step30.third_term": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step30.x_next": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 8.726119995117188e-05,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step30.x_t_before": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step5.delta": {
+    "dtype": "torch.float32",
+    "max_abs": 0.0,
+    "nonzero_elements": 0,
+    "shape": [
+      1,
+      12,
+      2
+    ]
+  },
+  "step5.epsilon_after_zero_add": {
+    "differing_elements": 17,
+    "dtype_equal": false,
+    "max_abs_difference": 0.05078125,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step5.epsilon_base": {
+    "differing_elements": 17,
+    "dtype_equal": true,
+    "max_abs_difference": 0.05078125,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.bfloat16"
+  },
+  "step5.first_term": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0036371946334838867,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step5.second_term": {
+    "differing_elements": 24,
+    "dtype_equal": false,
+    "max_abs_difference": 0.003782123327255249,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.bfloat16",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step5.third_term": {
+    "differing_elements": 0,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step5.x_next": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.0035017728805541992,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "step5.x_t_before": {
+    "differing_elements": 24,
+    "dtype_equal": true,
+    "max_abs_difference": 0.003627181053161621,
+    "shape": [
+      1,
+      12,
+      2
+    ],
+    "stage_a_dtype": "torch.float32",
+    "stage_b_dtype": "torch.float32"
+  },
+  "window_index": 14
+}

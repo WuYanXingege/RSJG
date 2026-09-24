@@ -3716,6 +3716,24 @@ class GDTS(torch.nn.Module):
     def ts_sample(self, all_context, dependency_state=None):
         all_outputs = []
 
+        # A mathematically zero FP32 residual is not a numerical identity for
+        # a BF16 denoiser output: ``eps + delta`` promotes the expression and
+        # changes the downstream DDIM rounding. Resolve structural activity
+        # once, then keep inactive agents on the original Stage-A arithmetic
+        # path. No extra network forward or RNG draw is introduced.
+        dependency_active_agent = None
+        dependency_all_active = False
+        if (dependency_state is not None and
+                self.args.use_dependency_corrector):
+            dependency_edge_index = dependency_state['edge_index'].long()
+            if dependency_edge_index.shape[1]:
+                dependency_active_agent = torch.zeros(
+                    all_context[-1].size(0), dtype=torch.bool,
+                    device=all_context[-1].device)
+                dependency_active_agent[dependency_edge_index.reshape(-1)] = \
+                    True
+                dependency_all_active = bool(dependency_active_agent.all())
+
         # trunk stage 
         context = all_context[-1]
         batch_size = context.size(0)
@@ -3749,9 +3767,9 @@ class GDTS(torch.nn.Module):
                 ab_cur = self.var_sched.alpha_bars[cur_t]
                 ab_prev = self.var_sched.alpha_bars[prev_t] if prev_t >= 0 else 1
                 beta = self.var_sched.betas[[cur_t] * batch_size]
-                eps = self.diffnet(x_t, beta=beta, context=context)
-                if (dependency_state is not None and
-                        self.args.use_dependency_corrector):
+                eps_base = self.diffnet(x_t, beta=beta, context=context)
+                eps_corrected = None
+                if dependency_active_agent is not None:
                     last_map = dependency_state['last_position_map']
                     position_map = last_map[:, None] + torch.cumsum(x_t, dim=1)
                     position_world = dependency_state[
@@ -3770,18 +3788,37 @@ class GDTS(torch.nn.Module):
                         dependency_state['edge_index'], relation_embedding,
                         torch.tensor(cur_t, device=x_t.device),
                         edge_weight=dependency_state['edge_weight'])
-                    eps = eps + delta
+                    eps_corrected = eps_base + delta
                 var = eta * (1 - ab_prev) / (1 - ab_cur) * (1 - ab_cur / ab_prev)
                 noise = torch.randn_like(x_t)
 
                 first_term = (ab_prev / ab_cur)**0.5 * x_t
-                second_term = ((1 - ab_prev - var)**0.5 -
-                                (ab_prev * (1 - ab_cur) / ab_cur)**0.5) * eps
+                second_coefficient = ((1 - ab_prev - var)**0.5 -
+                                      (ab_prev * (1 - ab_cur) /
+                                       ab_cur)**0.5)
                 if simple_var:
                     third_term = (1 - ab_cur / ab_prev)**0.5 * noise
                 else:
                     third_term = var**0.5 * noise
-                x_t = first_term + second_term + third_term
+                if eps_corrected is None:
+                    # Whole-window E=0 is the literal Stage-A path: do not
+                    # call the corrector and do not add an FP32 zero.
+                    second_term = second_coefficient * eps_base
+                    x_t = first_term + second_term + third_term
+                else:
+                    corrected_second = second_coefficient * eps_corrected
+                    corrected_next = first_term + corrected_second + \
+                        third_term
+                    if dependency_all_active:
+                        # Preserve the pre-fix V1 expression tensor-exactly
+                        # when every agent has incident interaction evidence.
+                        x_t = corrected_next
+                    else:
+                        base_second = second_coefficient * eps_base
+                        base_next = first_term + base_second + third_term
+                        x_t = torch.where(
+                            dependency_active_agent[:, None, None],
+                            corrected_next, base_next)
 
             all_outputs.append(x_t) 
         all_outputs = torch.stack(all_outputs)

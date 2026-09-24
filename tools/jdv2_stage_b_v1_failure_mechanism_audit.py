@@ -327,6 +327,10 @@ def replay_branches(
     residuals = []
     edge_index = dependency_state["edge_index"]
     relation = dependency_state["relation_embedding"]
+    _, degree = connected_components(middle_result.shape[0], edge_index)
+    active_agent = degree.gt(0)
+    any_active = bool(active_agent.any())
+    all_active = bool(active_agent.all())
     for branch in range(net.args.num_samples):
         context = all_context[branch]
         x_t = middle_result
@@ -339,8 +343,9 @@ def replay_branches(
             ab_prev = (net.var_sched.alpha_bars[prev_t]
                        if prev_t >= 0 else 1)
             beta = net.var_sched.betas[[cur_t] * context.size(0)]
-            epsilon = net.diffnet(x_t, beta=beta, context=context)
-            if mode != "stage_a":
+            epsilon_base = net.diffnet(x_t, beta=beta, context=context)
+            epsilon_corrected = None
+            if mode != "stage_a" and any_active:
                 last_map = dependency_state["last_position_map"]
                 position_map = last_map[:, None] + torch.cumsum(x_t, dim=1)
                 position_world = dependency_state[
@@ -362,19 +367,28 @@ def replay_branches(
                 delta = transform_delta(
                     raw_delta, mode, edge_index, scene_index, branch,
                     oracle_agent_branch)
-                epsilon = epsilon + delta
+                epsilon_corrected = epsilon_base + delta
                 residuals.append(delta.detach())
             variance = eta * (1 - ab_prev) / (1 - ab_cur) * \
                 (1 - ab_cur / ab_prev)
             first = (ab_prev / ab_cur) ** 0.5 * x_t
-            second = ((1 - ab_prev - variance) ** 0.5 -
-                      (ab_prev * (1 - ab_cur) / ab_cur) ** 0.5) * epsilon
+            coefficient = ((1 - ab_prev - variance) ** 0.5 -
+                           (ab_prev * (1 - ab_cur) / ab_cur) ** 0.5)
             if simple_var:
                 third = (1 - ab_cur / ab_prev) ** 0.5 * \
                     tape.branch_noise[branch][noise_index]
             else:
                 third = variance ** 0.5 * tape.branch_noise[branch][noise_index]
-            x_t = first + second + third
+            if epsilon_corrected is None:
+                x_t = first + coefficient * epsilon_base + third
+            else:
+                corrected_next = first + coefficient * epsilon_corrected + third
+                if all_active:
+                    x_t = corrected_next
+                else:
+                    base_next = first + coefficient * epsilon_base + third
+                    x_t = torch.where(active_agent[:, None, None],
+                                      corrected_next, base_next)
         outputs.append(x_t)
     return torch.stack(outputs), residuals
 

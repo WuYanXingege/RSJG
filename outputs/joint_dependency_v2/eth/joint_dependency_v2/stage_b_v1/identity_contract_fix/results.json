@@ -1,0 +1,132 @@
+{
+  "failure_mechanism_audit_status": "STAGE_B_V1_NO_CLEAR_GAIN_MECHANISM_IDENTIFIED",
+  "final_state": "STAGE_B_V1_NO_CLEAR_GAIN_MECHANISM_IDENTIFIED",
+  "parity": {
+    "candidate_ids_and_goals_unchanged": true,
+    "counters": {
+      "candidate_id_checks": 7360,
+      "coverage_checks": 368,
+      "e0_windows": 47,
+      "e_gt0_windows": 92,
+      "goal_checks": 14720,
+      "mixed_windows": 30,
+      "windows": 139
+    },
+    "coverage_20_of_20": true,
+    "max_abs_differences": {
+      "audit_full_vs_production": 0.0,
+      "audit_none_vs_production": 0.0,
+      "degree_positive_fixed_vs_legacy": 0.0,
+      "e0_full_vs_stage_a": 0.0,
+      "mixed_degree_zero_vs_stage_a": 0.0
+    },
+    "passed": true,
+    "rng_post_state_equal": true,
+    "seed": 2035
+  },
+  "post_fix_five_seed": {
+    "classification": "STAGE_B_V1_NO_CLEAR_GAIN",
+    "relative_percent_vs_stage_a": {
+      "JADE": 0.6982819176093641,
+      "JFDE": 0.25229224417092855,
+      "Joint_Goal_Compatibility": 0.0,
+      "Joint_Goal_Endpoint_Error": 0.0,
+      "Relative_Motion_Error": -0.010287659857571322,
+      "minADE@K": 1.5874399727641009,
+      "minFDE@K": 1.2579237007181976
+    },
+    "stage_a_mean": {
+      "JADE": 0.4131845743000079,
+      "JFDE": 0.7019076588610522,
+      "Joint_Goal_Compatibility": 0.48730886015210223,
+      "Joint_Goal_Endpoint_Error": 0.689827065159091,
+      "Relative_Motion_Error": 0.29790740618817246,
+      "minADE@K": 0.2782006189024643,
+      "minFDE@K": 0.3862152690918225
+    },
+    "stage_b_v1_mean": {
+      "JADE": 0.41606976746869606,
+      "JFDE": 0.7036785174456004,
+      "Joint_Goal_Compatibility": 0.48730886015210223,
+      "Joint_Goal_Endpoint_Error": 0.689827065159091,
+      "Relative_Motion_Error": 0.2978767584875333,
+      "minADE@K": 0.2826168867313991,
+      "minFDE@K": 0.3910735624975211
+    }
+  },
+  "protocol": {
+    "checkpoint_epoch": 10,
+    "paired_noise_tape": true,
+    "precision": "CUDA/BF16",
+    "seed": 2035,
+    "split": "ETH validation",
+    "windows": 139
+  },
+  "provenance": {
+    "source_commit_before_fix": "b9ad89110c75dfaea3fdbcb1552b7c10563ba952",
+    "stage_a_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt",
+    "stage_a_sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+    "stage_b_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_b_v1_eth_seed2035/saved_models/best_model.pt",
+    "stage_b_sha256": "e24a1cbfc5760db57bcb5cacd64c66a4afd1aed0f11bb1efefa8549933d21c1a"
+  },
+  "root_cause": {
+    "confirmed": true,
+    "delta_dtype": "torch.float32",
+    "epsilon_base_dtype": "torch.bfloat16",
+    "first_divergence": {
+      "detail": {
+        "differing_elements": 0,
+        "dtype_equal": false,
+        "max_abs_difference": 0.0,
+        "shape": [
+          1,
+          12,
+          2
+        ],
+        "stage_a_dtype": "torch.bfloat16",
+        "stage_b_dtype": "torch.float32"
+      },
+      "operator": "epsilon_after_zero_add",
+      "timestep": 30
+    },
+    "mechanism": "BF16 epsilon_base + FP32 exact-zero delta promotes epsilon to FP32; second_term is first value divergence.",
+    "pre_fix_final_velocity": {
+      "differing_elements": 24,
+      "dtype_equal": true,
+      "max_abs_difference": 0.0035017728805541992,
+      "shape": [
+        1,
+        12,
+        2
+      ],
+      "stage_a_dtype": "torch.float32",
+      "stage_b_dtype": "torch.float32"
+    },
+    "step30_second_term": {
+      "differing_elements": 24,
+      "dtype_equal": false,
+      "max_abs_difference": 8.725747466087341e-05,
+      "shape": [
+        1,
+        12,
+        2
+      ],
+      "stage_a_dtype": "torch.bfloat16",
+      "stage_b_dtype": "torch.float32"
+    },
+    "step30_x_next": {
+      "differing_elements": 24,
+      "dtype_equal": true,
+      "max_abs_difference": 8.726119995117188e-05,
+      "shape": [
+        1,
+        12,
+        2
+      ],
+      "stage_a_dtype": "torch.float32",
+      "stage_b_dtype": "torch.float32"
+    }
+  },
+  "runtime_seconds": 297.36056688497774,
+  "status": "IDENTITY_CONTRACT_PARITY_PASSED"
+}
