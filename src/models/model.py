@@ -41,6 +41,8 @@ from src.models.multiway_trajectory_coupler import (
 )
 from src.models.joint_dependency_v2 import (
     DependencyCorrector,
+    build_component_metadata,
+    component_zero_mean_projection,
     DynamicHypothesisRelation,
     ParallelConditionalSampler,
     RelationSpecificJointEnergy,
@@ -1082,21 +1084,28 @@ class GDTS(torch.nn.Module):
             trunk_map = self._map_goals_to_map(trunk_world, inputs['scene'])
             all_goal_map = torch.cat((branch_map, trunk_map), dim=1)
             all_goal_world = torch.cat((branch_world, trunk_world), dim=1)
+            dependency_state = {
+                'edge_index': structured['edge_index'],
+                'edge_weight': structured['edge_weight'],
+                'relation_embedding': sampled['relation_embedding'],
+                'last_position_world': inputs['obs_traj_world'][:, -1],
+                'last_position_map': inputs['x_augmented'][
+                    self.args.obs_length - 1, :, 6:8],
+                'scene': inputs['scene'],
+            }
+            if getattr(self.args, 'jdv2_residual_projection', 'none') == \
+                    'component_zero_mean':
+                dependency_state['component_metadata'] = \
+                    build_component_metadata(
+                        structured['edge_index'].long(), branch_world.shape[0],
+                        inputs['scene_index'])
             structured.update({
                 'joint_candidate_index': torch.cat((
                     sampled['candidate_index'], trunk_index), dim=1),
                 'joint_goal_points_world': all_goal_world,
                 'joint_goal_points_map': all_goal_map,
                 'relation_prob': sampled['relation_prob'],
-                'dependency_state': {
-                    'edge_index': structured['edge_index'],
-                    'edge_weight': structured['edge_weight'],
-                    'relation_embedding': sampled['relation_embedding'],
-                    'last_position_world': inputs['obs_traj_world'][:, -1],
-                    'last_position_map': inputs['x_augmented'][
-                        self.args.obs_length - 1, :, 6:8],
-                    'scene': inputs['scene'],
-                },
+                'dependency_state': dependency_state,
             })
             if not self.strict_no_z:
                 structured['sampled_scene_mode'] = sampled['scene_mode']
@@ -3260,20 +3269,33 @@ class GDTS(torch.nn.Module):
                 noisy_velocity, beta=beta, context=context)
         noisy_world, _ = self._jdv2_noisy_velocity_world(
             noisy_velocity, inputs)
-        delta = self.jdv2_corrector(
+        raw_delta = self.jdv2_corrector(
             noisy_world, inputs['obs_traj_world'][:, -1],
             edge_index, relation_embedding, timestep,
             edge_weight=structured['edge_weight'])
+        component_metadata = None
+        if getattr(self.args, 'jdv2_residual_projection', 'none') == \
+                'component_zero_mean':
+            component_metadata = build_component_metadata(
+                edge_index.long(), batch_size, inputs['scene_index'])
+            with torch.autocast(
+                    device_type=raw_delta.device.type, enabled=False):
+                delta = component_zero_mean_projection(
+                    raw_delta, component_metadata)
+            active_agent = component_metadata.active_mask
+        else:
+            # Frozen V1 path remains byte-for-byte equivalent in arithmetic.
+            delta = raw_delta
+            degree = torch.zeros(
+                batch_size, dtype=torch.long, device=velocity_target.device)
+            if edge_index.shape[1]:
+                ones = torch.ones(
+                    edge_index.shape[1], dtype=torch.long,
+                    device=velocity_target.device)
+                degree.index_add_(0, edge_index[0].long(), ones)
+                degree.index_add_(0, edge_index[1].long(), ones)
+            active_agent = degree > 0
         epsilon_joint = epsilon_base + delta
-        degree = torch.zeros(
-            batch_size, dtype=torch.long, device=velocity_target.device)
-        if edge_index.shape[1]:
-            ones = torch.ones(
-                edge_index.shape[1], dtype=torch.long,
-                device=velocity_target.device)
-            degree.index_add_(0, edge_index[0].long(), ones)
-            degree.index_add_(0, edge_index[1].long(), ones)
-        active_agent = degree > 0
         if active_agent.any():
             diffusion_loss = F.mse_loss(
                 epsilon_joint[active_agent].float(),
@@ -3304,6 +3326,10 @@ class GDTS(torch.nn.Module):
             'e0_skipped_count': float(edge_index.shape[1] == 0),
             'delta_epsilon_rms': float(
                 delta.detach().float().square().mean().sqrt().cpu()),
+            'raw_delta_epsilon_rms': float(
+                raw_delta.detach().float().square().mean().sqrt().cpu()),
+            'projected_delta_epsilon_rms': float(
+                delta.detach().float().square().mean().sqrt().cpu()),
             'epsilon_base_rms': float(
                 epsilon_base.detach().float().square().mean().sqrt().cpu()),
             'delta_base_rms_ratio': float((
@@ -3313,6 +3339,34 @@ class GDTS(torch.nn.Module):
             'L_diff': float(diffusion_loss.detach().cpu()),
             'L_relative': float(relative_loss.detach().cpu()),
         })
+        if component_metadata is not None:
+            common = raw_delta.float() - delta.float()
+            raw_energy = raw_delta.float().square().sum()
+            component_sums = delta.new_zeros((
+                component_metadata.num_components,) + tuple(delta.shape[1:]))
+            if component_metadata.num_components:
+                component = component_metadata.component_id.index_select(
+                    0, component_metadata.active_index)
+                component_sums.index_add_(
+                    0, component,
+                    delta.index_select(0, component_metadata.active_index))
+            counts = component_metadata.component_count.float()
+            self.last_joint_diagnostics.update({
+                'removed_common_rms': float(
+                    common.square().mean().sqrt().detach().cpu()),
+                'common_energy_fraction': float((
+                    common.square().sum() /
+                    raw_energy.clamp_min(1e-30)).detach().cpu()),
+                'component_zero_mean_max_abs': float(
+                    component_sums.abs().max().detach().cpu()
+                    if component_sums.numel() else 0.0),
+                'num_active_components': float(
+                    component_metadata.num_components),
+                'mean_component_size': float(
+                    counts.mean().cpu() if counts.numel() else 0.0),
+                'max_component_size': float(
+                    counts.max().cpu() if counts.numel() else 0.0),
+            })
         for active_timestep in active_timesteps:
             self.last_joint_diagnostics[
                 f'active_timestep_count_{active_timestep}'] = float(
@@ -3723,16 +3777,33 @@ class GDTS(torch.nn.Module):
         # path. No extra network forward or RNG draw is introduced.
         dependency_active_agent = None
         dependency_all_active = False
+        projection_enabled = getattr(
+            self.args, 'jdv2_residual_projection', 'none') == \
+            'component_zero_mean'
         if (dependency_state is not None and
                 self.args.use_dependency_corrector):
             dependency_edge_index = dependency_state['edge_index'].long()
             if dependency_edge_index.shape[1]:
-                dependency_active_agent = torch.zeros(
-                    all_context[-1].size(0), dtype=torch.bool,
-                    device=all_context[-1].device)
-                dependency_active_agent[dependency_edge_index.reshape(-1)] = \
-                    True
-                dependency_all_active = bool(dependency_active_agent.all())
+                if projection_enabled:
+                    metadata = dependency_state['component_metadata']
+                    dependency_active_agent = metadata.active_mask
+                    # Fresh V2-A initialization must retain the literal
+                    # Stage-A execution even in all-active windows.
+                    output_layer = self.jdv2_corrector.output[-1]
+                    output_is_zero = bool(
+                        torch.count_nonzero(output_layer.weight).item() == 0
+                        and torch.count_nonzero(output_layer.bias).item() == 0)
+                    if output_is_zero:
+                        dependency_active_agent = None
+                else:
+                    dependency_active_agent = torch.zeros(
+                        all_context[-1].size(0), dtype=torch.bool,
+                        device=all_context[-1].device)
+                    dependency_active_agent[
+                        dependency_edge_index.reshape(-1)] = True
+                if dependency_active_agent is not None:
+                    dependency_all_active = bool(
+                        dependency_active_agent.all())
 
         # trunk stage 
         context = all_context[-1]
@@ -3782,12 +3853,21 @@ class GDTS(torch.nn.Module):
                                       self.args.trajectory_dt)
                     relation_embedding = dependency_state[
                         'relation_embedding'][:, sample_idx]
-                    delta = self.jdv2_corrector(
+                    raw_delta = self.jdv2_corrector(
                         noisy_world_velocity,
                         dependency_state['last_position_world'],
                         dependency_state['edge_index'], relation_embedding,
                         torch.tensor(cur_t, device=x_t.device),
                         edge_weight=dependency_state['edge_weight'])
+                    if projection_enabled:
+                        with torch.autocast(
+                                device_type=raw_delta.device.type,
+                                enabled=False):
+                            delta = component_zero_mean_projection(
+                                raw_delta,
+                                dependency_state['component_metadata'])
+                    else:
+                        delta = raw_delta
                     eps_corrected = eps_base + delta
                 var = eta * (1 - ab_prev) / (1 - ab_cur) * (1 - ab_cur / ab_prev)
                 noise = torch.randn_like(x_t)

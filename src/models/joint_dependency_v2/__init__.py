@@ -5,6 +5,11 @@ it does not construct modules or consume random numbers; the parent model only
 instantiates these classes when ``jdv2_active`` is true.
 """
 
+from .component_residual_projection import (
+    ComponentMetadata,
+    build_component_metadata,
+    component_zero_mean_projection,
+)
 from .dependency_corrector import DependencyCorrector
 from .dynamic_relation import DynamicHypothesisRelation
 from .future_teacher import SceneFutureTeacher
@@ -14,7 +19,10 @@ from .scene_latent import SceneLatentPrior
 from .unary_goal import UnaryGoalResidual
 
 __all__ = [
+    "ComponentMetadata",
     "DependencyCorrector",
+    "build_component_metadata",
+    "component_zero_mean_projection",
     "DynamicHypothesisRelation",
     "ParallelConditionalSampler",
     "RelationSpecificJointEnergy",

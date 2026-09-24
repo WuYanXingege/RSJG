@@ -167,6 +167,11 @@ def get_parser():
     parser.add_argument('--stage_a_freeze_source_commit', default=None)
     parser.add_argument('--stage_b_architecture_version', default=None)
     parser.add_argument(
+        '--jdv2_residual_projection', default='none',
+        choices=['none', 'component_zero_mean'],
+        help=('Stage-B residual routing. The default preserves the frozen '
+              'V1 execution tensor-exactly.'))
+    parser.add_argument(
         '--jdv2_cache_source_commit', default=None,
         help=('Explicitly pin the commit that built a reusable JDV2 cache. '
               'All data/checkpoint/graph fields remain strictly validated.'))
@@ -774,16 +779,28 @@ def check_and_add_additional_args(args):
             raise ValueError(
                 'stage_a_freeze_source_commit must be a full lowercase git SHA')
         if (args.stage_b_architecture_version is not None and
-                args.stage_b_architecture_version != 'jdv2-stage-b-v1'):
+                args.stage_b_architecture_version not in {
+                    'jdv2-stage-b-v1', 'jdv2-stage-b-v2a'}):
             raise ValueError('Unsupported stage_b_architecture_version')
         if args.training_stage == 'joint_trajectory' and \
                 args.stage_b_architecture_version is not None:
             if args.jdv2_latent_objective != 'strict_no_z':
-                raise ValueError('Stage-B V1 requires strict_no_z')
+                raise ValueError('Stage-B requires strict_no_z')
             if args.jdv2_refinement_policy != \
                     'exact_lexicographic_persistent_tie':
                 raise ValueError(
-                    'Stage-B V1 requires the frozen exact Stage-A sampler')
+                    'Stage-B requires the frozen exact Stage-A sampler')
+            expected_projection = (
+                'component_zero_mean'
+                if args.stage_b_architecture_version == 'jdv2-stage-b-v2a'
+                else 'none')
+            if args.jdv2_residual_projection != expected_projection:
+                raise ValueError(
+                    f'{args.stage_b_architecture_version} requires '
+                    f'jdv2_residual_projection={expected_projection}')
+        elif args.jdv2_residual_projection != 'none':
+            raise ValueError(
+                'component residual projection is Stage-B-only')
         if (args.phase == 'build-jdv2-cache' and
                 args.training_stage not in {
                     'joint_goal', 'joint_trajectory', 'joint_finetune'}):

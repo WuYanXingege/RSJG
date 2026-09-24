@@ -403,6 +403,8 @@ class trainer(object):
                     self.args, 'stage_a_freeze_source_commit', None),
                 'stage_b_architecture_version': getattr(
                     self.args, 'stage_b_architecture_version', None),
+                'stage_b_residual_projection': getattr(
+                    self.args, 'jdv2_residual_projection', 'none'),
                 'best_metric': {
                     'name': self.net.best_valid_metric(),
                     'primary': self._best_selection[0],
@@ -524,18 +526,20 @@ class trainer(object):
                 raise RuntimeError(
                     f'Invalid V2 stage transition {source_stage!r} -> '
                     f'{target_stage!r}')
+            stage_b_version = getattr(
+                self.args, 'stage_b_architecture_version', None)
             if (target_stage == 'joint_trajectory' and
                     source_stage == 'joint_goal' and
-                    getattr(self.args, 'stage_b_architecture_version', None) ==
-                    'jdv2-stage-b-v1'):
+                    stage_b_version in {
+                        'jdv2-stage-b-v1', 'jdv2-stage-b-v2a'}):
                 expected_parent = self.args.stage_a_parent_checkpoint_sha256
                 if expected_parent is None:
                     raise RuntimeError(
-                        'Stage-B V1 requires its Stage-A parent SHA256')
+                        'Stage-B requires its Stage-A parent SHA256')
                 actual_parent = sha256_file(saved_model_name)
                 if actual_parent != expected_parent:
                     raise RuntimeError(
-                        'Stage-B V1 parent checkpoint SHA256 mismatch')
+                        'Stage-B parent checkpoint SHA256 mismatch')
                 repository_root = os.path.dirname(os.path.dirname(
                     os.path.abspath(__file__)))
                 manifest_path = os.path.join(
@@ -545,20 +549,20 @@ class trainer(object):
                 if expected_manifest is None or not os.path.isfile(
                         manifest_path):
                     raise RuntimeError(
-                        'Stage-B V1 requires the frozen Stage-A manifest')
+                        'Stage-B requires the frozen Stage-A manifest')
                 if sha256_file(manifest_path) != expected_manifest:
                     raise RuntimeError(
-                        'Stage-B V1 freeze manifest SHA256 mismatch')
+                        'Stage-B freeze manifest SHA256 mismatch')
                 with open(manifest_path) as handle:
                     freeze_manifest = json.load(handle)
                 if freeze_manifest.get('freeze_source_commit') != \
                         self.args.stage_a_freeze_source_commit:
                     raise RuntimeError(
-                        'Stage-B V1 freeze source commit mismatch')
+                        'Stage-B freeze source commit mismatch')
             if (target_stage == 'joint_trajectory' and
                     source_stage == 'joint_trajectory' and
-                    getattr(self.args, 'stage_b_architecture_version', None) ==
-                    'jdv2-stage-b-v1'):
+                    stage_b_version in {
+                        'jdv2-stage-b-v1', 'jdv2-stage-b-v2a'}):
                 for name in (
                         'stage_a_parent_checkpoint_sha256',
                         'stage_a_freeze_manifest_sha256',
@@ -566,8 +570,14 @@ class trainer(object):
                         'stage_b_architecture_version'):
                     if checkpoint.get(name) != getattr(self.args, name):
                         raise RuntimeError(
-                            f'Stage-B V1 checkpoint provenance mismatch: '
-                            f'{name}')
+                            f'Stage-B checkpoint provenance mismatch: {name}')
+                expected_projection = getattr(
+                    self.args, 'jdv2_residual_projection', 'none')
+                if checkpoint.get(
+                        'stage_b_residual_projection', 'none') != \
+                        expected_projection:
+                    raise RuntimeError(
+                        'Stage-B checkpoint residual projection mismatch')
             self._pending_training_state = checkpoint
         return checkpoint.get('epoch', 0)
 
