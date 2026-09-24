@@ -1,0 +1,51 @@
+{
+  "checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt",
+  "checkpoint_epoch": 13,
+  "runs": [
+    {
+      "JADE": 0.4211821101016278,
+      "JFDE": 0.6936887975165741,
+      "Joint_Goal_Compatibility": 0.4780719065837723,
+      "Joint_Goal_Endpoint_Error": 0.6927770795367605,
+      "Relative_Motion_Error": 0.29699157344565974,
+      "minADE@K": 0.27931827371535095,
+      "minFDE@K": 0.3884237253603161,
+      "seed": 2035
+    }
+  ],
+  "sampling_policy": "stochastic deployed policy (not MAP)",
+  "seeds": [
+    2035
+  ],
+  "split": "valid",
+  "summary": {
+    "JADE": {
+      "mean": 0.4211821101016278,
+      "std": 0.0
+    },
+    "JFDE": {
+      "mean": 0.6936887975165741,
+      "std": 0.0
+    },
+    "Joint_Goal_Compatibility": {
+      "mean": 0.4780719065837723,
+      "std": 0.0
+    },
+    "Joint_Goal_Endpoint_Error": {
+      "mean": 0.6927770795367605,
+      "std": 0.0
+    },
+    "Relative_Motion_Error": {
+      "mean": 0.29699157344565974,
+      "std": 0.0
+    },
+    "minADE@K": {
+      "mean": 0.27931827371535095,
+      "std": 0.0
+    },
+    "minFDE@K": {
+      "mean": 0.3884237253603161,
+      "std": 0.0
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "epoch": 2,
+  "loss_coefficients": {
+    "jdv2_diffusion_loss": 1.0,
+    "jdv2_relative_loss": 0.05
+  },
+  "stage_progress": 0.016934306569343065,
+  "system": {
+    "peak_cuda_allocated_bytes": 351905280,
+    "peak_cuda_reserved_bytes": 585105408,
+    "runtime_seconds": 502.58275604248047
+  },
+  "train_joint_diagnostics": {
+    "L_diff": 0.7921632677037949,
+    "L_relative": 0.12871626489552151,
+    "active_timestep_count_10": 1.4931873479318736,
+    "active_timestep_count_15": 1.5160583941605839,
+    "active_timestep_count_20": 1.4077858880778589,
+    "active_timestep_count_25": 1.5420924574209245,
+    "active_timestep_count_30": 1.492214111922141,
+    "active_timestep_count_5": 1.5282238442822385,
+    "avg_degree": 5.920631159008814,
+    "base_relation_usage_0": 0.046213406289760964,
+    "base_relation_usage_1": 0.11875777316241187,
+    "base_relation_usage_2": 0.17078972034498488,
+    "base_relation_usage_3": 0.5109544397161825,
+    "degree_positive_agent_count": 8.78978102189781,
+    "delta_base_rms_ratio": 0.10682029338947831,
+    "delta_epsilon_rms": 0.12286927736071993,
+    "e0_skipped_count": 0.15328467153284672,
+    "epsilon_base_rms": 1.1341173740344035,
+    "num_agents": 8.979562043795621,
+    "num_edges": 63.18613138686131,
+    "oracle_branch_goal_error": 0.8356624109747263,
+    "relation_entropy": 0.7660155264638057,
+    "sampled_relation_usage_0": 0.03412336473987895,
+    "sampled_relation_usage_1": 0.11477242175947394,
+    "sampled_relation_usage_2": 0.21695810725364081,
+    "sampled_relation_usage_3": 0.4808614525391093,
+    "sampler_initial_goal_oracle": 0.28166108170927584,
+    "sampler_initial_unique_candidates": 20.00000002645228,
+    "sampler_rank1_coverage": 0.9737989461044906,
+    "sampler_selected_goal_oracle": 0.2786426984217843,
+    "sampler_top3_coverage": 0.9999999998404742,
+    "sampler_top5_coverage": 0.9999999998404742,
+    "trainable_parameter_count": 30851.0
+  },
+  "train_losses": {
+    "train_jdv2_diffusion_loss": 0.7921632677037949,
+    "train_jdv2_relative_loss": 0.12871626489552151,
+    "train_loss_total": 0.7985990809557683
+  },
+  "training_stage": "joint_trajectory",
+  "validation_joint_diagnostics": {},
+  "validation_metrics": {}
+}

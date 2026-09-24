@@ -1,0 +1,27 @@
+{
+  "final_test_split": "heldout_test",
+  "freeze_upstream_generator": true,
+  "internal_validation_fraction": 0.1,
+  "internal_validation_seed": 2025,
+  "internal_validation_source": null,
+  "internal_validation_strategy": "source_block",
+  "jdv2_inference_sampler_config": {
+    "num_candidates": 21,
+    "num_refinement_steps": 2,
+    "num_samples": 20,
+    "refinement_policy": "exact_lexicographic_persistent_tie",
+    "temperature": 1.0
+  },
+  "jdv2_latent_objective": "strict_no_z",
+  "model_selection_split": "dataset_valid",
+  "num_cached_seeds_per_window": 4,
+  "scene_balanced_loss": false,
+  "test_window_count": 139,
+  "train_window_count": 4110,
+  "upstream_checkpoint": null,
+  "upstream_generator": "stage0_independent",
+  "use_multi_scene_packing": false,
+  "use_trajectory_bank_cache": false,
+  "valid_window_count": 139,
+  "validation_seed": 2035
+}

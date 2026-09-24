@@ -1,0 +1,95 @@
+{
+  "checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt",
+  "checkpoint_epoch": 13,
+  "runs": [
+    {
+      "JADE": 0.4211821101016278,
+      "JFDE": 0.6936887975165741,
+      "Joint_Goal_Compatibility": 0.4780719065837723,
+      "Joint_Goal_Endpoint_Error": 0.6927770795367605,
+      "Relative_Motion_Error": 0.29699157344565974,
+      "minADE@K": 0.27931827371535095,
+      "minFDE@K": 0.3884237253603161,
+      "seed": 2035
+    },
+    {
+      "JADE": 0.4071418554019585,
+      "JFDE": 0.6918776274370633,
+      "Joint_Goal_Compatibility": 0.49371601346370986,
+      "Joint_Goal_Endpoint_Error": 0.6758015581386553,
+      "Relative_Motion_Error": 0.2899432984187449,
+      "minADE@K": 0.2798608376381352,
+      "minFDE@K": 0.38607484730891883,
+      "seed": 2036
+    },
+    {
+      "JADE": 0.41228948319129805,
+      "JFDE": 0.7139319787136942,
+      "Joint_Goal_Compatibility": 0.5095980543670037,
+      "Joint_Goal_Endpoint_Error": 0.6970112880142473,
+      "Relative_Motion_Error": 0.3037504280964248,
+      "minADE@K": 0.2775995108784865,
+      "minFDE@K": 0.38794004216122074,
+      "seed": 2037
+    },
+    {
+      "JADE": 0.41303179418440344,
+      "JFDE": 0.7081102206767034,
+      "Joint_Goal_Compatibility": 0.49224537007993074,
+      "Joint_Goal_Endpoint_Error": 0.6884201990185882,
+      "Relative_Motion_Error": 0.3009733971503141,
+      "minADE@K": 0.27796527039786073,
+      "minFDE@K": 0.38683239014631987,
+      "seed": 2038
+    },
+    {
+      "JADE": 0.4130269245063658,
+      "JFDE": 0.7026984353127669,
+      "Joint_Goal_Compatibility": 0.4639319332597925,
+      "Joint_Goal_Endpoint_Error": 0.6956558813937277,
+      "Relative_Motion_Error": 0.297380725846445,
+      "minADE@K": 0.276100825700585,
+      "minFDE@K": 0.38160103550383256,
+      "seed": 2039
+    }
+  ],
+  "sampling_policy": "stochastic deployed policy (not MAP)",
+  "seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "split": "valid",
+  "summary": {
+    "JADE": {
+      "mean": 0.41333443347713067,
+      "std": 0.004499158255235011
+    },
+    "JFDE": {
+      "mean": 0.7020614119313604,
+      "std": 0.00838706600099244
+    },
+    "Joint_Goal_Compatibility": {
+      "mean": 0.4875126555508419,
+      "std": 0.015452011402433862
+    },
+    "Joint_Goal_Endpoint_Error": {
+      "mean": 0.6899332012203958,
+      "std": 0.00765413008457799
+    },
+    "Relative_Motion_Error": {
+      "mean": 0.2978078845915177,
+      "std": 0.004648329532572416
+    },
+    "minADE@K": {
+      "mean": 0.2781689436660837,
+      "std": 0.0013286318672838424
+    },
+    "minFDE@K": {
+      "mean": 0.38617440809612164,
+      "std": 0.002430451867594752
+    }
+  }
+}
