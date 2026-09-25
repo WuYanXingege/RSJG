@@ -160,8 +160,8 @@ def test_cross_dataset_target_identity_rejects_swapped_protocol():
 
 def test_results_pin_explicit_protocol_and_provenance_contracts():
     results = json.loads(RESULTS.read_text())
-    assert results["status"] == "CROSS_DATASET_BENCHMARK_BLOCKED"
-    assert results["next_state"] is None
+    assert results["status"] == "CROSS_DATASET_BENCHMARK_PARTIALLY_READY"
+    assert results["next_state"] == "eligible_for_univ_stage_a_reproduction"
     assert set(results["targets"]) == set(TARGETS)
     assert results["evaluation_seeds"] == [2035, 2036, 2037, 2038, 2039]
     assert results["scientific_contract"]["stage_a"] == {
@@ -182,7 +182,14 @@ def test_results_pin_explicit_protocol_and_provenance_contracts():
         assert entry["protocol_classification"] == \
             "ORIGINAL_GDTS_MIRRORED_VAL_TEST"
         assert entry["raw_valid_test_byte_identical"] is True
-        assert entry["ready_for_stage_a"] is False
+        expected_ready = target == "univ"
+        expected_status = (
+            "TARGET_READY_FOR_STAGE_A"
+            if expected_ready
+            else "TARGET_BLOCKED_MISSING_GDTS_CHECKPOINT"
+        )
+        assert entry["ready_for_stage_a"] is expected_ready
+        assert entry["status"] == expected_status
         assert entry["configs"]["stage_a"]["sha256"] == _sha256(
             ROOT / entry["configs"]["stage_a"]["path"])
         assert entry["configs"]["stage_b_v2a"]["sha256"] == _sha256(

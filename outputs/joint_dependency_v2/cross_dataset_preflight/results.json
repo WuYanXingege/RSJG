@@ -6,7 +6,7 @@
     2038,
     2039
   ],
-  "next_state": null,
+  "next_state": "eligible_for_univ_stage_a_reproduction",
   "protected_eth_hashes": {
     "component_projection_source": "355de2a9ace3265efe1d5fc1ed4b5a6c054a621fc452a7ad95d70b6a2c3b5630",
     "dependency_corrector_source": "0ff28eb7107e49a0ad6f2bf339a65d8847f83c4a7cf315faa5a80cac4dc00522",
@@ -14,7 +14,7 @@
     "stage_b_v1": "e24a1cbfc5760db57bcb5cacd64c66a4afd1aed0f11bb1efefa8549933d21c1a",
     "stage_b_v2a": "e4c114c729ba8d75ac72fc7d41f0f05e790cf2aec7b5cade563ba792930c7b73"
   },
-  "recommendation_basis": "UNIV is the only target with an authenticated original-GDTS baseline checkpoint; canonical source/JDV2 caches remain required.",
+  "recommendation_basis": "UNIV has an authenticated original-GDTS checkpoint, fully audited canonical source/JDV2 caches, and a passing CUDA/BF16 no-optimizer Stage-A smoke.",
   "recommended_first_target_after_prerequisites": "univ",
   "schema": "jdv2-cross-dataset-preflight-v1",
   "scientific_contract": {
@@ -56,7 +56,7 @@
     }
   },
   "source_commit": "480bda5f694010395750e122171f05c837e4e535",
-  "status": "CROSS_DATASET_BENCHMARK_BLOCKED",
+  "status": "CROSS_DATASET_BENCHMARK_PARTIALLY_READY",
   "targets": {
     "hotel": {
       "blocking_reasons": [
@@ -181,18 +181,15 @@
       "status": "TARGET_BLOCKED_MISSING_GDTS_CHECKPOINT"
     },
     "univ": {
-      "blocking_reasons": [
-        "canonical synchronized JDV2 source-batch cache missing",
-        "target JDV2 Stage-A cache missing"
-      ],
+      "blocking_reasons": [],
       "configs": {
         "stage_a": {
           "path": "configs/joint_dependency_v2/jdv2_stage_a_univ.yaml",
-          "sha256": "efa60733e20153e11798181d2d52ab9bb3a84b7cd240ca1edfd72ff48de40560"
+          "sha256": "1a48f32b52349e84d4673437668e4a657c664403c9057faab403c9d7e232348d"
         },
         "stage_b_v2a": {
           "path": "configs/joint_dependency_v2/jdv2_stage_b_v2a_univ.yaml",
-          "sha256": "59c3f55b68bf97b9c97e28c88a7afdd9ad374e29b8ccded1b34974a8aeeb3cf0",
+          "sha256": "546804a817b957ee84aeffbb7d9d8761d90b933b0a5ec2284e8cfda52a3d18c4",
           "stage_a_parent_checkpoint_sha256": null
         }
       },
@@ -208,7 +205,9 @@
       },
       "jdv2_stage_a_cache": {
         "expected_root": "outputs/joint_dependency_v2/cache/univ_full_stage_a",
-        "manifest_hash": null,
+        "goal_checkpoint_hash": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+        "manifest_hash": "7d4983630a2665f6856afeba7265a822e5bd87cc3f1c856485d644ca6a718008",
+        "manifest_sha256": "a4252f64a9733532fa1f443998532dc8e60974c960ba7e05018b16b01906b69f",
         "must_match_target_checkpoint": true,
         "required_K": 21,
         "required_schema": "jdv2-cache-v1",
@@ -216,12 +215,23 @@
           "position": "world_m",
           "velocity": "world_m_per_s"
         },
-        "status": "MISSING"
+        "source_commit": "db47b913820371cca25876d08c624709830ae1e8",
+        "status": "AVAILABLE_AUDITED",
+        "teacher_sidecar_counts": {
+          "test": 947,
+          "train": 3302,
+          "valid": 947
+        },
+        "window_counts": {
+          "test": 947,
+          "train": 3302,
+          "valid": 947
+        }
       },
       "leave_one_out_confirmed": true,
       "materialized_valid_test_identity": {
         "ordered_hardlink_identity": "947/947",
-        "status": "LEGACY_CACHE_AVAILABLE"
+        "status": "CANONICAL_CACHE_HARDLINK_IDENTICAL"
       },
       "protocol_classification": "ORIGINAL_GDTS_MIRRORED_VAL_TEST",
       "raw_splits": {
@@ -303,11 +313,12 @@
         ]
       },
       "raw_valid_test_byte_identical": true,
-      "ready_for_stage_a": false,
+      "ready_for_stage_a": true,
       "smoke": {
-        "coverage_20_of_20": "NOT_RUN_MISSING_CACHE",
+        "coverage_20_of_20": "PASS",
         "generic_stage_b_cuda_bf16_contract": "PASS",
-        "stage_a_cuda_bf16": "NOT_RUN_MISSING_CACHE",
+        "readiness_result": "outputs/joint_dependency_v2/univ/joint_dependency_v2/stage_a_readiness/results.json",
+        "stage_a_cuda_bf16": "PASS_E0_AND_E_GT0",
         "stage_b_target_checkpoint": "NOT_RUN_NO_TARGET_STAGE_A"
       },
       "source_batch_cache": {
@@ -327,10 +338,20 @@
             "valid": 947
           }
         },
-        "manifest_hash": null,
-        "status": "MISSING_CANONICAL_CACHE"
+        "manifest_hash": "12b9909dcf8a4e346cb1bcd179c58faef7a2688bf3c8d3d0c3956909486e8943",
+        "manifest_sha256": "e1f7ae3897762a97dd8f0939e0bb8bd18e3646bab83d0a853ace4b40ea5df9aa",
+        "status": "AVAILABLE_AUDITED",
+        "valid_test_hardlink_identity": {
+          "identical_pairs": 947,
+          "total_pairs": 947
+        },
+        "window_counts": {
+          "test": 947,
+          "train": 3302,
+          "valid": 947
+        }
       },
-      "status": "TARGET_BLOCKED_MISSING_CACHE"
+      "status": "TARGET_READY_FOR_STAGE_A"
     },
     "zara1": {
       "blocking_reasons": [
