@@ -164,6 +164,12 @@ def get_parser():
     parser.add_argument('--jdv2_source_checkpoint_hash', default=None)
     parser.add_argument('--stage_a_parent_checkpoint_sha256', default=None)
     parser.add_argument('--stage_a_freeze_manifest_sha256', default=None)
+    parser.add_argument('--stage_a_freeze_manifest_path', default=None)
+    parser.add_argument(
+        '--cross_dataset_protocol_target', default=None,
+        choices=['hotel', 'univ', 'zara1', 'zara2'],
+        help=('Fail-closed target identity for JDV2 cross-dataset '
+              'benchmark configurations.'))
     parser.add_argument('--stage_a_freeze_source_commit', default=None)
     parser.add_argument('--stage_b_architecture_version', default=None)
     parser.add_argument(
@@ -1077,6 +1083,50 @@ def check_and_add_additional_args(args):
     else:
         # hard assignation of test set
         args.test_set = args.dataset
+    if args.cross_dataset_protocol_target is not None:
+        target = args.cross_dataset_protocol_target
+        if args.dataset != 'eth5' or args.test_set != target:
+            raise ValueError(
+                'cross_dataset_protocol_target must equal the ETH5 test_set')
+        if args.goal_model_type != 'joint_dependency_v2':
+            raise ValueError(
+                'cross-dataset protocol is defined only for JDV2')
+
+        def _contains_target(path):
+            if path is None:
+                return True
+            tokens = re.split(r'[^a-z0-9]+', str(path).lower())
+            return target in tokens
+
+        target_paths = {
+            'run_name': args.run_name,
+            'jdv2_cache_root': args.jdv2_cache_root,
+            'jdv2_source_checkpoint': args.jdv2_source_checkpoint,
+        }
+        if args.training_stage == 'joint_trajectory':
+            target_paths.update({
+                'pretrain_path': args.pretrain_path,
+                'stage_a_freeze_manifest_path':
+                    args.stage_a_freeze_manifest_path,
+            })
+        mismatched = [
+            name for name, path in target_paths.items()
+            if path is not None and not _contains_target(path)]
+        if mismatched:
+            raise ValueError(
+                'Cross-dataset paths must be target-isolated: ' +
+                ', '.join(mismatched))
+        if args.training_stage == 'joint_trajectory':
+            unresolved = [
+                name for name in (
+                    'stage_a_parent_checkpoint_sha256',
+                    'stage_a_freeze_manifest_sha256',
+                    'stage_a_freeze_source_commit')
+                if getattr(args, name) is None]
+            if unresolved:
+                raise ValueError(
+                    'Cross-dataset Stage-B remains unresolved until the '
+                    'target Stage-A freeze exists: ' + ', '.join(unresolved))
     if not args.save_every:
         args.save_every = 10 # int(args.num_epochs // 5)
     # set parameters for trajectories

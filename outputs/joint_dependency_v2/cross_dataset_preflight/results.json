@@ -1,0 +1,594 @@
+{
+  "evaluation_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "next_state": null,
+  "protected_eth_hashes": {
+    "component_projection_source": "355de2a9ace3265efe1d5fc1ed4b5a6c054a621fc452a7ad95d70b6a2c3b5630",
+    "dependency_corrector_source": "0ff28eb7107e49a0ad6f2bf339a65d8847f83c4a7cf315faa5a80cac4dc00522",
+    "stage_a": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+    "stage_b_v1": "e24a1cbfc5760db57bcb5cacd64c66a4afd1aed0f11bb1efefa8549933d21c1a",
+    "stage_b_v2a": "e4c114c729ba8d75ac72fc7d41f0f05e790cf2aec7b5cade563ba792930c7b73"
+  },
+  "recommendation_basis": "UNIV is the only target with an authenticated original-GDTS baseline checkpoint; canonical source/JDV2 caches remain required.",
+  "recommended_first_target_after_prerequisites": "univ",
+  "schema": "jdv2-cross-dataset-preflight-v1",
+  "scientific_contract": {
+    "stage_a": {
+      "K": 21,
+      "M": 4,
+      "P": 20,
+      "dt_s": 0.4,
+      "energy_rank": 8,
+      "graph_type": "radius_ttc",
+      "radius_m": 6.0,
+      "refinement_policy": "exact_lexicographic_persistent_tie",
+      "refinement_rounds": 2,
+      "round0": "weighted_gumbel_top_p_without_replacement",
+      "ttc_s": 8.0,
+      "variant": "strict_no_z"
+    },
+    "stage_b": {
+      "active_timesteps": [
+        30,
+        25,
+        20,
+        15,
+        10,
+        5
+      ],
+      "architecture": "jdv2-stage-b-v2a",
+      "corrector_parameters": 30851,
+      "lambda_diff": 1.0,
+      "lambda_relative": 0.05,
+      "learning_rate": 0.0001,
+      "optimizer": "Adam",
+      "precision": "bf16",
+      "projection": "component_zero_mean",
+      "projection_location": "post_corrector_pre_epsilon_add",
+      "relation": "same_slot",
+      "scheduler": "ExponentialLR",
+      "training_branch": "one_scene_level_oracle_branch"
+    }
+  },
+  "source_commit": "480bda5f694010395750e122171f05c837e4e535",
+  "status": "CROSS_DATASET_BENCHMARK_BLOCKED",
+  "targets": {
+    "hotel": {
+      "blocking_reasons": [
+        "original GDTS baseline checkpoint missing",
+        "canonical synchronized JDV2 source-batch cache missing",
+        "target JDV2 Stage-A cache missing"
+      ],
+      "configs": {
+        "stage_a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_a_hotel.yaml",
+          "sha256": "957d094cd322e51fd732ea286cef75eb99dbdba4d726e0509c955d89b7213def"
+        },
+        "stage_b_v2a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_b_v2a_hotel.yaml",
+          "sha256": "bfb1975e88c211dece77623fb9e36cdfbd88fdf1c358417c77b5f29bf0433a1f",
+          "stage_a_parent_checkpoint_sha256": null
+        }
+      },
+      "gdts_checkpoint": {
+        "architecture_compatible": null,
+        "epoch": null,
+        "path": null,
+        "protocol_config_path": null,
+        "sha256": null,
+        "status": "BASELINE_CHECKPOINT_MISSING"
+      },
+      "jdv2_stage_a_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/hotel_full_stage_a",
+        "manifest_hash": null,
+        "must_match_target_checkpoint": true,
+        "required_K": 21,
+        "required_schema": "jdv2-cache-v1",
+        "required_units": {
+          "position": "world_m",
+          "velocity": "world_m_per_s"
+        },
+        "status": "MISSING"
+      },
+      "leave_one_out_confirmed": true,
+      "materialized_valid_test_identity": {
+        "status": "NOT_AVAILABLE"
+      },
+      "protocol_classification": "ORIGINAL_GDTS_MIRRORED_VAL_TEST",
+      "raw_splits": {
+        "test": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/hotel/test/biwi_hotel.txt",
+            "scene": "hotel",
+            "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+            "size_bytes": 143799
+          }
+        ],
+        "train": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/hotel/train/crowds_zara02.txt",
+            "scene": "zara2",
+            "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff",
+            "size_bytes": 392227
+          },
+          {
+            "order": 1,
+            "path": "GDTS/data/eth5/hotel/train/crowds_zara03.txt",
+            "scene": "zara2",
+            "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108",
+            "size_bytes": 199834
+          },
+          {
+            "order": 2,
+            "path": "GDTS/data/eth5/hotel/train/students001.txt",
+            "scene": "univ",
+            "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b",
+            "size_bytes": 879714
+          },
+          {
+            "order": 3,
+            "path": "GDTS/data/eth5/hotel/train/students003.txt",
+            "scene": "univ",
+            "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c",
+            "size_bytes": 724279
+          },
+          {
+            "order": 4,
+            "path": "GDTS/data/eth5/hotel/train/crowds_zara01.txt",
+            "scene": "zara1",
+            "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85",
+            "size_bytes": 205711
+          },
+          {
+            "order": 5,
+            "path": "GDTS/data/eth5/hotel/train/biwi_eth.txt",
+            "scene": "eth",
+            "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33",
+            "size_bytes": 224263
+          }
+        ],
+        "valid": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/hotel/val/biwi_hotel.txt",
+            "scene": "hotel",
+            "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+            "size_bytes": 143799
+          }
+        ]
+      },
+      "raw_valid_test_byte_identical": true,
+      "ready_for_stage_a": false,
+      "smoke": {
+        "coverage_20_of_20": "NOT_RUN_MISSING_CACHE",
+        "generic_stage_b_cuda_bf16_contract": "PASS",
+        "stage_a_cuda_bf16": "NOT_RUN_MISSING_CACHE",
+        "stage_b_target_checkpoint": "NOT_RUN_NO_TARGET_STAGE_A"
+      },
+      "source_batch_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/source_batches/eth5/hotel/data_batches_jdv2_v2",
+        "legacy_candidate": null,
+        "manifest_hash": null,
+        "status": "MISSING_CANONICAL_CACHE"
+      },
+      "status": "TARGET_BLOCKED_MISSING_GDTS_CHECKPOINT"
+    },
+    "univ": {
+      "blocking_reasons": [
+        "canonical synchronized JDV2 source-batch cache missing",
+        "target JDV2 Stage-A cache missing"
+      ],
+      "configs": {
+        "stage_a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_a_univ.yaml",
+          "sha256": "efa60733e20153e11798181d2d52ab9bb3a84b7cd240ca1edfd72ff48de40560"
+        },
+        "stage_b_v2a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_b_v2a_univ.yaml",
+          "sha256": "59c3f55b68bf97b9c97e28c88a7afdd9ad374e29b8ccded1b34974a8aeeb3cf0",
+          "stage_a_parent_checkpoint_sha256": null
+        }
+      },
+      "gdts_checkpoint": {
+        "architecture_compatible": true,
+        "epoch": 100,
+        "path": "../GDTS/output/univ/saved_models/best_model.pt",
+        "protocol_config_path": "../GDTS/output/univ/config.yaml",
+        "protocol_config_sha256": "07452f9693ea2f19c802be73b0c0a78ec8f1a881deabb7a5994cab9b41cc1c09",
+        "protocol_phase": "train_test",
+        "sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+        "status": "AVAILABLE"
+      },
+      "jdv2_stage_a_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/univ_full_stage_a",
+        "manifest_hash": null,
+        "must_match_target_checkpoint": true,
+        "required_K": 21,
+        "required_schema": "jdv2-cache-v1",
+        "required_units": {
+          "position": "world_m",
+          "velocity": "world_m_per_s"
+        },
+        "status": "MISSING"
+      },
+      "leave_one_out_confirmed": true,
+      "materialized_valid_test_identity": {
+        "ordered_hardlink_identity": "947/947",
+        "status": "LEGACY_CACHE_AVAILABLE"
+      },
+      "protocol_classification": "ORIGINAL_GDTS_MIRRORED_VAL_TEST",
+      "raw_splits": {
+        "test": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/univ/test/students001.txt",
+            "scene": "univ",
+            "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b",
+            "size_bytes": 879714
+          },
+          {
+            "order": 1,
+            "path": "GDTS/data/eth5/univ/test/students003.txt",
+            "scene": "univ",
+            "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c",
+            "size_bytes": 724279
+          }
+        ],
+        "train": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/univ/train/biwi_hotel.txt",
+            "scene": "hotel",
+            "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+            "size_bytes": 143799
+          },
+          {
+            "order": 1,
+            "path": "GDTS/data/eth5/univ/train/crowds_zara02.txt",
+            "scene": "zara2",
+            "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff",
+            "size_bytes": 392227
+          },
+          {
+            "order": 2,
+            "path": "GDTS/data/eth5/univ/train/crowds_zara03.txt",
+            "scene": "zara2",
+            "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108",
+            "size_bytes": 199834
+          },
+          {
+            "order": 3,
+            "path": "GDTS/data/eth5/univ/train/crowds_zara01.txt",
+            "scene": "zara1",
+            "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85",
+            "size_bytes": 205711
+          },
+          {
+            "order": 4,
+            "path": "GDTS/data/eth5/univ/train/biwi_eth.txt",
+            "scene": "eth",
+            "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33",
+            "size_bytes": 224263
+          },
+          {
+            "order": 5,
+            "path": "GDTS/data/eth5/univ/train/uni_examples.txt",
+            "scene": "univ",
+            "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7",
+            "size_bytes": 109307
+          }
+        ],
+        "valid": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/univ/val/students001.txt",
+            "scene": "univ",
+            "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b",
+            "size_bytes": 879714
+          },
+          {
+            "order": 1,
+            "path": "GDTS/data/eth5/univ/val/students003.txt",
+            "scene": "univ",
+            "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c",
+            "size_bytes": 724279
+          }
+        ]
+      },
+      "raw_valid_test_byte_identical": true,
+      "ready_for_stage_a": false,
+      "smoke": {
+        "coverage_20_of_20": "NOT_RUN_MISSING_CACHE",
+        "generic_stage_b_cuda_bf16_contract": "PASS",
+        "stage_a_cuda_bf16": "NOT_RUN_MISSING_CACHE",
+        "stage_b_target_checkpoint": "NOT_RUN_NO_TARGET_STAGE_A"
+      },
+      "source_batch_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/source_batches/eth5/univ/data_batches_jdv2_v2",
+        "legacy_candidate": {
+          "accepted_as_canonical_jdv2_source_cache": false,
+          "batch_format_version": 2,
+          "deterministic_numbering": true,
+          "manifest_goal_model_type": "joint",
+          "manifest_sha256": "c27f4488a8f963cacf7f91026dab183e6f40db004a44ab71aa3d1160db87c50b",
+          "path": "../GDTS/output/univ/joint/data_batches_joint_v2",
+          "rejection_reason": "legacy data_batches_joint_v2/goal_model_type=joint is not current data_batches_jdv2_v2/goal_model_type=joint_dependency_v2",
+          "valid_test_hardlink_identical": "947/947",
+          "window_counts": {
+            "test": 947,
+            "train": 3302,
+            "valid": 947
+          }
+        },
+        "manifest_hash": null,
+        "status": "MISSING_CANONICAL_CACHE"
+      },
+      "status": "TARGET_BLOCKED_MISSING_CACHE"
+    },
+    "zara1": {
+      "blocking_reasons": [
+        "original GDTS baseline checkpoint missing",
+        "canonical synchronized JDV2 source-batch cache missing",
+        "target JDV2 Stage-A cache missing"
+      ],
+      "configs": {
+        "stage_a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_a_zara1.yaml",
+          "sha256": "0a3d22d316055eae3d0d9efe2b6a34707490347d5fddedc7698b6d8806959e9f"
+        },
+        "stage_b_v2a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_b_v2a_zara1.yaml",
+          "sha256": "5427e0a041437fb9c656ed944dfe795b114fbd44082b15e6e73edd7f72b0d1d2",
+          "stage_a_parent_checkpoint_sha256": null
+        }
+      },
+      "gdts_checkpoint": {
+        "architecture_compatible": null,
+        "epoch": null,
+        "path": null,
+        "protocol_config_path": null,
+        "sha256": null,
+        "status": "BASELINE_CHECKPOINT_MISSING"
+      },
+      "jdv2_stage_a_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/zara1_full_stage_a",
+        "manifest_hash": null,
+        "must_match_target_checkpoint": true,
+        "required_K": 21,
+        "required_schema": "jdv2-cache-v1",
+        "required_units": {
+          "position": "world_m",
+          "velocity": "world_m_per_s"
+        },
+        "status": "MISSING"
+      },
+      "leave_one_out_confirmed": true,
+      "materialized_valid_test_identity": {
+        "status": "NOT_AVAILABLE"
+      },
+      "protocol_classification": "ORIGINAL_GDTS_MIRRORED_VAL_TEST",
+      "raw_splits": {
+        "test": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/zara1/test/crowds_zara01.txt",
+            "scene": "zara1",
+            "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85",
+            "size_bytes": 205711
+          }
+        ],
+        "train": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/zara1/train/biwi_hotel.txt",
+            "scene": "hotel",
+            "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+            "size_bytes": 143799
+          },
+          {
+            "order": 1,
+            "path": "GDTS/data/eth5/zara1/train/crowds_zara02.txt",
+            "scene": "zara2",
+            "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff",
+            "size_bytes": 392227
+          },
+          {
+            "order": 2,
+            "path": "GDTS/data/eth5/zara1/train/crowds_zara03.txt",
+            "scene": "zara2",
+            "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108",
+            "size_bytes": 199834
+          },
+          {
+            "order": 3,
+            "path": "GDTS/data/eth5/zara1/train/students001.txt",
+            "scene": "univ",
+            "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b",
+            "size_bytes": 879714
+          },
+          {
+            "order": 4,
+            "path": "GDTS/data/eth5/zara1/train/students003.txt",
+            "scene": "univ",
+            "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c",
+            "size_bytes": 724279
+          },
+          {
+            "order": 5,
+            "path": "GDTS/data/eth5/zara1/train/biwi_eth.txt",
+            "scene": "eth",
+            "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33",
+            "size_bytes": 224263
+          },
+          {
+            "order": 6,
+            "path": "GDTS/data/eth5/zara1/train/uni_examples.txt",
+            "scene": "univ",
+            "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7",
+            "size_bytes": 109307
+          }
+        ],
+        "valid": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/zara1/val/crowds_zara01.txt",
+            "scene": "zara1",
+            "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85",
+            "size_bytes": 205711
+          }
+        ]
+      },
+      "raw_valid_test_byte_identical": true,
+      "ready_for_stage_a": false,
+      "smoke": {
+        "coverage_20_of_20": "NOT_RUN_MISSING_CACHE",
+        "generic_stage_b_cuda_bf16_contract": "PASS",
+        "stage_a_cuda_bf16": "NOT_RUN_MISSING_CACHE",
+        "stage_b_target_checkpoint": "NOT_RUN_NO_TARGET_STAGE_A"
+      },
+      "source_batch_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/source_batches/eth5/zara1/data_batches_jdv2_v2",
+        "legacy_candidate": null,
+        "manifest_hash": null,
+        "status": "MISSING_CANONICAL_CACHE"
+      },
+      "status": "TARGET_BLOCKED_MISSING_GDTS_CHECKPOINT"
+    },
+    "zara2": {
+      "blocking_reasons": [
+        "original GDTS baseline checkpoint missing",
+        "canonical synchronized JDV2 source-batch cache missing",
+        "target JDV2 Stage-A cache missing"
+      ],
+      "configs": {
+        "stage_a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_a_zara2.yaml",
+          "sha256": "bc5042b01a9c4686262d3776138add3a2a23b236c894dc1656dd487089e7f759"
+        },
+        "stage_b_v2a": {
+          "path": "configs/joint_dependency_v2/jdv2_stage_b_v2a_zara2.yaml",
+          "sha256": "4bf634709794d1a349efb51e3e56c73469d6ec8ca924b91c0115866c0acc43a2",
+          "stage_a_parent_checkpoint_sha256": null
+        }
+      },
+      "gdts_checkpoint": {
+        "architecture_compatible": null,
+        "epoch": null,
+        "path": null,
+        "protocol_config_path": null,
+        "sha256": null,
+        "status": "BASELINE_CHECKPOINT_MISSING"
+      },
+      "jdv2_stage_a_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/zara2_full_stage_a",
+        "manifest_hash": null,
+        "must_match_target_checkpoint": true,
+        "required_K": 21,
+        "required_schema": "jdv2-cache-v1",
+        "required_units": {
+          "position": "world_m",
+          "velocity": "world_m_per_s"
+        },
+        "status": "MISSING"
+      },
+      "leave_one_out_confirmed": true,
+      "materialized_valid_test_identity": {
+        "status": "NOT_AVAILABLE"
+      },
+      "protocol_classification": "ORIGINAL_GDTS_MIRRORED_VAL_TEST",
+      "raw_splits": {
+        "test": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/zara2/test/crowds_zara02.txt",
+            "scene": "zara2",
+            "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff",
+            "size_bytes": 392227
+          }
+        ],
+        "train": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/zara2/train/biwi_hotel.txt",
+            "scene": "hotel",
+            "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+            "size_bytes": 143799
+          },
+          {
+            "order": 1,
+            "path": "GDTS/data/eth5/zara2/train/crowds_zara03.txt",
+            "scene": "zara2",
+            "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108",
+            "size_bytes": 199834
+          },
+          {
+            "order": 2,
+            "path": "GDTS/data/eth5/zara2/train/students001.txt",
+            "scene": "univ",
+            "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b",
+            "size_bytes": 879714
+          },
+          {
+            "order": 3,
+            "path": "GDTS/data/eth5/zara2/train/students003.txt",
+            "scene": "univ",
+            "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c",
+            "size_bytes": 724279
+          },
+          {
+            "order": 4,
+            "path": "GDTS/data/eth5/zara2/train/crowds_zara01.txt",
+            "scene": "zara1",
+            "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85",
+            "size_bytes": 205711
+          },
+          {
+            "order": 5,
+            "path": "GDTS/data/eth5/zara2/train/biwi_eth.txt",
+            "scene": "eth",
+            "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33",
+            "size_bytes": 224263
+          },
+          {
+            "order": 6,
+            "path": "GDTS/data/eth5/zara2/train/uni_examples.txt",
+            "scene": "univ",
+            "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7",
+            "size_bytes": 109307
+          }
+        ],
+        "valid": [
+          {
+            "order": 0,
+            "path": "GDTS/data/eth5/zara2/val/crowds_zara02.txt",
+            "scene": "zara2",
+            "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff",
+            "size_bytes": 392227
+          }
+        ]
+      },
+      "raw_valid_test_byte_identical": true,
+      "ready_for_stage_a": false,
+      "smoke": {
+        "coverage_20_of_20": "NOT_RUN_MISSING_CACHE",
+        "generic_stage_b_cuda_bf16_contract": "PASS",
+        "stage_a_cuda_bf16": "NOT_RUN_MISSING_CACHE",
+        "stage_b_target_checkpoint": "NOT_RUN_NO_TARGET_STAGE_A"
+      },
+      "source_batch_cache": {
+        "expected_root": "outputs/joint_dependency_v2/cache/source_batches/eth5/zara2/data_batches_jdv2_v2",
+        "legacy_candidate": null,
+        "manifest_hash": null,
+        "status": "MISSING_CANONICAL_CACHE"
+      },
+      "status": "TARGET_BLOCKED_MISSING_GDTS_CHECKPOINT"
+    }
+  }
+}

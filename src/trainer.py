@@ -439,6 +439,8 @@ class trainer(object):
                     self.args, 'stage_a_parent_checkpoint_sha256', None),
                 'stage_a_freeze_manifest_sha256': getattr(
                     self.args, 'stage_a_freeze_manifest_sha256', None),
+                'stage_a_freeze_manifest_path': getattr(
+                    self.args, 'stage_a_freeze_manifest_path', None),
                 'stage_a_freeze_source_commit': getattr(
                     self.args, 'stage_a_freeze_source_commit', None),
                 'stage_b_architecture_version': getattr(
@@ -619,11 +621,18 @@ class trainer(object):
                 if actual_parent != expected_parent:
                     raise RuntimeError(
                         'Stage-B parent checkpoint SHA256 mismatch')
-                repository_root = os.path.dirname(os.path.dirname(
-                    os.path.abspath(__file__)))
-                manifest_path = os.path.join(
-                    repository_root, 'outputs', 'joint_dependency_v2', 'eth',
-                    'joint_dependency_v2', 'stage_a_freeze', 'manifest.json')
+                manifest_path = getattr(
+                    self.args, 'stage_a_freeze_manifest_path', None)
+                if manifest_path is None:
+                    repository_root = os.path.dirname(os.path.dirname(
+                        os.path.abspath(__file__)))
+                    manifest_path = os.path.join(
+                        repository_root, 'outputs', 'joint_dependency_v2',
+                        'eth', 'joint_dependency_v2', 'stage_a_freeze',
+                        'manifest.json')
+                else:
+                    manifest_path = os.path.abspath(os.path.expanduser(
+                        manifest_path))
                 expected_manifest = self.args.stage_a_freeze_manifest_sha256
                 if expected_manifest is None or not os.path.isfile(
                         manifest_path):
@@ -634,6 +643,15 @@ class trainer(object):
                         'Stage-B freeze manifest SHA256 mismatch')
                 with open(manifest_path) as handle:
                     freeze_manifest = json.load(handle)
+                frozen_checkpoint = freeze_manifest.get('checkpoint', {})
+                if frozen_checkpoint.get('sha256') != expected_parent:
+                    raise RuntimeError(
+                        'Stage-B freeze manifest parent checkpoint mismatch')
+                frozen_dataset = str(freeze_manifest.get(
+                    'dataset_protocol', {}).get('dataset', '')).lower()
+                if frozen_dataset != str(self.args.test_set).lower():
+                    raise RuntimeError(
+                        'Stage-B freeze manifest target mismatch')
                 if freeze_manifest.get('freeze_source_commit') != \
                         self.args.stage_a_freeze_source_commit:
                     raise RuntimeError(
@@ -645,9 +663,11 @@ class trainer(object):
                 for name in (
                         'stage_a_parent_checkpoint_sha256',
                         'stage_a_freeze_manifest_sha256',
+                        'stage_a_freeze_manifest_path',
                         'stage_a_freeze_source_commit',
                         'stage_b_architecture_version'):
-                    if checkpoint.get(name) != getattr(self.args, name):
+                    if checkpoint.get(name) != getattr(
+                            self.args, name, None):
                         raise RuntimeError(
                             f'Stage-B checkpoint provenance mismatch: {name}')
                 expected_projection = getattr(

@@ -1,0 +1,90 @@
+# Preflight template for frozen strict-no-z Stage A on ZARA1.
+# Unresolved cache/checkpoint provenance deliberately keeps training fail-closed.
+dataset: eth5
+test_set: zara1
+phase: train
+run_name: jdv2_stage_a_zara1_seed2035
+cross_dataset_protocol_target: zara1
+
+training_stage: joint_goal
+jdv2_residual_projection: none
+goal_model_type: joint_dependency_v2
+jdv2_latent_objective: strict_no_z
+use_scene_latent: false
+use_dynamic_relation: true
+use_joint_energy: true
+use_dependency_corrector: true
+use_social_encoder: true
+
+jdv2_scene_modes: 4
+jdv2_relation_modes: 4
+num_relation_modes: 4
+num_goal_candidates: 21
+num_samples: 20
+num_joint_samples: null
+jdv2_energy_rank: 8
+goal_pair_rank: 8
+social_feature_dim: 128
+social_attention_layers: 1
+
+jdv2_refinement_policy: exact_lexicographic_persistent_tie
+num_refinement_steps: 2
+joint_sampling_mode: sample
+joint_sampling_strategy: coverage
+joint_sampling_temperature: 1.0
+goal_candidate_prior: heatmap
+goal_candidate_temperature: 1.0
+use_ttst: true
+
+graph_type: radius_ttc
+graph_radius: 6.0
+ttc_threshold: 8.0
+adaptive_graph: false
+pair_energy_normalization: mean
+energy_weight: 1.0
+trajectory_dt: 0.4
+
+ddpm_step: 100
+ddim_step: 20
+trunk_stage_step: 30
+down_factor: 8
+freeze_upstream_generator: true
+trajectory_coupling: none
+
+batch_cache_root: outputs/joint_dependency_v2/cache/source_batches
+jdv2_cache_schema: jdv2-cache-v1
+jdv2_cache_source_commit: null
+jdv2_cache_manifest_hash: null
+
+jdv2_cache_root: outputs/joint_dependency_v2/cache/zara1_full_stage_a
+jdv2_source_checkpoint: null
+jdv2_source_checkpoint_hash: null
+pretrain_path: null
+
+lambda_diff: 1.0
+lambda_relative: 0.05
+learning_rate: 0.0001
+optimizer: Adam
+scheduler: ExponentialLR
+clip: 1
+num_epochs: 300
+start_validation: 1
+validate_every: 1
+early_stopping_patience: 12
+save_every: 10
+
+amp_enabled: true
+amp_dtype: bf16
+seed: 2035
+validation_seed: 2035
+num_test_runs: 5
+reproducibility: true
+shuffle_train_batches: true
+shuffle_test_batches: false
+data_augmentation: false
+num_workers: 1
+model_selection_split: dataset_valid
+final_test_split: heldout_test
+best_metric: auto
+joint_diagnostics: true
+use_wandb: false
