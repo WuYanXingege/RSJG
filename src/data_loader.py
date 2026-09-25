@@ -16,6 +16,9 @@ from src.batch_cache_io import (
     is_batch_cache_file,
     load_batch_cache,
 )
+from src.clean_split_protocol import (
+    clean_split_records, load_clean_split_manifest, validate_final_test_lock,
+)
 from src.joint_dependency_v2_cache import (
     JDV2_MANIFEST,
     build_manifest,
@@ -125,17 +128,20 @@ class dataset_set_name(BaseDataset):
     Apply data augmentation when needed.
     """
 
-    def __init__(self, args, set_name):
+    def __init__(self, args, set_name, logical_role=None):
 
+        self.physical_set_name = set_name
+        self.logical_set_name = logical_role or set_name
         self.path_to_folder = os.path.join(
             batch_cache_path(args), f"{set_name}_batches")
 
         self.ids = sorted(name for name in os.listdir(self.path_to_folder)
                           if is_batch_cache_file(name))
         self.args = args
-        self.set_name = set_name
+        # Backward-compatible alias: addressing remains physical.
+        self.set_name = self.physical_set_name
         self.data_augmentation = args.data_augmentation \
-            if set_name == 'train' else False
+            if self.logical_set_name == 'train' else False
         self.jdv2_manifest = None
         if (getattr(args, 'goal_model_type', None) == 'joint_dependency_v2'
                 and getattr(args, 'jdv2_active', False)
@@ -263,11 +269,12 @@ class dataset_set_name(BaseDataset):
             batch_data = self.augment_traj_and_images(batch_data)
 
         if self.jdv2_manifest is not None:
-            cache_dir = os.path.join(jdv2_cache_root(self.args), self.set_name)
+            cache_dir = os.path.join(
+                jdv2_cache_root(self.args), self.physical_set_name)
             batch_data['jdv2_cache'] = load_cache_record(
                 os.path.join(cache_dir, f'{i:06d}.pt'),
                 allow_future_supervision=False)
-            if (self.set_name == 'train' and
+            if (self.logical_set_name == 'train' and
                     self.args.phase in {'train', 'train_test'}):
                 batch_data['jdv2_teacher_cache'] = load_cache_record(
                     os.path.join(cache_dir, f'{i:06d}.teacher.pt'),
@@ -276,30 +283,72 @@ class dataset_set_name(BaseDataset):
         return batch_data, batch_id
 
 
+def _clean_role_records(args, logical_role, physical_dataset):
+    records = clean_split_records(args, logical_role)
+    expected_physical = (
+        'train' if logical_role in {'train', 'internal_valid'}
+        else 'test')
+    indices = []
+    for record in records:
+        if record.get('physical_cache_split') != expected_physical:
+            raise RuntimeError(
+                f'clean manifest physical split mismatch for {logical_role}')
+        index = int(record['physical_cache_index'])
+        if not 0 <= index < len(physical_dataset.ids):
+            raise RuntimeError('clean manifest physical index out of range')
+        if physical_dataset.ids[index] != record.get('cache_filename'):
+            raise RuntimeError('clean manifest cache filename mismatch')
+        indices.append(index)
+    return records, indices
+
+
 def get_dataloader(args, set_name):
-    """
-    Create a data loader for a specific set/data split
-    """
+    """Create a loader while separating physical addressing from permissions."""
     assert set_name in ['train', 'valid', 'test']
+    clean = bool(getattr(args, 'clean_split_protocol', False))
+    if clean and set_name == 'test':
+        # Authentication happens before the physical test dataset is even
+        # constructed.  Clean training therefore cannot inspect test members.
+        validate_final_test_lock(args)
 
-    shuffle = args.shuffle_train_batches if set_name == 'train' else \
-        args.shuffle_test_batches
-
-    # ETH/UCY repositories often mirror ``valid`` and ``test`` for the held-
-    # out scene.  V4 must not use that test scene for checkpoint selection, so
-    # create one deterministic, disjoint internal split from the synchronized
-    # training cache.  The split is over cached scene windows and its exact
-    # member names are persisted by the trainer for reproducibility.
+    shuffle = (args.shuffle_train_batches if set_name == 'train'
+               else args.shuffle_test_batches)
     use_internal = (
         getattr(args, 'model_selection_split', 'dataset_valid') ==
         'internal_train' and set_name in {'train', 'valid'})
     source_set = 'train' if use_internal else set_name
-    dataset = dataset_set_name(args, set_name=source_set)
-    if use_internal:
+    logical_role = (
+        'internal_valid' if set_name == 'valid' and use_internal
+        else set_name)
+    dataset = dataset_set_name(
+        args, set_name=source_set, logical_role=(
+            'valid' if logical_role == 'internal_valid' else logical_role))
+
+    chosen = None
+    heldout_source = None
+    strategy = getattr(args, 'internal_validation_strategy', 'window_random')
+    if clean:
+        manifest = load_clean_split_manifest(
+            args.clean_split_manifest_path, args.clean_split_manifest_hash)
+        records, chosen = _clean_role_records(args, logical_role, dataset)
+        if use_internal:
+            derived_train, derived_valid, heldout_source = \
+                _source_block_partition(dataset)
+            expected = derived_train if set_name == 'train' else derived_valid
+            if chosen != expected:
+                raise RuntimeError(
+                    'clean manifest differs from source_block partition')
+        dataset = Subset(dataset, chosen)
+        dataset.source_ids = [dataset.dataset.ids[index] for index in chosen]
+        dataset.physical_indices = list(chosen)
+        dataset.physical_set_name = source_set
+        dataset.logical_set_name = set_name
+        dataset.clean_split_manifest_hash = manifest['manifest_hash']
+        dataset.internal_validation_strategy = strategy if use_internal else None
+        dataset.internal_validation_source = heldout_source
+        dataset.clean_split_records = records
+    elif use_internal:
         indices = list(range(len(dataset)))
-        strategy = getattr(
-            args, 'internal_validation_strategy', 'window_random')
-        heldout_source = None
         if strategy == 'source_block':
             train_indices, valid_indices, heldout_source = \
                 _source_block_partition(dataset)
@@ -318,13 +367,16 @@ def get_dataloader(args, set_name):
         dataset.data_augmentation = (
             bool(args.data_augmentation) if set_name == 'train' else False)
         dataset = Subset(dataset, chosen)
-        # Public metadata lets the trainer audit and persist the exact split.
         dataset.source_ids = [dataset.dataset.ids[index] for index in chosen]
         dataset.source_set_name = 'train'
         dataset.logical_set_name = set_name
         dataset.internal_validation_strategy = strategy
         dataset.internal_validation_source = heldout_source
+
+    if use_internal:
         print(
+            f"Clean protocol: {set_name} uses {len(chosen)} physical train "
+            f"windows" if clean else
             f"V4 protocol: {set_name} uses {len(chosen)}/{len(indices)} "
             'disjoint windows from the train cache '
             f"(strategy={strategy}, seed={args.internal_validation_seed}, "
@@ -332,7 +384,5 @@ def get_dataloader(args, set_name):
 
     generator = torch.Generator()
     generator.manual_seed(int(getattr(args, 'seed', 0)))
-    loader = DataLoader(dataset, batch_size=1, shuffle=shuffle,
-                        num_workers=args.num_workers, generator=generator)
-
-    return loader
+    return DataLoader(dataset, batch_size=1, shuffle=shuffle,
+                      num_workers=args.num_workers, generator=generator)

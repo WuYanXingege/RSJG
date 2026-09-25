@@ -484,6 +484,19 @@ def get_parser():
     parser.add_argument('--final_test_split', default='heldout_test',
                         choices=['heldout_test'])
     parser.add_argument(
+        '--clean_split_protocol', default=False, type=str2bool, const=True,
+        nargs='?', help='Enable the immutable JDV2 clean-split protocol.')
+    parser.add_argument('--clean_split_manifest_path', default=None)
+    parser.add_argument('--clean_split_manifest_hash', default=None)
+    parser.add_argument(
+        '--final_test_access', default='legacy',
+        choices=['legacy', 'blocked', 'authorized'],
+        help=('Clean runs keep final-test access blocked until an explicit '
+              'checkpoint/config lock authorizes the one final evaluation.'))
+    parser.add_argument('--final_test_lock_path', default=None)
+    parser.add_argument('--clean_evaluation_target', default=None,
+                        choices=['stage_a', 'stage_b'])
+    parser.add_argument(
         '--best_metric', default='auto', type=str,
         choices=['auto', 'ADE', 'ADE_world', 'JADE', 'JFDE'],
         help=('Validation metric used for best_model.pt. auto keeps ADE for '
@@ -1012,6 +1025,45 @@ def check_and_add_additional_args(args):
         raise ValueError(
             'Formal V4 training selects checkpoints only on internal_train; '
             'the held-out UNIV test scene is reserved for final evaluation.')
+
+    if args.clean_split_protocol:
+        if args.model_selection_split != 'internal_train':
+            raise ValueError(
+                'Clean protocol requires model_selection_split=internal_train')
+        if args.internal_validation_strategy != 'source_block':
+            raise ValueError(
+                'Clean protocol requires internal_validation_strategy='
+                'source_block')
+        if args.final_test_split != 'heldout_test':
+            raise ValueError(
+                'Clean protocol requires final_test_split=heldout_test')
+        if not args.clean_split_manifest_path or not re.fullmatch(
+                r'[0-9a-f]{64}', str(args.clean_split_manifest_hash or '')):
+            raise ValueError(
+                'Clean protocol requires a manifest path and SHA256 hash')
+        if args.phase not in {'train', 'test'}:
+            raise ValueError(
+                'Clean protocol supports only separate train or locked '
+                'test phases')
+        if args.phase == 'train' and args.final_test_access != 'blocked':
+            raise ValueError(
+                'Clean training requires final_test_access=blocked')
+        if args.phase == 'test':
+            if args.final_test_access != 'authorized':
+                raise ValueError(
+                    'Clean final evaluation requires authorized test access')
+            if not args.final_test_lock_path:
+                raise ValueError(
+                    'Clean final evaluation requires a lock artifact')
+            if args.load_checkpoint != 'best':
+                raise ValueError(
+                    'Clean final evaluation requires load_checkpoint=best')
+            if args.clean_evaluation_target not in {'stage_a', 'stage_b'}:
+                raise ValueError(
+                    'Clean final evaluation requires a locked target')
+    elif args.final_test_access != 'legacy':
+        raise ValueError(
+            'Non-clean runs must retain legacy final-test access semantics')
 
     # set current device
     if args.device.startswith('cuda') and torch.cuda.is_available():

@@ -22,6 +22,9 @@ from src.trajectory_bank_cache import (
     pack_statistics,
 )
 from src.joint_dependency_v2_cache import load_cache_record, sha256_file
+from src.clean_split_protocol import (
+    CLEAN_TEST_SEEDS, validate_final_test_lock,
+)
 
 
 V4_DIAGNOSTIC_NAMES = (
@@ -36,6 +39,14 @@ V4_DIAGNOSTIC_NAMES = (
     'hungarian_minus_greedy_JADE',
 )
 
+def _requested_data_splits(args):
+    """Return only the splits authorized for this process."""
+    clean = bool(getattr(args, 'clean_split_protocol', False))
+    if clean:
+        return ['test'] if args.phase == 'test' else ['train', 'valid']
+    return ['train', 'valid', 'test']
+
+
 class trainer(object):
     def __init__(self, args):
         self.args = args
@@ -44,19 +55,20 @@ class trainer(object):
         loader_factory = (get_trajectory_bank_dataloader
                           if args.use_trajectory_bank_cache else
                           get_dataloader)
-        self.data_loaders['train'] = loader_factory(args, split='train') \
-            if args.use_trajectory_bank_cache else \
-            loader_factory(args, set_name='train')
-        self.data_loaders['valid'] = loader_factory(args, split='valid') \
-            if args.use_trajectory_bank_cache else \
-            loader_factory(args, set_name='valid')
-        self.data_loaders['test'] = loader_factory(args, split='test') \
-            if args.use_trajectory_bank_cache else \
-            loader_factory(args, set_name='test')
+        requested_splits = _requested_data_splits(args)
+        for split in requested_splits:
+            self.data_loaders[split] = (
+                loader_factory(args, split=split)
+                if args.use_trajectory_bank_cache else
+                loader_factory(args, set_name=split))
         if (getattr(args, 'goal_model_type', None) == 'joint_dependency_v2'
                 and getattr(args, 'jdv2_active', False)):
+            provenance_loader = next(iter(self.data_loaders.values()))
+            provenance_dataset = provenance_loader.dataset
+            if hasattr(provenance_dataset, 'dataset'):
+                provenance_dataset = provenance_dataset.dataset
             manifest = getattr(
-                self.data_loaders['train'].dataset, 'jdv2_manifest', None)
+                provenance_dataset, 'jdv2_manifest', None)
             if manifest is None:
                 raise RuntimeError('Active JDV2 loader has no validated cache')
             args.jdv2_cache_manifest_hash = manifest['manifest_hash']
@@ -317,11 +329,25 @@ class trainer(object):
             'internal_validation_strategy': (
                 self.args.internal_validation_strategy),
             'internal_validation_source': getattr(
-                self.data_loaders['valid'].dataset,
-                'internal_validation_source', None),
-            'train_window_count': len(self.data_loaders['train'].dataset),
-            'valid_window_count': len(self.data_loaders['valid'].dataset),
-            'test_window_count': len(self.data_loaders['test'].dataset),
+                self.data_loaders.get('valid', object()),
+                'dataset', None) and getattr(
+                    self.data_loaders['valid'].dataset,
+                    'internal_validation_source', None),
+            'train_window_count': (
+                len(self.data_loaders['train'].dataset)
+                if 'train' in self.data_loaders else None),
+            'valid_window_count': (
+                len(self.data_loaders['valid'].dataset)
+                if 'valid' in self.data_loaders else None),
+            'test_window_count': (
+                len(self.data_loaders['test'].dataset)
+                if 'test' in self.data_loaders else None),
+            'clean_split_protocol': bool(getattr(
+                self.args, 'clean_split_protocol', False)),
+            'clean_split_manifest_hash': getattr(
+                self.args, 'clean_split_manifest_hash', None),
+            'final_test_access': getattr(
+                self.args, 'final_test_access', 'legacy'),
             'use_trajectory_bank_cache': (
                 self.args.use_trajectory_bank_cache),
             'use_multi_scene_packing': self.args.use_multi_scene_packing,
@@ -343,6 +369,8 @@ class trainer(object):
                 for split, loader in self.data_loaders.items()
             }
         for split in ('train', 'valid'):
+            if split not in self.data_loaders:
+                continue
             ids = getattr(self.data_loaders[split].dataset, 'source_ids', None)
             if ids is not None:
                 protocol[f'{split}_cache_ids'] = ids
@@ -403,6 +431,8 @@ class trainer(object):
                 'collapse_signature_epochs': int(getattr(
                     self, '_collapse_signature_epochs', 0)),
                 'cache_manifest_hash': self.args.jdv2_cache_manifest_hash,
+                'clean_split_manifest_hash': getattr(
+                    self.args, 'clean_split_manifest_hash', None),
                 'source_checkpoint_hash': (
                     self.args.jdv2_source_checkpoint_hash),
                 'stage_a_parent_checkpoint_sha256': getattr(
@@ -558,6 +588,11 @@ class trainer(object):
             if checkpoint.get('source_checkpoint_hash') != \
                     self.args.jdv2_source_checkpoint_hash:
                 raise RuntimeError('V2 checkpoint source checkpoint mismatch')
+            if getattr(self.args, 'clean_split_protocol', False) and \
+                    checkpoint.get('clean_split_manifest_hash') != \
+                    self.args.clean_split_manifest_hash:
+                raise RuntimeError(
+                    'V2 checkpoint clean split manifest mismatch')
             source_stage = checkpoint.get('training_stage')
             target_stage = self.args.training_stage
             allowed_transition = (
@@ -718,6 +753,10 @@ class trainer(object):
         Load a trained model and test it on the test set.
         """
         print('*** Test phase started ***')
+        if getattr(self.args, 'clean_split_protocol', False):
+            validate_final_test_lock(self.args)
+            if 'test' not in self.data_loaders:
+                raise RuntimeError('clean final-test loader is unavailable')
         # some models do not need to be trained nor loaded
         if self.net.is_trainable:
             best_epoch = self._load_checkpoint(load_checkpoint)
@@ -734,11 +773,20 @@ class trainer(object):
                 'candidate banks are not merged.')
         else:
             run_count = self.args.num_test_runs
+        clean_test_seeds = (
+            CLEAN_TEST_SEEDS
+            if getattr(self.args, 'clean_split_protocol', False)
+            else None)
+        if clean_test_seeds is not None:
+            run_count = len(clean_test_seeds)
         for run_idx in range(run_count):
             print(f"\nTest run #{run_idx} ...")
             if self.args.use_trajectory_bank_cache:
                 self.data_loaders['test'].dataset.set_seed_index(run_idx)
-            test_metrics = self._evaluate_epoch(best_epoch, mode='test')
+            test_metrics = self._evaluate_epoch(
+                best_epoch, mode='test',
+                evaluation_seed=(clean_test_seeds[run_idx]
+                                 if clean_test_seeds is not None else None))
             run_results = dict(**test_metrics)
             # print losses and metrics for run i
             print(f'Test_set: {self.args.test_set},',

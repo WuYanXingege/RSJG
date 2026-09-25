@@ -574,3 +574,23 @@ def test_cross_stage_load_resets_epoch_and_progress_while_same_stage_resumes():
 def test_validation_seed_defaults_to_training_seed(tmp_path):
     args = _args(tmp_path)
     assert args.validation_seed == args.seed
+
+
+def test_deployed_validation_prediction_ignores_future_teacher_sidecar(
+        tmp_path, model_module):
+    """Metrics may use future GT, but the deployed prediction cannot."""
+    torch.manual_seed(73)
+    model = model_module.GDTS(
+        _strict_no_z_args(tmp_path), torch.device("cpu"))
+    model.eval()
+    inputs, _ = _inputs()
+    with_teacher = dict(inputs)
+    with_teacher["jdv2_teacher_cache"] = {
+        "future_pair_descriptor": torch.randn(1, 8)}
+    with isolated_random_seed(91, use_cuda=False):
+        prediction_without, auxiliary_without = model(inputs, if_test=True)
+    with isolated_random_seed(91, use_cuda=False):
+        prediction_with, auxiliary_with = model(with_teacher, if_test=True)
+    assert torch.equal(prediction_without, prediction_with)
+    assert torch.equal(auxiliary_without["edge_index"],
+                       auxiliary_with["edge_index"])

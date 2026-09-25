@@ -21,7 +21,8 @@ def main():
     # Frozen trajectory-bank construction is a read-only consumer of the
     # synchronized batch cache.  In particular, debug limits for cache smoke
     # tests must never invalidate or rebuild the expensive source batches.
-    if args.phase != 'trajectory_cache':
+    if (args.phase != 'trajectory_cache' and
+            not getattr(args, 'clean_split_protocol', False)):
         Trajectory_Data_Pre_Process(args)
 
     if args.phase == 'pre-process':
