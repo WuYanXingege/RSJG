@@ -81,6 +81,12 @@ class trainer(object):
         self.device = self._set_device()
         self._configure_amp()
         self._pending_training_state = None
+        # These counters affect stopping decisions and therefore belong to
+        # the same-stage checkpoint contract. Cross-stage initialization
+        # resets them explicitly; legacy checkpoints use the conservative
+        # zero fallback in _restore_stopping_state().
+        self._validations_without_improvement = 0
+        self._collapse_signature_epochs = 0
         # initialize network
         self.net = GDTS(self.args, self.device).to(self.device)
         initialization_checkpoint = self.args.pretrain_path
@@ -392,6 +398,10 @@ class trainer(object):
                 'stage_progress': self.args.jdv2_stage_progress,
                 'stage_optimizer_steps_completed': int(getattr(
                     self, '_stage_optimizer_steps_completed', 0)),
+                'validations_without_improvement': int(getattr(
+                    self, '_validations_without_improvement', 0)),
+                'collapse_signature_epochs': int(getattr(
+                    self, '_collapse_signature_epochs', 0)),
                 'cache_manifest_hash': self.args.jdv2_cache_manifest_hash,
                 'source_checkpoint_hash': (
                     self.args.jdv2_source_checkpoint_hash),
@@ -421,6 +431,40 @@ class trainer(object):
                 'best_metrics_epochs': dict(self.best_metrics_epochs),
             })
         torch.save(payload, saved_model_name)
+
+    def _restore_stopping_state(self, checkpoint, same_stage):
+        """Restore process-local stopping state for an exact stage resume.
+
+        Old checkpoints predate these fields. Their safe fallback is zero:
+        it may extend a resumed run, but cannot prematurely stop one based on
+        unrecorded history. A cross-stage load always starts fresh.
+        """
+        if not same_stage:
+            self._validations_without_improvement = 0
+            self._collapse_signature_epochs = 0
+            return
+        for field in (
+                'validations_without_improvement',
+                'collapse_signature_epochs'):
+            value = int(checkpoint.get(field, 0))
+            if value < 0:
+                raise RuntimeError(
+                    f'Invalid negative checkpoint stopping state: {field}')
+            setattr(self, f'_{field}', value)
+
+    def _record_validation_outcome(self, selection_improved):
+        """Advance the checkpointed validation-patience state."""
+        if selection_improved:
+            self._validations_without_improvement = 0
+        else:
+            self._validations_without_improvement += 1
+        return self._validations_without_improvement
+
+    def _record_collapse_outcome(self, collapse):
+        """Advance the checkpointed consecutive-collapse state."""
+        self._collapse_signature_epochs = (
+            self._collapse_signature_epochs + 1 if collapse else 0)
+        return self._collapse_signature_epochs
 
     def _restore_best_state(self, checkpoint):
         """Restore checkpoint-selection history, including old checkpoints."""
@@ -835,9 +879,11 @@ class trainer(object):
                         self.args.jdv2_stage_progress * total_steps)
                 self._stage_optimizer_steps_completed = int(saved_steps)
                 self._restore_best_state(checkpoint)
+                self._restore_stopping_state(checkpoint, same_stage=True)
             else:
                 self.args.jdv2_stage_progress = 0.0
                 self._stage_optimizer_steps_completed = 0
+                self._restore_stopping_state(checkpoint, same_stage=False)
 
         # start training
         self._train_loop(start_epoch=start_epoch, end_epoch=self.args.num_epochs)
@@ -882,8 +928,6 @@ class trainer(object):
                        job_type=f"{self.args.test_set}",
                        tags=None, name=f'{self.args.test_set}_{self.current_date}_{self.current_time}')
 
-        validations_without_improvement = 0
-        collapse_signature_epochs = 0
         previous_baseline_trainable = None
         for epoch in range(start_epoch, end_epoch + 1):
             if self.args.use_trajectory_bank_cache:
@@ -921,6 +965,8 @@ class trainer(object):
                 current_selection = self._selection_tuple(valid_metrics)
                 selection_improved = self._selection_is_better(
                     current_selection, self._best_selection)
+                validations_without_improvement = \
+                    self._record_validation_outcome(selection_improved)
 
                 # comment some of this print, if it is too long
                 print(f'----Epoch {epoch},',
@@ -955,11 +1001,6 @@ class trainer(object):
                                  f"{metric_epoch}" for
                                  metric_name, metric_epoch in
                                  self.best_metrics_epochs.items()]))
-
-                if selection_improved:
-                    validations_without_improvement = 0
-                else:
-                    validations_without_improvement += 1
                 if (self.args.early_stopping_patience > 0 and
                         validations_without_improvement >=
                         self.args.early_stopping_patience):
@@ -1004,8 +1045,8 @@ class trainer(object):
                     self.args.jdv2_early_collapse_gate and epoch >= 2):
                 collapse, evidence = self._jdv2_early_collapse_signature(
                     self.last_train_joint_diagnostics)
-                collapse_signature_epochs = (
-                    collapse_signature_epochs + 1 if collapse else 0)
+                collapse_signature_epochs = \
+                    self._record_collapse_outcome(collapse)
                 if collapse:
                     print(
                         'JDV2 early collapse diagnostic hit '

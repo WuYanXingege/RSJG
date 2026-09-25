@@ -1,0 +1,69 @@
+{
+  "schema": "jdv2-stage-b-v2a-adoption-protocol-v1",
+  "audit_base_commit": "817cc7551bd7f3422422230821acf8b3dd5cdc6c",
+  "final_state": "ADOPTION_BLOCKED_BY_SPLIT_PROTOCOL",
+  "next_state": "eligible_for_clean_split_reproduction_design",
+  "split_audit": {
+    "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_b_v2a/adoption_protocol/split_audit.json",
+    "sha256": "7fa942ef516b9805e8205345ae4679302891dce70e01671cc5ca08f5c80d1570",
+    "classification": "fully_identical",
+    "window_counts": {
+      "train": 4110,
+      "valid": 139,
+      "test": 139
+    },
+    "overlap": {
+      "train_valid_exact_id": 0,
+      "train_valid_exact_content": 0,
+      "train_test_exact_id": 0,
+      "train_test_exact_content": 0,
+      "valid_test_exact_id": 139,
+      "valid_test_exact_content": 139,
+      "valid_test_percent": 100.0,
+      "valid_test_ordered_identical": true
+    },
+    "raw_valid_test_sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+  },
+  "historical_protocol": {
+    "model_selection_split": "dataset_valid",
+    "final_test_split": "heldout_test",
+    "stage_a_selected_epoch": 13,
+    "stage_a_selection_metric": "JFDE",
+    "stage_a_selection_value": 0.7434224215128439,
+    "stage_b_v2a_selected_epoch": 5,
+    "stage_b_v2a_selection_metric": "JADE",
+    "clean_heldout_claim_established": false
+  },
+  "resume_fix": {
+    "fields_persisted": [
+      "validations_without_improvement",
+      "collapse_signature_epochs"
+    ],
+    "same_stage_restore": true,
+    "cross_stage_reset": true,
+    "legacy_missing_field_fallback": 0,
+    "synthetic_control_next_epoch": 4,
+    "synthetic_control_early_stop_epoch": 5,
+    "optimizer_state_equal": true,
+    "scheduler_state_equal": true,
+    "best_selection_equal": true
+  },
+  "protected_hashes": {
+    "stage_a_checkpoint": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+    "stage_b_v1_checkpoint": "e24a1cbfc5760db57bcb5cacd64c66a4afd1aed0f11bb1efefa8549933d21c1a",
+    "stage_b_v2a_checkpoint": "e4c114c729ba8d75ac72fc7d41f0f05e790cf2aec7b5cade563ba792930c7b73",
+    "dependency_corrector_source": "0ff28eb7107e49a0ad6f2bf339a65d8847f83c4a7cf315faa5a80cac4dc00522",
+    "component_residual_projection_source": "355de2a9ace3265efe1d5fc1ed4b5a6c054a621fc452a7ad95d70b6a2c3b5630",
+    "stage_a_freeze_manifest": "ecce9f937717794eadc5e84be486372f01ef9c7727a4e59c36b70e09df06ec79"
+  },
+  "validation": {
+    "compileall": "pass",
+    "pytest_passed": 434,
+    "pytest_warnings": 12,
+    "targeted_cuda_bf16_passed": 2,
+    "git_diff_check": "pass"
+  },
+  "training_performed": false,
+  "freeze_artifact_created": false,
+  "v2b_authorized": false
+}
