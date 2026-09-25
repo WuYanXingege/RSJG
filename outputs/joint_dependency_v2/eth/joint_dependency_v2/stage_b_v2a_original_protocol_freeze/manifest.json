@@ -1,0 +1,168 @@
+{
+  "adoption_base_commit": "fb767ee87f01342a073198a8c8c1959460d496a7",
+  "canonical_configs": {
+    "stage_a": {
+      "path": "configs/joint_dependency_v2/jdv2_stage_a_frozen_eth.yaml",
+      "sha256": "bf5d4a692b0a9e841de8523f2780013147ec3e9bcb78877cc3c352571bc63e62"
+    },
+    "stage_b_v2a": {
+      "model_selection_split": "dataset_valid",
+      "path": "configs/joint_dependency_v2/jdv2_stage_b_v2a_eth.yaml",
+      "sha256": "20ae4ba7fee93c6c61e9969c5828b880d78e600439ba0e20fd3b5dc2c78f9395"
+    }
+  },
+  "checkpoints": {
+    "stage_a": {
+      "epoch": 13,
+      "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt",
+      "sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb"
+    },
+    "stage_b_v1": {
+      "epoch": 10,
+      "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_b_v1_eth_seed2035/saved_models/best_model.pt",
+      "sha256": "e24a1cbfc5760db57bcb5cacd64c66a4afd1aed0f11bb1efefa8549933d21c1a"
+    },
+    "stage_b_v2a": {
+      "epoch": 5,
+      "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_b_v2a_eth_seed2035/saved_models/best_model.pt",
+      "sha256": "e4c114c729ba8d75ac72fc7d41f0f05e790cf2aec7b5cade563ba792930c7b73"
+    }
+  },
+  "clean_heldout_result_available": false,
+  "evaluation": {
+    "seeds": [2035, 2036, 2037, 2038, 2039],
+    "windows": 139
+  },
+  "evaluation_protocol": "original_gdts_eth_ucy_mirrored_val_test",
+  "evidence": {
+    "candidate_coverage": "20/20",
+    "identity_contract": {
+      "candidate_ids_and_joint_goals_unchanged": true,
+      "e0_stage_a_tensor_exact": true,
+      "mixed_degree_zero_stage_a_tensor_exact": true,
+      "paired_rng_equal": true
+    },
+    "mean_removed_component_common_residual_energy_fraction": 0.33327191596176436,
+    "runtime_overhead_fraction": 0.03821129804699952
+  },
+  "interrupted_clean_stage_a": {
+    "authoritative": false,
+    "completed_epochs": 1,
+    "last_incomplete_epoch": 2,
+    "last_logged_batches": "1938/3790",
+    "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_clean_eth_seed2035",
+    "status": "ABORTED_NON_AUTHORITATIVE"
+  },
+  "limitations": [
+    "The primary ETH protocol mirrors validation and test and is not an independent held-out test after model selection.",
+    "Strict clean-heldout generalization is not established.",
+    "C versus D is practical parity; no large retraining-specific gain is claimed.",
+    "The freeze does not establish universal superiority across datasets."
+  ],
+  "manifest_hash": "90b991aaac26f45d02ac5b257b2d443c87acbefe59316ed8811e78eb5ca3ff91",
+  "method": {
+    "architecture": "jdv2-stage-b-v2a",
+    "corrector_parameters": 30851,
+    "graph": {
+      "dt_seconds": 0.4,
+      "radius_metres": 6.0,
+      "ttc_seconds": 8.0,
+      "type": "radius_ttc"
+    },
+    "loss": {
+      "lambda_diff": 1.0,
+      "lambda_relative": 0.05
+    },
+    "method_constants": {
+      "K": 21,
+      "M": 4,
+      "P": 20,
+      "energy_rank": 8,
+      "refinement_rounds": 2
+    },
+    "optimizer": {
+      "learning_rate": 0.0001,
+      "name": "Adam",
+      "precision": "bf16",
+      "scheduler": "ExponentialLR"
+    },
+    "projection": {
+      "location": "post_corrector_pre_epsilon_add",
+      "name": "component_zero_mean",
+      "parameters": 0
+    },
+    "sampler_policy": "exact_lexicographic_persistent_tie",
+    "stage_a_variant": "strict_no_z",
+    "stage_b_active_timesteps": [30, 25, 20, 15, 10, 5],
+    "training_branch": "one_scene_level_oracle_branch"
+  },
+  "metrics": {
+    "five_seed_means": {
+      "stage_a": {
+        "JADE": 0.413185,
+        "JFDE": 0.701908,
+        "Joint_Goal_Compatibility": 0.487309,
+        "Joint_Goal_Endpoint_Error": 0.689827,
+        "Relative_Motion_Error": 0.297907,
+        "minADE": 0.278201,
+        "minFDE": 0.386215
+      },
+      "stage_b_v1": {
+        "JADE": 0.416070,
+        "JFDE": 0.703679,
+        "Joint_Goal_Compatibility": 0.487309,
+        "Joint_Goal_Endpoint_Error": 0.689827,
+        "Relative_Motion_Error": 0.297877,
+        "minADE": 0.282617,
+        "minFDE": 0.391074
+      },
+      "stage_b_v2a": {
+        "JADE": 0.414958,
+        "JFDE": 0.698169,
+        "Joint_Goal_Compatibility": 0.487513,
+        "Joint_Goal_Endpoint_Error": 0.689933,
+        "Relative_Motion_Error": 0.297441,
+        "minADE": 0.279971,
+        "minFDE": 0.387217
+      }
+    },
+    "relative_percent_v2a_vs_stage_a": {
+      "JADE": 0.429,
+      "JFDE": -0.533,
+      "Relative_Motion_Error": -0.156,
+      "minADE": 0.636,
+      "minFDE": 0.259
+    },
+    "relative_percent_v2a_vs_v1": {
+      "JADE": -0.267,
+      "JFDE": -0.783,
+      "Relative_Motion_Error": -0.146,
+      "minADE": -0.936,
+      "minFDE": -0.986
+    },
+    "v1_gap_recovery_percent": {
+      "minADE": 59.92,
+      "minFDE": 79.38
+    }
+  },
+  "next_state": "eligible_for_jdv2_cross_dataset_benchmark_preflight",
+  "optional_clean_protocol_manifest_hash": "0a6deb6ff9026b1784d728ef70f6e7dd1020c73819d4f71557dd7578772cc2b4",
+  "protocol_claims": {
+    "fair_relative_comparison": true,
+    "strict_heldout_generalization_established": false
+  },
+  "schema": "jdv2-stage-b-v2a-original-protocol-freeze-v1",
+  "scientific_evidence_commit": "817cc7551bd7f3422422230821acf8b3dd5cdc6c",
+  "source_hashes": {
+    "component_projection": {
+      "path": "src/models/joint_dependency_v2/component_residual_projection.py",
+      "sha256": "355de2a9ace3265efe1d5fc1ed4b5a6c054a621fc452a7ad95d70b6a2c3b5630"
+    },
+    "dependency_corrector": {
+      "path": "src/models/joint_dependency_v2/dependency_corrector.py",
+      "sha256": "0ff28eb7107e49a0ad6f2bf339a65d8847f83c4a7cf315faa5a80cac4dc00522"
+    }
+  },
+  "status": "STAGE_B_V2A_ORIGINAL_GDTS_PROTOCOL_FROZEN",
+  "v2b_authorized": false
+}
