@@ -1,7 +1,9 @@
+import json
 from pathlib import Path
 
 import numpy as np
 import pytest
+import torch
 
 from src.jmm_protocol import (
     JMMWindow,
@@ -13,6 +15,14 @@ from src.jmm_protocol import (
     summarize_windows,
     write_standardized_window,
 )
+from tools.evaluate_jmm_official import (
+    _collate_cache_record,
+    _load_validated_jdv2_cache,
+    _record_set_hash,
+    _validate_jdv2_cache_record,
+    build_parser,
+)
+
 
 
 def _agentformer_row(frame, agent, x, y):
@@ -101,3 +111,103 @@ def test_checked_in_official_data_has_paper_protocol_counts():
     summary = summarize_windows(windows)
     assert summary["num_scenes"] == JMM_ETH_EXPECTED_WINDOWS
     assert summary["num_agent_instances"] == JMM_ETH_EXPECTED_AGENT_INSTANCES
+
+
+def _deployment_record(window, scene_index=0, num_candidates=21):
+    num_agents = window.num_agents
+    return {
+        "cache_id": f"jmm-eth-{scene_index:06d}",
+        "window_directory": window.directory_name,
+        "num_goal_candidates": num_candidates,
+        "scene_index": torch.zeros(num_agents, dtype=torch.long),
+        "scene_ptr": torch.tensor([0, num_agents], dtype=torch.long),
+        "frame_ids": torch.from_numpy(
+            np.repeat(window.frame_ids[:, None], num_agents, axis=1)
+        ).long(),
+        "edge_index": torch.empty((2, 0), dtype=torch.long),
+        "edge_feat": torch.empty((0, 8)),
+        "edge_weight": torch.empty((0,)),
+        "goal_candidates_map": torch.zeros(num_agents, num_candidates, 2),
+        "goal_candidates_world": torch.zeros(num_agents, num_candidates, 2),
+        "candidate_log_prior": torch.zeros(num_agents, num_candidates),
+        "contains_future_supervision": False,
+    }
+
+
+def test_jmm_jdv2_deployment_record_contract_and_single_agent_collation():
+    window = JMMWindow(
+        "biwi_eth",
+        np.arange(20, dtype=np.int64) * 10,
+        np.array([7], dtype=np.int64),
+        np.zeros((20, 1, 2), dtype=np.float64),
+    )
+    record = _deployment_record(window)
+    _validate_jdv2_cache_record(record, window, 0)
+
+    collated = _collate_cache_record(record)
+    assert collated["goal_candidates_world"].shape == (1, 1, 21, 2)
+    assert collated["scene_index"].shape == (1, 1)
+    assert collated["edge_index"].shape == (1, 2, 0)
+    assert collated["contains_future_supervision"] is False
+
+
+def test_jmm_jdv2_record_rejects_future_or_window_mismatch():
+    window = JMMWindow(
+        "biwi_eth",
+        np.arange(20, dtype=np.int64) * 10,
+        np.array([1, 2], dtype=np.int64),
+        np.zeros((20, 2, 2), dtype=np.float64),
+    )
+    future_record = _deployment_record(window)
+    future_record["contains_future_supervision"] = True
+    with pytest.raises(RuntimeError, match="future supervision"):
+        _validate_jdv2_cache_record(future_record, window, 0)
+
+    wrong_window = _deployment_record(window)
+    wrong_window["frame_ids"][0, 0] += 10
+    with pytest.raises(RuntimeError, match="frame_ids mismatch"):
+        _validate_jdv2_cache_record(wrong_window, window, 0)
+
+
+def test_jmm_jdv2_manifest_and_record_hash_are_fail_closed(tmp_path):
+    cache_dir = tmp_path / "cache"
+    records = cache_dir / "records"
+    records.mkdir(parents=True)
+    record_path = records / "000000.pt"
+    torch.save({"cache_id": "jmm-eth-000000"}, record_path)
+    identity = {
+        "schema_version": "jmm-jdv2-deployment-cache-v1",
+        "data_sha256": "data",
+        "candidate_seed": 2035,
+    }
+    manifest = {
+        **identity,
+        "status": "complete",
+        "record_set_sha256": _record_set_hash([record_path]),
+    }
+    (cache_dir / "manifest.json").write_text(
+        json.dumps(manifest), encoding="utf-8"
+    )
+
+    loaded = _load_validated_jdv2_cache(cache_dir, [object()], identity)
+    assert loaded["record_set_sha256"] == manifest["record_set_sha256"]
+    with pytest.raises(RuntimeError, match="manifest mismatch"):
+        _load_validated_jdv2_cache(
+            cache_dir, [object()], {**identity, "candidate_seed": 2036}
+        )
+    record_path.write_bytes(record_path.read_bytes() + b"tamper")
+    with pytest.raises(RuntimeError, match="record-set hash mismatch"):
+        _load_validated_jdv2_cache(cache_dir, [object()], identity)
+
+
+def test_jmm_cli_exposes_explicit_jdv2_cache_contract():
+    parser = build_parser()
+    build = parser.parse_args([
+        "build-jdv2-cache", "--run-dir", "run", "--cache-dir", "cache"
+    ])
+    assert build.seed == 2035
+    infer = parser.parse_args([
+        "infer", "--run-dir", "run", "--checkpoint", "best",
+        "--jdv2-cache-dir", "cache",
+    ])
+    assert infer.jdv2_cache_seed == 2035
