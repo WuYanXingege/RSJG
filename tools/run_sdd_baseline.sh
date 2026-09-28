@@ -9,14 +9,20 @@ PYTHON_BIN="${PYTHON_BIN:-/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG
 RUN_NAME="${RUN_NAME:-gdts_baseline_sdd_seed2035}"
 CACHE_ROOT="${CACHE_ROOT:-outputs/joint_dependency_v2/cache/baseline_source_batches}"
 MODE="${1:-all}"
+CHECKPOINT="${2:-}"
 
 case "${MODE}" in
-  pre-process|train|train_test|all) ;;
+  pre-process|train|test|resume|train_test|all) ;;
   *)
-    echo "Usage: $0 [pre-process|train|train_test|all]" >&2
+    echo "Usage: $0 [pre-process|train|test|resume|train_test|all] [epoch]" >&2
     exit 2
     ;;
 esac
+
+if [[ "${MODE}" == "resume" && ! "${CHECKPOINT}" =~ ^[1-9][0-9]*$ ]]; then
+  echo "resume requires a positive numbered checkpoint epoch" >&2
+  exit 2
+fi
 
 cd "${ROOT_DIR}"
 
@@ -51,12 +57,17 @@ common_args=(
 
 run_phase() {
   local phase="$1"
-  "${PYTHON_BIN}" main.py --phase "${phase}" "${common_args[@]}"
+  shift
+  "${PYTHON_BIN}" main.py --phase "${phase}" "${common_args[@]}" "$@"
 }
 
 if [[ "${MODE}" == "all" ]]; then
   run_phase pre-process
   run_phase train_test
+elif [[ "${MODE}" == "test" ]]; then
+  run_phase test --load_checkpoint best
+elif [[ "${MODE}" == "resume" ]]; then
+  run_phase train --load_checkpoint "${CHECKPOINT}"
 else
   run_phase "${MODE}"
 fi
