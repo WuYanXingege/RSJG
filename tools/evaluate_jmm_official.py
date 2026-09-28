@@ -750,6 +750,7 @@ def command_score(args: argparse.Namespace) -> None:
     payload = {
         "protocol": "Joint Metrics Matter ETH official",
         "trajectory_root": str(trajectory_root),
+        "scorer_provenance": _source_provenance(),
         **metrics,
     }
     atomic_write_json(destination, payload)
@@ -761,6 +762,7 @@ def command_score(args: argparse.Namespace) -> None:
             "metrics_computed": True,
             "metrics_file": str(destination),
             "metrics_protocol": payload["protocol"],
+            "metrics_scorer_provenance": payload["scorer_provenance"],
             "scored_at_unix": time.time(),
         })
         atomic_write_json(manifest_path, manifest)

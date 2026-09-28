@@ -25,6 +25,7 @@ JMM_ETH_FRAME_SCALE = 10
 JMM_OBS_LEN = 8
 JMM_PRED_LEN = 12
 JMM_NUM_SAMPLES = 20
+JMM_PEDESTRIAN_RADIUS_M = 0.1
 JMM_ETH_EXPECTED_WINDOWS = 253
 JMM_ETH_EXPECTED_AGENT_INSTANCES = 364
 JMM_ETH_EXPECTED_MEAN_PEDS = (
@@ -435,6 +436,73 @@ def _ids_in_order(table: np.ndarray) -> np.ndarray:
     return np.asarray(result, dtype=np.int64)
 
 
+def collision_rates_per_sample(
+    predictions_world: np.ndarray,
+    *,
+    pedestrian_radius_m: float = JMM_PEDESTRIAN_RADIUS_M,
+) -> np.ndarray:
+    """Return the official JMM collision rate for every joint sample.
+
+    ``predictions_world`` has shape ``[K,T,N,2]`` in metres. A pedestrian is
+    counted as colliding when its continuous piecewise-linear future comes
+    within two pedestrian radii of any other predicted pedestrian in the same
+    joint sample. The returned ``[K]`` rates are fractions of scene agents.
+    """
+
+    predictions = np.asarray(predictions_world, dtype=np.float64)
+    if predictions.ndim != 4 or predictions.shape[-1] != 2:
+        raise ValueError("predictions_world must have shape [K,T,N,2]")
+    if predictions.shape[0] == 0 or predictions.shape[1] == 0 \
+            or predictions.shape[2] == 0:
+        raise ValueError("predictions_world must have non-empty K, T and N")
+    if not np.isfinite(predictions).all():
+        raise ValueError("predictions_world contains NaN or Inf")
+    if not np.isfinite(pedestrian_radius_m) or pedestrian_radius_m <= 0:
+        raise ValueError("pedestrian_radius_m must be finite and positive")
+
+    num_samples, num_steps, num_agents, _ = predictions.shape
+    if num_agents == 1:
+        return np.zeros(num_samples, dtype=np.float64)
+
+    pair_i, pair_j = np.triu_indices(num_agents, k=1)
+    relative = predictions[:, :, pair_i] - predictions[:, :, pair_j]
+    collision_distance = 2.0 * float(pedestrian_radius_m)
+    pair_collision = np.linalg.norm(relative[:, 0], axis=-1) < collision_distance
+
+    if num_steps > 1:
+        start = relative[:, :-1].reshape(-1, 2)
+        end = relative[:, 1:].reshape(-1, 2)
+        equal = np.all(start == end, axis=-1)
+        tangent = np.zeros_like(start)
+        displacement = end[~equal] - start[~equal]
+        tangent[~equal] = displacement / np.linalg.norm(
+            displacement, axis=-1, keepdims=True
+        )
+        parallel_start = (start * tangent).sum(axis=-1)
+        parallel_end = (-end * tangent).sum(axis=-1)
+        parallel = np.maximum.reduce([
+            parallel_start,
+            parallel_end,
+            np.zeros_like(parallel_end),
+        ])
+        perpendicular = np.cross(-start, tangent)
+        segment_distance = np.hypot(parallel, np.abs(perpendicular))
+        segment_distance[equal] = np.linalg.norm(-start[equal], axis=-1)
+        segment_collision = (
+            segment_distance.reshape(
+                num_samples, num_steps - 1, pair_i.size
+            ) < collision_distance
+        )
+        pair_collision |= np.any(segment_collision, axis=1)
+
+    agent_collision = np.zeros((num_samples, num_agents), dtype=bool)
+    for pair_index, (agent_i, agent_j) in enumerate(zip(pair_i, pair_j)):
+        collided = pair_collision[:, pair_index]
+        agent_collision[collided, agent_i] = True
+        agent_collision[collided, agent_j] = True
+    return agent_collision.mean(axis=1)
+
+
 def score_standardized_trajectories(
     trajectory_root: os.PathLike | str,
     *,
@@ -459,6 +527,8 @@ def score_standardized_trajectories(
 
     joint_ade = []
     joint_fde = []
+    collision_mean = []
+    collision_jade = []
     marginal_ade_sum = 0.0
     marginal_fde_sum = 0.0
     total_agents = 0
@@ -492,8 +562,13 @@ def score_standardized_trajectories(
         distances = np.linalg.norm(predictions - gt[None], axis=-1)
         per_sample_agent_ade = distances.mean(axis=1)  # [K,N]
         per_sample_agent_fde = distances[:, -1]       # [K,N]
-        joint_ade.append(float(per_sample_agent_ade.mean(axis=1).min()))
+        joint_ade_per_sample = per_sample_agent_ade.mean(axis=1)
+        best_jade_index = int(np.argmin(joint_ade_per_sample))
+        per_sample_collision = collision_rates_per_sample(predictions)
+        joint_ade.append(float(joint_ade_per_sample[best_jade_index]))
         joint_fde.append(float(per_sample_agent_fde.mean(axis=1).min()))
+        collision_mean.append(float(per_sample_collision.mean()))
+        collision_jade.append(float(per_sample_collision[best_jade_index]))
         marginal_ade_sum += float(per_sample_agent_ade.min(axis=0).sum())
         marginal_fde_sum += float(per_sample_agent_fde.min(axis=0).sum())
         total_agents += int(agent_ids.size)
@@ -510,6 +585,9 @@ def score_standardized_trajectories(
         "minJFDE@20": float(np.mean(joint_fde)),
         "minADE@20": marginal_ade_sum / total_agents,
         "minFDE@20": marginal_fde_sum / total_agents,
+        "CRmean@20": float(np.mean(collision_mean)),
+        "CRJADE@20": float(np.mean(collision_jade)),
+        "collision_pedestrian_radius_m": JMM_PEDESTRIAN_RADIUS_M,
         "num_scenes": len(scene_dirs),
         "num_agent_instances": total_agents,
         "mean_pedestrians_per_scene": total_agents / len(scene_dirs),

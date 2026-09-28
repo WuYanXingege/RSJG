@@ -10,7 +10,9 @@ from src.jmm_protocol import (
     JMM_ETH_EXPECTED_AGENT_INSTANCES,
     JMM_ETH_EXPECTED_WINDOWS,
     JMM_NUM_SAMPLES,
+    JMM_PEDESTRIAN_RADIUS_M,
     build_jmm_eth_windows,
+    collision_rates_per_sample,
     score_standardized_trajectories,
     summarize_windows,
     write_standardized_window,
@@ -97,6 +99,67 @@ def test_standard_export_and_score_keep_one_joint_sample(tmp_path):
     assert metrics["minFDE@20"] == pytest.approx(0.0)
     assert metrics["num_scenes"] == 1
     assert metrics["num_agent_instances"] == 2
+
+
+def test_jmm_collision_rate_handles_single_agent_and_strict_boundary():
+    single = np.zeros((2, 12, 1, 2), dtype=np.float64)
+    assert collision_rates_per_sample(single).tolist() == [0.0, 0.0]
+
+    boundary = np.zeros((1, 12, 2, 2), dtype=np.float64)
+    boundary[:, :, 1, 0] = 2.0 * JMM_PEDESTRIAN_RADIUS_M
+    assert collision_rates_per_sample(boundary).tolist() == [0.0]
+
+    boundary[:, :, 1, 0] = 0.199
+    assert collision_rates_per_sample(boundary).tolist() == [1.0]
+
+
+def test_jmm_collision_rate_detects_between_frame_crossing():
+    predictions = np.zeros((1, 2, 2, 2), dtype=np.float64)
+    predictions[0, 0, 0, 0] = -1.0
+    predictions[0, 1, 0, 0] = 1.0
+    predictions[0, :, 1, 0] = 0.0
+
+    assert collision_rates_per_sample(predictions).tolist() == [1.0]
+
+
+def test_jmm_collision_metrics_use_best_jade_sample_and_scene_weighting(tmp_path):
+    frames = np.arange(20, dtype=np.int64) * 10
+
+    # One two-agent scene: sample 0 is the best-JADE sample and collides;
+    # the other 19 samples do not. Thus CRJADE=1 and CRmean=1/20.
+    agents = np.array([1, 2], dtype=np.int64)
+    ground_truth = np.zeros((20, 2, 2), dtype=np.float64)
+    ground_truth[:, 1, 0] = 0.21
+    predictions = np.zeros((JMM_NUM_SAMPLES, 12, 2, 2), dtype=np.float64)
+    predictions[:, :, 1, 0] = 1.0
+    predictions[0, :, 1, 0] = 0.19
+    write_standardized_window(
+        tmp_path,
+        JMMWindow("biwi_eth", frames, agents, ground_truth),
+        predictions,
+    )
+
+    metrics = score_standardized_trajectories(tmp_path, strict_official=False)
+    assert metrics["CRJADE@20"] == pytest.approx(1.0)
+    assert metrics["CRmean@20"] == pytest.approx(1.0 / JMM_NUM_SAMPLES)
+    assert metrics["collision_pedestrian_radius_m"] == pytest.approx(0.1)
+
+    # A second single-agent scene contributes zero with equal scene weight.
+    single_frames = frames + 1000
+    single_predictions = np.zeros((JMM_NUM_SAMPLES, 12, 1, 2))
+    write_standardized_window(
+        tmp_path,
+        JMMWindow(
+            "biwi_eth",
+            single_frames,
+            np.array([3]),
+            np.zeros((20, 1, 2)),
+        ),
+        single_predictions,
+    )
+    metrics = score_standardized_trajectories(tmp_path, strict_official=False)
+    assert metrics["CRJADE@20"] == pytest.approx(0.5)
+    assert metrics["CRmean@20"] == pytest.approx(0.5 / JMM_NUM_SAMPLES)
 
 
 def test_checked_in_official_data_has_paper_protocol_counts():
