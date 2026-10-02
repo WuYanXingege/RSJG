@@ -79,7 +79,8 @@ def get_parser():
         help='Phase selection. During test phase you need to load a pre-trained model')
     parser.add_argument('--load_checkpoint', '-lc', default=None, type=str,
         help="Load pre-trained model for testing or resume training. Specify "
-             "the epoch to load or 'best' to load the best model. Default=None means do not load any model.")
+             "an epoch, 'best', or 'last'. Default=None means do not "
+             "load any model.")
     parser.add_argument('--num_epochs', '-ne', default=300, type=int)
     parser.add_argument('--batch_size', '-bs', default=64, type=int)
     parser.add_argument('--learning_rate', '-lr', default=1e-4, type=float)
@@ -544,6 +545,12 @@ def get_parser():
               'Defaults to --seed and does not alter deployed-policy sampling.'))
     parser.add_argument(
         '--pretrain_path', default=None, help="Path to the pre-trained model checkpoint")
+    parser.add_argument(
+        '--goal_pretrain_checkpoint', default=None,
+        help=("Goal-only checkpoint used to initialize a fresh independent "
+              "GDTS joint-training run. Only goal_module parameters are "
+              "loaded; optimizer, scheduler, and epoch state are never "
+              "inherited."))
     # parser.add_argument(
     #     '--if_plot', default=False, type=str2bool, const=True, nargs='?', help="Set to True to plot the results")
     return parser

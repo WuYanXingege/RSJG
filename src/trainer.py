@@ -17,6 +17,7 @@ from src.utils import (
     print_model_summary,
 )
 from src.models.model import GDTS   
+from src.models.goal_pretrain import goal_architecture_config
 from src.trajectory_bank_cache import (
     get_trajectory_bank_dataloader,
     pack_statistics,
@@ -88,7 +89,6 @@ class trainer(object):
                     f"{stats['avg_edge_upper_bound_per_pack']:.2f}, "
                     f"pair-score lower-bound memory={pair_mb:.2f} MiB, "
                     f"oversized singletons={stats['oversized_singletons']}")
-        self._write_evaluation_protocol()
         # initialize device
         self.device = self._set_device()
         self._configure_amp()
@@ -101,6 +101,11 @@ class trainer(object):
         self._collapse_signature_epochs = 0
         # initialize network
         self.net = GDTS(self.args, self.device).to(self.device)
+        if (self.args.goal_pretrain_checkpoint and
+                self.args.phase in {'train', 'train_test'} and
+                self.args.load_checkpoint is None):
+            self._load_goal_pretrain_checkpoint(
+                self.args.goal_pretrain_checkpoint)
         initialization_checkpoint = self.args.pretrain_path
         if self.net.jdv2_active and initialization_checkpoint is None:
             initialization_checkpoint = self.args.jdv2_source_checkpoint
@@ -115,6 +120,7 @@ class trainer(object):
         self.best_metrics = self.net.init_best_metrics()
         self.best_metrics_epochs = {k: -1 for k in self.best_metrics.keys()}
         self._best_selection = (float('inf'), float('inf'))
+        self._write_evaluation_protocol()
 
     def _configure_amp(self):
         """Configure the frozen FP16/BF16 policy without changing legacy."""
@@ -140,6 +146,67 @@ class trainer(object):
             return nullcontext()
         return torch.autocast(
             device_type=self.device.type, dtype=self.amp_dtype, enabled=True)
+
+    def _load_goal_pretrain_checkpoint(self, checkpoint_path):
+        """Strictly initialize only the Goal U-Net for a fresh GDTS run."""
+        if self.args.pretrain_path is not None:
+            raise RuntimeError(
+                'goal_pretrain_checkpoint and pretrain_path are mutually '
+                'exclusive')
+        if (self.args.goal_model_type != 'independent' or
+                self.args.training_stage != 'baseline'):
+            raise RuntimeError(
+                'Goal-only initialization is restricted to the independent '
+                'GDTS baseline stage')
+        checkpoint_path = os.path.abspath(os.path.expanduser(
+            checkpoint_path))
+        if not os.path.isfile(checkpoint_path):
+            raise FileNotFoundError(checkpoint_path)
+        checkpoint = torch.load(
+            checkpoint_path, map_location=self.device, weights_only=False)
+        if checkpoint.get('checkpoint_type') != 'gdts_goal_pretrain':
+            raise RuntimeError(
+                'Goal initialization requires a typed goal-pretrain '
+                'checkpoint')
+        if checkpoint.get('format_version') != 1:
+            raise RuntimeError('Unsupported goal-pretrain checkpoint format')
+        for field in ('dataset', 'test_set'):
+            if checkpoint.get(field) != getattr(self.args, field):
+                raise RuntimeError(
+                    f'Goal-pretrain {field} mismatch: '
+                    f'{checkpoint.get(field)!r} != '
+                    f'{getattr(self.args, field)!r}')
+        expected_architecture = goal_architecture_config(self.args)
+        if checkpoint.get('goal_architecture') != expected_architecture:
+            raise RuntimeError('Goal-pretrain architecture mismatch')
+        source_state = checkpoint.get('model_state_dict')
+        if not isinstance(source_state, dict) or not source_state:
+            raise RuntimeError('Goal-pretrain checkpoint has no model state')
+        invalid_keys = [
+            key for key in source_state
+            if not key.startswith('goal_module.')]
+        if invalid_keys:
+            raise RuntimeError(
+                'Goal-pretrain checkpoint contains non-goal parameters: '
+                f'{invalid_keys[:5]}')
+        goal_state = {
+            key.removeprefix('goal_module.'): value
+            for key, value in source_state.items()}
+        self.net.goal_module.load_state_dict(goal_state, strict=True)
+        digest = sha256_file(checkpoint_path)
+        self.args.goal_pretrain_checkpoint = checkpoint_path
+        self.args.goal_pretrain_checkpoint_sha256 = digest
+        self.args.goal_pretrain_checkpoint_epoch = int(checkpoint['epoch'])
+        self.goal_pretrain_initialization = {
+            'path': checkpoint_path,
+            'sha256': digest,
+            'epoch': int(checkpoint['epoch']),
+            'training_epochs_planned': int(
+                checkpoint['training_epochs_planned']),
+        }
+        print(
+            'Loaded strict Goal U-Net initialization: '
+            f'epoch={checkpoint["epoch"]}, sha256={digest}')
 
     def _jdv2_architecture_config(self):
         strict_no_z = self.args.jdv2_latent_objective == 'strict_no_z'
@@ -321,6 +388,10 @@ class trainer(object):
             'final_test_split': self.args.final_test_split,
             'upstream_generator': self.args.upstream_generator,
             'upstream_checkpoint': self.args.pretrain_path,
+            'goal_pretrain_initialization': getattr(
+                self, 'goal_pretrain_initialization', None),
+            'goal_pretrain_checkpoint_configured': (
+                self.args.goal_pretrain_checkpoint),
             'freeze_upstream_generator': (
                 self.args.freeze_upstream_generator),
             'internal_validation_fraction': (
@@ -405,6 +476,30 @@ class trainer(object):
         payload = {
             'epoch': epoch,
             'model_state_dict': self.net.state_dict(),
+            'goal_pretrain_initialization': getattr(
+                self, 'goal_pretrain_initialization', None),
+            'optimizer_state_dict': (
+                self.optimizer.state_dict()
+                if hasattr(self, 'optimizer') else None),
+            'scheduler_state_dict': (
+                self.scheduler.state_dict()
+                if getattr(self, 'scheduler', None) is not None else None),
+            'grad_scaler_state_dict': (
+                self.scaler.state_dict() if self.scaler.is_enabled()
+                else None),
+            'training_stage': self.args.training_stage,
+            'validations_without_improvement': int(getattr(
+                self, '_validations_without_improvement', 0)),
+            'collapse_signature_epochs': int(getattr(
+                self, '_collapse_signature_epochs', 0)),
+            'best_selection': {
+                'primary': self._best_selection[0],
+                'tie_break': self._best_selection[1],
+            },
+            'best_metrics': {
+                key: float(value)
+                for key, value in self.best_metrics.items()},
+            'best_metrics_epochs': dict(self.best_metrics_epochs),
         }
         if self.net.jdv2_active:
             payload.update({
@@ -678,6 +773,11 @@ class trainer(object):
                     raise RuntimeError(
                         'Stage-B checkpoint residual projection mismatch')
             self._pending_training_state = checkpoint
+        initialization = checkpoint.get('goal_pretrain_initialization')
+        if initialization is not None:
+            self.goal_pretrain_initialization = initialization
+        if checkpoint.get('training_stage') is not None:
+            self._pending_training_state = checkpoint
         return checkpoint.get('epoch', 0)
 
     def _load_checkpoint(self, load_checkpoint):
@@ -688,6 +788,9 @@ class trainer(object):
             # Create load model path
             if load_checkpoint == 'best':
                 saved_model_name = os.path.join(self.args.model_dir, 'saved_models', 'best_model.pt')
+            elif load_checkpoint == 'last':
+                saved_model_name = os.path.join(
+                    self.args.model_dir, 'saved_models', 'last_model.pt')
             else:  # Load specific checkpoint
                 assert int(load_checkpoint) > 0, \
                     "Check args.load_model. Must be an integer > 0"
@@ -704,7 +807,7 @@ class trainer(object):
                 raise ValueError("No such pre-trained model:", saved_model_name)
         else:
             raise ValueError('You need to specify an epoch (int) if you want '
-                             'to load a model or "best" to load the best '
+                             'to load a model, "best", or "last" '
                              'model! Check args.load_checkpoint')
 
     def _load_or_restart(self):

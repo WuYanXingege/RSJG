@@ -2,9 +2,11 @@
 
 ## Scope
 
-This launcher reproduces the repository's upstream GDTS baseline on Stanford
-Drone Dataset (SDD). It does not enable Joint Dependency V2 and does not alter
-the GDTS model, losses, sampler, or evaluator.
+This launcher preserves the repository parser-default GDTS baseline on
+Stanford Drone Dataset (SDD). It is a `1e-4`, 300-epoch diagnostic and is not
+the paper Table-II training protocol. The paper-aligned two-stage launcher is
+documented in `GDTS_SDD_PAPER_ALIGNED_PROTOCOL.md`. Neither path enables Joint
+Dependency V2 or changes the GDTS model, loss, sampler, or evaluator.
 
 ## Frozen configuration
 
@@ -26,9 +28,8 @@ the GDTS model, losses, sampler, or evaluator.
 - validation: epoch 5 onward, every 20 epochs
 
 The SDD protocol uses the same 17 scenes for validation and test. Consequently,
-the best-checkpoint result is a reproduction of the published upstream
-protocol, not an independently selected held-out test estimate. Baseline ADE
-and FDE are reported in pixels.
+the best-checkpoint result is not an independently selected held-out test
+estimate. Baseline ADE and FDE are reported in pixels.
 
 ## Commands
 

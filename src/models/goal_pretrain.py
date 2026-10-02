@@ -48,6 +48,18 @@ def derivative_of(input, dt=1, radian=False):
 #     dx = torch.from_numpy(dx).float().to(device)
 #     return dx
 
+
+def goal_architecture_config(args):
+    """Return the exact Goal U-Net contract shared with the GDTS model."""
+    return {
+        'enc_chs': (
+            6 + int(args.obs_length), 32, 32, 64, 64, 64),
+        'dec_chs': (64, 64, 64, 32, 32),
+        'out_chs': int(args.pred_length),
+        'obs_length': int(args.obs_length),
+        'pred_length': int(args.pred_length),
+    }
+
 class Goal_Pretrain(torch.nn.Module):
     def __init__(self, args, device):
         super().__init__()
@@ -60,6 +72,7 @@ class Goal_Pretrain(torch.nn.Module):
         # MODEL PARAMETERS
         ##################
         self.output_size = 2
+        self.is_trainable = True
         # GOAL MODULE PARAMETERS
         self.num_image_channels = 6
 
@@ -117,23 +130,15 @@ class Goal_Pretrain(torch.nn.Module):
         return train_metrics
 
     def init_test_metrics(self):
-        test_metrics = {
-            "goal_BCE": [],
-            'ADE_world_traj': [],
-            'FDE_world_traj': [],
-        }
-        return test_metrics
+        # Goal pre-training optimizes heat-map likelihood only. The previous
+        # ADE/FDE entries had no implementation and made validation fail.
+        return {"goal_BCE": []}
 
     def init_best_metrics(self):
-        best_metrics = {
-            "goal_BCE": 1e9,
-            'ADE_world_traj': 1e9,
-            'FDE_world_traj': 1e9,
-        }
-        return best_metrics
+        return {"goal_BCE": 1e9}
 
     def best_valid_metric(self):
-        return "FDE_world_traj" 
+        return "goal_BCE"
 
     def compute_model_metrics(self,
                               metric_name,
@@ -147,26 +152,18 @@ class Goal_Pretrain(torch.nn.Module):
         Compute model metrics for a generic model.
         Return a list of floats (the given metric values computed on the batch)
         """
-        # scale back to original dimension
-        predictions = predictions.detach() * self.args.down_factor
-        ground_truth = ground_truth.detach() * self.args.down_factor
-        # convert to world coordinates
-        scene = inputs["scene"]
-
-        GT_world = scene.make_world_coord_torch(ground_truth)
-
-        
         if metric_name == 'goal_BCE':
-            # compute goal loss
+            # BCE consumes raw logits. Coordinate/world scaling is valid for
+            # trajectory metrics, but multiplying logits changes the loss and
+            # can select the wrong Goal U-Net checkpoint.
             loss_mask = self.compute_loss_mask(
                 seq_list, self.args.obs_length).to(self.device)
-            out_maps_GT_goal = inputs["input_traj_maps"][:, self.args.obs_length:]
-            goal_logit_map = predictions
+            out_maps_GT_goal = inputs["input_traj_maps"][
+                :, self.args.obs_length:]
             goal_BCE = Goal_BCE_loss(
-                goal_logit_map, out_maps_GT_goal, loss_mask)
+                predictions.detach(), out_maps_GT_goal, loss_mask)
             return [goal_BCE.tolist()]
-        else:
-            raise ValueError("This metric has not been implemented yet!")
+        raise ValueError("This metric has not been implemented yet!")
 
     def goal_logit_map_prediction(self, inputs):
         obs_traj_maps = inputs["input_traj_maps"][:, 0:self.args.obs_length]
@@ -179,18 +176,9 @@ class Goal_Pretrain(torch.nn.Module):
         return goal_logit_map_start.unsqueeze(0) # (1, num_agents, C_out, H, W)
 
     def forward(self, inputs):
-        goal_logit_map_start = self.goal_logit_map_prediction(inputs).squeeze(0)
-        goal_prob_map = torch.sigmoid(goal_logit_map_start[:, -1:]) # select only the last column of second dim and take sigmoid,(num_agents, 1, H, W)
-        goal_point_start = TTST_test_time_sampling_trick(
-            goal_prob_map,
-            num_goals=20,
-            device=self.device)
-        goal_point_start = goal_point_start.squeeze(2).permute(1, 0, 2) # final result: (num_agents, num_samples, 2)
-        batch_coords = inputs["abs_pixel_coord"].detach()
-        # Number of agent in current batch_abs_world
-        seq_length, num_agents, _ = batch_coords.shape # (T, B, 2)
-
-        return goal_logit_map_start.unsqueeze(0)
+        # Validation needs logits only. Avoiding unused TTST samples makes the
+        # BCE checkpoint-selection path deterministic without changing loss.
+        return self.goal_logit_map_prediction(inputs)
 
 
     def get_loss(self, inputs, seq_list):
@@ -227,6 +215,28 @@ class goal_pretrainer(object):
         # Best metrics
         self.best_metrics = self.net.init_best_metrics()
         self.best_metrics_epochs = {k: -1 for k in self.best_metrics.keys()}
+
+    def _checkpoint_payload(self, epoch):
+        return {
+            'checkpoint_type': 'gdts_goal_pretrain',
+            'format_version': 1,
+            'epoch': int(epoch),
+            'dataset': self.args.dataset,
+            'test_set': self.args.test_set,
+            'goal_architecture': goal_architecture_config(self.args),
+            'training_epochs_planned': int(self.args.num_epochs),
+            'best_metric_name': self.net.best_valid_metric(),
+            'best_metrics': {
+                key: float(value) for key, value in self.best_metrics.items()},
+            'best_metrics_epochs': dict(self.best_metrics_epochs),
+            'model_state_dict': self.net.state_dict(),
+            'optimizer_state_dict': (
+                self.optimizer.state_dict()
+                if hasattr(self, 'optimizer') else None),
+            'scheduler_state_dict': (
+                self.scheduler.state_dict()
+                if getattr(self, 'scheduler', None) is not None else None),
+        }
 
     def _set_optimizer(self, optimizer_name: str, parameters):
         """
@@ -271,7 +281,7 @@ class goal_pretrainer(object):
         else:  # Not set
             return None
 
-    def _save_checkpoint(self, epoch, best_epoch=False):
+    def _save_checkpoint(self, epoch, best_epoch=False, last_epoch=False):
         """
         Save model and optimizer states
         """
@@ -279,19 +289,22 @@ class goal_pretrainer(object):
         if not os.path.exists(saved_models_path):
             os.makedirs(saved_models_path)
         # Save current checkpoint
-        if not best_epoch:
+        if best_epoch and last_epoch:
+            raise ValueError('A checkpoint cannot be both best and last')
+        if best_epoch:
+            saved_model_name = os.path.join(
+                saved_models_path,
+                self.args.model_name + '_best_model.pt')
+        elif last_epoch:
+            saved_model_name = os.path.join(
+                saved_models_path,
+                self.args.model_name + '_last_model.pt')
+        else:
             saved_model_name = os.path.join(
                 saved_models_path,
                 self.args.model_name + '_epoch_' +
                 str(epoch).zfill(3) + '.pt')
-        else:  # best model name
-            saved_model_name = os.path.join(
-                saved_models_path,
-                self.args.model_name + '_best_model.pt')
-        torch.save({
-            'epoch': epoch,
-            'model_state_dict': self.net.state_dict(),
-        }, saved_model_name)
+        torch.save(self._checkpoint_payload(epoch), saved_model_name)
 
     def _load_checkpoint(self, load_checkpoint):
         """
@@ -303,6 +316,10 @@ class goal_pretrainer(object):
                 saved_model_name = os.path.join(
                     self.args.model_dir, 'saved_models',
                     self.args.model_name + '_best_model.pt')
+            elif load_checkpoint == 'last':
+                saved_model_name = os.path.join(
+                    self.args.model_dir, 'saved_models',
+                    self.args.model_name + '_last_model.pt')
             else:  # Load specific checkpoint
                 assert int(load_checkpoint) > 0, \
                     "Check args.load_model. Must be an integer > 0"
@@ -317,15 +334,18 @@ class goal_pretrainer(object):
                 checkpoint = torch.load(saved_model_name,
                                         map_location=self.device)
                 model_epoch = checkpoint['epoch']
-                self.net.load_state_dict(
-                    checkpoint['model_state_dict'])
+                if checkpoint.get('checkpoint_type') not in {
+                        None, 'gdts_goal_pretrain'}:
+                    raise RuntimeError('Not a GDTS goal-pretrain checkpoint')
+                self.net.load_state_dict(checkpoint['model_state_dict'])
+                self._pending_training_state = checkpoint
                 print('Loaded checkpoint at epoch', model_epoch, '\n')
                 return model_epoch
             else:
                 raise ValueError("No such pre-trained model:", saved_model_name)
         else:
             raise ValueError('You need to specify an epoch (int) if you want '
-                             'to load a model or "best" to load the best '
+                             'to load a model, "best", or "last" '
                              'model! Check args.load_checkpoint')
 
     def _load_or_restart(self):
@@ -343,7 +363,7 @@ class goal_pretrainer(object):
             start_epoch = 1
             # log_file header only the first time
             with open(self.log_curve_file, 'w') as f:
-                f.write("epoch,learning_rate,valid_goal_BCE,valid_ADE_world_traj,valid_FDE_world_traj" +
+                f.write("epoch,learning_rate,valid_goal_BCE," +
                         ",".join(sorted(self.net.init_losses().keys())) +
                         "\n")
         return start_epoch
@@ -397,6 +417,22 @@ class goal_pretrainer(object):
         self.optimizer = self._set_optimizer(self.args.optimizer, params)
         # Set scheduler
         self.scheduler = self._set_scheduler(self.args.scheduler)
+        pending = getattr(self, '_pending_training_state', None)
+        if pending is not None:
+            if pending.get('optimizer_state_dict') is not None:
+                self.optimizer.load_state_dict(
+                    pending['optimizer_state_dict'])
+            if (self.scheduler is not None and
+                    pending.get('scheduler_state_dict') is not None):
+                self.scheduler.load_state_dict(
+                    pending['scheduler_state_dict'])
+            for key, value in pending.get('best_metrics', {}).items():
+                if key in self.best_metrics:
+                    self.best_metrics[key] = float(value)
+            for key, value in pending.get(
+                    'best_metrics_epochs', {}).items():
+                if key in self.best_metrics_epochs:
+                    self.best_metrics_epochs[key] = int(value)
 
         # start training
         self._train_loop(start_epoch=start_epoch,
@@ -417,7 +453,7 @@ class goal_pretrainer(object):
         print results and save log data.
         """
         # saved metrics before validation begins
-        valid_metrics = {"valid_goal_BCE": 0, "valid_ADE_world_traj": 0, "valid_FDE_world_traj": 0}
+        valid_metrics = {"valid_goal_BCE": 0}
 
         # initial learning rate
         if self.scheduler is not None:
@@ -495,13 +531,15 @@ class goal_pretrainer(object):
                     self.scheduler.step()
                 learning_rate = self.optimizer.param_groups[0]['lr']
 
+            # Written after optimizer, validation, best selection, and the
+            # scheduler step so a restart resumes the completed epoch exactly.
+            self._save_checkpoint(epoch, last_epoch=True)
+
             # save metrics to log_curve.txt
             with open(self.log_curve_file, 'a') as f:
                 f.write(','.join(str(m) for m in [
                     epoch, learning_rate,
-                    valid_metrics["valid_goal_BCE"],
-                    valid_metrics["valid_ADE_world_traj"],
-                    valid_metrics["valid_FDE_world_traj"]] +
+                    valid_metrics["valid_goal_BCE"]] +
                     [train_losses[loss_name] for loss_name in sorted(
                         train_losses)]) + '\n')
 
