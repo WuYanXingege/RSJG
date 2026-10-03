@@ -6,6 +6,9 @@ This document records the complete SDD baseline state as of
 **2026-10-03 13:54:43 +08:00**. It is a handoff/status document, not a final
 benchmark report.
 
+The current GDTS/JDV2 architecture and open-problem ledger are documented in
+`docs/joint_dependency_v2/CURRENT_NETWORK_ARCHITECTURE_AND_OPEN_ISSUES.md`.
+
 Current primary state:
 
 - branch: `research/joint-dependency-v2-clean`
