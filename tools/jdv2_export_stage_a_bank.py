@@ -21,7 +21,8 @@ from tools.jdv2_stage_a_bank import (
     REPO, CONFIG, CONFIG_SHA, CHECKPOINT, CHECKPOINT_SHA, CACHE, CACHE_SHA,
     CACHE_PIN, SOURCE_BATCHES, SEEDS, SCRIPT_PATHS, PROTOCOL, METRICS,
     BankError, require, sha256, code_provenance, write_json, write_npz,
-    array_contract, graph_summary, json_bytes, digest_bytes,
+    array_contract, graph_summary, json_bytes, digest_bytes, atomic_new,
+    authenticate_code, validate_seed_rows, load_record, load_kernel, compare,
 )
 import numpy as np
 
@@ -184,6 +185,93 @@ def capture(evaluator, prediction, auxiliary, inputs, sequence, mask, batch_id, 
                     "edge_relation_embedding_original_world": "E,P,feature: original edge-context only; invalidated for independently recombined worlds; never scored as shuffled relations"}}
     return arrays, metadata
 
+def recovery_plan(args, provenance):
+    """Authenticate complete seeds; never resume within a seed without RNG state."""
+    source_name = getattr(args, "reuse_complete_seeds_from", None)
+    source_sha = getattr(args, "reuse_source_marker_sha256", None)
+    restart = bool(getattr(args, "restart_incomplete_seeds", False))
+    require(bool(source_name) == bool(source_sha) == restart,
+            "Recovery requires source path, marker SHA256, and explicit restart opt-in", "BLOCKED_EXPORT_INPUT")
+    if not source_name:
+        return None, {}, None
+    source = Path(source_name).resolve()
+    require(source.is_relative_to(REPO / "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks"),
+            "Recovery source must be an existing Stage-A bank", "BLOCKED_EXPORT_INPUT")
+    marker = source / "INCOMPLETE.json"
+    require(sha256(marker) == source_sha and not (source / "BANK_MANIFEST.json").exists(),
+            "Wrong interrupted marker or already complete bank", "BLOCKED_EXPORT_INPUT")
+    initial = json.loads(marker.read_text())
+    require(initial["status"] == "INCOMPLETE" and initial["protocol"] == PROTOCOL, "Wrong recovery protocol")
+    old = initial["provenance"]
+    authenticate_code(old["code"])
+    require(old["code"]["export_source_commit"] == "e4c36036be986d04f9a14a43ff73582ba85ac564",
+            "Unreviewed interrupted exporter; do not infer runtime gates")
+    for key in ("checkpoint_sha256", "config_sha256", "cache_manifest_sha256", "cache_pin",
+                "source_batch_manifest_sha256", "physical_validation_filenames",
+                "dataset_hash", "split_hash", "cache_manifest_hash"):
+        require(old[key] == provenance[key], "Recovery input mismatch: " + key)
+    # In the reviewed e4c3603 source this file is published only after strict load,
+    # production-loader cache validation, zero-head and canonical-route checks.
+    resolved_sha = sha256(source / "RESOLVED_ARGS.json")
+    kernel = load_kernel()
+    _, jmm = kernel.modules()
+    reused, counts, sidecars, errors, artifacts = {}, {}, {}, [], {}
+    for seed in SEEDS:
+        paths = sorted((source / f"seed{seed}").glob("window*.json"))
+        rows = [json.loads(path.read_text()) for path in paths]
+        validate_seed_rows(rows, seed, old["physical_validation_filenames"])
+        counts[str(seed)] = len(rows)
+        artifacts[str(seed)] = len(list((source / f"seed{seed}").glob("window*.npz")))
+        for path, row in zip(paths, rows):
+            require(path.relative_to(source).as_posix() == row["path"].removesuffix(".npz") + ".json",
+                    "Recovery sidecar filename mismatch")
+            scene, _ = load_record(source, row, kernel)
+            score = kernel.score(scene, np, jmm)
+            for name in ("agent_minADE", "agent_minFDE"):
+                compare(score[name], row["baseline"][name], f"recovery/{seed}/{row['window_index']}/{name}", errors)
+            for name in METRICS:
+                if name in score["metrics"]:
+                    compare(score["metrics"][name], row["baseline"]["metrics"][name],
+                            f"recovery/{seed}/{row['window_index']}/{name}", errors)
+            if len(rows) == 139:
+                sidecars[path.relative_to(source).as_posix()] = sha256(path)
+        if len(rows) == 139:
+            reused[seed] = rows
+    require(reused and len(reused) < len(SEEDS), "Recovery expects some complete and some incomplete seeds")
+    return source, reused, {
+        "policy": "reuse authenticated complete seeds; restart every incomplete seed from its isolated RNG seed",
+        "source_bank": str(source.relative_to(REPO)), "source_marker_sha256": source_sha,
+        "source_resolved_args_sha256": resolved_sha,
+        "source_runtime_gate_evidence": "reviewed e4c3603 control flow: RESOLVED_ARGS published only after all strict runtime gates",
+        "source_completed_records_by_seed": counts, "source_npz_artifacts_by_seed": artifacts,
+        "source_completed_records_lower_bound": sum(counts.values()),
+        "source_actual_forward_count": None, "unknown_inflight_forward_tail": True,
+        "reused_seeds": sorted(reused), "reused_records": sum(len(v) for v in reused.values()),
+        "excluded_partial_records": sum(v for k, v in counts.items() if int(k) not in reused),
+        "restarted_seeds": [seed for seed in SEEDS if seed not in reused],
+        "reused_sidecar_sha256": sidecars,
+        "source_record_parity_max_abs_error": max(errors),
+        "source_partial_records_retained_unchanged": True}
+
+def copy_recovered_seed(source, output, rows, recovery):
+    for row in rows:
+        relative = row["path"]
+        require(sha256(source / relative) == row["sha256"], "Recovery NPZ changed after validation")
+        atomic_new(output / relative, (source / relative).read_bytes())
+        relative = relative.removesuffix(".npz") + ".json"
+        require(sha256(source / relative) == recovery["reused_sidecar_sha256"][relative],
+                "Recovery sidecar changed after validation")
+        atomic_new(output / relative, (source / relative).read_bytes())
+
+def seed_baseline(rows):
+    result = {}
+    for name, production in METRICS.items():
+        selected = rows if name != "RME_legacy_full_mask" else [
+            r for r in rows if len(r["baseline"]["agent_minADE"]) == r["arrays"]["Y"]["shape"][0]]
+        if selected:
+            result[name] = float(np.mean([v for r in selected for v in r["baseline"]["all_production_lists"][production]]))
+    return result
+
 def export(args):
     # This gate precedes Torch import, output creation and all model setup.
     initial = gpu_snapshot()
@@ -191,6 +279,9 @@ def export(args):
     require_idle(initial, args.gpu_uuid, allow_desktop_graphics=allow_desktop)
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_uuid
     provenance = preflight()
+    source, reused, recovery = recovery_plan(args, provenance)
+    if recovery:
+        provenance["seed_boundary_recovery"] = recovery
     provenance["resource_policy"] = {"allow_desktop_graphics": allow_desktop, "other_compute_owners_allowed": False}
     output = Path(args.output).resolve()
     require(output.is_relative_to(REPO / "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks"),
@@ -201,6 +292,9 @@ def export(args):
     write_json(output / "INCOMPLETE.json", {"status": "INCOMPLETE", "provenance": provenance,
                "protocol": PROTOCOL, "command": sys.argv, "resource_gate": initial,
                "note": "Initial marker immutable. Only BANK_MANIFEST.json with COMPLETE establishes completion."})
+    if recovery:
+        atomic_new(output / "RECOVERY_SOURCE_INCOMPLETE.json", (source / "INCOMPLETE.json").read_bytes())
+        atomic_new(output / "RECOVERY_SOURCE_RESOLVED_ARGS.json", (source / "RESOLVED_ARGS.json").read_bytes())
     records, completed = [], 0
     try:
         import torch
@@ -223,12 +317,24 @@ def export(args):
         require(dataset.ids == provenance["physical_validation_filenames"] and len(dataset) == 139,
                 "Loader order/protocol changed", "BLOCKED_EXPORT_INPUT")
         provenance.update(validated_cache_manifest=True, strict_checkpoint_load=True, exact_zero_eval_head=True,
+                          full_source_cache_validation="PASS_UNCHANGED_PRODUCTION_LOADER", checkpoint_strict_load="PASS",
                           dependencies={"python": sys.version.split()[0], "torch": torch.__version__, "numpy": np.__version__},
                           resolved_args_sha256=digest_bytes(json_bytes(vars(net.args))))
+        if recovery:
+            old_args = json.loads((source / "RESOLVED_ARGS.json").read_text())
+            require({k: v for k, v in old_args.items() if k not in ("model_dir", "save_dir")} ==
+                    {k: v for k, v in vars(net.args).items() if k not in ("model_dir", "save_dir")},
+                    "Recovery runtime args differ beyond output directories", "BLOCKED_EXPORT_INPUT")
         write_json(output / "RESOLVED_ARGS.json", vars(net.args))
         baseline_by_seed = {}
         with torch.no_grad():
             for seed in SEEDS:
+                if seed in reused:
+                    copy_recovered_seed(source, output, reused[seed], recovery)
+                    records.extend(reused[seed])
+                    baseline_by_seed[str(seed)] = seed_baseline(reused[seed])
+                    print(f"A_BANK seed={seed} REUSED_COMPLETE 139/139; no forward", flush=True)
+                    continue
                 seed_records = []
                 require_idle(gpu_snapshot(), args.gpu_uuid, allow_self=True, allow_desktop_graphics=allow_desktop)
                 with isolated_random_seed(seed, use_cuda=True):
@@ -261,18 +367,15 @@ def export(args):
                         print(f"A_BANK seed={seed} window={index + 1}/139", flush=True)
                         del contexts, velocity, prediction, auxiliary, inputs, batch_data, arrays
                 require(len(seed_records) == 139, "Incomplete seed", "FAILED_EXPORT")
-                baseline_by_seed[str(seed)] = {}
-                for name, production in METRICS.items():
-                    selected = seed_records if name != "RME_legacy_full_mask" else [
-                        r for r in seed_records if len(r["baseline"]["agent_minADE"]) == r["arrays"]["Y"]["shape"][0]]
-                    if selected:
-                        values = [v for r in selected for v in r["baseline"]["all_production_lists"][production]]
-                        baseline_by_seed[str(seed)][name] = float(np.mean(values))
-        require(completed == 695, "Wrong forward count", "FAILED_EXPORT")
+                baseline_by_seed[str(seed)] = seed_baseline(seed_records)
+        require(completed + sum(len(v) for v in reused.values()) == 695, "Wrong fresh/reused count", "FAILED_EXPORT")
         require(preflight()["code"] == provenance["code"], "Source changed during export", "FAILED_EXPORT")
         manifest = {"schema": "rsjg-canonical-a-bank-v1", "status": "COMPLETE",
                     "protocol": PROTOCOL, "provenance": provenance, "records": records,
                     "baseline_by_seed": baseline_by_seed, "forwards_completed": completed,
+                    "generation_source_commit_by_seed": {str(seed):
+                        "e4c36036be986d04f9a14a43ff73582ba85ac564" if seed in reused else
+                        provenance["code"]["export_source_commit"] for seed in SEEDS},
                     "command": sys.argv, "resource_gate": initial,
                     "completed_at_utc": datetime.now(timezone.utc).isoformat(),
                     "unique_windows": 139, "scene_seed_records": len(records)}
@@ -295,6 +398,10 @@ def main():
     parser.add_argument("--output")
     parser.add_argument("--allow-desktop-graphics", action="store_true",
                         help="Explicitly authorized desktop-only coexistence; still rejects all other compute owners.")
+    parser.add_argument("--reuse-complete-seeds-from")
+    parser.add_argument("--reuse-source-marker-sha256")
+    parser.add_argument("--restart-incomplete-seeds", action="store_true",
+                        help="Explicit seed-boundary restart only; preserve all interrupted artifacts.")
     args = parser.parse_args()
     try:
         if args.command == "preflight":

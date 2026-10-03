@@ -210,6 +210,70 @@ def main():
         xml = "<nvidia_smi_log><gpu><uuid>GPU-test</uuid><processes><process_info><pid>1</pid><type>G</type><process_name>/usr/bin/code --secret=not-for-archive</process_name><used_memory>20 MiB</used_memory></process_info></processes></gpu></nvidia_smi_log>"
         assert exporter.process_types(xml)[0]["executable"] == "code"
         assert "not-for-archive" not in str(exporter.process_types(xml))
+        # Seed-boundary recovery controls; only code provenance is mocked for
+        # synthetic files. The actual interrupted bank gets full Git authentication.
+        filenames = [f"synthetic{i:06d}.pkl" for i in range(139)]
+        old_commit = "e4c36036be986d04f9a14a43ff73582ba85ac564"
+        old_provenance = {key: "synthetic" for key in (
+            "checkpoint_sha256", "config_sha256", "cache_manifest_sha256", "cache_pin",
+            "source_batch_manifest_sha256", "dataset_hash", "split_hash", "cache_manifest_hash")}
+        old_provenance.update(code={"export_source_commit": old_commit},
+                              physical_validation_filenames=filenames)
+        source = root / "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks/interrupted"
+        bank.write_json(source / "INCOMPLETE.json", {"status": "INCOMPLETE",
+                        "protocol": bank.PROTOCOL, "provenance": old_provenance})
+        bank.write_json(source / "RESOLVED_ARGS.json", {"training_stage": "joint_goal", "model_dir": "old"})
+        for seed, count in ((2035, 139), (2036, 2)):
+            for index in range(count):
+                row = dict(record, inference_seed=seed, window_index=index,
+                           window_id=f"valid/{filenames[index]}",
+                           path=f"seed{seed}/window{index:06d}.npz")
+                bank.atomic_new(source / row["path"], (root / record["path"]).read_bytes())
+                bank.write_json(source / row["path"].replace(".npz", ".json"), row)
+        options = SimpleNamespace(reuse_complete_seeds_from=str(source),
+            reuse_source_marker_sha256=bank.sha256(source / "INCOMPLETE.json"), restart_incomplete_seeds=True)
+        with patch.object(exporter, "REPO", root), patch.object(exporter, "authenticate_code"):
+            recovered_source, reuse, recovery = exporter.recovery_plan(options, old_provenance)
+            assert set(reuse) == {2035} and recovery["reused_records"] == 139
+            assert recovery["excluded_partial_records"] == 2 and recovery["source_actual_forward_count"] is None
+            rejects("recovery_requires_explicit_restart", lambda: exporter.recovery_plan(
+                SimpleNamespace(**dict(vars(options), restart_incomplete_seeds=False)), old_provenance))
+            rejects("recovery_wrong_marker_sha", lambda: exporter.recovery_plan(
+                SimpleNamespace(**dict(vars(options), reuse_source_marker_sha256="0" * 64)), old_provenance))
+        rejects("partial_seed_cannot_be_complete", lambda: bank.validate_seed_rows(
+            reuse[2035][:-1], 2035, filenames, complete=True))
+        rejects("recovery_gap", lambda: bank.validate_seed_rows(reuse[2035][1:], 2035, filenames))
+        rejects("recovery_wrong_seed", lambda: bank.validate_seed_rows(reuse[2035], 2036, filenames))
+        rejects("recovery_wrong_window_identity", lambda: bank.validate_seed_rows(
+            [dict(reuse[2035][0], window_id="wrong")], 2035, filenames))
+        destination = root / "recovered"
+        exporter.copy_recovered_seed(source, destination, reuse[2035], recovery)
+        rejects("recovery_copy_never_overwrites", lambda: exporter.copy_recovered_seed(
+            source, destination, reuse[2035], recovery))
+        for name in ("INCOMPLETE", "RESOLVED_ARGS"):
+            bank.atomic_new(destination / ("RECOVERY_SOURCE_" + name + ".json"),
+                            (source / (name + ".json")).read_bytes())
+        bank.write_json(destination / "RESOLVED_ARGS.json", {"training_stage": "joint_goal", "model_dir": "new"})
+        all_rows = list(reuse[2035])
+        for seed in bank.SEEDS[1:]:
+            for index in range(139):
+                row = dict(record, inference_seed=seed, window_index=index,
+                           window_id=f"valid/{filenames[index]}", path=f"seed{seed}/window{index:06d}.npz")
+                all_rows.append(row)
+                bank.write_json(destination / row["path"].replace(".npz", ".json"), row)
+        recovered_manifest = {"records": all_rows, "forwards_completed": 556,
+            "generation_source_commit_by_seed": {str(s): old_commit if s == 2035 else "1" * 40 for s in bank.SEEDS},
+            "provenance": dict(old_provenance, code={"export_source_commit": "1" * 40},
+                seed_boundary_recovery=recovery, resolved_args_sha256=bank.sha256(destination / "RESOLVED_ARGS.json"))}
+        with patch.object(bank, "authenticate_code"):
+            bank.authenticate_recovery(recovered_manifest, destination)
+            rejects("recovery_cannot_claim_695_new_forwards", lambda: bank.authenticate_recovery(
+                dict(recovered_manifest, forwards_completed=695), destination))
+            rejects("recovery_wrong_per_seed_commit", lambda: bank.authenticate_recovery(
+                dict(recovered_manifest, generation_source_commit_by_seed={str(s): "1" * 40 for s in bank.SEEDS}), destination))
+            bad = copy.deepcopy(recovered_manifest)
+            bad["provenance"]["seed_boundary_recovery"]["reused_sidecar_sha256"]["seed2035/window000000.json"] = "0" * 64
+            rejects("recovery_sidecar_hash_tamper", lambda: bank.authenticate_recovery(bad, destination))
         assert not torch.cuda.is_initialized()
     print(json.dumps({"status": "PASS", "scope": "SYNTHETIC_CPU_ONLY", "fixtures": results,
                       "negative_tests": rejected, "negative_test_count": len(rejected),
@@ -217,6 +281,7 @@ def main():
                       "capture_and_serialization_CPU_rng_unchanged": True,
                       "BF16_storage_exact_roundtrip": True, "weighted_aggregation": "PASS",
                       "detailed_adapter_matches_archived_kernel": True,
+                      "seed_boundary_recovery_synthetic_roundtrip": "PASS",
                       "master_seeds": bank.MASTERS, "atol": 1e-6, "rtol": 1e-6,
                       "CUDA_initialized": False, "model_constructed": False,
                       "checkpoint_loaded": False, "real_A_scene_count": 0,

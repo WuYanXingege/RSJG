@@ -228,23 +228,8 @@ def aggregate_scores(scores):
                              for s in scores]))
             for key in set.intersection(*(set(s["metrics"]) for s in scores))}
 
-def certify_bank(manifest_path, expected_sha256):
-    """Authenticate every row and baseline before returning any data for shuffling."""
-    manifest_path = Path(manifest_path).resolve()
-    require(sha256(manifest_path) == expected_sha256, "Manifest fingerprint mismatch")
-    manifest = json.loads(manifest_path.read_text())
-    require(manifest["schema"] == "rsjg-canonical-a-bank-v1" and manifest["status"] == "COMPLETE",
-            "Incomplete or unsupported bank")
-    require(manifest["protocol"] == PROTOCOL, "Wrong route/protocol/precision/seeds")
-    provenance = manifest["provenance"]
-    require(provenance["checkpoint_sha256"] == CHECKPOINT_SHA and
-            provenance["config_sha256"] == CONFIG_SHA and
-            provenance["cache_manifest_sha256"] == CACHE_SHA and
-            provenance["cache_pin"] == CACHE_PIN, "Frozen input provenance mismatch")
-    require(provenance["validated_cache_manifest"] is True and
-            provenance["strict_checkpoint_load"] is True and
-            provenance["exact_zero_eval_head"] is True, "Missing runtime input gates")
-    code = provenance["code"]
+def authenticate_code(code):
+    """Validate recorded source against immutable Git objects, not current HEAD."""
     require(code["scripts_committed"] is True and code["relevant_worktree_clean"] is True and
             code["model_source_commit"] == MODEL_SOURCE, "Uncommitted or wrong model source")
     commit = code["export_source_commit"]
@@ -264,11 +249,88 @@ def certify_bank(manifest_path, expected_sha256):
     require(digest_bytes(json_bytes(code["source_files"])) == code["model_config_source_tree_sha256"],
             "Source tree digest mismatch")
     require(code["kernel_sha256"] == KERNEL_SHA, "Wrong kernel provenance")
+
+def validate_seed_rows(rows, seed, filenames, complete=False):
+    require([r["window_index"] for r in rows] == list(range(len(rows))),
+            "Interrupted seed is not a contiguous prefix")
+    require(len(rows) <= 139 and (not complete or len(rows) == 139), "Incomplete recovered seed")
+    for index, row in enumerate(rows):
+        require(row["inference_seed"] == seed and row["window_id"] == f"valid/{filenames[index]}" and
+                row["path"] == f"seed{seed}/window{index:06d}.npz", "Recovered record identity mismatch")
+
+def authenticate_recovery(manifest, root):
+    """Per-seed origin and counts must not disguise reruns as one uninterrupted pass."""
+    recovery = manifest["provenance"].get("seed_boundary_recovery")
+    if recovery is None:
+        require(manifest["forwards_completed"] == 695, "Wrong fresh forward count")
+        return
+    source_path = root / "RECOVERY_SOURCE_INCOMPLETE.json"
+    require(sha256(source_path) == recovery["source_marker_sha256"], "Recovery source marker changed")
+    source = json.loads(source_path.read_text())
+    require(source["status"] == "INCOMPLETE" and source["protocol"] == PROTOCOL,
+            "Wrong recovery source protocol")
+    authenticate_code(source["provenance"]["code"])
+    old_commit = source["provenance"]["code"]["export_source_commit"]
+    require(old_commit == "e4c36036be986d04f9a14a43ff73582ba85ac564",
+            "Recovery proof supports only the explicitly reviewed interrupted exporter")
+    require(sha256(root / "RECOVERY_SOURCE_RESOLVED_ARGS.json") == recovery["source_resolved_args_sha256"],
+            "Recovery resolved arguments changed")
+    for key in ("checkpoint_sha256", "config_sha256", "cache_manifest_sha256", "cache_pin",
+                "source_batch_manifest_sha256", "physical_validation_filenames",
+                "dataset_hash", "split_hash", "cache_manifest_hash"):
+        require(source["provenance"][key] == manifest["provenance"][key], "Recovery input mismatch: " + key)
+    old_args = json.loads((root / "RECOVERY_SOURCE_RESOLVED_ARGS.json").read_text())
+    new_args_path = root / "RESOLVED_ARGS.json"
+    require(sha256(new_args_path) == manifest["provenance"]["resolved_args_sha256"],
+            "Current resolved arguments changed")
+    new_args = json.loads(new_args_path.read_text())
+    require({k: v for k, v in old_args.items() if k not in ("model_dir", "save_dir")} ==
+            {k: v for k, v in new_args.items() if k not in ("model_dir", "save_dir")},
+            "Recovered and fresh runtime arguments differ beyond output directories")
+    reused = recovery["reused_seeds"]
+    require(reused and len(set(reused)) == len(reused) and set(reused) < set(SEEDS),
+            "Invalid recovered seed set")
+    require(recovery["reused_records"] == 139 * len(reused) and
+            manifest["forwards_completed"] == 139 * (len(SEEDS) - len(reused)) and
+            recovery["reused_records"] + manifest["forwards_completed"] == len(manifest["records"]),
+            "Recovered/fresh record accounting mismatch")
+    new_commit = manifest["provenance"]["code"]["export_source_commit"]
+    require(manifest["generation_source_commit_by_seed"] ==
+            {str(seed): old_commit if seed in reused else new_commit for seed in SEEDS},
+            "Per-seed source attribution mismatch")
+    expected_paths = {f"seed{seed}/window{i:06d}.json" for seed in reused for i in range(139)}
+    require(set(recovery["reused_sidecar_sha256"]) == expected_paths, "Missing recovered sidecars")
+    for row in manifest["records"]:
+        sidecar = row["path"].removesuffix(".npz") + ".json"
+        path = safe_child(root, sidecar)
+        require(json.loads(path.read_text()) == row, "Sidecar/manifest row mismatch")
+        if row["inference_seed"] in reused:
+            require(sha256(path) == recovery["reused_sidecar_sha256"][sidecar],
+                    "Recovered sidecar bytes changed")
+
+def certify_bank(manifest_path, expected_sha256):
+    """Authenticate every row and baseline before returning any data for shuffling."""
+    manifest_path = Path(manifest_path).resolve()
+    require(sha256(manifest_path) == expected_sha256, "Manifest fingerprint mismatch")
+    manifest = json.loads(manifest_path.read_text())
+    require(manifest["schema"] == "rsjg-canonical-a-bank-v1" and manifest["status"] == "COMPLETE",
+            "Incomplete or unsupported bank")
+    require(manifest["protocol"] == PROTOCOL, "Wrong route/protocol/precision/seeds")
+    provenance = manifest["provenance"]
+    require(provenance["checkpoint_sha256"] == CHECKPOINT_SHA and
+            provenance["config_sha256"] == CONFIG_SHA and
+            provenance["cache_manifest_sha256"] == CACHE_SHA and
+            provenance["cache_pin"] == CACHE_PIN, "Frozen input provenance mismatch")
+    require(provenance["validated_cache_manifest"] is True and
+            provenance["strict_checkpoint_load"] is True and
+            provenance["exact_zero_eval_head"] is True, "Missing runtime input gates")
+    authenticate_code(provenance["code"])
+    authenticate_recovery(manifest, manifest_path.parent)
     for path, expected in ((CONFIG, CONFIG_SHA), (CHECKPOINT, CHECKPOINT_SHA),
                            (CACHE + "/manifest.json", CACHE_SHA)):
         require(sha256(REPO / path) == expected, f"Local frozen input changed: {path}")
     records = manifest["records"]
-    require(len(records) == 139 * 5 and manifest["forwards_completed"] == 695,
+    require(len(records) == 139 * 5,
             "Incomplete 139-window x 5-seed coverage")
     require([(r["inference_seed"], r["window_index"]) for r in records] ==
             [(seed, i) for seed in SEEDS for i in range(139)], "Data order/coverage mismatch")
