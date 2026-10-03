@@ -1,0 +1,131 @@
+{
+  "schema_version": "rsjg-pairing-bank-contract-v1",
+  "kind": "human_and_machine_readable_contract_not_a_JSON_Schema_validator",
+  "implementation_status": "Kernel tested on synthetic scenes only; NPZ loader and real-bank provenance/evaluator integration await actual input.",
+  "container": "One numeric NPZ per (source, window, scene, inference seed); load with allow_pickle=False. Metadata in JSON; no pickle deserialization.",
+  "dimensions": {
+    "N": "agents in this scene",
+    "P": "samples for this seed",
+    "T": "complete future steps; infer all dimensions from arrays, compare with declared protocol"
+  },
+  "required_arrays": {
+    "Y": {
+      "shape": [
+        "N",
+        "P",
+        "T",
+        2
+      ],
+      "dtype": "native finite float32/float64 world positions",
+      "meaning": "full FUTURE trajectories AFTER production integration/down_factor/world transform"
+    },
+    "GT": {
+      "shape": [
+        "N",
+        "T",
+        2
+      ],
+      "dtype": "finite float",
+      "meaning": "same transformed future GT"
+    },
+    "metric_mask": {
+      "shape": [
+        "N"
+      ],
+      "dtype": "bool",
+      "meaning": "canonical full-observation-and-future eligibility"
+    },
+    "future_mask": {
+      "shape": [
+        "N",
+        "T"
+      ],
+      "dtype": "bool",
+      "constraint": "all true for every metric_mask=true agent"
+    },
+    "edge_index": {
+      "shape": [
+        2,
+        "E"
+      ],
+      "dtype": "integer",
+      "constraint": "same-scene canonical unique src<dst; from history-time deployment graph only"
+    },
+    "sample_valid": {
+      "shape": [
+        "N",
+        "P"
+      ],
+      "dtype": "bool",
+      "constraint": "all true in current adapter"
+    },
+    "sample_weights": {
+      "shape": [
+        "N",
+        "P"
+      ],
+      "dtype": "float",
+      "constraint": "equal 1/P; reject, do not reweight unsupported inputs"
+    },
+    "sample_indices": {
+      "shape": [
+        "N",
+        "P"
+      ],
+      "dtype": "integer or stable IDs",
+      "meaning": "original per-agent full-trajectory identifiers, not K candidate axis"
+    }
+  },
+  "required_scene_metadata": [
+    "source_id",
+    "window_id",
+    "scene_id",
+    "agent_ids in array order",
+    "inference_seed",
+    "frame_ids",
+    "units",
+    "dt",
+    "N",
+    "P",
+    "T",
+    "dtype",
+    "NPZ path and SHA256"
+  ],
+  "required_bank_provenance": [
+    "actual route A or certified C",
+    "generating source commit and dirty/patch digest",
+    "checkpoint path and SHA256",
+    "resolved config path and SHA256",
+    "dataset/split/selection protocol",
+    "data/cache source fingerprints",
+    "coordinate-transform provenance",
+    "original evaluator per-scene/per-agent and aggregate scores",
+    "graph provenance and fingerprint",
+    "available/missing inference seed list"
+  ],
+  "gate_rules": [
+    "Reject D, pre-fix or unverifiable route.",
+    "C requires same-input A=C certificate for this bank, not just matching weights.",
+    "Coordinate and metric parity before any real-bank permutations.",
+    "No empty valid scene dilution; explicit exclusions.",
+    "Sample-aligned arrays gathered with identical per-agent indices.",
+    "No cross-scene mixing, coordinate alteration, diffusion rerun, sample regeneration or reweighting.",
+    "No actual world-ID invented for independently recombined columns."
+  ],
+  "optional_arrays": {
+    "sample_aux": "Any goals/selected candidate IDs/sample masks/weights with N,P prefix; gather with same permutation; omit associated metrics when unavailable.",
+    "obs_world": "needed only for separately requested metrics including observation-to-future boundary; JMM future-only diagnostics do not require it"
+  },
+  "metrics_not_claimed": [
+    "Probability marginal preservation of the underlying generator",
+    "collision avoidance guarantee",
+    "legacy Collision_Rate equals JMM CRmean",
+    "causality of learned energy",
+    "held-out generalization"
+  ],
+  "blocked_input_example": {
+    "scenes": [],
+    "available_seeds": [],
+    "status": "BLOCKED_MISSING_TRAJECTORY_BANK"
+  }
+}

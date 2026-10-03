@@ -1,0 +1,976 @@
+{
+  "schema_version": "rsjg-pairing-audit-results-v1",
+  "status": "BLOCKED_MISSING_TRAJECTORY_BANK",
+  "source_commit": "6258723915f3842ee974aea6f8744cd685d5f047",
+  "archive_commit": null,
+  "archive_commit_note": "Determined by the containing Git commit and final fixed links, not a self-referential field.",
+  "input_manifest_sha256": "79092dcd11c4b5e54ad3e7bd28dcd27fe66eee07f18bf335fedf5d88e866b41c",
+  "script_sha256": "80aeae22f7d0a488779e5920a9093519ce05329d82e9361b72ae6f080e4d3225",
+  "discovery_sha256": "567e7ad046c311a6fdc1e0c8b70745c3e51905932b9a6f5ee9d7f7213e9b36c4",
+  "real_pairing_audit": {
+    "status": "NOT_RUN_NO_CERTIFIED_POSTFIX_A_BANK",
+    "accepted_route": null,
+    "accepted_banks": [],
+    "actual_scene_count": 0,
+    "actual_agent_instance_count": 0,
+    "available_inference_seeds": [],
+    "missing_inference_seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "original_metrics": null,
+    "common_permutation_metrics": null,
+    "independent_permutation_metrics": null,
+    "real_bank_CPU_baseline_parity": "NOT_RUN",
+    "real_multiset_invariance": "NOT_RUN",
+    "real_metric_deltas": null,
+    "real_tie_rate": null,
+    "cluster_uncertainty": null,
+    "empirical_pairing_benefit": "OPEN",
+    "pair_energy_causal_contribution": "OPEN",
+    "reason": "Only old D/JMM253 exports and goal/checkpoint metadata were located. No supplied external post-fix A/C bank.",
+    "claim_boundary": "Synthetic tests are not real A pairing benefit, probability marginal preservation, collision guarantees or generalization."
+  },
+  "completed_historical_evidence": {
+    "prior_review_sha256_verified": true,
+    "prior_checks_sha256_verified": true,
+    "BF16_FP32_and_explicit_five_seed_artifact_sha256_verified": true,
+    "A_B_C_identity": "CONFIRMED_HISTORICAL",
+    "C_is_correction_off_base_only": true,
+    "old_63_summaries_2940_gauges_60_scenes_rerun": false,
+    "no_related_src_config_tools_changes_since_prior_review": true
+  },
+  "new_CPU_implementation_validation": {
+    "scope": "NEW_KERNEL_SYNTHETIC_CPU_ONLY",
+    "model_execution": false,
+    "cuda_calls": false,
+    "real_A_scenes_audited": 0,
+    "status": "PASS",
+    "fixture_count": 7,
+    "replicates_per_fixture": 100,
+    "fixtures": {
+      "singleton": {
+        "original": {
+          "minADE": 1.4319255218680698,
+          "minFDE": 1.0836720786462686,
+          "JADE": 1.4319255218680698,
+          "JFDE": 1.0836720786462686,
+          "JMM_CRmean_diagnostic": 0,
+          "JMM_CRJADE_first_index_diagnostic": 0,
+          "JMM_CRJADE_exact_ties_mean": 0,
+          "JMM_CRJADE_exact_ties_min": 0,
+          "JMM_CRJADE_exact_ties_max": 0,
+          "RME_legacy_full_mask": 0
+        },
+        "original_exact_jade_tie_count": 1,
+        "original_has_exact_jade_tie": false,
+        "independent_tie_rate": 0,
+        "controls_passed": true,
+        "input_bytes_unchanged": true,
+        "common_max_abs_error": 0,
+        "official_common_tie_changes": 0,
+        "replicates": 100,
+        "descriptive_deltas": {
+          "minADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "minFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRmean_diagnostic": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_first_index_diagnostic": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_mean": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_min": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_max": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "RME_legacy_full_mask": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          }
+        }
+      },
+      "multiagent_E0": {
+        "original": {
+          "minADE": 1.497825028672114,
+          "minFDE": 0.5879345489199594,
+          "JADE": 1.6873245368602,
+          "JFDE": 0.8551366859895317,
+          "JMM_CRmean_diagnostic": 0.7142857142857143,
+          "JMM_CRJADE_first_index_diagnostic": 0.6666666666666666,
+          "JMM_CRJADE_exact_ties_mean": 0.6666666666666666,
+          "JMM_CRJADE_exact_ties_min": 0.6666666666666666,
+          "JMM_CRJADE_exact_ties_max": 0.6666666666666666,
+          "RME_legacy_full_mask": 0
+        },
+        "original_exact_jade_tie_count": 1,
+        "original_has_exact_jade_tie": false,
+        "independent_tie_rate": 0,
+        "controls_passed": true,
+        "input_bytes_unchanged": true,
+        "common_max_abs_error": 0,
+        "official_common_tie_changes": 0,
+        "replicates": 100,
+        "descriptive_deltas": {
+          "minADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "minFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JADE": {
+            "mean_shuffled_minus_original": -0.03959931697025758,
+            "delta_quantiles_05_50_95": [
+              -0.15033780420330767,
+              -0.05493960722188429,
+              0.11056658936761034
+            ],
+            "original_empirical_cdf_le": 0.7,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JFDE": {
+            "mean_shuffled_minus_original": 0.26833514212462073,
+            "delta_quantiles_05_50_95": [
+              -0.13723120673188427,
+              0.2944577534427586,
+              0.6046350435785689
+            ],
+            "original_empirical_cdf_le": 0.1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRmean_diagnostic": {
+            "mean_shuffled_minus_original": -0.14571428571428577,
+            "delta_quantiles_05_50_95": [
+              -0.380952380952381,
+              -0.1428571428571429,
+              0.049999999999999906
+            ],
+            "original_empirical_cdf_le": 0.9,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_first_index_diagnostic": {
+            "mean_shuffled_minus_original": -0.17666666666666667,
+            "delta_quantiles_05_50_95": [
+              -0.6666666666666666,
+              0,
+              0.33333333333333337
+            ],
+            "original_empirical_cdf_le": 0.81,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_mean": {
+            "mean_shuffled_minus_original": -0.17666666666666667,
+            "delta_quantiles_05_50_95": [
+              -0.6666666666666666,
+              0,
+              0.33333333333333337
+            ],
+            "original_empirical_cdf_le": 0.81,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_min": {
+            "mean_shuffled_minus_original": -0.17666666666666667,
+            "delta_quantiles_05_50_95": [
+              -0.6666666666666666,
+              0,
+              0.33333333333333337
+            ],
+            "original_empirical_cdf_le": 0.81,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_max": {
+            "mean_shuffled_minus_original": -0.17666666666666667,
+            "delta_quantiles_05_50_95": [
+              -0.6666666666666666,
+              0,
+              0.33333333333333337
+            ],
+            "original_empirical_cdf_le": 0.81,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "RME_legacy_full_mask": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          }
+        }
+      },
+      "mixed": {
+        "original": {
+          "minADE": 1.0579905748951788,
+          "minFDE": 1.0060100622494845,
+          "JADE": 1.2368917974502165,
+          "JFDE": 1.218348789165438,
+          "JMM_CRmean_diagnostic": 0.5,
+          "JMM_CRJADE_first_index_diagnostic": 0.5,
+          "JMM_CRJADE_exact_ties_mean": 0.5,
+          "JMM_CRJADE_exact_ties_min": 0.5,
+          "JMM_CRJADE_exact_ties_max": 0.5,
+          "RME_legacy_full_mask": 1.4871082189059102
+        },
+        "original_exact_jade_tie_count": 1,
+        "original_has_exact_jade_tie": false,
+        "independent_tie_rate": 0,
+        "controls_passed": true,
+        "input_bytes_unchanged": true,
+        "common_max_abs_error": 0,
+        "official_common_tie_changes": 0,
+        "replicates": 100,
+        "descriptive_deltas": {
+          "minADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "minFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JADE": {
+            "mean_shuffled_minus_original": 0.15783831362367384,
+            "delta_quantiles_05_50_95": [
+              -0.05022837014547351,
+              0.16002258547190484,
+              0.31217912371496864
+            ],
+            "original_empirical_cdf_le": 0.1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JFDE": {
+            "mean_shuffled_minus_original": 0.1935353266719998,
+            "delta_quantiles_05_50_95": [
+              -0.021333076630554105,
+              0.1970063092583717,
+              0.37365787305309844
+            ],
+            "original_empirical_cdf_le": 0.08,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRmean_diagnostic": {
+            "mean_shuffled_minus_original": -0.017499999999999995,
+            "delta_quantiles_05_50_95": [
+              -0.16666666666666669,
+              0,
+              0.13888888888888884
+            ],
+            "original_empirical_cdf_le": 0.62,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_first_index_diagnostic": {
+            "mean_shuffled_minus_original": 0.015,
+            "delta_quantiles_05_50_95": [
+              -0.5,
+              0,
+              0.5
+            ],
+            "original_empirical_cdf_le": 0.63,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_mean": {
+            "mean_shuffled_minus_original": 0.015,
+            "delta_quantiles_05_50_95": [
+              -0.5,
+              0,
+              0.5
+            ],
+            "original_empirical_cdf_le": 0.63,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_min": {
+            "mean_shuffled_minus_original": 0.015,
+            "delta_quantiles_05_50_95": [
+              -0.5,
+              0,
+              0.5
+            ],
+            "original_empirical_cdf_le": 0.63,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_max": {
+            "mean_shuffled_minus_original": 0.015,
+            "delta_quantiles_05_50_95": [
+              -0.5,
+              0,
+              0.5
+            ],
+            "original_empirical_cdf_le": 0.63,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "RME_legacy_full_mask": {
+            "mean_shuffled_minus_original": 0.12809621412814812,
+            "delta_quantiles_05_50_95": [
+              -0.22005946634917362,
+              0.1504752949298087,
+              0.4183193437577446
+            ],
+            "original_empirical_cdf_le": 0.3,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          }
+        }
+      },
+      "all_active": {
+        "original": {
+          "minADE": 1.575212658478762,
+          "minFDE": 0.49827231631400687,
+          "JADE": 1.6054809760193758,
+          "JFDE": 1.3200372176915807,
+          "JMM_CRmean_diagnostic": 0.5333333333333333,
+          "JMM_CRJADE_first_index_diagnostic": 0,
+          "JMM_CRJADE_exact_ties_mean": 0,
+          "JMM_CRJADE_exact_ties_min": 0,
+          "JMM_CRJADE_exact_ties_max": 0,
+          "RME_legacy_full_mask": 2.392786348368876
+        },
+        "original_exact_jade_tie_count": 1,
+        "original_has_exact_jade_tie": false,
+        "independent_tie_rate": 0,
+        "controls_passed": true,
+        "input_bytes_unchanged": true,
+        "common_max_abs_error": 0,
+        "official_common_tie_changes": 0,
+        "replicates": 100,
+        "descriptive_deltas": {
+          "minADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "minFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JADE": {
+            "mean_shuffled_minus_original": 0.08601552237873569,
+            "delta_quantiles_05_50_95": [
+              0,
+              0.08696164856306521,
+              0.15730613132441248
+            ],
+            "original_empirical_cdf_le": 0.08,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JFDE": {
+            "mean_shuffled_minus_original": -0.3801993773376904,
+            "delta_quantiles_05_50_95": [
+              -0.8217649013775739,
+              -0.44186019409419663,
+              0.09625039126970591
+            ],
+            "original_empirical_cdf_le": 0.84,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRmean_diagnostic": {
+            "mean_shuffled_minus_original": 0.059333333333333294,
+            "delta_quantiles_05_50_95": [
+              -0.26666666666666666,
+              0.06666666666666654,
+              0.26999999999999985
+            ],
+            "original_empirical_cdf_le": 0.41,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_first_index_diagnostic": {
+            "mean_shuffled_minus_original": 0.5066666666666666,
+            "delta_quantiles_05_50_95": [
+              0,
+              0.6666666666666666,
+              1
+            ],
+            "original_empirical_cdf_le": 0.36,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_mean": {
+            "mean_shuffled_minus_original": 0.5066666666666666,
+            "delta_quantiles_05_50_95": [
+              0,
+              0.6666666666666666,
+              1
+            ],
+            "original_empirical_cdf_le": 0.36,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_min": {
+            "mean_shuffled_minus_original": 0.5066666666666666,
+            "delta_quantiles_05_50_95": [
+              0,
+              0.6666666666666666,
+              1
+            ],
+            "original_empirical_cdf_le": 0.36,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_max": {
+            "mean_shuffled_minus_original": 0.5066666666666666,
+            "delta_quantiles_05_50_95": [
+              0,
+              0.6666666666666666,
+              1
+            ],
+            "original_empirical_cdf_le": 0.36,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "RME_legacy_full_mask": {
+            "mean_shuffled_minus_original": -0.12165008762237883,
+            "delta_quantiles_05_50_95": [
+              -0.3896639426190256,
+              -0.10209536321818069,
+              0.07108576660521626
+            ],
+            "original_empirical_cdf_le": 0.82,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          }
+        }
+      },
+      "partial_agent_mask": {
+        "original": {
+          "minADE": 0.969181036118354,
+          "minFDE": 0.8847724870827345,
+          "JADE": 0.969181036118354,
+          "JFDE": 0.9475559321836827,
+          "JMM_CRmean_diagnostic": 0.8571428571428571,
+          "JMM_CRJADE_first_index_diagnostic": 1,
+          "JMM_CRJADE_exact_ties_mean": 1,
+          "JMM_CRJADE_exact_ties_min": 1,
+          "JMM_CRJADE_exact_ties_max": 1
+        },
+        "original_exact_jade_tie_count": 1,
+        "original_has_exact_jade_tie": false,
+        "independent_tie_rate": 0,
+        "controls_passed": true,
+        "input_bytes_unchanged": true,
+        "common_max_abs_error": 0,
+        "official_common_tie_changes": 0,
+        "replicates": 100,
+        "descriptive_deltas": {
+          "minADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "minFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JADE": {
+            "mean_shuffled_minus_original": 0.24452323242963747,
+            "delta_quantiles_05_50_95": [
+              0,
+              0.31172623538332267,
+              0.4692909982471326
+            ],
+            "original_empirical_cdf_le": 0.21,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JFDE": {
+            "mean_shuffled_minus_original": 0.10820388369493202,
+            "delta_quantiles_05_50_95": [
+              -0.06278344510094824,
+              0.14761453295921878,
+              0.23073698208987647
+            ],
+            "original_empirical_cdf_le": 0.38,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRmean_diagnostic": {
+            "mean_shuffled_minus_original": -0.3499999999999999,
+            "delta_quantiles_05_50_95": [
+              -0.5714285714285714,
+              -0.42857142857142855,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_first_index_diagnostic": {
+            "mean_shuffled_minus_original": -0.44,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_mean": {
+            "mean_shuffled_minus_original": -0.44,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_min": {
+            "mean_shuffled_minus_original": -0.44,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_max": {
+            "mean_shuffled_minus_original": -0.44,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          }
+        }
+      },
+      "exact_CRJADE_tie": {
+        "original": {
+          "minADE": 1,
+          "minFDE": 1,
+          "JADE": 1,
+          "JFDE": 1,
+          "JMM_CRmean_diagnostic": 0.05,
+          "JMM_CRJADE_first_index_diagnostic": 1,
+          "JMM_CRJADE_exact_ties_mean": 0.05,
+          "JMM_CRJADE_exact_ties_min": 0,
+          "JMM_CRJADE_exact_ties_max": 1,
+          "RME_legacy_full_mask": 2
+        },
+        "original_exact_jade_tie_count": 20,
+        "original_has_exact_jade_tie": true,
+        "independent_tie_rate": 1,
+        "controls_passed": true,
+        "input_bytes_unchanged": true,
+        "common_max_abs_error": 0,
+        "official_common_tie_changes": 94,
+        "replicates": 100,
+        "descriptive_deltas": {
+          "minADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "minFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRmean_diagnostic": {
+            "mean_shuffled_minus_original": -0.044999999999999984,
+            "delta_quantiles_05_50_95": [
+              -0.05,
+              -0.05,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_first_index_diagnostic": {
+            "mean_shuffled_minus_original": -0.99,
+            "delta_quantiles_05_50_95": [
+              -1,
+              -1,
+              -1
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_mean": {
+            "mean_shuffled_minus_original": -0.044999999999999984,
+            "delta_quantiles_05_50_95": [
+              -0.05,
+              -0.05,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_min": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_max": {
+            "mean_shuffled_minus_original": -0.9,
+            "delta_quantiles_05_50_95": [
+              -1,
+              -1,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "RME_legacy_full_mask": {
+            "mean_shuffled_minus_original": -1.8,
+            "delta_quantiles_05_50_95": [
+              -2,
+              -2,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          }
+        }
+      },
+      "non_tie_joint_change": {
+        "original": {
+          "minADE": 0,
+          "minFDE": 0,
+          "JADE": 0,
+          "JFDE": 0,
+          "JMM_CRmean_diagnostic": 1,
+          "JMM_CRJADE_first_index_diagnostic": 1,
+          "JMM_CRJADE_exact_ties_mean": 1,
+          "JMM_CRJADE_exact_ties_min": 1,
+          "JMM_CRJADE_exact_ties_max": 1,
+          "RME_legacy_full_mask": 0
+        },
+        "original_exact_jade_tie_count": 1,
+        "original_has_exact_jade_tie": false,
+        "independent_tie_rate": 0.49,
+        "controls_passed": true,
+        "input_bytes_unchanged": true,
+        "common_max_abs_error": 0,
+        "official_common_tie_changes": 0,
+        "replicates": 100,
+        "descriptive_deltas": {
+          "minADE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "minFDE": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JADE": {
+            "mean_shuffled_minus_original": 2.45,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              5
+            ],
+            "original_empirical_cdf_le": 0.51,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JFDE": {
+            "mean_shuffled_minus_original": 2.45,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              5
+            ],
+            "original_empirical_cdf_le": 0.51,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRmean_diagnostic": {
+            "mean_shuffled_minus_original": -0.49,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_first_index_diagnostic": {
+            "mean_shuffled_minus_original": -0.49,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_mean": {
+            "mean_shuffled_minus_original": -0.49,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_min": {
+            "mean_shuffled_minus_original": -0.49,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "JMM_CRJADE_exact_ties_max": {
+            "mean_shuffled_minus_original": -0.49,
+            "delta_quantiles_05_50_95": [
+              -1,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          },
+          "RME_legacy_full_mask": {
+            "mean_shuffled_minus_original": 0,
+            "delta_quantiles_05_50_95": [
+              0,
+              0,
+              0
+            ],
+            "original_empirical_cdf_le": 1,
+            "interpretation": "descriptive permutation distribution, not a significance p value"
+          }
+        }
+      }
+    },
+    "negative_contract_tests_passed": [
+      "duplicate_agent_ID",
+      "empty_valid_agents",
+      "nonfinite_trajectory",
+      "incomplete_scored_future",
+      "missing_sample",
+      "nonuniform_weights",
+      "wrong_units",
+      "cross_scene_edge",
+      "duplicate_edge",
+      "aux_axis_mismatch",
+      "nonbijective_permutation"
+    ],
+    "canonical_CPU_metric_max_abs_error": 4.440892098500626e-16,
+    "python_numpy_global_rng_unchanged": true,
+    "agent_identity_stream_transport": true,
+    "python_hash_seed_independence": true,
+    "atol": 1e-12,
+    "rtol": 1e-12,
+    "versions": {
+      "python": "3.10.21",
+      "numpy": "1.26.4",
+      "torch": "2.8.0+cu128"
+    },
+    "resource_environment": {
+      "CUDA_VISIBLE_DEVICES": "",
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1",
+      "OPENBLAS_NUM_THREADS": "1"
+    },
+    "limitations": [
+      "No certified real bank: real-bank CPU baseline parity NOT_RUN.",
+      "No real-bank file loader/provenance gate has been certified.",
+      "RME for partial metric masks omitted; no production metric change.",
+      "No effect-size/significance/generalization claim from synthetic results."
+    ]
+  },
+  "safety": {
+    "training_started": false,
+    "CUDA_tests_or_evaluations_started": false,
+    "model_or_frozen_config_modified": false,
+    "weights_modified": false,
+    "cache_rebuilt": false,
+    "running_SDD_mutated": false,
+    "historical_metrics_rewritten": false,
+    "own_process_resource_limits": "single process; BLAS/Torch CPU 1 thread; nice 10; CUDA_VISIBLE_DEVICES empty only in own process",
+    "SDD_read_only_snapshot": {
+      "time": "2026-10-03T18:18:24+08:00",
+      "main_pid": 962176,
+      "parent_pid": 962146,
+      "stage": "independent GDTS goal_pretrain",
+      "epoch": 5,
+      "batches_seen": 1076,
+      "batches_total": 2440,
+      "not_current_forever": true
+    }
+  },
+  "decision": {
+    "structure": "NO_GO_NO_NEW_FAILURE_EVIDENCE",
+    "stage_B_expansion": "NO_GO",
+    "engineering_patches": "NOT_IMPLEMENTED_EXISTING_OPEN_PLANS_ONLY",
+    "only_next_action": "Supply/locate an authenticated post-fix A complete bank; if unavailable, separately authorize one A export job after arranging resources. No export authorized or executed this turn."
+  }
+}

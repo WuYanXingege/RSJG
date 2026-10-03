@@ -1,0 +1,361 @@
+{
+  "status": "BLOCKED_MISSING_TRAJECTORY_BANK",
+  "searched_at": "2026-10-03T18:17:25.631876+08:00",
+  "source_commit": "6258723915f3842ee974aea6f8744cd685d5f047",
+  "branch": "research/joint-dependency-v2-clean",
+  "tracked_worktree_status": "",
+  "changes_since_6258723": "",
+  "model_source_changes_since_1f07e7a": "",
+  "discovery": {
+    "workspace": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG",
+    "command": [
+      "rg",
+      "--files",
+      "--hidden",
+      "--no-ignore",
+      "GDTS",
+      "RSJG_JDV2_clean",
+      "-g",
+      "!**/.git/**",
+      "-g",
+      "!**/data/**",
+      "-g",
+      "!**/__pycache__/**",
+      "-g",
+      "!**/baseline_source_batches/**",
+      "-g",
+      "!**/output/sdd/**",
+      "-g",
+      "!**/outputs/**/sdd/**"
+    ],
+    "excluded_globs": [
+      "!**/.git/**",
+      "!**/data/**",
+      "!**/__pycache__/**",
+      "!**/baseline_source_batches/**",
+      "!**/output/sdd/**",
+      "!**/outputs/**/sdd/**"
+    ],
+    "enumerated_file_count": 66847,
+    "manifest_paths": [
+      "GDTS/output/eth/data_batches/cache_manifest.json",
+      "GDTS/output/eth/joint/analysis/reproduce_eth_stage1_epoch010_seed2035_legacy_sampling/manifest.json",
+      "GDTS/output/eth/joint/analysis/reproduce_eth_stage1_epoch010_seed2035_rollback_f9d4fef/manifest.json",
+      "GDTS/output/eth/joint/data_batches_joint_v2/cache_manifest.json",
+      "GDTS/output/univ/data_batches/cache_manifest.json",
+      "GDTS/output/univ/joint/data_batches_joint_v2/cache_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/data_batches_joint_v2/cache_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/prototype_bank/prototype_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/selector_rescue/audit_epoch3/selector_audit_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v2/cache/set_selector_cache_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v2/training/selector_v2_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/enhanced_pool/cache/motion_modes/motion_mode_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/enhanced_pool/cache/selector_v3_cache_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/enhanced_pool/parent_cache/set_selector_cache_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/enhanced_pool/prototype_bank/prototype_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/enhanced_pool/training/selector_v3_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/fixed_pool/cache/motion_modes/motion_mode_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/fixed_pool/cache/selector_v3_cache_manifest.json",
+      "GDTS/output/univ/v5_candidate_first/candidate_first_v5_v1/set_selector_v3/fixed_pool/training/selector_v3_manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/eth_full_stage_a/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/source_batches/eth5/eth/data_batches_jdv2_v2/cache_manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/source_batches/eth5/univ/data_batches_jdv2_v2/cache_manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/univ_full_stage_a/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/clean_split_protocol/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/cache/eth_official_goal_126acf_seed2035/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/cache/eth_official_goal_126acf_seed2035_commit05378c7/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/stage_b_v2a_epoch005_seed2035/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/stage_b_v2a_epoch005_seed2035_commit05378c7/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_freeze/manifest.json",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_b_v2a_original_protocol_freeze/manifest.json"
+    ],
+    "array_artifact_paths": [],
+    "archive_paths": [],
+    "binary_file_count": 54855,
+    "other_binary_candidates": [
+      "GDTS/output/eth/joint/final_results/eth_stage1_epoch010_seed2035/eth_stage1_epoch010_seed2035.pt",
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/reference_checkpoints/jdv2_stage_a_full_seed2035/epoch_011_best_model.pt"
+    ],
+    "full_text_sample_groups": {
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/stage_b_v2a_epoch005_seed2035": 5060,
+      "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/stage_b_v2a_epoch005_seed2035_commit05378c7": 5060
+    },
+    "inspected_manifests": [
+      {
+        "path": "RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/eth_full_stage_a/manifest.json",
+        "sha256": "eadae55391b45224a3d7920e6128764db9a56298ffe70d723030ec00193786dd",
+        "source_commit": "4b75110a571e6fd200938ff951a3a218ca4eb1e8",
+        "status": null,
+        "checkpoint_sha256": null,
+        "classification": "REJECTED_GOAL_CACHE_NOT_FULL_PREDICTIONS",
+        "schema_version": "jdv2-cache-v1"
+      },
+      {
+        "path": "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/stage_b_v2a_epoch005_seed2035/manifest.json",
+        "sha256": "da5727351737c0ef78307bf0c8a513ed79d9e052f80bba79317f956d0ad506bb",
+        "source_commit": null,
+        "status": "complete",
+        "checkpoint_sha256": "e4c114c729ba8d75ac72fc7d41f0f05e790cf2aec7b5cade563ba792930c7b73",
+        "classification": "REJECTED_OLD_D_WRONG_PROTOCOL",
+        "correction_route": "D; established by prior report/config, not an explicit manifest flag",
+        "completed_scenes": 253,
+        "seed": 2035,
+        "protocol": "Joint Metrics Matter ETH official"
+      },
+      {
+        "path": "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/jmm_official/stage_b_v2a_epoch005_seed2035_commit05378c7/manifest.json",
+        "sha256": "621c1d50914a2eb59458c5fb55752ae7fadaadb3d052f87de6aa485d441a0ba9",
+        "source_commit": "05378c7b5cb589d64efc3c00391a89f90cb64194",
+        "status": "complete",
+        "checkpoint_sha256": "e4c114c729ba8d75ac72fc7d41f0f05e790cf2aec7b5cade563ba792930c7b73",
+        "classification": "REJECTED_OLD_D_WRONG_PROTOCOL",
+        "correction_route": "D; established by prior report/config, not an explicit manifest flag",
+        "completed_scenes": 253,
+        "seed": 2035,
+        "protocol": "Joint Metrics Matter ETH official"
+      },
+      {
+        "path": "RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_freeze/manifest.json",
+        "sha256": "ecce9f937717794eadc5e84be486372f01ef9c7727a4e59c36b70e09df06ec79",
+        "source_commit": "ad35a440695a4b4eb23ad3e900eb27af9b3b8909",
+        "status": "STAGE_A_FROZEN",
+        "checkpoint_sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+        "classification": "CHECKPOINT_FREEZE_METADATA_ONLY"
+      }
+    ],
+    "external_scans": [
+      {
+        "root": "/tmp/rsjg-optimization-review-tD0ICc",
+        "exists": true,
+        "method": "related filenames only",
+        "related_candidates": []
+      },
+      {
+        "root": "/tmp/rsjg-review-patch-probe.txt",
+        "exists": true,
+        "method": "related filenames only"
+      },
+      {
+        "root": "/tmp/jdv2_doc_check.out",
+        "exists": true,
+        "method": "related filenames only"
+      },
+      {
+        "root": "/home/ee615/Downloads",
+        "exists": true,
+        "method": "related filenames only",
+        "related_candidates": []
+      },
+      {
+        "root": "/home/ee615/Desktop",
+        "exists": false,
+        "method": "related filenames only"
+      },
+      {
+        "root": "/home/ee615/Documents",
+        "exists": false,
+        "method": "related filenames only"
+      }
+    ],
+    "accepted_banks": [],
+    "available_inference_seeds": [],
+    "missing_inference_seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "limitations": [
+      "No unspecified external/cloud/archive location was supplied.",
+      "No model/checkpoint/pickle deserialization, archive extraction or SDD cache access.",
+      "Absence is limited to these searched roots; not proof of global nonexistence.",
+      "Filename-filtered binaries cannot establish provenance; no uncertified artifact is accepted."
+    ]
+  },
+  "evidence": [
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-03_1f07e7a/REVIEW.md",
+      "sha256": "046e17ac45676c2a6e9f2510a69416a4e37a92437763792bdfa4b1fb39916201",
+      "expected_sha256_match": true
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-03_1f07e7a/checks.json",
+      "sha256": "fc255a4d5d72aaf79256f617931ffee2d6e5e0a838fdca75979c471029a8bb91",
+      "expected_sha256_match": true,
+      "top_level_keys": [
+        "identity_source_commit",
+        "results",
+        "review_commit",
+        "review_date",
+        "script_path",
+        "script_sha256"
+      ]
+    },
+    {
+      "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/audits/canonical_stage_a_route_certification/postfix_bf16_results.json",
+      "sha256": "3df9d0b8592c8fc448594b05cf7dee2ee534de66e8b4bf9b27ecebeda4625bb9",
+      "expected_sha256_match": true,
+      "top_level_keys": [
+        "checkpoint_state_contract",
+        "checkpoints_modified",
+        "counts",
+        "first_divergence_trace",
+        "independent_recomputation_diagnostic",
+        "invariants",
+        "metrics",
+        "paths",
+        "peak_cuda_allocated_bytes",
+        "protocol",
+        "provenance",
+        "runtime_seconds",
+        "scope",
+        "source_modified",
+        "status",
+        "trajectory_parity"
+      ],
+      "status": "CANONICAL_STAGE_A_LITERAL_IDENTITY_CONFIRMED",
+      "generating_source_commit": "d1a1382ae324b9096ac3a6d8de812ffbbb8d9780",
+      "full_prediction_array_at_top_level": false
+    },
+    {
+      "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/audits/canonical_stage_a_route_certification/postfix_fp32_results.json",
+      "sha256": "8796e60061e5c913763e0f3aedbbab94cbb992240eadc99f59337d2d0c1f0aec",
+      "expected_sha256_match": true,
+      "top_level_keys": [
+        "checkpoint_state_contract",
+        "checkpoints_modified",
+        "counts",
+        "first_divergence_trace",
+        "independent_recomputation_diagnostic",
+        "invariants",
+        "metrics",
+        "paths",
+        "peak_cuda_allocated_bytes",
+        "protocol",
+        "provenance",
+        "runtime_seconds",
+        "scope",
+        "source_modified",
+        "status",
+        "trajectory_parity"
+      ],
+      "status": "CANONICAL_STAGE_A_LITERAL_IDENTITY_CONFIRMED",
+      "generating_source_commit": "d1a1382ae324b9096ac3a6d8de812ffbbb8d9780",
+      "full_prediction_array_at_top_level": false
+    },
+    {
+      "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/audits/canonical_stage_a_route_certification/postfix_paired_five_seed_results.json",
+      "sha256": "4c1103cfd2bd923c93368d881e16de83c308cd9693087a25b1f5cc85014c39f6",
+      "expected_sha256_match": true,
+      "top_level_keys": [
+        "checkpoint_state_contract",
+        "metric_summary",
+        "paired_delta_D_minus_C",
+        "per_seed",
+        "protocol",
+        "provenance",
+        "runtime_seconds",
+        "semantic_boundary",
+        "status"
+      ],
+      "status": "COMPLETE",
+      "generating_source_commit": "d1a1382ae324b9096ac3a6d8de812ffbbb8d9780",
+      "inference_seeds": [
+        2035,
+        2036,
+        2037,
+        2038,
+        2039
+      ],
+      "counts_by_seed": [
+        {
+          "seed": 2035,
+          "E=0_windows": 47,
+          "all_active_windows": 62,
+          "candidate_id_elements": 7360,
+          "goal_elements": 14720,
+          "mixed_windows": 30,
+          "windows": 139
+        },
+        {
+          "seed": 2036,
+          "E=0_windows": 47,
+          "all_active_windows": 62,
+          "candidate_id_elements": 7360,
+          "goal_elements": 14720,
+          "mixed_windows": 30,
+          "windows": 139
+        },
+        {
+          "seed": 2037,
+          "E=0_windows": 47,
+          "all_active_windows": 62,
+          "candidate_id_elements": 7360,
+          "goal_elements": 14720,
+          "mixed_windows": 30,
+          "windows": 139
+        },
+        {
+          "seed": 2038,
+          "E=0_windows": 47,
+          "all_active_windows": 62,
+          "candidate_id_elements": 7360,
+          "goal_elements": 14720,
+          "mixed_windows": 30,
+          "windows": 139
+        },
+        {
+          "seed": 2039,
+          "E=0_windows": 47,
+          "all_active_windows": 62,
+          "candidate_id_elements": 7360,
+          "goal_elements": 14720,
+          "mixed_windows": 30,
+          "windows": 139
+        }
+      ],
+      "full_prediction_array_at_top_level": false
+    },
+    {
+      "path": "docs/joint_dependency_v2/JDV2_CANONICAL_STAGE_A_IDENTITY_FIX_VALIDATION.md",
+      "sha256": "428f7171fac284b2fac3cce8e8fcdc5865b645bf3d1a41dc9891fc1e28cfafe1"
+    },
+    {
+      "path": "src/metrics.py",
+      "sha256": "47d0cc79389ad47a80ccf06c8a9925d558ee26cb9df0022e9006d17389432642"
+    },
+    {
+      "path": "src/jmm_protocol.py",
+      "sha256": "5b1bb0afd97b8ff6a81925c1e519a33cbedb66c1338b21df1e22cf0ce91d33b2"
+    },
+    {
+      "path": "src/models/model.py",
+      "sha256": "2abcc88c83f209492d7d1874f3554d4d26ee7da6a7d4e2ebf56a7fd6f3f758bd"
+    },
+    {
+      "path": "tools/jdv2_postfix_paired_five_seed_evaluation.py",
+      "sha256": "065f69fdb051d8f22a807e773d31390eacd084654806934af186b413eaa5e473"
+    },
+    {
+      "path": "tools/jdv2_stage_b_v1_failure_mechanism_audit.py",
+      "sha256": "541da76a2d4e4e938f4636560864495ba7cb19dde088d9064c95a9ec2fa359a6"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/joint_sampler.py",
+      "sha256": "c2c9e4db2f144eec41104eef6ff7716f151a845e9c2dc5ac22562ada5ccb0144"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/dynamic_relation.py",
+      "sha256": "0ab28fd1d5141afe53ffb80fc7fc32b5b42ae527a51b96e4b680860ee6768127"
+    },
+    {
+      "path": "configs/joint_dependency_v2/jdv2_stage_a_frozen_eth.yaml",
+      "sha256": "bf5d4a692b0a9e841de8523f2780013147ec3e9bcb78877cc3c352571bc63e62"
+    }
+  ],
+  "prior_checks": {
+    "read_and_hashed": true,
+    "old_63_summaries_2940_gauges_60_scenes_rerun": false
+  }
+}

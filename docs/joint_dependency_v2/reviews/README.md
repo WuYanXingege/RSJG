@@ -6,6 +6,7 @@
 
 | 日期 | 审查源码 | 报告 | 检查记录 | 核心决策 |
 |---|---|---|---|---|
+| 2026-10-03 | `6258723915f3842ee974aea6f8744cd685d5f047` | [固定完整轨迹配对审计](2026-10-03_6258723_pairing_audit/REVIEW.md) | [RESULTS](2026-10-03_6258723_pairing_audit/RESULTS.json) · [INPUT_MANIFEST](2026-10-03_6258723_pairing_audit/INPUT_MANIFEST.json) | BLOCKED_MISSING_TRAJECTORY_BANK；7类新CPU合成验收通过，真实A审计0 scenes；唯一下一步补齐认证bank |
 | 2026-10-03 | `1f07e7a5b81374033377c5c057d5c6ab3673b02a` | [优化必要性与科学贡献审查](2026-10-03_1f07e7a/REVIEW.md) | [CPU 与 artifact 复核 JSON](2026-10-03_1f07e7a/checks.json) | 不改结构、不重训；优先固定完整 trajectory bank 的 marginal-preserving 配对破坏审计 |
 
 审查时未定位到合格的 post-fix Stage-A 完整 trajectory bank。已有旧 correction-on V2-A 导出不能替代；如无外部归档，导出需要另行授权，不能把本次上传视为训练或 GPU 评估授权。
