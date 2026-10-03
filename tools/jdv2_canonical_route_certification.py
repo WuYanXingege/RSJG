@@ -279,6 +279,8 @@ def _parse_cli():
     parser.add_argument("--output", required=True)
     parser.add_argument("--device", default="cuda:0")
     parser.add_argument("--seed", type=int, default=2035)
+    parser.add_argument(
+        "--precision", choices=("bf16", "fp32"), default="bf16")
     return parser.parse_args()
 
 
@@ -314,6 +316,11 @@ def main() -> None:
         cli.stage_b_config, str(stage_b_path), runtime_root / "stage_b",
         cli.device)
     net_a, net_c = evaluator_a.net, evaluator_c.net
+    if cli.precision == "fp32":
+        evaluator_a.amp_enabled = False
+        evaluator_c.amp_enabled = False
+        evaluator_a.amp_dtype = torch.float32
+        evaluator_c.amp_dtype = torch.float32
     net_a.eval()
     net_c.eval()
     loader_a = evaluator_a.data_loaders["valid"]
@@ -326,7 +333,9 @@ def main() -> None:
         for name in ("A_canonical", "B_literal_off", "C_stage_b_reference")}
     parity = {
         pair: {scope: _empty_parity()
-               for scope in ("all_agents", "active_agents", "inactive_agents")}
+               for scope in (
+                   "all_agents", "active_agents", "inactive_agents",
+                   "E=0_windows", "mixed_windows", "all_active_windows")}
         for pair in ("A_vs_B", "B_vs_C", "A_vs_C")
     }
     independent_relation_parity = _empty_parity()
@@ -443,8 +452,18 @@ def main() -> None:
                     _update_parity(
                         parity[pair]["inactive_agents"],
                         left[:, ~active], right[:, ~active])
+                if not any_active:
+                    _update_parity(
+                        parity[pair]["E=0_windows"], left, right)
+                elif all_active:
+                    _update_parity(
+                        parity[pair]["all_active_windows"], left, right)
+                else:
+                    _update_parity(
+                        parity[pair]["mixed_windows"], left, right)
 
-            if first_trace is None and any_active:
+            if (first_trace is None and any_active and
+                    not torch.equal(velocity_a, velocity_b)):
                 rng_restore(pre_diffusion)
                 tape = make_noise_tape(net_a, contexts_a[-1])
                 with evaluator_a._autocast_context():
@@ -493,7 +512,8 @@ def main() -> None:
         },
         "protocol": {
             "split": "ETH validation", "windows": len(loader_a),
-            "seed": cli.seed, "precision": "CUDA/BF16",
+            "seed": cli.seed,
+            "precision": f"{str(cli.device).upper()}/{cli.precision.upper()}",
             "paired_goals": True, "paired_noise_tape": True,
             "paired_context_and_relation_state": True,
             "metrics": list(AUDIT_METRICS),

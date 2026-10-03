@@ -94,6 +94,14 @@ def jdv2_active_corrector_timesteps(
                            int(ddim_steps) + 1))
 
 
+def _jdv2_output_layer_is_exact_zero(corrector) -> bool:
+    """Return true only when the learned residual head is tensor-exact zero."""
+    output_layer = corrector.output[-1]
+    return bool(
+        torch.count_nonzero(output_layer.weight).item() == 0 and
+        torch.count_nonzero(output_layer.bias).item() == 0)
+
+
 def jdv2_select_scene_oracle_branch(
         goals: torch.Tensor,
         target_goal: torch.Tensor,
@@ -3780,19 +3788,28 @@ class GDTS(torch.nn.Module):
         projection_enabled = getattr(
             self.args, 'jdv2_residual_projection', 'none') == \
             'component_zero_mean'
+        stage_a_zero_output_bypass = (
+            not getattr(self, 'training', False) and
+            getattr(self.args, 'training_stage', None) == 'joint_goal' and
+            _jdv2_output_layer_is_exact_zero(self.jdv2_corrector))
         if (dependency_state is not None and
                 self.args.use_dependency_corrector):
             dependency_edge_index = dependency_state['edge_index'].long()
             if dependency_edge_index.shape[1]:
-                if projection_enabled:
+                if stage_a_zero_output_bypass:
+                    # Stage-A inference has no learned trajectory correction.
+                    # An exact-zero FP32 residual must bypass addition itself,
+                    # otherwise it promotes a BF16 denoiser output and changes
+                    # DDIM rounding. This is restricted to joint-goal eval;
+                    # Stage-B zero initialization retains its training path.
+                    dependency_active_agent = None
+                elif projection_enabled:
                     metadata = dependency_state['component_metadata']
                     dependency_active_agent = metadata.active_mask
                     # Fresh V2-A initialization must retain the literal
                     # Stage-A execution even in all-active windows.
-                    output_layer = self.jdv2_corrector.output[-1]
-                    output_is_zero = bool(
-                        torch.count_nonzero(output_layer.weight).item() == 0
-                        and torch.count_nonzero(output_layer.bias).item() == 0)
+                    output_is_zero = _jdv2_output_layer_is_exact_zero(
+                        self.jdv2_corrector)
                     if output_is_zero:
                         dependency_active_agent = None
                 else:
