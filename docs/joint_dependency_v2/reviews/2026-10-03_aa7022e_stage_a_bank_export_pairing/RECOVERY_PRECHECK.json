@@ -1,0 +1,37 @@
+{
+  "policy": "reuse authenticated complete seeds; restart every incomplete seed from its isolated RNG seed",
+  "source_bank": "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks/canonical_a_desktop_authorized_20261003_seed2035_2039",
+  "source_marker_sha256": "b117ac3a9ae375e6b3827c847ce0d7f1a7dee243b32882b1d5ddbb633b920aee",
+  "source_resolved_args_sha256": "1958fe68faabc06e8400080c811fa84bb79b48a3dd69875c5e7390c5f445c27b",
+  "source_runtime_gate_evidence": "reviewed e4c3603 control flow: RESOLVED_ARGS published only after all strict runtime gates",
+  "source_completed_records_by_seed": {
+    "2035": 139,
+    "2036": 36,
+    "2037": 0,
+    "2038": 0,
+    "2039": 0
+  },
+  "source_npz_artifacts_by_seed": {
+    "2035": 139,
+    "2036": 36,
+    "2037": 0,
+    "2038": 0,
+    "2039": 0
+  },
+  "source_completed_records_lower_bound": 175,
+  "source_actual_forward_count": null,
+  "unknown_inflight_forward_tail": true,
+  "reused_seeds": [
+    2035
+  ],
+  "reused_records": 139,
+  "excluded_partial_records": 36,
+  "restarted_seeds": [
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "source_record_parity_max_abs_error": 1.6776656508454835e-7,
+  "source_partial_records_retained_unchanged": true
+}

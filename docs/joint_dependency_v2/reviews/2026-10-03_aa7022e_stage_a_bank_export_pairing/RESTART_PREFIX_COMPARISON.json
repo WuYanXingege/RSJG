@@ -1,0 +1,110 @@
+{
+  "compared_records": 36,
+  "changed_records": [
+    {
+      "window": 9,
+      "arrays": {
+        "edge_relation_embedding_original_world": {
+          "max_abs_error": 7.450580596923828e-8,
+          "different_elements": 3294
+        }
+      },
+      "baseline_delta": {
+        "JADE": 0,
+        "JFDE": 0,
+        "RME_legacy_full_mask": 0,
+        "minADE": 0,
+        "minFDE": 0
+      }
+    },
+    {
+      "window": 10,
+      "arrays": {
+        "edge_relation_embedding_original_world": {
+          "max_abs_error": 7.450580596923828e-8,
+          "different_elements": 3177
+        }
+      },
+      "baseline_delta": {
+        "JADE": 0,
+        "JFDE": 0,
+        "RME_legacy_full_mask": 0,
+        "minADE": 0,
+        "minFDE": 0
+      }
+    },
+    {
+      "window": 11,
+      "arrays": {
+        "edge_relation_embedding_original_world": {
+          "max_abs_error": 8.940696716308594e-8,
+          "different_elements": 3427
+        }
+      },
+      "baseline_delta": {
+        "JADE": 0,
+        "JFDE": 0,
+        "RME_legacy_full_mask": 0,
+        "minADE": 0,
+        "minFDE": 0
+      }
+    },
+    {
+      "window": 12,
+      "arrays": {
+        "edge_relation_embedding_original_world": {
+          "max_abs_error": 5.960464477539063e-8,
+          "different_elements": 4583
+        }
+      },
+      "baseline_delta": {
+        "JADE": 0,
+        "JFDE": 0,
+        "RME_legacy_full_mask": 0,
+        "minADE": 0,
+        "minFDE": 0
+      }
+    },
+    {
+      "window": 13,
+      "arrays": {
+        "Y": {
+          "max_abs_error": 2.2655719965696335,
+          "different_elements": 696
+        },
+        "edge_relation_embedding_original_world": {
+          "max_abs_error": 0.03799504321068525,
+          "different_elements": 7266
+        },
+        "joint_goals_map": {
+          "max_abs_error": 5.5,
+          "different_elements": 56
+        },
+        "joint_goals_world": {
+          "max_abs_error": 2.251969091594219,
+          "different_elements": 58
+        },
+        "selected_candidate_ids": {
+          "max_abs_error": 18,
+          "different_elements": 29
+        }
+      },
+      "baseline_delta": {
+        "JADE": -0.0994449257850647,
+        "JFDE": -0.09996044635772705,
+        "RME_legacy_full_mask": 0.06967759132385254,
+        "minADE": 0.006935715675354004,
+        "minFDE": -0.0021141779919465753
+      }
+    }
+  ],
+  "status": "NOT_BITWISE_IDENTICAL",
+  "inference_seed": 2036,
+  "source_commit_before_interruption": "e4c36036be986d04f9a14a43ff73582ba85ac564",
+  "restart_export_source_commit": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+  "unchanged_records": 31,
+  "same_Y_and_baseline_records": 35,
+  "cause": "NOT_LOCALIZED; same model/config/helper source and explicit seed do not establish cross-process bitwise replay",
+  "selection_policy": "Use complete restarted seed 2036 without metric-based selection; exclude all 36 interrupted-prefix records from final bank",
+  "certification_boundary": "This diagnostic is distinct from required same-forward CPU/evaluator parity. No cross-process bitwise claim."
+}

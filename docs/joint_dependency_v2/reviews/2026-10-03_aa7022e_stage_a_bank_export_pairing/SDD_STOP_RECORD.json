@@ -1,0 +1,33 @@
+{
+  "action": "USER_AUTHORIZED_STOP_NOW_FOR_STAGE_A_DIAGNOSTIC",
+  "stopped_at": "2026-10-03T19:33:40+08:00",
+  "verified_absent_at": "2026-10-03T19:33:51+08:00",
+  "signal": "SIGTERM",
+  "verified_process_group": 962146,
+  "terminated_pids": [
+    962146,
+    962176,
+    1015253
+  ],
+  "run_name": "gdts_paper_sdd_goal_pretrain_seed2025",
+  "stage": "goal_pretrain",
+  "recoverable_epoch": 5,
+  "checkpoint_sha256": "50005686593825d6128ce81046626299d4049500c2bcd7b9aafa4f1f15e20023",
+  "checkpoint_original_unchanged": true,
+  "backup_readable_on_CPU": true,
+  "optimizer_state_present": true,
+  "scheduler_state_present": true,
+  "complete_rng_state_present": false,
+  "uncommitted_epoch_discarded": 6,
+  "last_read_progress": {
+    "batches": 1548,
+    "total": 2440,
+    "epoch_elapsed": "39:51",
+    "snapshot": "2026-10-03T19:33:00+08:00"
+  },
+  "source_commit": "a9a220c11c61d6e7a2ded0ccd4c5ad51f4319422",
+  "SDD_resume_started": false,
+  "resume_boundary": "Can restart epoch 6 from epoch 5 state; not bitwise identical to uninterrupted training.",
+  "cache_modified": false,
+  "configuration_modified": false
+}

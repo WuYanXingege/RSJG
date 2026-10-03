@@ -1,0 +1,172 @@
+{
+  "scope": "Canonical A bank generation plus CPU-only marginal-preserving pairing audit; no training/model/config/cache/history edits",
+  "status": "COMPLETE",
+  "model_source_commit": "d1a1382ae324b9096ac3a6d8de812ffbbb8d9780",
+  "initial_export_source_commit": "e4c36036be986d04f9a14a43ff73582ba85ac564",
+  "recovery_export_source_commit": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+  "CPU_audit_source_commit": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+  "generation_source_commit_by_seed": {
+    "2035": "e4c36036be986d04f9a14a43ff73582ba85ac564",
+    "2036": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+    "2037": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+    "2038": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+    "2039": "aa7022ef8acd8fa500b4959588765a21e9daa004"
+  },
+  "archive_commit_resolution": "The immutable Git commit containing this archive; fixed commit URL returned after normal push and readback",
+  "bank_relative_path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks/canonical_a_recovered_20261003_aa7022e_seed2035_2039",
+  "bank_manifest_sha256": "ac6cd236d1f3aa1828dfe2548abe3a094ee7989dca1a7720d76771a872853ed1",
+  "audit_relative_path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/audits/canonical_stage_a_bank_pairing_20261003_aa7022e",
+  "initial_attempt": {
+    "completed_sidecars": 175,
+    "completed_seed2035": 139,
+    "partial_seed2036": 36,
+    "actual_forwards": null,
+    "unknown_inflight_forward_tail": true,
+    "artifacts_preserved": true
+  },
+  "recovery_attempt": {
+    "pid": 1024908,
+    "new_forwards": 556,
+    "reused_records": 139,
+    "final_records": 695,
+    "started_at_utc": "2026-10-03T11:53:25.909900+00:00",
+    "completed_at_utc": "2026-10-03T12:07:15.295144+00:00",
+    "independent_session": true,
+    "commands": [
+      "tools/jdv2_export_stage_a_bank.py",
+      "export",
+      "--allow-desktop-graphics",
+      "--gpu-uuid",
+      "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+      "--output",
+      "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks/canonical_a_recovered_20261003_aa7022e_seed2035_2039",
+      "--reuse-complete-seeds-from",
+      "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks/canonical_a_desktop_authorized_20261003_seed2035_2039",
+      "--reuse-source-marker-sha256",
+      "b117ac3a9ae375e6b3827c847ce0d7f1a7dee243b32882b1d5ddbb633b920aee",
+      "--restart-incomplete-seeds"
+    ]
+  },
+  "known_captured_forward_count_both_attempts": 731,
+  "total_actual_forward_count_both_attempts": null,
+  "cross_process_bitwise_replay": "NOT_BITWISE_IDENTICAL; cause not localized; see RESTART_PREFIX_COMPARISON.json",
+  "resource_policy": {
+    "allow_desktop_graphics": true,
+    "other_compute_owners_allowed": false
+  },
+  "SDD_user_authorization_override": "User explicitly ordered stop now, then approved keeping desktop graphics while no other compute owners run",
+  "SDD_resume_started": false,
+  "provenance": {
+    "cache_manifest_hash": "2d525a0f441a148dc6ff25c8f14eae3bd10d45b764cac17a25553ab76b93b949",
+    "cache_manifest_sha256": "eadae55391b45224a3d7920e6128764db9a56298ffe70d723030ec00193786dd",
+    "cache_pin": "4b75110a571e6fd200938ff951a3a218ca4eb1e8",
+    "checkpoint_sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+    "checkpoint_strict_load": "PASS",
+    "config_sha256": "bf5d4a692b0a9e841de8523f2780013147ec3e9bcb78877cc3c352571bc63e62",
+    "dataset_hash": "cfe8cabd980d32da8071b0be573967c413a5e486418ecfb950ce4fad8f8ef0c2",
+    "dependencies": {
+      "numpy": "1.26.4",
+      "python": "3.10.21",
+      "torch": "2.8.0+cu128"
+    },
+    "exact_zero_eval_head": true,
+    "full_source_cache_validation": "PASS_UNCHANGED_PRODUCTION_LOADER",
+    "resolved_args_sha256": "df5c3d9dd4cf855e741e461884ab10c10b1f22f17a9876e2932eb6a1d03f32bb",
+    "resource_policy": {
+      "allow_desktop_graphics": true,
+      "other_compute_owners_allowed": false
+    },
+    "source_batch_manifest_sha256": "de2a6b5fd3ab0ba925331ea19b449fecaa2272a974d94c6abf396c7ab2969852",
+    "split_hash": {
+      "test": "1e6957be09ffc7e2dc4230e1a13d1750f9019769f55d2d16538d6975348c11d8",
+      "train": "bbaf9d04b1dce61c7ddf6ac5b60cdf3121217f58753b16161bf3c9aabf82e64b",
+      "valid": "cdc91af22ef46355d7edf0e807e5bafb5344ed9f2080bcbd7388ce6d4e6c69d7"
+    },
+    "strict_checkpoint_load": true,
+    "validated_cache_manifest": true
+  },
+  "model_config_source_tree_sha256": "fac4e7e13e6687ccfca7f56637f47c63c07048c8a69d5f3961f4947c8595f71c",
+  "source_files_count": 88,
+  "script_sha256": {
+    "tools/jdv2_audit_stage_a_bank.py": "dc40de989a91b1772e1afd3209a14a7cad34c3d4f2d9c95f5d1265ceae510538",
+    "tools/jdv2_export_stage_a_bank.py": "e3f28d2a3c9f48e07df72f6f0459a078c163561f1e5005d6ab116f5f2a84c41d",
+    "tools/jdv2_stage_a_bank.py": "affeb8fff9eebfdc58be91cf461570416a10ea8b329b12c2bfe87c27d126c109",
+    "tools/jdv2_stage_a_bank_cpu_checks.py": "38fafc93e0b69397fbbc5ccafcc7d2aa71dc40c74a8990f3212abf8984f6963a"
+  },
+  "code_remote_readback": [
+    {
+      "path": "tools/jdv2_stage_a_bank.py",
+      "byte_exact": true,
+      "remote_blob_sha": "77da23e90cb8e4d20d3caa9488288702158c7f34"
+    },
+    {
+      "path": "tools/jdv2_export_stage_a_bank.py",
+      "byte_exact": true,
+      "remote_blob_sha": "4ec8bae2948ced0afc047d47579195c9f08800fe"
+    },
+    {
+      "path": "tools/jdv2_stage_a_bank_cpu_checks.py",
+      "byte_exact": true,
+      "remote_blob_sha": "302c0aa43d618abc753264fee2ea4bc45b26c16d"
+    }
+  ],
+  "historical_review_unchanged_sha256": "8177bdfab37b146fc02f375f58bf38c008e4a5c1b7ffb3ad76386e194202c261",
+  "historical_results_unchanged_sha256": "647d66130ea1517eea0a5fda004e702dcc3601af91d30338377525e53f4a9af7",
+  "kernel_sha256": "80aeae22f7d0a488779e5920a9093519ce05329d82e9361b72ae6f080e4d3225",
+  "CPU_parity": {
+    "atol": 0.000001,
+    "checks": 4890,
+    "max_abs_error": 1.6902512500749367e-7,
+    "rtol": 0.000001,
+    "status": "PASS"
+  },
+  "storage": {
+    "Y": "torch.float32 -> NumPy float32, no conversion",
+    "GT": "torch.float32 -> NumPy float32, no conversion",
+    "note": "Forward autocast CUDA/BF16; captured world coordinates are native FP32 in all 695 records, not assumed BF16."
+  },
+  "GPU_export_return_status": "EXPORTED_NOT_YET_CPU_CERTIFIED",
+  "CPU_audit_pid": 1029037,
+  "CPU_audit_environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "nice": 10
+  },
+  "CPU_audit_command": [
+    "../.conda/rsjg/bin/python",
+    "-B",
+    "tools/jdv2_audit_stage_a_bank.py",
+    "--manifest",
+    "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks/canonical_a_recovered_20261003_aa7022e_seed2035_2039/BANK_MANIFEST.json",
+    "--manifest-sha256",
+    "ac6cd236d1f3aa1828dfe2548abe3a094ee7989dca1a7720d76771a872853ed1",
+    "--output",
+    "outputs/joint_dependency_v2/eth/joint_dependency_v2/audits/canonical_stage_a_bank_pairing_20261003_aa7022e"
+  ],
+  "CPU_audit_completed_at": "2026-10-03T20:12:03.335405294+08:00",
+  "results_sha256": "0061d510cd0e047d7e12e5d97e729c0f63a7671c73514d6df3b3746f3e098367",
+  "detail_validation": {
+    "status": "PASS",
+    "authenticated_detail_npz_count": 695,
+    "master_seeds_per_arm": 100,
+    "marginal_scene_metric_max_abs_error": 0,
+    "all_common_metrics_max_abs_error": 5.551115123125783e-17
+  },
+  "negative_controls": {
+    "negative_controls": "PASS",
+    "global_rng_unchanged": true,
+    "exact_inverse_bytes_all_pass": true,
+    "max_common_or_N1_abs_error": 5.551115123125783e-17,
+    "original_tied_records": 0,
+    "max_original_tie_count": 1,
+    "common_first_index_tie_changes": 0,
+    "independent_mean_tie_rate": 0,
+    "partial_mask_RME_omitted_records": 0,
+    "master_count": 100,
+    "scene_seed_replicates_per_arm": 69500
+  },
+  "final_gpu_compute_processes": [],
+  "final_resource_observed_at": "2026-10-03T20:13:48+08:00"
+}

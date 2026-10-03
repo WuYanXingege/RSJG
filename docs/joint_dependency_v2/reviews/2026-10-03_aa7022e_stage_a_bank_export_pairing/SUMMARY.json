@@ -1,0 +1,785 @@
+{
+  "status": "COMPLETE",
+  "coverage": {
+    "inference_seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "scene_seed_records": 695,
+    "unique_windows": 139,
+    "windows_per_seed": 139
+  },
+  "CPU_parity": {
+    "atol": 0.000001,
+    "checks": 4890,
+    "max_abs_error": 1.6902512500749367e-7,
+    "rtol": 0.000001,
+    "status": "PASS"
+  },
+  "bank_manifest_sha256": "ac6cd236d1f3aa1828dfe2548abe3a094ee7989dca1a7720d76771a872853ed1",
+  "bank_export_source_commit": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+  "kernel_sha256": "80aeae22f7d0a488779e5920a9093519ce05329d82e9361b72ae6f080e4d3225",
+  "epsilon_joint": null,
+  "uncertainty": {
+    "confidence_interval": null,
+    "reason": "Descriptive per-sequence effects only; no independence claim for overlapping windows or five inference seeds.",
+    "sequence_count": 1,
+    "unit": "raw source sequence, fixed before scoring"
+  },
+  "claim_boundary": "Current bank relative to specified random pairing null only; not pair-energy causality, held-out generalization, or five training repeats.",
+  "source_results_sha256": "0061d510cd0e047d7e12e5d97e729c0f63a7671c73514d6df3b3746f3e098367",
+  "summary_scope": "Compact scalar summary of RESULTS.json; independent_mean = original + mean_delta. Full replicate distributions and all strata remain in the unmodified original file.",
+  "pooled_descriptive": {
+    "scene_seed_records": 695,
+    "valid_agent_instances": 1840,
+    "metrics": {
+      "JADE": {
+        "original": 0.4131845637175352,
+        "common_mean_delta": 0,
+        "independent_mean_delta": 0.03391811925732022,
+        "independent_mean": 0.44710268297485545,
+        "independent_delta_quantiles_05_50_95": [
+          0.029744137947149817,
+          0.033999601859099365,
+          0.03807444691789176
+        ],
+        "original_empirical_cdf_le": 0
+      },
+      "JFDE": {
+        "original": 0.7019076491966536,
+        "common_mean_delta": -6.661338147750939e-16,
+        "independent_mean_delta": 0.0774227560742364,
+        "independent_mean": 0.77933040527089,
+        "independent_delta_quantiles_05_50_95": [
+          0.06850573327431811,
+          0.07710748995172084,
+          0.08737902751244091
+        ],
+        "original_empirical_cdf_le": 0
+      },
+      "JMM_CRJADE_exact_ties_max": {
+        "original": 0.03438734726504511,
+        "common_mean_delta": -6.938893903907228e-18,
+        "independent_mean_delta": 0.004314028776978406,
+        "independent_mean": 0.03870137604202352,
+        "independent_delta_quantiles_05_50_95": [
+          -0.0022259335388831805,
+          0.004077595066803694,
+          0.01175362567089184
+        ],
+        "original_empirical_cdf_le": 0.18
+      },
+      "JMM_CRJADE_exact_ties_mean": {
+        "original": 0.03438734726504511,
+        "common_mean_delta": -6.938893903907228e-18,
+        "independent_mean_delta": 0.004314028776978406,
+        "independent_mean": 0.03870137604202352,
+        "independent_delta_quantiles_05_50_95": [
+          -0.0022259335388831805,
+          0.004077595066803694,
+          0.01175362567089184
+        ],
+        "original_empirical_cdf_le": 0.18
+      },
+      "JMM_CRJADE_exact_ties_min": {
+        "original": 0.03438734726504511,
+        "common_mean_delta": -6.938893903907228e-18,
+        "independent_mean_delta": 0.004314028776978406,
+        "independent_mean": 0.03870137604202352,
+        "independent_delta_quantiles_05_50_95": [
+          -0.0022259335388831805,
+          0.004077595066803694,
+          0.01175362567089184
+        ],
+        "original_empirical_cdf_le": 0.18
+      },
+      "JMM_CRJADE_first_index_diagnostic": {
+        "original": 0.03438734726504511,
+        "common_mean_delta": -6.938893903907228e-18,
+        "independent_mean_delta": 0.004314028776978406,
+        "independent_mean": 0.03870137604202352,
+        "independent_delta_quantiles_05_50_95": [
+          -0.0022259335388831805,
+          0.004077595066803694,
+          0.01175362567089184
+        ],
+        "original_empirical_cdf_le": 0.18
+      },
+      "JMM_CRmean_diagnostic": {
+        "original": 0.03551253283087816,
+        "common_mean_delta": 6.245004513516506e-17,
+        "independent_mean_delta": 0.006056426002055547,
+        "independent_mean": 0.041568958832933704,
+        "independent_delta_quantiles_05_50_95": [
+          0.004385994061893406,
+          0.006011305241521103,
+          0.0078985511590728
+        ],
+        "original_empirical_cdf_le": 0
+      },
+      "RME_legacy_full_mask": {
+        "original": 0.2979073992195341,
+        "common_mean_delta": 5.551115123125783e-17,
+        "independent_mean_delta": 0.06750996044569385,
+        "independent_mean": 0.3654173596652279,
+        "independent_delta_quantiles_05_50_95": [
+          0.06167473677438238,
+          0.06742190799854092,
+          0.07339827018217689
+        ],
+        "original_empirical_cdf_le": 0
+      },
+      "minADE": {
+        "original": 0.2782006117693399,
+        "common_mean_delta": 5.551115123125783e-17,
+        "independent_mean_delta": 5.551115123125783e-17,
+        "independent_mean": 0.27820061176933997,
+        "independent_delta_quantiles_05_50_95": [
+          5.551115123125783e-17,
+          5.551115123125783e-17,
+          5.551115123125783e-17
+        ],
+        "original_empirical_cdf_le": 0
+      },
+      "minFDE": {
+        "original": 0.3862152699589975,
+        "common_mean_delta": -3.3306690738754696e-16,
+        "independent_mean_delta": -3.3306690738754696e-16,
+        "independent_mean": 0.3862152699589972,
+        "independent_delta_quantiles_05_50_95": [
+          -3.3306690738754696e-16,
+          -3.3306690738754696e-16,
+          -3.3306690738754696e-16
+        ],
+        "original_empirical_cdf_le": 1
+      }
+    }
+  },
+  "per_seed": {
+    "2035": {
+      "scene_seed_records": 139,
+      "valid_agent_instances": 368,
+      "metrics": {
+        "JADE": {
+          "original": 0.42119751836071706,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.029870666379205834,
+          "independent_mean": 0.4510681847399229,
+          "independent_delta_quantiles_05_50_95": [
+            0.01920020020880375,
+            0.030233802922227798,
+            0.039592524173628005
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.6937089031959187,
+          "common_mean_delta": -2.220446049250313e-16,
+          "independent_mean_delta": 0.08214510635745437,
+          "independent_mean": 0.775854009553373,
+          "independent_delta_quantiles_05_50_95": [
+            0.055426522404464204,
+            0.08460356464221352,
+            0.10166945023971354
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0.04624300559552358,
+          "common_mean_delta": 6.938893903907228e-18,
+          "independent_mean_delta": -0.004583847207947923,
+          "independent_mean": 0.041659158387575654,
+          "independent_delta_quantiles_05_50_95": [
+            -0.023672776064862393,
+            -0.004125271211602142,
+            0.012204664839556928
+          ],
+          "original_empirical_cdf_le": 0.64
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.03989979445015416,
+          "common_mean_delta": -6.938893903907228e-18,
+          "independent_mean_delta": 0.0034669021925316846,
+          "independent_mean": 0.043366696642685845,
+          "independent_delta_quantiles_05_50_95": [
+            0.00017020669178942425,
+            0.0032542537398652475,
+            0.0072621117391800695
+          ],
+          "original_empirical_cdf_le": 0.05
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.2969509088641548,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.06933651087289645,
+          "independent_mean": 0.36628741973705126,
+          "independent_delta_quantiles_05_50_95": [
+            0.054128741880756934,
+            0.06973403288630622,
+            0.08549802531742501
+          ],
+          "original_empirical_cdf_le": 0
+        }
+      }
+    },
+    "2036": {
+      "scene_seed_records": 139,
+      "valid_agent_instances": 368,
+      "metrics": {
+        "JADE": {
+          "original": 0.4064167176651732,
+          "common_mean_delta": 1.1102230246251565e-16,
+          "independent_mean_delta": 0.03843002917378299,
+          "independent_mean": 0.4448467468389562,
+          "independent_delta_quantiles_05_50_95": [
+            0.029241114904619666,
+            0.039097842727895626,
+            0.0484512704389431
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.6910584591976177,
+          "common_mean_delta": 4.440892098500626e-16,
+          "independent_mean_delta": 0.090423631066307,
+          "independent_mean": 0.7814820902639247,
+          "independent_delta_quantiles_05_50_95": [
+            0.06471753402153727,
+            0.09162801795932723,
+            0.11020828147664508
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0.023061550759392483,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.0143017871417152,
+          "independent_mean": 0.037363337901107685,
+          "independent_delta_quantiles_05_50_95": [
+            -0.003551159072741805,
+            0.013116649537512851,
+            0.03426258992805756
+          ],
+          "original_empirical_cdf_le": 0.08
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.03300588100947813,
+          "common_mean_delta": -1.3877787807814457e-17,
+          "independent_mean_delta": 0.008714601176201892,
+          "independent_mean": 0.041720482185680016,
+          "independent_delta_quantiles_05_50_95": [
+            0.005338821799703099,
+            0.008505909558067834,
+            0.012543593696471395
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.29041799624423115,
+          "common_mean_delta": 1.1102230246251565e-16,
+          "independent_mean_delta": 0.07477068575544939,
+          "independent_mean": 0.3651886819996805,
+          "independent_delta_quantiles_05_50_95": [
+            0.06521161095379552,
+            0.07468090953419099,
+            0.08683792533251153
+          ],
+          "original_empirical_cdf_le": 0
+        }
+      }
+    },
+    "2037": {
+      "scene_seed_records": 139,
+      "valid_agent_instances": 368,
+      "metrics": {
+        "JADE": {
+          "original": 0.4123259644226135,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.03481240745287475,
+          "independent_mean": 0.4471383718754882,
+          "independent_delta_quantiles_05_50_95": [
+            0.025638163641979406,
+            0.03447091758404722,
+            0.04415285244663792
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.7139921662390323,
+          "common_mean_delta": 2.220446049250313e-16,
+          "independent_mean_delta": 0.07146460065888152,
+          "independent_mean": 0.7854567668979138,
+          "independent_delta_quantiles_05_50_95": [
+            0.04844874079850549,
+            0.07017095250093003,
+            0.0936111018464661
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0.04142400365421948,
+          "common_mean_delta": 0,
+          "independent_mean_delta": -0.0019990578965399077,
+          "independent_mean": 0.03942494575767957,
+          "independent_delta_quantiles_05_50_95": [
+            -0.018518328194587187,
+            -0.002536542194815569,
+            0.013902592211944719
+          ],
+          "original_empirical_cdf_le": 0.58
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.03759849263446386,
+          "common_mean_delta": -6.938893903907228e-18,
+          "independent_mean_delta": 0.003472175117049205,
+          "independent_mean": 0.041070667751513065,
+          "independent_delta_quantiles_05_50_95": [
+            -0.00037090327737812623,
+            0.0035816346922461946,
+            0.007523895169578612
+          ],
+          "original_empirical_cdf_le": 0.08
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.30375974361615876,
+          "common_mean_delta": 5.551115123125783e-17,
+          "independent_mean_delta": 0.059961609963775094,
+          "independent_mean": 0.36372135357993385,
+          "independent_delta_quantiles_05_50_95": [
+            0.044050865646752056,
+            0.0593029373017267,
+            0.07477161849762909
+          ],
+          "original_empirical_cdf_le": 0
+        }
+      }
+    },
+    "2038": {
+      "scene_seed_records": 139,
+      "valid_agent_instances": 368,
+      "metrics": {
+        "JADE": {
+          "original": 0.41296135057528593,
+          "common_mean_delta": -1.1102230246251565e-16,
+          "independent_mean_delta": 0.033062146478865025,
+          "independent_mean": 0.44602349705415095,
+          "independent_delta_quantiles_05_50_95": [
+            0.023678153796386717,
+            0.03322811278360868,
+            0.04247214591338801
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.708027499558225,
+          "common_mean_delta": 3.3306690738754696e-16,
+          "independent_mean_delta": 0.07035657163140234,
+          "independent_mean": 0.7783840711896273,
+          "independent_delta_quantiles_05_50_95": [
+            0.04918149629542662,
+            0.06965488240421092,
+            0.09512384181281441
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0.023141486810551556,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.012871474249172095,
+          "independent_mean": 0.03601296105972365,
+          "independent_delta_quantiles_05_50_95": [
+            -0.00238509192645883,
+            0.011819116135662899,
+            0.029535514445586386
+          ],
+          "original_empirical_cdf_le": 0.09
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.034117848578280235,
+          "common_mean_delta": -2.0816681711721685e-17,
+          "independent_mean_delta": 0.006486782002969042,
+          "independent_mean": 0.040604630581249274,
+          "independent_delta_quantiles_05_50_95": [
+            0.0035049460431654635,
+            0.006170706292109158,
+            0.010027827737809756
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.3010162530847968,
+          "common_mean_delta": -5.551115123125783e-17,
+          "independent_mean_delta": 0.063898366727573,
+          "independent_mean": 0.3649146198123698,
+          "independent_delta_quantiles_05_50_95": [
+            0.050553934860348995,
+            0.06443014387550225,
+            0.07596862849736569
+          ],
+          "original_empirical_cdf_le": 0
+        }
+      }
+    },
+    "2039": {
+      "scene_seed_records": 139,
+      "valid_agent_instances": 368,
+      "metrics": {
+        "JADE": {
+          "original": 0.4130212675638867,
+          "common_mean_delta": -1.1102230246251565e-16,
+          "independent_mean_delta": 0.03341534680187137,
+          "independent_mean": 0.44643661436575804,
+          "independent_delta_quantiles_05_50_95": [
+            0.02185486865418059,
+            0.03349050793305905,
+            0.043206413253136844
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.7027512177924736,
+          "common_mean_delta": -1.1102230246251565e-16,
+          "independent_mean_delta": 0.07272387065714031,
+          "independent_mean": 0.775475088449614,
+          "independent_delta_quantiles_05_50_95": [
+            0.050765832768603705,
+            0.07271368510518672,
+            0.09395278501862281
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0.038066689505538424,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.000979787598492637,
+          "independent_mean": 0.039046477104031065,
+          "independent_delta_quantiles_05_50_95": [
+            -0.013637090327737807,
+            -0.00022696128811236504,
+            0.019566346922462032
+          ],
+          "original_empirical_cdf_le": 0.51
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.03294064748201439,
+          "common_mean_delta": -2.7755575615628914e-17,
+          "independent_mean_delta": 0.008141669521525624,
+          "independent_mean": 0.041082317003540016,
+          "independent_delta_quantiles_05_50_95": [
+            0.004165253511476522,
+            0.008282302729245159,
+            0.011706905903848342
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.29739209428832875,
+          "common_mean_delta": -5.551115123125783e-17,
+          "independent_mean_delta": 0.06958262890877552,
+          "independent_mean": 0.3669747231971043,
+          "independent_delta_quantiles_05_50_95": [
+            0.05481965771775086,
+            0.06956076111996326,
+            0.08300830032376891
+          ],
+          "original_empirical_cdf_le": 0
+        }
+      }
+    }
+  },
+  "activity": {
+    "all-active": {
+      "scene_seed_records": 310,
+      "valid_agent_instances": 1155,
+      "metrics": {
+        "JADE": {
+          "original": 0.5279194368699008,
+          "common_mean_delta": -2.220446049250313e-16,
+          "independent_mean_delta": 0.07580129641049375,
+          "independent_mean": 0.6037207332803946,
+          "independent_delta_quantiles_05_50_95": [
+            0.06634837738201241,
+            0.0759470568782658,
+            0.0847474009924425
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.9531581830218802,
+          "common_mean_delta": 5.551115123125783e-16,
+          "independent_mean_delta": 0.17438165987330412,
+          "independent_mean": 1.1275398428951844,
+          "independent_delta_quantiles_05_50_95": [
+            0.15477901017789827,
+            0.17496092057437007,
+            0.193197183236936
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0.0770942140296979,
+          "common_mean_delta": -1.3877787807814457e-17,
+          "independent_mean_delta": 0.009327688172042986,
+          "independent_mean": 0.0864219022017409,
+          "independent_delta_quantiles_05_50_95": [
+            -0.004990399385560679,
+            0.008072196620583685,
+            0.026350870455709136
+          ],
+          "original_empirical_cdf_le": 0.18
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.07617594726062468,
+          "common_mean_delta": 6.938893903907228e-17,
+          "independent_mean_delta": 0.013712524961597573,
+          "independent_mean": 0.08988847222222225,
+          "independent_delta_quantiles_05_50_95": [
+            0.009775502432155678,
+            0.013534562211981564,
+            0.017327124935995936
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.5470352627346818,
+          "common_mean_delta": 2.220446049250313e-16,
+          "independent_mean_delta": 0.1477258975473213,
+          "independent_mean": 0.6947611602820032,
+          "independent_delta_quantiles_05_50_95": [
+            0.1360943588032555,
+            0.14682917973638304,
+            0.1604497580940635
+          ],
+          "original_empirical_cdf_le": 0
+        }
+      }
+    },
+    "mixed": {
+      "scene_seed_records": 150,
+      "valid_agent_instances": 450,
+      "metrics": {
+        "JADE": {
+          "original": 0.2595338807794579,
+          "common_mean_delta": -1.1102230246251565e-16,
+          "independent_mean_delta": 0.0004979399772288973,
+          "independent_mean": 0.2600318207566868,
+          "independent_delta_quantiles_05_50_95": [
+            -0.00402141554004552,
+            0.0006678297014302004,
+            0.005182942661868743
+          ],
+          "original_empirical_cdf_le": 0.4
+        },
+        "JFDE": {
+          "original": 0.46651872957971535,
+          "common_mean_delta": 0,
+          "independent_mean_delta": -0.0016633272608632505,
+          "independent_mean": 0.4648554023188521,
+          "independent_delta_quantiles_05_50_95": [
+            -0.014119372213941939,
+            -0.0006843244154298711,
+            0.008624694806984589
+          ],
+          "original_empirical_cdf_le": 0.57
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.0007111111111111111,
+          "independent_mean": 0.0007111111111111111,
+          "independent_delta_quantiles_05_50_95": [
+            0,
+            0,
+            0.0044444444444444444
+          ],
+          "original_empirical_cdf_le": 0.84
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.007111111111111111,
+          "common_mean_delta": 0,
+          "independent_mean_delta": -0.00027777777777777686,
+          "independent_mean": 0.006833333333333334,
+          "independent_delta_quantiles_05_50_95": [
+            -0.002,
+            -0.0002222222222222226,
+            0.0017888888888888924
+          ],
+          "original_empirical_cdf_le": 0.68
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.24976474006549845,
+          "common_mean_delta": 8.326672684688674e-17,
+          "independent_mean_delta": 0.0074959618005845195,
+          "independent_mean": 0.25726070186608296,
+          "independent_delta_quantiles_05_50_95": [
+            0.0008524192731074965,
+            0.006831098946904202,
+            0.014865633250060864
+          ],
+          "original_empirical_cdf_le": 0.03
+        }
+      }
+    },
+    "singleton": {
+      "scene_seed_records": 235,
+      "valid_agent_instances": 235,
+      "metrics": {
+        "JADE": {
+          "original": 0.359907081859996,
+          "common_mean_delta": 5.551115123125783e-17,
+          "independent_mean_delta": 5.551115123125783e-17,
+          "independent_mean": 0.35990708185999604,
+          "independent_delta_quantiles_05_50_95": [
+            5.551115123125783e-17,
+            5.551115123125783e-17,
+            5.551115123125783e-17
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.5207190213529105,
+          "common_mean_delta": 2.220446049250313e-16,
+          "independent_mean_delta": 2.220446049250313e-16,
+          "independent_mean": 0.5207190213529107,
+          "independent_delta_quantiles_05_50_95": [
+            2.220446049250313e-16,
+            2.220446049250313e-16,
+            2.220446049250313e-16
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0,
+          "independent_mean": 0,
+          "independent_delta_quantiles_05_50_95": [
+            0,
+            0,
+            0
+          ],
+          "original_empirical_cdf_le": 1
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0,
+          "independent_mean": 0,
+          "independent_delta_quantiles_05_50_95": [
+            0,
+            0,
+            0
+          ],
+          "original_empirical_cdf_le": 1
+        },
+        "RME_legacy_full_mask": {
+          "original": 0,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0,
+          "independent_mean": 0,
+          "independent_delta_quantiles_05_50_95": [
+            0,
+            0,
+            0
+          ],
+          "original_empirical_cdf_le": 1
+        }
+      }
+    }
+  },
+  "independent_sequence_summaries": {
+    "eth5/eth/val/biwi_eth.txt": {
+      "scene_seed_records": 695,
+      "valid_agent_instances": 1840,
+      "metrics": {
+        "JADE": {
+          "original": 0.4131845637175352,
+          "common_mean_delta": 0,
+          "independent_mean_delta": 0.03391811925732022,
+          "independent_mean": 0.44710268297485545,
+          "independent_delta_quantiles_05_50_95": [
+            0.029744137947149817,
+            0.033999601859099365,
+            0.03807444691789176
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JFDE": {
+          "original": 0.7019076491966536,
+          "common_mean_delta": -6.661338147750939e-16,
+          "independent_mean_delta": 0.0774227560742364,
+          "independent_mean": 0.77933040527089,
+          "independent_delta_quantiles_05_50_95": [
+            0.06850573327431811,
+            0.07710748995172084,
+            0.08737902751244091
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "JMM_CRJADE_first_index_diagnostic": {
+          "original": 0.03438734726504511,
+          "common_mean_delta": -6.938893903907228e-18,
+          "independent_mean_delta": 0.004314028776978406,
+          "independent_mean": 0.03870137604202352,
+          "independent_delta_quantiles_05_50_95": [
+            -0.0022259335388831805,
+            0.004077595066803694,
+            0.01175362567089184
+          ],
+          "original_empirical_cdf_le": 0.18
+        },
+        "JMM_CRmean_diagnostic": {
+          "original": 0.03551253283087816,
+          "common_mean_delta": 6.245004513516506e-17,
+          "independent_mean_delta": 0.006056426002055547,
+          "independent_mean": 0.041568958832933704,
+          "independent_delta_quantiles_05_50_95": [
+            0.004385994061893406,
+            0.006011305241521103,
+            0.0078985511590728
+          ],
+          "original_empirical_cdf_le": 0
+        },
+        "RME_legacy_full_mask": {
+          "original": 0.2979073992195341,
+          "common_mean_delta": 5.551115123125783e-17,
+          "independent_mean_delta": 0.06750996044569385,
+          "independent_mean": 0.3654173596652279,
+          "independent_delta_quantiles_05_50_95": [
+            0.06167473677438238,
+            0.06742190799854092,
+            0.07339827018217689
+          ],
+          "original_empirical_cdf_le": 0
+        }
+      }
+    }
+  },
+  "controls": {
+    "negative_controls": "PASS",
+    "global_rng_unchanged": true,
+    "exact_inverse_bytes_all_pass": true,
+    "max_common_or_N1_abs_error": 5.551115123125783e-17,
+    "original_tied_records": 0,
+    "max_original_tie_count": 1,
+    "common_first_index_tie_changes": 0,
+    "independent_mean_tie_rate": 0,
+    "partial_mask_RME_omitted_records": 0,
+    "master_count": 100,
+    "scene_seed_replicates_per_arm": 69500
+  },
+  "generation_source_commit_by_seed": {
+    "2035": "e4c36036be986d04f9a14a43ff73582ba85ac564",
+    "2036": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+    "2037": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+    "2038": "aa7022ef8acd8fa500b4959588765a21e9daa004",
+    "2039": "aa7022ef8acd8fa500b4959588765a21e9daa004"
+  },
+  "cross_process_restart_bitwise_identical": false,
+  "restart_boundary_record": "RESTART_PREFIX_COMPARISON.json",
+  "no_real_multiagent_E0_windows": true,
+  "aggregate_roundoff_note": "Marginal/common aggregate deltas around 1e-16 are reduction roundoff; exact-comparison ECDF values are not p-values and must not be interpreted for invariant controls."
+}
