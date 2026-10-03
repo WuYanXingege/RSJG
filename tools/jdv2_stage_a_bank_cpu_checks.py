@@ -192,6 +192,24 @@ def main():
                 SimpleNamespace(gpu_uuid="GPU-test", output=str(root / "must_not_exist"))), "BLOCKED_RESOURCE_UNAVAILABLE")
             forbidden.assert_not_called()
             assert not (root / "must_not_exist").exists()
+        desktop = {"devices": [["0", "GPU-test", "fixture", "16000", "800", "28"]],
+                   "compute_processes": [],
+                   "process_types": [{"gpu_uuid": "GPU-test", "pid": "1351", "type": "G", "executable": "Xorg"}]}
+        exporter.require_idle(desktop, "GPU-test", allow_desktop_graphics=True)
+        rejects("desktop_not_implicitly_authorized", lambda: exporter.require_idle(desktop, "GPU-test"))
+        rejects("desktop_optin_cannot_allow_compute", lambda: exporter.require_idle(
+            dict(desktop, compute_processes=busy["compute_processes"]), "GPU-test", allow_desktop_graphics=True))
+        for process_type, executable in [("C+G", "code"), ("C", "python"), ("G", "unknown-workload")]:
+            bad = dict(desktop, process_types=[{"gpu_uuid": "GPU-test", "pid": "999",
+                       "type": process_type, "executable": executable}])
+            rejects("desktop_reject_" + process_type + "_" + executable,
+                    lambda: exporter.require_idle(bad, "GPU-test", allow_desktop_graphics=True))
+        rejects("desktop_no_type_evidence", lambda: exporter.require_idle(
+            {k: v for k, v in desktop.items() if k != "process_types"},
+            "GPU-test", allow_desktop_graphics=True))
+        xml = "<nvidia_smi_log><gpu><uuid>GPU-test</uuid><processes><process_info><pid>1</pid><type>G</type><process_name>/usr/bin/code --secret=not-for-archive</process_name><used_memory>20 MiB</used_memory></process_info></processes></gpu></nvidia_smi_log>"
+        assert exporter.process_types(xml)[0]["executable"] == "code"
+        assert "not-for-archive" not in str(exporter.process_types(xml))
         assert not torch.cuda.is_initialized()
     print(json.dumps({"status": "PASS", "scope": "SYNTHETIC_CPU_ONLY", "fixtures": results,
                       "negative_tests": rejected, "negative_test_count": len(rejected),

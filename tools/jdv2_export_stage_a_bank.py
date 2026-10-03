@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""One canonical A pass per seed. CUDA launches only on an unoccupied GPU UUID.
+"""One canonical A pass per seed. CUDA requires no other compute owners.
+Desktop-graphics coexistence is opt-in and must be explicitly authorized.
 
 preflight is metadata-only: no Torch/model import, no cache rebuilding.
 export refuses existing output directories; interrupted records remain immutable.
@@ -11,6 +12,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 
 sys.dont_write_bytecode = True
@@ -23,6 +25,21 @@ from tools.jdv2_stage_a_bank import (
 )
 import numpy as np
 
+DESKTOP_EXECUTABLES = {"Xorg", "gnome-shell", "gnome-control-center", "sunloginclient", "code", "chrome"}
+
+def process_types(xml_text):
+    """Keep executable names only; never archive GUI command-line tokens."""
+    root = ET.fromstring(xml_text)
+    rows = []
+    for gpu in root.findall("gpu"):
+        for process in gpu.findall("processes/process_info"):
+            name = process.findtext("process_name", "")
+            rows.append({"gpu_uuid": gpu.findtext("uuid"), "pid": process.findtext("pid"),
+                         "type": process.findtext("type"),
+                         "executable": Path(name.split()[0]).name if name.split() else "",
+                         "memory": process.findtext("used_memory")})
+    return rows
+
 def gpu_snapshot():
     def query(fields, kind):
         return subprocess.check_output(
@@ -30,17 +47,25 @@ def gpu_snapshot():
             text=True).strip().splitlines()
     return {"time_utc": datetime.now(timezone.utc).isoformat(),
             "devices": [x.split(", ") for x in query("index,uuid,name,memory.total,memory.used,utilization.gpu", "gpu")],
-            "compute_processes": [x.split(", ") for x in query("gpu_uuid,pid,process_name,used_memory", "compute-apps")]}
+            "compute_processes": [x.split(", ") for x in query("gpu_uuid,pid,process_name,used_memory", "compute-apps")],
+            "process_types": process_types(subprocess.check_output(["nvidia-smi", "-q", "-x"], text=True))}
 
-def require_idle(snapshot, uuid, allow_self=False):
+def require_idle(snapshot, uuid, allow_self=False, allow_desktop_graphics=False):
     devices = [r for r in snapshot["devices"] if r[1] == uuid]
     require(len(devices) == 1, "GPU UUID unavailable", "BLOCKED_RESOURCE_UNAVAILABLE")
     owners = [p for p in snapshot["compute_processes"] if p[0] == uuid
               and not (allow_self and p[1] == str(os.getpid()))]
     require(not owners, f"GPU {uuid} has live compute owners: {owners}",
             "BLOCKED_RESOURCE_UNAVAILABLE")
+    if allow_desktop_graphics:
+        require("process_types" in snapshot, "Missing GPU process-type evidence", "BLOCKED_RESOURCE_UNAVAILABLE")
+        others = [p for p in snapshot["process_types"] if p["gpu_uuid"] == uuid
+                  and not (allow_self and p["pid"] == str(os.getpid()))]
+        require(all(p["type"] == "G" and p["executable"] in DESKTOP_EXECUTABLES for p in others),
+                f"Non-desktop or compute GPU owner: {others}", "BLOCKED_RESOURCE_UNAVAILABLE")
     if not allow_self:
-        require(int(devices[0][4]) <= 1024 and int(devices[0][5]) <= 5,
+        require(int(devices[0][4]) <= 1024 and
+                (allow_desktop_graphics or int(devices[0][5]) <= 5),
                 "GPU not demonstrably idle", "BLOCKED_RESOURCE_UNAVAILABLE")
 
 def preflight(require_committed=True):
@@ -162,14 +187,16 @@ def capture(evaluator, prediction, auxiliary, inputs, sequence, mask, batch_id, 
 def export(args):
     # This gate precedes Torch import, output creation and all model setup.
     initial = gpu_snapshot()
-    require_idle(initial, args.gpu_uuid)
+    allow_desktop = bool(getattr(args, "allow_desktop_graphics", False))
+    require_idle(initial, args.gpu_uuid, allow_desktop_graphics=allow_desktop)
     os.environ["CUDA_VISIBLE_DEVICES"] = args.gpu_uuid
     provenance = preflight()
+    provenance["resource_policy"] = {"allow_desktop_graphics": allow_desktop, "other_compute_owners_allowed": False}
     output = Path(args.output).resolve()
     require(output.is_relative_to(REPO / "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks"),
             "Output must be a new directory under stage_a_banks", "BLOCKED_EXPORT_INPUT")
     require(not output.exists(), "Output exists; no automatic retry/resampling or overwrite", "BLOCKED_EXPORT_INPUT")
-    require_idle(gpu_snapshot(), args.gpu_uuid)
+    require_idle(gpu_snapshot(), args.gpu_uuid, allow_desktop_graphics=allow_desktop)
     output.mkdir(parents=True, exist_ok=False)
     write_json(output / "INCOMPLETE.json", {"status": "INCOMPLETE", "provenance": provenance,
                "protocol": PROTOCOL, "command": sys.argv, "resource_gate": initial,
@@ -203,11 +230,11 @@ def export(args):
         with torch.no_grad():
             for seed in SEEDS:
                 seed_records = []
-                require_idle(gpu_snapshot(), args.gpu_uuid, allow_self=True)
+                require_idle(gpu_snapshot(), args.gpu_uuid, allow_self=True, allow_desktop_graphics=allow_desktop)
                 with isolated_random_seed(seed, use_cuda=True):
                     for index, (batch_data, batch_id) in enumerate(evaluator.data_loaders["valid"]):
                         # Stop our own export if another compute owner appears.
-                        require_idle(gpu_snapshot(), args.gpu_uuid, allow_self=True)
+                        require_idle(gpu_snapshot(), args.gpu_uuid, allow_self=True, allow_desktop_graphics=allow_desktop)
                         inputs, sequence = net.prepare_inputs(batch_data, batch_id)
                         mask = compute_metric_mask(sequence)
                         net.jdv2_sampler.set_sampling_context(seed, index)
@@ -266,6 +293,8 @@ def main():
     parser.add_argument("command", choices=["preflight", "export"])
     parser.add_argument("--gpu-uuid")
     parser.add_argument("--output")
+    parser.add_argument("--allow-desktop-graphics", action="store_true",
+                        help="Explicitly authorized desktop-only coexistence; still rejects all other compute owners.")
     args = parser.parse_args()
     try:
         if args.command == "preflight":
