@@ -1,0 +1,58 @@
+{
+  "review_commit": "1f07e7a5b81374033377c5c057d5c6ab3673b02a",
+  "identity_source_commit": "d1a1382ae324b9096ac3a6d8de812ffbbb8d9780",
+  "review_date": "2026-10-03",
+  "script_path": "/tmp/rsjg-optimization-review-tD0ICc/checks.py",
+  "script_sha256": "4b9dd726d69c735a6a9694357bc05f3fccd6affc7be93f369f3c62265be0fa11",
+  "results": {
+    "scope": "static artifacts and synthetic CPU only; no model execution",
+    "artifacts": {
+      "postfix_bf16_results.json": {
+        "sha256": "3df9d0b8592c8fc448594b05cf7dee2ee534de66e8b4bf9b27ecebeda4625bb9",
+        "status": "CANONICAL_STAGE_A_LITERAL_IDENTITY_CONFIRMED"
+      },
+      "postfix_fp32_results.json": {
+        "sha256": "8796e60061e5c913763e0f3aedbbab94cbb992240eadc99f59337d2d0c1f0aec",
+        "status": "CANONICAL_STAGE_A_LITERAL_IDENTITY_CONFIRMED"
+      },
+      "postfix_paired_five_seed_results.json": {
+        "sha256": "4c1103cfd2bd923c93368d881e16de83c308cd9693087a25b1f5cc85014c39f6",
+        "status": "COMPLETE"
+      }
+    },
+    "summary_groups_recomputed": 63,
+    "gauge": {
+      "full_support_problems": 100,
+      "full_assignments": 2700,
+      "partial_support_problems": 20,
+      "partial_assignments": 240,
+      "arithmetic": "exact Fraction",
+      "identities": "PASS"
+    },
+    "pairing": {
+      "random_scenes": 60,
+      "N1_controls": 10,
+      "random_scenes_joint_metric_changed": 50,
+      "per_agent_marginal_exact": true,
+      "gather_inverse_exact": true,
+      "common_metric_max_abs": 2.220446049250313e-16,
+      "constructed_JADE_before_after": [
+        0,
+        5
+      ]
+    },
+    "crjade_tie_counterexample": {
+      "official_first_index_before": 1,
+      "after_common_reverse": 0,
+      "JADE_unchanged": true,
+      "meaning": "CRJADE needs stable world-ID tie handling or separate tie-set diagnostic"
+    },
+    "geometry6_formula": {
+      "random_cases": 100,
+      "stationary_cases": 1,
+      "max_symmetry_error": 5.273559366969494e-16,
+      "tolerance": 1e-12,
+      "scope": "formula only, no model-benefit claim"
+    }
+  }
+}
