@@ -1,0 +1,86 @@
+{
+  "schema": "rsjg-stage-a-bank-export-pairing-review-v1",
+  "status": "BLOCKED_RESOURCE_UNAVAILABLE",
+  "initial_source_commit": "5a0ae411f401fe77b9ec4f114d5c4bfa45109a4e",
+  "preparation_source_commit": "02d3fa2876e7a2dd663b9a43df934400cf0c1c99",
+  "actual_export_source_commit": null,
+  "archive_commit": null,
+  "archive_commit_note": "Containing Git commit and final fixed links.",
+  "preparation": {
+    "independent_exporter": "IMPLEMENTED_CPU_TESTED_NOT_GPU_EXECUTED",
+    "numeric_NPZ_loader": "IMPLEMENTED_SYNTHETIC_TESTED",
+    "provenance_gates": "IMPLEMENTED; metadata preflight and negative gates tested; real full-bank gate NOT_RUN",
+    "original_CPU_parity_gate": "IMPLEMENTED_SYNTHETIC_TESTED_1e-6",
+    "archived_kernel_reused": true,
+    "detailed_common_independent_adapter": "PASS_SYNTHETIC_EQUIVALENCE_TO_FROZEN_KERNEL",
+    "metadata_preflight": "PASS",
+    "source_files_content_equivalent_to_identity_commit": 88,
+    "implementation_commit_saved_before_any_GPU_execution": true
+  },
+  "CPU_validation": {
+    "status": "PASS",
+    "scope": "SYNTHETIC_CPU_ONLY",
+    "fixture_count": 7,
+    "permutation_masters_per_fixture": 100,
+    "negative_test_count": 28,
+    "capture_loader_CPU_parity_max_abs_error": 2.402860368455606e-7,
+    "negative_control_max_abs_error": 0,
+    "BF16_storage_exact_roundtrip": true,
+    "global_CPU_rng_unchanged": true,
+    "CUDA_initialized": false,
+    "real_A_scene_count": 0,
+    "detail": "CPU_CHECKS.json",
+    "note": "Seven synthetic capture->NPZ->loader fixtures; new detailed adapter cross-checked against frozen kernel. Not real A bank or model benefit."
+  },
+  "real_audit": {
+    "actual_unique_windows": 0,
+    "actual_scene_seed_records": 0,
+    "actual_windows_per_seed": {},
+    "available_inference_seeds": [],
+    "missing_inference_seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "forward_count": 0,
+    "bank_path": null,
+    "bank_sha256": null,
+    "CPU_parity": null,
+    "negative_controls": null,
+    "original_metrics": null,
+    "common_metrics": null,
+    "independent_metrics": null,
+    "pairing_effect": null,
+    "tie_rate": null,
+    "uncertainty": null,
+    "epsilon_joint": null
+  },
+  "resource_blocker": {
+    "device_count": 1,
+    "SDD_main_pid": 962176,
+    "available_idle_GPUs": [],
+    "snapshot": "2026-10-03T19:18:00+08:00",
+    "policy": "No export on GPU occupied by SDD."
+  },
+  "limitations": [
+    "No real bank exported; cannot establish pairing benefit.",
+    "Real strict checkpoint load/full production cache validation deferred, not falsely marked PASS.",
+    "CUDA/BF16 forward and CUDA RNG invariance remain unexecuted.",
+    "CPU parity tolerance remains atol=rtol=1e-6; common controls 1e-12; no post-hoc relaxation.",
+    "One raw sequence, if observed, is insufficient for generalization CI; adapter reports per-sequence descriptive distributions.",
+    "Partial-mask RME omitted; edge-context relation embeddings retained only as original-world context, invalid after independent pairing.",
+    "No automatic mid-seed resume; interrupted keys remain recorded, and output directories cannot be reused."
+  ],
+  "preservation": {
+    "SDD_untouched": true,
+    "src_unchanged": true,
+    "frozen_configs_unchanged": true,
+    "weights_unchanged": true,
+    "sampler_unchanged": true,
+    "cache_untouched": true,
+    "historical_results_unchanged": true
+  },
+  "only_next_action": "On a freshly verified idle GPU, run the documented canonical-A 2035–2039 export, then CPU certification and pairing audit; no structure/energy/Stage-B/training expansion."
+}

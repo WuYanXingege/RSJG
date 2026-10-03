@@ -1,0 +1,77 @@
+{
+  "schema": "rsjg-stage-a-bank-execution-v1",
+  "preparation_commit": "02d3fa2876e7a2dd663b9a43df934400cf0c1c99",
+  "run_environment": {
+    "CUDA_VISIBLE_DEVICES": "",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1",
+    "nice": 10,
+    "CPU_processes": 1
+  },
+  "cpu_checks_command": "nice -n 10 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 ../.conda/rsjg/bin/python -B tools/jdv2_stage_a_bank_cpu_checks.py",
+  "metadata_preflight_command": "nice -n 10 env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 ../.conda/rsjg/bin/python -B tools/jdv2_export_stage_a_bank.py preflight",
+  "export_command_executed": false,
+  "model_constructed": false,
+  "checkpoint_deserialized": false,
+  "training_started": false,
+  "source_cache_content_validation_executed": false,
+  "cache_rebuilt_or_modified": false,
+  "SDD_process_or_workers_modified": false,
+  "discovery": {
+    "scope": "Known ETH output root and repository filenames, depth <=5 from specified roots; no repeated whole-disk/previous 66847-path inventory.",
+    "accepted_existing_banks": [],
+    "new_npz_or_bank_manifest_candidates": [],
+    "external_bank_location_supplied": false,
+    "limitation": "Bounded absence only; no assertion about unspecified external storage."
+  },
+  "readback": {
+    "prior_review_sha256": "8177bdfab37b146fc02f375f58bf38c008e4a5c1b7ffb3ad76386e194202c261",
+    "prior_results_sha256": "647d66130ea1517eea0a5fda004e702dcc3601af91d30338377525e53f4a9af7",
+    "historical_BF16_sha256": "3df9d0b8592c8fc448594b05cf7dee2ee534de66e8b4bf9b27ecebeda4625bb9",
+    "historical_FP32_sha256": "8796e60061e5c913763e0f3aedbbab94cbb992240eadc99f59337d2d0c1f0aec",
+    "historical_paired_five_seed_sha256": "4c1103cfd2bd923c93368d881e16de83c308cd9693087a25b1f5cc85014c39f6",
+    "all_match": true,
+    "old_reports_modified": false,
+    "A_B_C_or_C_D_rerun": false
+  },
+  "resource_snapshot": {
+    "time_utc": "2026-10-03T11:18:00.520285+00:00",
+    "devices": [
+      [
+        "0",
+        "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+        "NVIDIA GeForce RTX 5070 Ti",
+        "16303",
+        "8888",
+        "6"
+      ]
+    ],
+    "compute_processes": [
+      [
+        "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+        "962176",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "8192"
+      ]
+    ]
+  },
+  "SDD_process_snapshot": {
+    "time": "2026-10-03T19:18:04+08:00",
+    "main_pid": 962176,
+    "parent_pid": 962146,
+    "stage": "goal_pretrain",
+    "run_name": "gdts_paper_sdd_goal_pretrain_seed2025",
+    "num_workers": 1,
+    "precision": "FP32",
+    "read_only": true
+  },
+  "static_validation": {
+    "AST": "PASS",
+    "git_diff_check": "PASS",
+    "src_config_diff_since_5a0ae41": "EMPTY",
+    "applicable_AGENTS": "None found in ancestors/repo/scoped tools/docs directories"
+  },
+  "next_run_safety": "Recheck live GPU owners; no background watcher or automatic job launch registered. Resource gate refuses before model setup. No SDD manipulation.",
+  "interruption_policy": "New directories only. Atomic no-clobber NPZ/JSON publication. FAILED.json records completed keys; no automatic resampling/resume."
+}

@@ -6,6 +6,7 @@
 
 | 日期 | 审查源码 | 报告 | 检查记录 | 核心决策 |
 |---|---|---|---|---|
+| 2026-10-03 | `02d3fa2876e7a2dd663b9a43df934400cf0c1c99` | [Stage-A bank 导出准备与配对审计](2026-10-03_02d3fa2_stage_a_bank_export_pairing/REVIEW.md) | [RESULTS](2026-10-03_02d3fa2_stage_a_bank_export_pairing/RESULTS.json) · [BANK_MANIFEST](2026-10-03_02d3fa2_stage_a_bank_export_pairing/BANK_MANIFEST.json) | BLOCKED_RESOURCE_UNAVAILABLE；独立工具与7类CPU集成验收通过，28项保护测试通过；SDD占用唯一GPU，真实bank未导出 |
 | 2026-10-03 | `6258723915f3842ee974aea6f8744cd685d5f047` | [固定完整轨迹配对审计](2026-10-03_6258723_pairing_audit/REVIEW.md) | [RESULTS](2026-10-03_6258723_pairing_audit/RESULTS.json) · [INPUT_MANIFEST](2026-10-03_6258723_pairing_audit/INPUT_MANIFEST.json) | BLOCKED_MISSING_TRAJECTORY_BANK；7类新CPU合成验收通过，真实A审计0 scenes；唯一下一步补齐认证bank |
 | 2026-10-03 | `1f07e7a5b81374033377c5c057d5c6ab3673b02a` | [优化必要性与科学贡献审查](2026-10-03_1f07e7a/REVIEW.md) | [CPU 与 artifact 复核 JSON](2026-10-03_1f07e7a/checks.json) | 不改结构、不重训；优先固定完整 trajectory bank 的 marginal-preserving 配对破坏审计 |
 

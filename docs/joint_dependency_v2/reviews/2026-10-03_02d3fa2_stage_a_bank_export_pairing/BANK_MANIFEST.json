@@ -1,0 +1,67 @@
+{
+  "schema": "rsjg-stage-a-bank-preparation-v1",
+  "status": "BLOCKED_RESOURCE_UNAVAILABLE",
+  "preparation_source_commit": "02d3fa2876e7a2dd663b9a43df934400cf0c1c99",
+  "initial_source_commit": "5a0ae411f401fe77b9ec4f114d5c4bfa45109a4e",
+  "export_source_commit": null,
+  "archive_commit": null,
+  "archive_commit_note": "Resolved by the containing Git commit; not a self-reference.",
+  "bank_exists": false,
+  "bank_path": null,
+  "bank_manifest_sha256": null,
+  "records": [],
+  "available_inference_seeds": [],
+  "missing_inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "actual_unique_windows": 0,
+  "actual_scene_seed_records": 0,
+  "actual_windows_per_seed": {},
+  "planned_only": {
+    "relative_bank_directory": "outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_a_banks/canonical_a_02d3fa2_seed2035_2039",
+    "source_commit_note": "Directory names identify tool preparation only; exporter records actual HEAD at execution.",
+    "route": "A",
+    "precision": "CUDA/BF16",
+    "windows_per_seed": 139,
+    "total_scene_seed_records": 695,
+    "independent_scene_count_note": "139 windows repeated under five inference seeds, not 695 independent scenes.",
+    "P": 20,
+    "T": 12,
+    "K": 21,
+    "seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "refinement_steps": 2,
+    "units": "world_metres",
+    "checkpoint_sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+    "config_sha256": "bf5d4a692b0a9e841de8523f2780013147ec3e9bcb78877cc3c352571bc63e62",
+    "cache_manifest_sha256": "eadae55391b45224a3d7920e6128764db9a56298ffe70d723030ec00193786dd",
+    "cache_pin": "4b75110a571e6fd200938ff951a3a218ca4eb1e8",
+    "future_loader_schema": "rsjg-canonical-a-bank-v1",
+    "practical_epsilon_joint": null
+  },
+  "provenance_evidence": "PREFLIGHT.json",
+  "script_sha256": {
+    "tools/jdv2_stage_a_bank.py": "dee725f92682b5e9e75c0047c79ae6b06b1d6e13556308c7db82169395050272",
+    "tools/jdv2_export_stage_a_bank.py": "d619134805be994a2265f75418573842ba4a51ed5130a9de0a82555512887978",
+    "tools/jdv2_audit_stage_a_bank.py": "dc40de989a91b1772e1afd3209a14a7cad34c3d4f2d9c95f5d1265ceae510538",
+    "tools/jdv2_stage_a_bank_cpu_checks.py": "50e9bc196b4ccd6d2d366a64c31bf008f37d51a254c2bde72e9ee1b8718729fe"
+  },
+  "certifications": {
+    "metadata_preflight": "PASS",
+    "checkpoint_strict_load": "NOT_RUN",
+    "full_source_cache_content_validation": "NOT_RUN",
+    "same_forward_CPU_parity": "NOT_RUN",
+    "CUDA_capture_rng_invariance": "NOT_RUN",
+    "real_negative_controls": "NOT_RUN",
+    "real_pairing_analysis": "NOT_RUN"
+  }
+}
