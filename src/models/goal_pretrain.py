@@ -119,6 +119,12 @@ class Goal_Pretrain(torch.nn.Module):
             "goal_BCE_loss": 1,
         } 
         return losses_coeffs
+
+    def compute_loss_mask(self, seq_list, obs_length: int = 8):
+        """Match the GDTS loss-mask contract used by Goal BCE training."""
+        loss_mask = seq_list.cumprod(dim=0)
+        loss_mask[0:obs_length] = 1
+        return loss_mask
     
     
     def init_train_metrics(self):

@@ -191,3 +191,29 @@ def test_goal_validation_bce_uses_raw_logits():
         torch.empty(0), inputs)
 
     assert actual == pytest.approx([expected.item()])
+
+
+def test_goal_pretrain_real_loss_path_backpropagates():
+    model = object.__new__(Goal_Pretrain)
+    torch.nn.Module.__init__(model)
+    model.args = SimpleNamespace(obs_length=2)
+    model.device = torch.device('cpu')
+    logits = torch.zeros(1, 2, 3, 2, 2, requires_grad=True)
+    model.goal_logit_map_prediction = lambda inputs: logits
+    inputs = {
+        'input_traj_maps': torch.zeros(2, 5, 2, 2),
+    }
+    seq_list = torch.tensor([
+        [1.0, 1.0],
+        [1.0, 1.0],
+        [1.0, 1.0],
+        [1.0, 0.0],
+        [1.0, 0.0],
+    ])
+
+    losses = model.get_loss(inputs, seq_list)
+    losses['goal_BCE_loss'].backward()
+
+    assert torch.isfinite(losses['goal_BCE_loss'])
+    assert logits.grad is not None
+    assert torch.isfinite(logits.grad).all()
