@@ -1,0 +1,88 @@
+{
+  "status": "PASS",
+  "head_at_check": "79ea3fa5e94afe6818f8c8299b89aba1d677589e",
+  "source_tree": "a2db08541129ba93e16d288867e7ec4fbd8e8c95",
+  "checks": [
+    "json:RESULTS.json",
+    "json:EVIDENCE_INVENTORY.json",
+    "json:ARTIFACT_HASHES.json",
+    "json:STATIC_CHECKS.json",
+    "json:DOCUMENT_QA.json",
+    "python-syntax:validate_artifacts.py",
+    "python-syntax:static_checks.py",
+    "markdown-links-and-fences:CURRENT_AND_PROPOSED_ARCHITECTURE.md",
+    "markdown-links-and-fences:REVIEW.md",
+    "markdown-links-and-fences:THEORY_REVIEW.md",
+    "markdown-links-and-fences:IMPLEMENTATION_PSEUDOCODE.md",
+    "markdown-links-and-fences:LITERATURE_COMPARISON.md",
+    "markdown-links-and-fences:EXPERIMENT_PREREGISTRATION.md",
+    "architecture-parameter-sums",
+    "proposal-active-parameter-sums",
+    "source-tree-unchanged",
+    "no-production-config-diff"
+  ],
+  "layer_parameter_sums": {
+    "GDTS": 7826588,
+    "canonical_Stage_A": 331845,
+    "Stage_B_V2A": 30851,
+    "V3_V4": 390579
+  },
+  "files": [
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/CURRENT_AND_PROPOSED_ARCHITECTURE.md",
+      "bytes": 19477,
+      "sha256": "3095a3bec7df487a5c377d884b11eadf5761c7c2e2d218d8dfa639d99a57eb64"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/EVIDENCE_INVENTORY.json",
+      "bytes": 16300,
+      "sha256": "de2efc00f691c6d1a29ea789e720721088442b21e62744003f9f2a1887d7c0f3"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/EXPERIMENT_PREREGISTRATION.md",
+      "bytes": 12585,
+      "sha256": "a9709f97d13c2781e07106e53ed5739a3cf2235cfad5743795441bfee1df3338"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/IMPLEMENTATION_PSEUDOCODE.md",
+      "bytes": 23030,
+      "sha256": "eeae714f2c1b8be8b10d6df97765723aa889923cb9f29e2268126a8ae52f22cc"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/LITERATURE_COMPARISON.md",
+      "bytes": 9608,
+      "sha256": "b03dbbbc5cdb10a7ebce188ddf5bd3b2fac1c0b277ca88b94ab039dc285790e4"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/RESULTS.json",
+      "bytes": 279558,
+      "sha256": "8f3e033066e87e5668f115705757f41c3cb2e71f818574dcfd8cac79574a5499"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/REVIEW.md",
+      "bytes": 11223,
+      "sha256": "145c02ea73a22725e8723b44d8b4b0429647bc20be553d3d0115306230d3b2e5"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/STATIC_CHECKS.json",
+      "bytes": 54337,
+      "sha256": "bc9cbdf9fb6f01a3b7a032b6e30a11b3bfd5ab859408a0d4fff855fe69971b70"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/THEORY_REVIEW.md",
+      "bytes": 12534,
+      "sha256": "fd52545a90c8673f36709f21c1595e20f8fdaa1dafe81836cba4f4f086a2b94c"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/static_checks.py",
+      "bytes": 4045,
+      "sha256": "e6eaea967c22cf98810fac590a2865bce7614028e91c78da65b1f9152b845f63"
+    },
+    {
+      "path": "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/validate_artifacts.py",
+      "bytes": 3026,
+      "sha256": "4cdf4c018c133ffcdb3404e8af019f40af46fa7b58fc5cebea7fcc7e7cb17e20"
+    }
+  ],
+  "model_calls": 0
+}

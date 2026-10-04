@@ -1,0 +1,2427 @@
+{
+  "source_commit": "79ea3fa5e94afe6818f8c8299b89aba1d677589e",
+  "checkpoint_sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb",
+  "checkpoint_epoch": 13,
+  "checkpoint_state_layers": [
+    {
+      "name": "goal_module.encoder.enc_blocks.0.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.0.block.0.weight",
+          "shape": [
+            32,
+            14,
+            3,
+            3
+          ],
+          "numel": 4032,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.0.block.0.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4064
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.0.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.0.block.2.weight",
+          "shape": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "numel": 9216,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.0.block.2.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 9248
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.1.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.1.block.0.weight",
+          "shape": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "numel": 9216,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.1.block.0.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 9248
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.1.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.1.block.2.weight",
+          "shape": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "numel": 9216,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.1.block.2.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 9248
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.2.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.2.block.0.weight",
+          "shape": [
+            64,
+            32,
+            3,
+            3
+          ],
+          "numel": 18432,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.2.block.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 18496
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.2.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.2.block.2.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.2.block.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.3.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.3.block.0.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.3.block.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.3.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.3.block.2.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.3.block.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.4.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.4.block.0.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.4.block.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.encoder.enc_blocks.4.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.encoder.enc_blocks.4.block.2.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.encoder.enc_blocks.4.block.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.decoder.upconvs.0.up.1",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.upconvs.0.up.1.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.upconvs.0.up.1.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.decoder.upconvs.1.up.1",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.upconvs.1.up.1.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.upconvs.1.up.1.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.decoder.upconvs.2.up.1",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.upconvs.2.up.1.weight",
+          "shape": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "numel": 18432,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.upconvs.2.up.1.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 18464
+    },
+    {
+      "name": "goal_module.decoder.upconvs.3.up.1",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.upconvs.3.up.1.weight",
+          "shape": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "numel": 9216,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.upconvs.3.up.1.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 9248
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.0.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.0.block.0.weight",
+          "shape": [
+            64,
+            128,
+            3,
+            3
+          ],
+          "numel": 73728,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.0.block.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 73792
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.0.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.0.block.2.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.0.block.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.1.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.1.block.0.weight",
+          "shape": [
+            64,
+            128,
+            3,
+            3
+          ],
+          "numel": 73728,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.1.block.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 73792
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.1.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.1.block.2.weight",
+          "shape": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "numel": 36864,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.1.block.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 36928
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.2.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.2.block.0.weight",
+          "shape": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "numel": 18432,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.2.block.0.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 18464
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.2.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.2.block.2.weight",
+          "shape": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "numel": 9216,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.2.block.2.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 9248
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.3.block.0",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.3.block.0.weight",
+          "shape": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "numel": 18432,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.3.block.0.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 18464
+    },
+    {
+      "name": "goal_module.decoder.dec_blocks.3.block.2",
+      "tensors": [
+        {
+          "key": "goal_module.decoder.dec_blocks.3.block.2.weight",
+          "shape": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "numel": 9216,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.decoder.dec_blocks.3.block.2.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 9248
+    },
+    {
+      "name": "goal_module.head.out_layer",
+      "tensors": [
+        {
+          "key": "goal_module.head.out_layer.weight",
+          "shape": [
+            12,
+            32,
+            1,
+            1
+          ],
+          "numel": 384,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "goal_module.head.out_layer.bias",
+          "shape": [
+            12
+          ],
+          "numel": 12,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 396
+    },
+    {
+      "name": "registrar.model_dict.node_history_encoder",
+      "tensors": [
+        {
+          "key": "registrar.model_dict.node_history_encoder.weight_ih_l0",
+          "shape": [
+            1024,
+            8
+          ],
+          "numel": 8192,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "registrar.model_dict.node_history_encoder.weight_hh_l0",
+          "shape": [
+            1024,
+            256
+          ],
+          "numel": 262144,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "registrar.model_dict.node_history_encoder.bias_ih_l0",
+          "shape": [
+            1024
+          ],
+          "numel": 1024,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "registrar.model_dict.node_history_encoder.bias_hh_l0",
+          "shape": [
+            1024
+          ],
+          "numel": 1024,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 272384
+    },
+    {
+      "name": "var_sched",
+      "tensors": [
+        {
+          "key": "var_sched.betas",
+          "shape": [
+            101
+          ],
+          "numel": 101,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "var_sched.alphas",
+          "shape": [
+            101
+          ],
+          "numel": 101,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "var_sched.alpha_bars",
+          "shape": [
+            101
+          ],
+          "numel": 101,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "var_sched.sigmas_flex",
+          "shape": [
+            101
+          ],
+          "numel": 101,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "var_sched.sigmas_inflex",
+          "shape": [
+            101
+          ],
+          "numel": 101,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 505
+    },
+    {
+      "name": "diffnet.pos_emb",
+      "tensors": [
+        {
+          "key": "diffnet.pos_emb.pe",
+          "shape": [
+            24,
+            1,
+            512
+          ],
+          "numel": 12288,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 12288
+    },
+    {
+      "name": "diffnet.concat1._layer",
+      "tensors": [
+        {
+          "key": "diffnet.concat1._layer.weight",
+          "shape": [
+            512,
+            2
+          ],
+          "numel": 1024,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.concat1._layer.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1536
+    },
+    {
+      "name": "diffnet.concat1._hyper_bias",
+      "tensors": [
+        {
+          "key": "diffnet.concat1._hyper_bias.weight",
+          "shape": [
+            512,
+            259
+          ],
+          "numel": 132608,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 132608
+    },
+    {
+      "name": "diffnet.concat1._hyper_gate",
+      "tensors": [
+        {
+          "key": "diffnet.concat1._hyper_gate.weight",
+          "shape": [
+            512,
+            259
+          ],
+          "numel": 132608,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.concat1._hyper_gate.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 133120
+    },
+    {
+      "name": "diffnet.layer.self_attn",
+      "tensors": [
+        {
+          "key": "diffnet.layer.self_attn.in_proj_weight",
+          "shape": [
+            1536,
+            512
+          ],
+          "numel": 786432,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.layer.self_attn.in_proj_bias",
+          "shape": [
+            1536
+          ],
+          "numel": 1536,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 787968
+    },
+    {
+      "name": "diffnet.layer.self_attn.out_proj",
+      "tensors": [
+        {
+          "key": "diffnet.layer.self_attn.out_proj.weight",
+          "shape": [
+            512,
+            512
+          ],
+          "numel": 262144,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.layer.self_attn.out_proj.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 262656
+    },
+    {
+      "name": "diffnet.layer.linear1",
+      "tensors": [
+        {
+          "key": "diffnet.layer.linear1.weight",
+          "shape": [
+            1024,
+            512
+          ],
+          "numel": 524288,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.layer.linear1.bias",
+          "shape": [
+            1024
+          ],
+          "numel": 1024,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 525312
+    },
+    {
+      "name": "diffnet.layer.linear2",
+      "tensors": [
+        {
+          "key": "diffnet.layer.linear2.weight",
+          "shape": [
+            512,
+            1024
+          ],
+          "numel": 524288,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.layer.linear2.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 524800
+    },
+    {
+      "name": "diffnet.layer.norm1",
+      "tensors": [
+        {
+          "key": "diffnet.layer.norm1.weight",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.layer.norm1.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1024
+    },
+    {
+      "name": "diffnet.layer.norm2",
+      "tensors": [
+        {
+          "key": "diffnet.layer.norm2.weight",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.layer.norm2.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1024
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.0.self_attn",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.0.self_attn.in_proj_weight",
+          "shape": [
+            1536,
+            512
+          ],
+          "numel": 786432,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.0.self_attn.in_proj_bias",
+          "shape": [
+            1536
+          ],
+          "numel": 1536,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 787968
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.0.self_attn.out_proj",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.0.self_attn.out_proj.weight",
+          "shape": [
+            512,
+            512
+          ],
+          "numel": 262144,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.0.self_attn.out_proj.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 262656
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.0.linear1",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.0.linear1.weight",
+          "shape": [
+            1024,
+            512
+          ],
+          "numel": 524288,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.0.linear1.bias",
+          "shape": [
+            1024
+          ],
+          "numel": 1024,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 525312
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.0.linear2",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.0.linear2.weight",
+          "shape": [
+            512,
+            1024
+          ],
+          "numel": 524288,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.0.linear2.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 524800
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.0.norm1",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.0.norm1.weight",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.0.norm1.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1024
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.0.norm2",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.0.norm2.weight",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.0.norm2.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1024
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.1.self_attn",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.1.self_attn.in_proj_weight",
+          "shape": [
+            1536,
+            512
+          ],
+          "numel": 786432,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.1.self_attn.in_proj_bias",
+          "shape": [
+            1536
+          ],
+          "numel": 1536,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 787968
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.1.self_attn.out_proj",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.1.self_attn.out_proj.weight",
+          "shape": [
+            512,
+            512
+          ],
+          "numel": 262144,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.1.self_attn.out_proj.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 262656
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.1.linear1",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.1.linear1.weight",
+          "shape": [
+            1024,
+            512
+          ],
+          "numel": 524288,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.1.linear1.bias",
+          "shape": [
+            1024
+          ],
+          "numel": 1024,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 525312
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.1.linear2",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.1.linear2.weight",
+          "shape": [
+            512,
+            1024
+          ],
+          "numel": 524288,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.1.linear2.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 524800
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.1.norm1",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.1.norm1.weight",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.1.norm1.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1024
+    },
+    {
+      "name": "diffnet.transformer_encoder.layers.1.norm2",
+      "tensors": [
+        {
+          "key": "diffnet.transformer_encoder.layers.1.norm2.weight",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.transformer_encoder.layers.1.norm2.bias",
+          "shape": [
+            512
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1024
+    },
+    {
+      "name": "diffnet.concat3._layer",
+      "tensors": [
+        {
+          "key": "diffnet.concat3._layer.weight",
+          "shape": [
+            256,
+            512
+          ],
+          "numel": 131072,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.concat3._layer.bias",
+          "shape": [
+            256
+          ],
+          "numel": 256,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 131328
+    },
+    {
+      "name": "diffnet.concat3._hyper_bias",
+      "tensors": [
+        {
+          "key": "diffnet.concat3._hyper_bias.weight",
+          "shape": [
+            256,
+            259
+          ],
+          "numel": 66304,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 66304
+    },
+    {
+      "name": "diffnet.concat3._hyper_gate",
+      "tensors": [
+        {
+          "key": "diffnet.concat3._hyper_gate.weight",
+          "shape": [
+            256,
+            259
+          ],
+          "numel": 66304,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.concat3._hyper_gate.bias",
+          "shape": [
+            256
+          ],
+          "numel": 256,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 66560
+    },
+    {
+      "name": "diffnet.concat4._layer",
+      "tensors": [
+        {
+          "key": "diffnet.concat4._layer.weight",
+          "shape": [
+            128,
+            256
+          ],
+          "numel": 32768,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.concat4._layer.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 32896
+    },
+    {
+      "name": "diffnet.concat4._hyper_bias",
+      "tensors": [
+        {
+          "key": "diffnet.concat4._hyper_bias.weight",
+          "shape": [
+            128,
+            259
+          ],
+          "numel": 33152,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 33152
+    },
+    {
+      "name": "diffnet.concat4._hyper_gate",
+      "tensors": [
+        {
+          "key": "diffnet.concat4._hyper_gate.weight",
+          "shape": [
+            128,
+            259
+          ],
+          "numel": 33152,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.concat4._hyper_gate.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 33280
+    },
+    {
+      "name": "diffnet.linear._layer",
+      "tensors": [
+        {
+          "key": "diffnet.linear._layer.weight",
+          "shape": [
+            2,
+            128
+          ],
+          "numel": 256,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.linear._layer.bias",
+          "shape": [
+            2
+          ],
+          "numel": 2,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 258
+    },
+    {
+      "name": "diffnet.linear._hyper_bias",
+      "tensors": [
+        {
+          "key": "diffnet.linear._hyper_bias.weight",
+          "shape": [
+            2,
+            259
+          ],
+          "numel": 518,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 518
+    },
+    {
+      "name": "diffnet.linear._hyper_gate",
+      "tensors": [
+        {
+          "key": "diffnet.linear._hyper_gate.weight",
+          "shape": [
+            2,
+            259
+          ],
+          "numel": 518,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "diffnet.linear._hyper_gate.bias",
+          "shape": [
+            2
+          ],
+          "numel": 2,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 520
+    },
+    {
+      "name": "social_encoder.input_projection.0",
+      "tensors": [
+        {
+          "key": "social_encoder.input_projection.0.weight",
+          "shape": [
+            128,
+            4
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.input_projection.0.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 640
+    },
+    {
+      "name": "social_encoder.temporal_encoder",
+      "tensors": [
+        {
+          "key": "social_encoder.temporal_encoder.weight_ih_l0",
+          "shape": [
+            384,
+            128
+          ],
+          "numel": 49152,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.temporal_encoder.weight_hh_l0",
+          "shape": [
+            384,
+            128
+          ],
+          "numel": 49152,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.temporal_encoder.bias_ih_l0",
+          "shape": [
+            384
+          ],
+          "numel": 384,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.temporal_encoder.bias_hh_l0",
+          "shape": [
+            384
+          ],
+          "numel": 384,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 99072
+    },
+    {
+      "name": "social_encoder.message_layers.0.message_mlp.0",
+      "tensors": [
+        {
+          "key": "social_encoder.message_layers.0.message_mlp.0.weight",
+          "shape": [
+            128,
+            270
+          ],
+          "numel": 34560,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.message_layers.0.message_mlp.0.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 34688
+    },
+    {
+      "name": "social_encoder.message_layers.0.message_mlp.2",
+      "tensors": [
+        {
+          "key": "social_encoder.message_layers.0.message_mlp.2.weight",
+          "shape": [
+            128,
+            128
+          ],
+          "numel": 16384,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.message_layers.0.message_mlp.2.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 16512
+    },
+    {
+      "name": "social_encoder.message_layers.0.update_mlp.0",
+      "tensors": [
+        {
+          "key": "social_encoder.message_layers.0.update_mlp.0.weight",
+          "shape": [
+            128,
+            256
+          ],
+          "numel": 32768,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.message_layers.0.update_mlp.0.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 32896
+    },
+    {
+      "name": "social_encoder.message_layers.0.update_mlp.2",
+      "tensors": [
+        {
+          "key": "social_encoder.message_layers.0.update_mlp.2.weight",
+          "shape": [
+            128,
+            128
+          ],
+          "numel": 16384,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.message_layers.0.update_mlp.2.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 16512
+    },
+    {
+      "name": "social_encoder.message_layers.0.norm",
+      "tensors": [
+        {
+          "key": "social_encoder.message_layers.0.norm.weight",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "social_encoder.message_layers.0.norm.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 256
+    },
+    {
+      "name": "relation_inference.relation_mlp.0",
+      "tensors": [
+        {
+          "key": "relation_inference.relation_mlp.0.weight",
+          "shape": [
+            128,
+            270
+          ],
+          "numel": 34560,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "relation_inference.relation_mlp.0.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 34688
+    },
+    {
+      "name": "relation_inference.relation_mlp.2",
+      "tensors": [
+        {
+          "key": "relation_inference.relation_mlp.2.weight",
+          "shape": [
+            128,
+            128
+          ],
+          "numel": 16384,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "relation_inference.relation_mlp.2.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 16512
+    },
+    {
+      "name": "relation_inference.relation_mlp.4",
+      "tensors": [
+        {
+          "key": "relation_inference.relation_mlp.4.weight",
+          "shape": [
+            4,
+            128
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "relation_inference.relation_mlp.4.bias",
+          "shape": [
+            4
+          ],
+          "numel": 4,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 516
+    },
+    {
+      "name": "jdv2_future_teacher.relation_teacher.0",
+      "tensors": [
+        {
+          "key": "jdv2_future_teacher.relation_teacher.0.weight",
+          "shape": [
+            64,
+            6
+          ],
+          "numel": 384,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_future_teacher.relation_teacher.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 448
+    },
+    {
+      "name": "jdv2_future_teacher.relation_teacher.2",
+      "tensors": [
+        {
+          "key": "jdv2_future_teacher.relation_teacher.2.weight",
+          "shape": [
+            64,
+            64
+          ],
+          "numel": 4096,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_future_teacher.relation_teacher.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4160
+    },
+    {
+      "name": "jdv2_future_teacher.relation_teacher.4",
+      "tensors": [
+        {
+          "key": "jdv2_future_teacher.relation_teacher.4.weight",
+          "shape": [
+            4,
+            64
+          ],
+          "numel": 256,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_future_teacher.relation_teacher.4.bias",
+          "shape": [
+            4
+          ],
+          "numel": 4,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 260
+    },
+    {
+      "name": "jdv2_unary.goal_encoder.0",
+      "tensors": [
+        {
+          "key": "jdv2_unary.goal_encoder.0.weight",
+          "shape": [
+            64,
+            4
+          ],
+          "numel": 256,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_unary.goal_encoder.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 320
+    },
+    {
+      "name": "jdv2_unary.goal_encoder.2",
+      "tensors": [
+        {
+          "key": "jdv2_unary.goal_encoder.2.weight",
+          "shape": [
+            64,
+            64
+          ],
+          "numel": 4096,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_unary.goal_encoder.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4160
+    },
+    {
+      "name": "jdv2_unary.goal_encoder.3",
+      "tensors": [
+        {
+          "key": "jdv2_unary.goal_encoder.3.weight",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_unary.goal_encoder.3.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 128
+    },
+    {
+      "name": "jdv2_unary.agent_projection",
+      "tensors": [
+        {
+          "key": "jdv2_unary.agent_projection.weight",
+          "shape": [
+            64,
+            128
+          ],
+          "numel": 8192,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_unary.agent_projection.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 8256
+    },
+    {
+      "name": "jdv2_unary.context_norm",
+      "tensors": [
+        {
+          "key": "jdv2_unary.context_norm.weight",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_unary.context_norm.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 128
+    },
+    {
+      "name": "jdv2_unary.residual_head.0",
+      "tensors": [
+        {
+          "key": "jdv2_unary.residual_head.0.weight",
+          "shape": [
+            64,
+            192
+          ],
+          "numel": 12288,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_unary.residual_head.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 12352
+    },
+    {
+      "name": "jdv2_unary.residual_head.2",
+      "tensors": [
+        {
+          "key": "jdv2_unary.residual_head.2.weight",
+          "shape": [
+            1,
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_unary.residual_head.2.bias",
+          "shape": [
+            1
+          ],
+          "numel": 1,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 65
+    },
+    {
+      "name": "jdv2_dynamic_relation",
+      "tensors": [
+        {
+          "key": "jdv2_dynamic_relation.query",
+          "shape": [
+            4,
+            16
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_dynamic_relation.bias",
+          "shape": [
+            4
+          ],
+          "numel": 4,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_dynamic_relation.relation_embedding",
+          "shape": [
+            4,
+            16
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 132
+    },
+    {
+      "name": "jdv2_dynamic_relation.geometry_encoder.0",
+      "tensors": [
+        {
+          "key": "jdv2_dynamic_relation.geometry_encoder.0.weight",
+          "shape": [
+            32,
+            4
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_dynamic_relation.geometry_encoder.0.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 160
+    },
+    {
+      "name": "jdv2_dynamic_relation.geometry_encoder.2",
+      "tensors": [
+        {
+          "key": "jdv2_dynamic_relation.geometry_encoder.2.weight",
+          "shape": [
+            16,
+            32
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_dynamic_relation.geometry_encoder.2.bias",
+          "shape": [
+            16
+          ],
+          "numel": 16,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 528
+    },
+    {
+      "name": "jdv2_joint_energy.candidate_encoder.0",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.candidate_encoder.0.weight",
+          "shape": [
+            64,
+            4
+          ],
+          "numel": 256,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_joint_energy.candidate_encoder.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 320
+    },
+    {
+      "name": "jdv2_joint_energy.candidate_encoder.2",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.candidate_encoder.2.weight",
+          "shape": [
+            64,
+            64
+          ],
+          "numel": 4096,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_joint_energy.candidate_encoder.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4160
+    },
+    {
+      "name": "jdv2_joint_energy.pair_encoder.0",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.pair_encoder.0.weight",
+          "shape": [
+            128,
+            270
+          ],
+          "numel": 34560,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_joint_energy.pair_encoder.0.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 34688
+    },
+    {
+      "name": "jdv2_joint_energy.pair_encoder.2",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.pair_encoder.2.weight",
+          "shape": [
+            64,
+            128
+          ],
+          "numel": 8192,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_joint_energy.pair_encoder.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 8256
+    },
+    {
+      "name": "jdv2_joint_energy.pair_encoder.3",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.pair_encoder.3.weight",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_joint_energy.pair_encoder.3.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 128
+    },
+    {
+      "name": "jdv2_joint_energy.relation_embedding",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.relation_embedding.weight",
+          "shape": [
+            4,
+            64
+          ],
+          "numel": 256,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 256
+    },
+    {
+      "name": "jdv2_joint_energy.fusion_norm",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.fusion_norm.weight",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_joint_energy.fusion_norm.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 128
+    },
+    {
+      "name": "jdv2_joint_energy.factor_head.1",
+      "tensors": [
+        {
+          "key": "jdv2_joint_energy.factor_head.1.weight",
+          "shape": [
+            8,
+            64
+          ],
+          "numel": 512,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_joint_energy.factor_head.1.bias",
+          "shape": [
+            8
+          ],
+          "numel": 8,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 520
+    },
+    {
+      "name": "jdv2_corrector.state_encoder.0",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.state_encoder.0.weight",
+          "shape": [
+            64,
+            21
+          ],
+          "numel": 1344,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.state_encoder.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 1408
+    },
+    {
+      "name": "jdv2_corrector.state_encoder.2",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.state_encoder.2.weight",
+          "shape": [
+            64,
+            64
+          ],
+          "numel": 4096,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.state_encoder.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4160
+    },
+    {
+      "name": "jdv2_corrector.state_encoder.3",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.state_encoder.3.weight",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.state_encoder.3.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 128
+    },
+    {
+      "name": "jdv2_corrector.timestep_network.0",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.timestep_network.0.weight",
+          "shape": [
+            64,
+            32
+          ],
+          "numel": 2048,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.timestep_network.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 2112
+    },
+    {
+      "name": "jdv2_corrector.timestep_network.2",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.timestep_network.2.weight",
+          "shape": [
+            128,
+            64
+          ],
+          "numel": 8192,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.timestep_network.2.bias",
+          "shape": [
+            128
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 8320
+    },
+    {
+      "name": "jdv2_corrector.gate.0",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.gate.0.weight",
+          "shape": [
+            32,
+            64
+          ],
+          "numel": 2048,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.gate.0.bias",
+          "shape": [
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 2080
+    },
+    {
+      "name": "jdv2_corrector.gate.2",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.gate.2.weight",
+          "shape": [
+            1,
+            32
+          ],
+          "numel": 32,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.gate.2.bias",
+          "shape": [
+            1
+          ],
+          "numel": 1,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 33
+    },
+    {
+      "name": "jdv2_corrector.value.0",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.value.0.weight",
+          "shape": [
+            64,
+            64
+          ],
+          "numel": 4096,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.value.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4160
+    },
+    {
+      "name": "jdv2_corrector.value.2",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.value.2.weight",
+          "shape": [
+            64,
+            64
+          ],
+          "numel": 4096,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.value.2.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4160
+    },
+    {
+      "name": "jdv2_corrector.output.0",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.output.0.weight",
+          "shape": [
+            64,
+            64
+          ],
+          "numel": 4096,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.output.0.bias",
+          "shape": [
+            64
+          ],
+          "numel": 64,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 4160
+    },
+    {
+      "name": "jdv2_corrector.output.2",
+      "tensors": [
+        {
+          "key": "jdv2_corrector.output.2.weight",
+          "shape": [
+            2,
+            64
+          ],
+          "numel": 128,
+          "dtype": "torch.float32"
+        },
+        {
+          "key": "jdv2_corrector.output.2.bias",
+          "shape": [
+            2
+          ],
+          "numel": 2,
+          "dtype": "torch.float32"
+        }
+      ],
+      "stored_elements": 130
+    }
+  ],
+  "module_registered_parameters_excluding_buffers": {
+    "goal_module": 613772,
+    "registrar": 272384,
+    "diffnet": 6940432,
+    "social_encoder": 200576,
+    "relation_inference": 51716,
+    "jdv2_future_teacher": 4868,
+    "jdv2_unary": 25409,
+    "jdv2_dynamic_relation": 820,
+    "jdv2_joint_energy": 48456,
+    "jdv2_corrector": 30851
+  },
+  "stage_a_trainable": 331845,
+  "base_registered_parameters": 7826588,
+  "unary_head_nonzero": {
+    "jdv2_unary.residual_head.2.weight": 64,
+    "jdv2_unary.residual_head.2.bias": 1
+  },
+  "corrector_head_nonzero": {
+    "jdv2_corrector.output.2.weight": 0,
+    "jdv2_corrector.output.2.bias": 0
+  },
+  "v4_static_parameters": {
+    "trajectory_encoder": 133632,
+    "relation_residual": 53252,
+    "candidate_energy_encoder": 16768,
+    "edge_context_encoder": 51456,
+    "relation_embedding": 512,
+    "factor_head": 1032,
+    "pair_gate": 45057,
+    "dormant_direct_energy": 53252,
+    "dormant_edge_gate": 35329,
+    "component_confidence": 289
+  },
+  "v4_registered_total": 390579,
+  "v4_active_total": 301998,
+  "math_checks": {
+    "mean_energy_CE": 2.1269280110429727,
+    "expected_conditional_CE": 2.3556485542388774,
+    "gauge_original_score": 1,
+    "gauge_compensated_score": 1,
+    "synchronous_cycle": {
+      "cost": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ]
+      ],
+      "states": [
+        [
+          0,
+          1
+        ],
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          1
+        ]
+      ],
+      "joint_costs": [
+        1,
+        1,
+        1
+      ]
+    },
+    "synchronous_worsening": {
+      "cost": [
+        [
+          1,
+          0
+        ],
+        [
+          0,
+          2
+        ]
+      ],
+      "states": [
+        [
+          0,
+          0
+        ],
+        [
+          1,
+          1
+        ]
+      ],
+      "joint_costs": [
+        1,
+        2
+      ]
+    },
+    "trunk_denoiser_calls": 70,
+    "branch_denoiser_calls": 120,
+    "total_denoiser_calls": 190,
+    "normal_draw_calls": 121,
+    "geometry6_added_parameters": 64,
+    "chunk256_relation_fp32_bytes": 1806336,
+    "v4_pair_hidden128_fp32_bytes_E256": 52428800
+  },
+  "execution": {
+    "device": "cpu",
+    "model_imports": 0,
+    "model_forwards": 0,
+    "exact_payloads_read": 0,
+    "solver_calls": 0
+  }
+}
