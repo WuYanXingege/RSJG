@@ -1,0 +1,93 @@
+{
+  "status": "PASS",
+  "call_count": 8,
+  "pair_count": 28,
+  "same_non_h_inputs_all_pairs": true,
+  "same_masks_all_rounds": true,
+  "model_parameters_buffers_inputs_identical_across_processes": true,
+  "settings_identical_across_processes": true,
+  "global_RNG_all_calls_equal_and_unchanged": true,
+  "actual_generators_match_P2": true,
+  "initial_generator_consumed_round_generators_unchanged": true,
+  "h_versions_by_process": {
+    "P0": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "P1": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "one_shared_h_storage_per_process": true,
+  "round_scores": {
+    "0": {
+      "cross_AB": {
+        "pairs": 16,
+        "different_pairs": 0,
+        "max_abs": 0,
+        "max_different_elements": 0
+      },
+      "same_A": {
+        "pairs": 6,
+        "different_pairs": 0,
+        "max_abs": 0,
+        "max_different_elements": 0
+      },
+      "same_B": {
+        "pairs": 6,
+        "different_pairs": 0,
+        "max_abs": 0,
+        "max_different_elements": 0
+      }
+    },
+    "1": {
+      "cross_AB": {
+        "pairs": 16,
+        "different_pairs": 16,
+        "max_abs": 0.000003814697265625,
+        "max_different_elements": 1280
+      },
+      "same_A": {
+        "pairs": 6,
+        "different_pairs": 6,
+        "max_abs": 0.000003814697265625,
+        "max_different_elements": 855
+      },
+      "same_B": {
+        "pairs": 6,
+        "different_pairs": 6,
+        "max_abs": 0.000003814697265625,
+        "max_different_elements": 939
+      }
+    },
+    "2": {
+      "cross_AB": {
+        "pairs": 16,
+        "different_pairs": 16,
+        "max_abs": 0.00000762939453125,
+        "max_different_elements": 1365
+      },
+      "same_A": {
+        "pairs": 6,
+        "different_pairs": 6,
+        "max_abs": 0.00000762939453125,
+        "max_different_elements": 1034
+      },
+      "same_B": {
+        "pairs": 6,
+        "different_pairs": 6,
+        "max_abs": 0.000003814697265625,
+        "max_different_elements": 981
+      }
+    }
+  },
+  "all_final_goals_equal": true,
+  "actual_CPU_exact_replays": 0,
+  "extra_GPU_calls": 0,
+  "note": "CPU post-run comparison of existing payload only, added after GPU completion; not part of GPU source or pre-run CPU semantic tests"
+}
