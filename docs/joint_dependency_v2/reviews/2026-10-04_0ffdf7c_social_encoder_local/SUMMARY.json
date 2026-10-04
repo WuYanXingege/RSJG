@@ -1,0 +1,102 @@
+{
+  "probe_source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+  "prior_archive_commit": "634a467868c3d6a488837be4edc18ccff52db864",
+  "prompt_sha256": "7561e086e78f3622c05a865e80194ebeb93c40b6ccfe9ed673c51cf22d6e7572",
+  "status": "LOCAL_UNOBSERVED_OUTPUT_VARIATION_REPRODUCED",
+  "totals": {
+    "diffusion_calls": 0,
+    "encoder_attempted": 16,
+    "encoder_completed": 16,
+    "encoder_failed": 0,
+    "full_A_forwards": 0,
+    "independent_submodule_replays": 0,
+    "initialization_attempted": 4,
+    "initialization_completed": 4,
+    "net_encode_calls": 0,
+    "processes_started": 4,
+    "sampler_calls": 0,
+    "unknown_inflight": 0
+  },
+  "all16_output_hashes_unique": true,
+  "all120_pairs_differ": true,
+  "all_pairs_max_abs": 4.76837158203125e-07,
+  "unobserved_comparison_pairs": 91,
+  "unobserved_pairs_differ": 91,
+  "same_process_pairs": 24,
+  "cross_process_same_position_pairs": 24,
+  "trace_first_module_boundary": "message_layer_0/output",
+  "historical_h_matches": 0,
+  "final_resource_read_only": {
+    "time_utc": "2026-10-04T07:10:01.952062+00:00",
+    "compute_processes": []
+  },
+  "snapshot_layouts_equal_T0_T1": {
+    "encoder/final_h": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    },
+    "message_layer_0/input/agent_feat": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    },
+    "message_layer_0/input/edge_feat": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    },
+    "message_layer_0/input/edge_index": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    },
+    "message_layer_0/input/edge_weight": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    },
+    "message_layer_0/output": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    },
+    "temporal_encoder/final_hidden": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    },
+    "temporal_encoder/input/temporal_input": {
+      "dtype": true,
+      "device": true,
+      "shape": true,
+      "stride": true,
+      "storage_offset": true,
+      "alias_group": true
+    }
+  },
+  "local_tensor_root": "outputs/joint_dependency_v2/eth/joint_dependency_v2/audits/social_encoder_local_634a467/",
+  "canonical_GPU_trace_neutrality": "TRACE_NEUTRALITY_UNCERTIFIED",
+  "historical_root_cause": "OPEN"
+}

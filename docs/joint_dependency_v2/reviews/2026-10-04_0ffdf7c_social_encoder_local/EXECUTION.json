@@ -1,0 +1,2886 @@
+{
+  "T0": {
+    "budget": {
+      "diffusion_calls": 0,
+      "encoder_attempted": 4,
+      "encoder_completed": 4,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "processes_started": 1,
+      "sampler_calls": 0,
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "status": "COMPLETE",
+      "unknown_inflight": 0
+    },
+    "initialization": {
+      "RNG_source": "P2/RNG.pt before13; not claimed encoder-entry state",
+      "desktop_allowlist": [
+        "Xorg",
+        "chrome",
+        "code",
+        "gnome-control-center",
+        "gnome-shell",
+        "sunloginclient"
+      ],
+      "diffusion_calls": 0,
+      "encoder_attempted": 0,
+      "encoder_completed": 0,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "original_process_defaults": {
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false
+      },
+      "precision_context": "original FP32 island, torch.autocast(cuda, enabled=False); no precision intervention",
+      "processes_started": 1,
+      "restored_baseline_flags": [
+        "cudnn_deterministic",
+        "cudnn_benchmark"
+      ],
+      "sampler_calls": 0,
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "unknown_inflight": 0
+    },
+    "resources": {
+      "RESOURCE_AFTER_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045757",
+            "../.conda/rsjg/bin/python",
+            "302"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "977",
+            "4"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "63 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "302 MiB",
+            "pid": "1045757",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:09:08.033447+00:00"
+      },
+      "RESOURCE_BEFORE_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045757",
+            "../.conda/rsjg/bin/python",
+            "272"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "949",
+            "5"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "64 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "272 MiB",
+            "pid": "1045757",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:09:06.295692+00:00"
+      },
+      "RESOURCE_INITIAL.json": {
+        "compute_processes": [],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "670",
+            "13"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "65 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          }
+        ],
+        "time_utc": "2026-10-04T07:09:05.053464+00:00"
+      }
+    },
+    "started": {
+      "argv": [
+        "tools/jdv2_social_local.py",
+        "--process",
+        "T0",
+        "--gpu-uuid",
+        "GPU-078a9326-675c-cb94-af4a-ac46eb77c484"
+      ],
+      "budget": "four exclusive process slots U0/U1/T0/T1, at most four encoder attempts per slot; no retry",
+      "pid": 1045757,
+      "time": 1791097744.9775207
+    },
+    "validation": {
+      "global_RNG_unchanged": true,
+      "hooks_removed": true,
+      "input_unchanged": true,
+      "inputs": {
+        "edge_feat": {
+          "dtype": "torch.float32",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ]
+        },
+        "edge_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ]
+        },
+        "edge_weight": {
+          "dtype": "torch.float32",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        },
+        "obs_traj": {
+          "dtype": "torch.float32",
+          "raw_sha256": "108364e73182431de1664b47b9aed49b837c9308612b3733d9b7939613ce3e6e",
+          "shape": [
+            9,
+            8,
+            2
+          ],
+          "storage_offset": 0,
+          "stride": [
+            16,
+            2,
+            1
+          ]
+        },
+        "scene_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "834a709ba2534ebe3ee1397fd4f7bd288b2acc1d20a08d6c862dcd99b6f04400",
+          "shape": [
+            9
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        }
+      },
+      "model_after": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_before": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_unchanged": true,
+      "precision": "FP32",
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "snapshots_valid": true
+    }
+  },
+  "T1": {
+    "budget": {
+      "diffusion_calls": 0,
+      "encoder_attempted": 4,
+      "encoder_completed": 4,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "processes_started": 1,
+      "sampler_calls": 0,
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "status": "COMPLETE",
+      "unknown_inflight": 0
+    },
+    "initialization": {
+      "RNG_source": "P2/RNG.pt before13; not claimed encoder-entry state",
+      "desktop_allowlist": [
+        "Xorg",
+        "chrome",
+        "code",
+        "gnome-control-center",
+        "gnome-shell",
+        "sunloginclient"
+      ],
+      "diffusion_calls": 0,
+      "encoder_attempted": 0,
+      "encoder_completed": 0,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "original_process_defaults": {
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false
+      },
+      "precision_context": "original FP32 island, torch.autocast(cuda, enabled=False); no precision intervention",
+      "processes_started": 1,
+      "restored_baseline_flags": [
+        "cudnn_deterministic",
+        "cudnn_benchmark"
+      ],
+      "sampler_calls": 0,
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "unknown_inflight": 0
+    },
+    "resources": {
+      "RESOURCE_AFTER_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045891",
+            "../.conda/rsjg/bin/python",
+            "302"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "975",
+            "5"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "60 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "302 MiB",
+            "pid": "1045891",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:09:35.670422+00:00"
+      },
+      "RESOURCE_BEFORE_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045891",
+            "../.conda/rsjg/bin/python",
+            "272"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "944",
+            "4"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "60 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "272 MiB",
+            "pid": "1045891",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:09:34.143481+00:00"
+      },
+      "RESOURCE_INITIAL.json": {
+        "compute_processes": [],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "664",
+            "12"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "59 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          }
+        ],
+        "time_utc": "2026-10-04T07:09:32.879290+00:00"
+      }
+    },
+    "started": {
+      "argv": [
+        "tools/jdv2_social_local.py",
+        "--process",
+        "T1",
+        "--gpu-uuid",
+        "GPU-078a9326-675c-cb94-af4a-ac46eb77c484"
+      ],
+      "budget": "four exclusive process slots U0/U1/T0/T1, at most four encoder attempts per slot; no retry",
+      "pid": 1045891,
+      "time": 1791097772.7954562
+    },
+    "validation": {
+      "global_RNG_unchanged": true,
+      "hooks_removed": true,
+      "input_unchanged": true,
+      "inputs": {
+        "edge_feat": {
+          "dtype": "torch.float32",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ]
+        },
+        "edge_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ]
+        },
+        "edge_weight": {
+          "dtype": "torch.float32",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        },
+        "obs_traj": {
+          "dtype": "torch.float32",
+          "raw_sha256": "108364e73182431de1664b47b9aed49b837c9308612b3733d9b7939613ce3e6e",
+          "shape": [
+            9,
+            8,
+            2
+          ],
+          "storage_offset": 0,
+          "stride": [
+            16,
+            2,
+            1
+          ]
+        },
+        "scene_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "834a709ba2534ebe3ee1397fd4f7bd288b2acc1d20a08d6c862dcd99b6f04400",
+          "shape": [
+            9
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        }
+      },
+      "model_after": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_before": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_unchanged": true,
+      "precision": "FP32",
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "snapshots_valid": true
+    }
+  },
+  "U0": {
+    "budget": {
+      "diffusion_calls": 0,
+      "encoder_attempted": 4,
+      "encoder_completed": 4,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "processes_started": 1,
+      "sampler_calls": 0,
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "status": "COMPLETE",
+      "unknown_inflight": 0
+    },
+    "initialization": {
+      "RNG_source": "P2/RNG.pt before13; not claimed encoder-entry state",
+      "desktop_allowlist": [
+        "Xorg",
+        "chrome",
+        "code",
+        "gnome-control-center",
+        "gnome-shell",
+        "sunloginclient"
+      ],
+      "diffusion_calls": 0,
+      "encoder_attempted": 0,
+      "encoder_completed": 0,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "original_process_defaults": {
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false
+      },
+      "precision_context": "original FP32 island, torch.autocast(cuda, enabled=False); no precision intervention",
+      "processes_started": 1,
+      "restored_baseline_flags": [
+        "cudnn_deterministic",
+        "cudnn_benchmark"
+      ],
+      "sampler_calls": 0,
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "unknown_inflight": 0
+    },
+    "resources": {
+      "RESOURCE_AFTER_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045504",
+            "../.conda/rsjg/bin/python",
+            "302"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "1006",
+            "5"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "91 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "302 MiB",
+            "pid": "1045504",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:07:46.436354+00:00"
+      },
+      "RESOURCE_BEFORE_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045504",
+            "../.conda/rsjg/bin/python",
+            "272"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "974",
+            "4"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "89 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "272 MiB",
+            "pid": "1045504",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:07:45.034245+00:00"
+      },
+      "RESOURCE_INITIAL.json": {
+        "compute_processes": [],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "696",
+            "16"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "92 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          }
+        ],
+        "time_utc": "2026-10-04T07:07:43.804042+00:00"
+      }
+    },
+    "started": {
+      "argv": [
+        "tools/jdv2_social_local.py",
+        "--process",
+        "U0",
+        "--gpu-uuid",
+        "GPU-078a9326-675c-cb94-af4a-ac46eb77c484"
+      ],
+      "budget": "four exclusive process slots U0/U1/T0/T1, at most four encoder attempts per slot; no retry",
+      "pid": 1045504,
+      "time": 1791097663.7298493
+    },
+    "validation": {
+      "global_RNG_unchanged": true,
+      "hooks_removed": true,
+      "input_unchanged": true,
+      "inputs": {
+        "edge_feat": {
+          "dtype": "torch.float32",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ]
+        },
+        "edge_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ]
+        },
+        "edge_weight": {
+          "dtype": "torch.float32",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        },
+        "obs_traj": {
+          "dtype": "torch.float32",
+          "raw_sha256": "108364e73182431de1664b47b9aed49b837c9308612b3733d9b7939613ce3e6e",
+          "shape": [
+            9,
+            8,
+            2
+          ],
+          "storage_offset": 0,
+          "stride": [
+            16,
+            2,
+            1
+          ]
+        },
+        "scene_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "834a709ba2534ebe3ee1397fd4f7bd288b2acc1d20a08d6c862dcd99b6f04400",
+          "shape": [
+            9
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        }
+      },
+      "model_after": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_before": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_unchanged": true,
+      "precision": "FP32",
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "snapshots_valid": true
+    }
+  },
+  "U1": {
+    "budget": {
+      "diffusion_calls": 0,
+      "encoder_attempted": 4,
+      "encoder_completed": 4,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "processes_started": 1,
+      "sampler_calls": 0,
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "status": "COMPLETE",
+      "unknown_inflight": 0
+    },
+    "initialization": {
+      "RNG_source": "P2/RNG.pt before13; not claimed encoder-entry state",
+      "desktop_allowlist": [
+        "Xorg",
+        "chrome",
+        "code",
+        "gnome-control-center",
+        "gnome-shell",
+        "sunloginclient"
+      ],
+      "diffusion_calls": 0,
+      "encoder_attempted": 0,
+      "encoder_completed": 0,
+      "encoder_failed": 0,
+      "full_A_forwards": 0,
+      "independent_submodule_replays": 0,
+      "initialization_attempted": 1,
+      "initialization_completed": 1,
+      "net_encode_calls": 0,
+      "original_process_defaults": {
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false
+      },
+      "precision_context": "original FP32 island, torch.autocast(cuda, enabled=False); no precision intervention",
+      "processes_started": 1,
+      "restored_baseline_flags": [
+        "cudnn_deterministic",
+        "cudnn_benchmark"
+      ],
+      "sampler_calls": 0,
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+      "unknown_inflight": 0
+    },
+    "resources": {
+      "RESOURCE_AFTER_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045615",
+            "../.conda/rsjg/bin/python",
+            "302"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "1005",
+            "4"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "90 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "302 MiB",
+            "pid": "1045615",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:08:25.570259+00:00"
+      },
+      "RESOURCE_BEFORE_BATCH.json": {
+        "compute_processes": [
+          [
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "1045615",
+            "../.conda/rsjg/bin/python",
+            "272"
+          ]
+        ],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "980",
+            "4"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "92 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          },
+          {
+            "executable": "python",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "272 MiB",
+            "pid": "1045615",
+            "type": "C"
+          }
+        ],
+        "time_utc": "2026-10-04T07:08:24.190174+00:00"
+      },
+      "RESOURCE_INITIAL.json": {
+        "compute_processes": [],
+        "devices": [
+          [
+            "0",
+            "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "NVIDIA GeForce RTX 5070 Ti",
+            "16303",
+            "700",
+            "19"
+          ]
+        ],
+        "process_types": [
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "37 MiB",
+            "pid": "1351",
+            "type": "G"
+          },
+          {
+            "executable": "Xorg",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "360 MiB",
+            "pid": "1784",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-shell",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "32 MiB",
+            "pid": "1915",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "10 MiB",
+            "pid": "2132",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "2300",
+            "type": "G"
+          },
+          {
+            "executable": "sunloginclient",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "6 MiB",
+            "pid": "2360",
+            "type": "G"
+          },
+          {
+            "executable": "code",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "95 MiB",
+            "pid": "4743",
+            "type": "G"
+          },
+          {
+            "executable": "chrome",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "31 MiB",
+            "pid": "430317",
+            "type": "G"
+          },
+          {
+            "executable": "gnome-control-center",
+            "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+            "memory": "3 MiB",
+            "pid": "924597",
+            "type": "G"
+          }
+        ],
+        "time_utc": "2026-10-04T07:08:22.926945+00:00"
+      }
+    },
+    "started": {
+      "argv": [
+        "tools/jdv2_social_local.py",
+        "--process",
+        "U1",
+        "--gpu-uuid",
+        "GPU-078a9326-675c-cb94-af4a-ac46eb77c484"
+      ],
+      "budget": "four exclusive process slots U0/U1/T0/T1, at most four encoder attempts per slot; no retry",
+      "pid": 1045615,
+      "time": 1791097702.8532448
+    },
+    "validation": {
+      "global_RNG_unchanged": true,
+      "hooks_removed": true,
+      "input_unchanged": true,
+      "inputs": {
+        "edge_feat": {
+          "dtype": "torch.float32",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ]
+        },
+        "edge_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ]
+        },
+        "edge_weight": {
+          "dtype": "torch.float32",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        },
+        "obs_traj": {
+          "dtype": "torch.float32",
+          "raw_sha256": "108364e73182431de1664b47b9aed49b837c9308612b3733d9b7939613ce3e6e",
+          "shape": [
+            9,
+            8,
+            2
+          ],
+          "storage_offset": 0,
+          "stride": [
+            16,
+            2,
+            1
+          ]
+        },
+        "scene_index": {
+          "dtype": "torch.int64",
+          "raw_sha256": "834a709ba2534ebe3ee1397fd4f7bd288b2acc1d20a08d6c862dcd99b6f04400",
+          "shape": [
+            9
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ]
+        }
+      },
+      "model_after": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_before": {
+        "input_projection.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "868f99fcaf10d8b06cc767a77ddf2e2ee367c2f71e8ae0a8a24152d2c60da1a6",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "input_projection.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "922389881ee0f9dea109a64a7ab1f54044e3df5adb6b1d82dd3cabba4928b953",
+          "shape": [
+            128,
+            4
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "6391325ffb2ab6632b3bab7520b100df03f7c2debedeb1c31be5c83fceb790c1",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "83dd2e5b85129e3ea27fe278a2700a5101dd95584252b5dfcfeb288520e00e6d",
+          "shape": [
+            128,
+            270
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "9ae1331c659dbd9ffb9df4176523362d630e8c32362503b7c08c4882da35689b",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.message_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "b723eaeb91f251ae92dd4cae56c1999cd60008d9cfa1a25b564f482a1ea2f69f",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.bias": {
+          "dtype": "torch.float32",
+          "sha256": "86d94074b6ff6606091a239660d5132ed36481518a154f8db30728c7758f3090",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.norm.weight": {
+          "dtype": "torch.float32",
+          "sha256": "9c5b33c5fe589998ed300d591e0eb57bde51e7cabefc5da6d5e366da9628f68f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.bias": {
+          "dtype": "torch.float32",
+          "sha256": "757a937ed0048ac9ff784788093551a1672bdbce3256ba576c38077d9155d943",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.0.weight": {
+          "dtype": "torch.float32",
+          "sha256": "981facaae5d6575e793f5da687f41cd9764c00995f9bb298868bf94bf41b0af2",
+          "shape": [
+            128,
+            256
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.bias": {
+          "dtype": "torch.float32",
+          "sha256": "568a3fbe8fe6496e9b4fabbbcb55c56c92aa29bbd7ed142cb63ac2c5148de64f",
+          "shape": [
+            128
+          ],
+          "version": 2
+        },
+        "message_layers.0.update_mlp.2.weight": {
+          "dtype": "torch.float32",
+          "sha256": "52b91151dcec6dd2958e6669a1c2c4a9233041b1e28f0bdf96d0f2e5b755e99b",
+          "shape": [
+            128,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "3988de2793f0a02d033786f030f2eb4b86f6a30a8de1005475a7165827c1cec5",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.bias_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "b1ae7d11bc2f7eadce3da8d30a9a8646ceede18b01c843104f4a6cf04894d99b",
+          "shape": [
+            384
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_hh_l0": {
+          "dtype": "torch.float32",
+          "sha256": "d0e5b292b5bba542232e066b4a85527dbef5c4933f9d0b188703b949db23f43c",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        },
+        "temporal_encoder.weight_ih_l0": {
+          "dtype": "torch.float32",
+          "sha256": "dce363d9fe81708f7df10f4f73f3fce9eaaf90e409053aa432c7e53c63be789b",
+          "shape": [
+            384,
+            128
+          ],
+          "version": 2
+        }
+      },
+      "model_unchanged": true,
+      "precision": "FP32",
+      "settings": {
+        "cuda": "12.8",
+        "cudnn": 91002,
+        "cudnn_allow_tf32": true,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": true,
+        "deterministic_algorithms": false,
+        "device": "NVIDIA GeForce RTX 5070 Ti",
+        "driver": "570.133.07",
+        "environment": {
+          "CUBLAS_WORKSPACE_CONFIG": null,
+          "CUDA_LAUNCH_BLOCKING": null,
+          "CUDA_VISIBLE_DEVICES": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+          "MKL_NUM_THREADS": null,
+          "OMP_NUM_THREADS": null,
+          "PYTHONHASHSEED": null
+        },
+        "matmul_allow_tf32": false,
+        "matmul_precision": "highest",
+        "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]",
+        "torch": "2.8.0+cu128"
+      },
+      "snapshots_valid": true
+    }
+  }
+}

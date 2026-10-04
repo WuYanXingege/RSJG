@@ -1,0 +1,716 @@
+{
+  "T0": {
+    "output": {
+      "events": [],
+      "invalid_snapshots": [],
+      "native_dtype_roundtrip": true,
+      "observer_cost": "All arms retain four returned h tensors and defer transfer until batch end; input/model/RNG checks outside batch; per-call CPU ledger writes",
+      "observer_extra_gpu_arithmetic": 0,
+      "tensors": {
+        "call1/h": {
+          "alias_group": 0,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "56bc3460ed851fb4046815b9aeac6383939c0dace81e4febed182a5805adda10",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call2/h": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "c1c43058532262fce554971be7c81d77538cdcdaede2ed0733e8365574f060f6",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call3/h": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "d3c20b22c4533fd4b3f558f7cf27f255dd66fb4467f2a2f7f4ccb70f1e2be065",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call4/h": {
+          "alias_group": 3,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "4e09aa694ca0ff50d2aae60a091986dea4f02f08e05b8cf32396c1440806f2a5",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        }
+      },
+      "values": {}
+    },
+    "trace": {
+      "events": [
+        {
+          "boundary": "temporal_encoder",
+          "event": "input"
+        },
+        {
+          "boundary": "temporal_encoder",
+          "event": "output"
+        },
+        {
+          "boundary": "message_layer_0",
+          "event": "input"
+        },
+        {
+          "boundary": "message_layer_0",
+          "event": "output"
+        }
+      ],
+      "invalid_snapshots": [],
+      "native_dtype_roundtrip": true,
+      "observer_cost": "Only GRU/message module pre/post hooks on call4; no profiler, torch wrappers, dispatch, clone/cpu/item/synchronize/hash in hooks. References change lifetimes/allocator; module hooks cost CPU scheduling.",
+      "observer_extra_gpu_arithmetic": 0,
+      "tensors": {
+        "encoder/final_h": {
+          "alias_group": 5,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "4e09aa694ca0ff50d2aae60a091986dea4f02f08e05b8cf32396c1440806f2a5",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/agent_feat": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "058bf0d81ce4260309e76e22ca91c1e1eee10545de0dd573936ef0bb9394656d",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/edge_feat": {
+          "alias_group": 3,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/edge_index": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.int64",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/edge_weight": {
+          "alias_group": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/output": {
+          "alias_group": 5,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "4e09aa694ca0ff50d2aae60a091986dea4f02f08e05b8cf32396c1440806f2a5",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "temporal_encoder/final_hidden": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "058bf0d81ce4260309e76e22ca91c1e1eee10545de0dd573936ef0bb9394656d",
+          "shape": [
+            1,
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1152,
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "temporal_encoder/input/temporal_input": {
+          "alias_group": 0,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "c972f429b078d97cc16bcf1c659bcdf0944bc03ecd62babaaa80478c6ce1caba",
+          "shape": [
+            9,
+            8,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1024,
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 1,
+          "version_at_dump": 1
+        }
+      },
+      "values": {}
+    }
+  },
+  "T1": {
+    "output": {
+      "events": [],
+      "invalid_snapshots": [],
+      "native_dtype_roundtrip": true,
+      "observer_cost": "All arms retain four returned h tensors and defer transfer until batch end; input/model/RNG checks outside batch; per-call CPU ledger writes",
+      "observer_extra_gpu_arithmetic": 0,
+      "tensors": {
+        "call1/h": {
+          "alias_group": 0,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "3e9f0e4184d5089d589f5ad4f483da5f943bccbf0a63b7056e1ab8c120cd4798",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call2/h": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "40dd3acbc95a114ae8340320fa9eab98481ac30eacef99656762f5d3ea3f92b1",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call3/h": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "d9aaf3dbd200261105bff9428d88684d223d2295a357bb3a396591fd82405bb6",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call4/h": {
+          "alias_group": 3,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "a8a74603e075327da4036f888cdc9c01c18894c2247069d93188a8e725d6e2ef",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        }
+      },
+      "values": {}
+    },
+    "trace": {
+      "events": [
+        {
+          "boundary": "temporal_encoder",
+          "event": "input"
+        },
+        {
+          "boundary": "temporal_encoder",
+          "event": "output"
+        },
+        {
+          "boundary": "message_layer_0",
+          "event": "input"
+        },
+        {
+          "boundary": "message_layer_0",
+          "event": "output"
+        }
+      ],
+      "invalid_snapshots": [],
+      "native_dtype_roundtrip": true,
+      "observer_cost": "Only GRU/message module pre/post hooks on call4; no profiler, torch wrappers, dispatch, clone/cpu/item/synchronize/hash in hooks. References change lifetimes/allocator; module hooks cost CPU scheduling.",
+      "observer_extra_gpu_arithmetic": 0,
+      "tensors": {
+        "encoder/final_h": {
+          "alias_group": 5,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "a8a74603e075327da4036f888cdc9c01c18894c2247069d93188a8e725d6e2ef",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/agent_feat": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "058bf0d81ce4260309e76e22ca91c1e1eee10545de0dd573936ef0bb9394656d",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/edge_feat": {
+          "alias_group": 3,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/edge_index": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.int64",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/input/edge_weight": {
+          "alias_group": 4,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "message_layer_0/output": {
+          "alias_group": 5,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "a8a74603e075327da4036f888cdc9c01c18894c2247069d93188a8e725d6e2ef",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "temporal_encoder/final_hidden": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "058bf0d81ce4260309e76e22ca91c1e1eee10545de0dd573936ef0bb9394656d",
+          "shape": [
+            1,
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1152,
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "temporal_encoder/input/temporal_input": {
+          "alias_group": 0,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "c972f429b078d97cc16bcf1c659bcdf0944bc03ecd62babaaa80478c6ce1caba",
+          "shape": [
+            9,
+            8,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1024,
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 1,
+          "version_at_dump": 1
+        }
+      },
+      "values": {}
+    }
+  },
+  "U0": {
+    "output": {
+      "events": [],
+      "invalid_snapshots": [],
+      "native_dtype_roundtrip": true,
+      "observer_cost": "All arms retain four returned h tensors and defer transfer until batch end; input/model/RNG checks outside batch; per-call CPU ledger writes",
+      "observer_extra_gpu_arithmetic": 0,
+      "tensors": {
+        "call1/h": {
+          "alias_group": 0,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "0a02e0281133d44c3a6dfe9e25de51b559fe48c5281eecef5905970496fbb692",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call2/h": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "21edda7a07f69eded63556f29b394c59efff4d2c64c82214b4d72c8e3d369ec1",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call3/h": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "e269c39c43659bd81c7b3e2f36ad5079bad99dfd7bda62b063ada52f3397e11a",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call4/h": {
+          "alias_group": 3,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "19f440004bd75b64a1f5e239b0693464d6f31cb86729abae86f8e85a0dd0aca9",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        }
+      },
+      "values": {}
+    }
+  },
+  "U1": {
+    "output": {
+      "events": [],
+      "invalid_snapshots": [],
+      "native_dtype_roundtrip": true,
+      "observer_cost": "All arms retain four returned h tensors and defer transfer until batch end; input/model/RNG checks outside batch; per-call CPU ledger writes",
+      "observer_extra_gpu_arithmetic": 0,
+      "tensors": {
+        "call1/h": {
+          "alias_group": 0,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "b39c190d3161a37be4a8d5ed3a04ec621cda1ff344600c13866cc4562713a5f3",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call2/h": {
+          "alias_group": 1,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "27ff7e4dcb3c715edd0ff44192d6d24623a113008865509579c5804feb303318",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call3/h": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "1be0568d957a3f8cc8bf9549058148321296f43695dc4fbeea45f53ae2100fca",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "call4/h": {
+          "alias_group": 3,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "75e777e5f32d355813b12a4a7eb7e9f6299b08bdee02c40e3c0b18aefbaeeaf1",
+          "shape": [
+            9,
+            128
+          ],
+          "storage_offset": 0,
+          "stride": [
+            128,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        }
+      },
+      "values": {}
+    }
+  }
+}

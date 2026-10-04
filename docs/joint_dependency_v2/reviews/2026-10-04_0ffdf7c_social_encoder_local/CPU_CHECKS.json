@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "checks": [
+    "original return objects preserved; unused GRU sequence not retained",
+    "no extra calls/draws or input/parameter/buffer mutation",
+    "scope removes hooks; empty graph fields and deferred serialization valid",
+    "original exception propagates and hooks removed on failure",
+    "later in-place update invalidates all aliased snapshots",
+    "raw-bit comparator distinguishes dtype and signed zero",
+    "real P2/P3 input hashes/layouts authenticated; strict extracted16-key encoder matches both state fingerprints"
+  ],
+  "count": 7,
+  "device": "CPU_ONLY",
+  "real_encoder_forward_calls": 0,
+  "canonical_GPU_neutrality": "NOT_CERTIFIED_BY_CPU_TESTS",
+  "input_authentication": {
+    "status": "PASS",
+    "selected_input_source": "P2 only; P3 authentication only",
+    "constructor": {
+      "hidden_dim": 128,
+      "output_dim": 128,
+      "edge_dim": 14,
+      "num_message_layers": 1,
+      "dropout": 0,
+      "dt": 0.4
+    },
+    "strict_encoder_load": true,
+    "encoder_state_matches_P2_and_P3": true
+  },
+  "source_commit": "0ffdf7c35624e2ecc9e446bc0ee0cd9f3ac1e25a",
+  "command": "CUDA_VISIBLE_DEVICES='' ../.conda/rsjg/bin/python -B tools/jdv2_social_local_cpu.py",
+  "execution_stage": "before source commit, before GPU; exact same source then committed"
+}

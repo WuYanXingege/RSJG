@@ -66,6 +66,17 @@ def analyze(output):
     status=('LOCAL_UNOBSERVED_OUTPUT_VARIATION_REPRODUCED' if varies else 'NOT_REPRODUCED_IN_STANDALONE_CONTEXT_WITHIN_BUDGET') if len(complete)==4 else 'BLOCKED_OR_INCOMPLETE_SEE_EXECUTION'
     result={'task_status':'COMPLETE_BOUNDED_DIAGNOSTIC' if len(complete)==4 else 'BLOCKED_OR_INCOMPLETE',
         'status':status,'totals':totals,'unobserved_output_variation':varies,
+        'probe_source_commit':execution[complete[0]]['initialization']['source_commit'] if complete else None,
+        'prior_archive_commit':'634a467868c3d6a488837be4edc18ccff52db864',
+        'source_contract':'INPUT_MANIFEST.json; unique frozen P2 inputs, P3 authentication only',
+        'per_call':[{'process':p,'call':int(k.split('/')[0][4:]),
+                     'internal_observer':p.startswith('T') and k.startswith('call4/'),
+                     'completed':True,'h':row}
+                    for p,m in metadata.items() for k,row in m['output']['tensors'].items()],
+        'settings_by_process':{p:execution[p]['initialization']['settings'] for p in complete},
+        'batch_validation':{p:{k:execution[p]['validation'][k] for k in
+                            ('input_unchanged','model_unchanged','global_RNG_unchanged','hooks_removed','snapshots_valid')}
+                            for p in complete},
         'unobserved_calls':sum(not (k.startswith('T') and '/call4/' in k) for k in outputs),
         'observed_calls':sum(k.startswith('T') and '/call4/' in k for k in outputs),
         'observer_semantic_snapshot_contract':'PASS_CHECKED_PROPERTIES_ONLY' if contracts_pass else 'NOT_ESTABLISHED',
