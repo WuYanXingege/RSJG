@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "device": "CPU_ONLY",
+  "probe_source_commit": "80ee0e2c1762b019a43e7297e12e2fd880a8ed03",
+  "command": "CUDA_VISIBLE_DEVICES='' ../.conda/rsjg/bin/python -B tools/jdv2_restart_cpu_checks.py",
+  "count": 8,
+  "checks": [
+    "disabled returns original object, no trace",
+    "enabled preserves return identity, values and CPU RNG",
+    "empty, alias, signed zero and native BF16 serialization",
+    "later in-place update invalidates both alias snapshots",
+    "dtype mismatch and signed-zero bits cannot masquerade as bitwise equal",
+    "module inputs, parameters, buffers and output unchanged",
+    "actual masked Gumbel and exact solver, same explicit/global RNG, assignment and integer objective",
+    "actual randn/randn_like passthrough, unchanged draws and RNG post-state"
+  ],
+  "GPU_neutrality": "NOT_TESTED_BY_CPU_CHECKS",
+  "old_700_permutation_suite_repeated": false
+}

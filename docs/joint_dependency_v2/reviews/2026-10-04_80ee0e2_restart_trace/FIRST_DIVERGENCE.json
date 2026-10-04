@@ -1,0 +1,534 @@
+{
+  "first_divergent_operator": null,
+  "historical_root_cause": "OPEN",
+  "lower_kernel_cause": null,
+  "only_next_recommendation": "Separately authorize a minimal SocialMotionEncoder boundary/observer-neutrality diagnosis using captured identical inputs before any operator attribution or energy intervention.",
+  "region_replays": 0,
+  "status": "REPRODUCED_OUTPUT_DIVERGENCE_TRACE_INCONCLUSIVE",
+  "stop_reason": "56 complete forwards reached; trace neutrality remains uncertified. No operator/region follow-up.",
+  "trace_neutrality": "TRACE_NEUTRALITY_UNCERTIFIED",
+  "traced_P2_P3": {
+    "Round0_Round1_Round2_IDs_all_equal": true,
+    "Y_equal": true,
+    "actual_diffusion_draws": 121,
+    "actual_diffusion_draws_all_bitwise_equal": true,
+    "actual_round0_Gumbel_and_perturbed_equal": true,
+    "actual_solver_problem_count": 36,
+    "additional_P2_precheck_CPU_solver_calls": 36,
+    "all_actual_CPU_objective_rechecks_pass": true,
+    "boundary_inputs": {
+      "SocialMotionEncoder.forward/000/input/edge_feat": {
+        "P2": {
+          "alias_group": 13,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "P3": {
+          "alias_group": 13,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "b9fcb0a2df5b371a61756966cc4bd2fd64d91be89933913880901a7d78e49da2",
+          "shape": [
+            36,
+            14
+          ],
+          "storage_offset": 0,
+          "stride": [
+            14,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "dtype_shape_raw_equal": true
+      },
+      "SocialMotionEncoder.forward/000/input/edge_index": {
+        "P2": {
+          "alias_group": 23,
+          "device": "cuda:0",
+          "dtype": "torch.int64",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "P3": {
+          "alias_group": 23,
+          "device": "cuda:0",
+          "dtype": "torch.int64",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "1692219a34cf8ef0d989cb2b85cb26c0ef5083ae3fec4a104913605bb030d809",
+          "shape": [
+            2,
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            36,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "dtype_shape_raw_equal": true
+      },
+      "SocialMotionEncoder.forward/000/input/edge_weight": {
+        "P2": {
+          "alias_group": 14,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "P3": {
+          "alias_group": 14,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "a7942a89cf64580e599b37094919a9f0379c99dece7f1be35fdf2ac8bc58993e",
+          "shape": [
+            36
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "dtype_shape_raw_equal": true
+      },
+      "SocialMotionEncoder.forward/000/input/obs_traj": {
+        "P2": {
+          "alias_group": 21,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "108364e73182431de1664b47b9aed49b837c9308612b3733d9b7939613ce3e6e",
+          "shape": [
+            9,
+            8,
+            2
+          ],
+          "storage_offset": 0,
+          "stride": [
+            16,
+            2,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "P3": {
+          "alias_group": 21,
+          "device": "cuda:0",
+          "dtype": "torch.float32",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "108364e73182431de1664b47b9aed49b837c9308612b3733d9b7939613ce3e6e",
+          "shape": [
+            9,
+            8,
+            2
+          ],
+          "storage_offset": 0,
+          "stride": [
+            16,
+            2,
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "dtype_shape_raw_equal": true
+      },
+      "SocialMotionEncoder.forward/000/input/scene_index": {
+        "P2": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.int64",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "834a709ba2534ebe3ee1397fd4f7bd288b2acc1d20a08d6c862dcd99b6f04400",
+          "shape": [
+            9
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "P3": {
+          "alias_group": 2,
+          "device": "cuda:0",
+          "dtype": "torch.int64",
+          "lifetime": "held_until_deferred_dump",
+          "raw_sha256": "834a709ba2534ebe3ee1397fd4f7bd288b2acc1d20a08d6c862dcd99b6f04400",
+          "shape": [
+            9
+          ],
+          "storage_offset": 0,
+          "stride": [
+            1
+          ],
+          "valid_snapshot": true,
+          "version_at_capture": 0,
+          "version_at_dump": 0
+        },
+        "dtype_shape_raw_equal": true
+      }
+    },
+    "conditional_scores": {
+      "1": {
+        "bitwise_equal": false,
+        "different_elements": 1079,
+        "dtype_a": "torch.float32",
+        "dtype_b": "torch.float32",
+        "dtype_equal": true,
+        "first_a": "12.837047576904297",
+        "first_b": "12.83704948425293",
+        "first_coordinate": [
+          0,
+          0,
+          2
+        ],
+        "max_abs": 3.814697265625e-06,
+        "numerically_equal": false,
+        "raw_sha256_a": "5afd04d84a5508b3136c021f13e732006e7473d8855f39267e02a405d2f31bc0",
+        "raw_sha256_b": "c84501962d7e5139c11518bdb6385fca5579ebacde99f66e3607b876f115637a",
+        "shape_a": [
+          9,
+          20,
+          21
+        ],
+        "shape_b": [
+          9,
+          20,
+          21
+        ],
+        "shape_equal": true
+      },
+      "2": {
+        "bitwise_equal": false,
+        "different_elements": 1124,
+        "dtype_a": "torch.float32",
+        "dtype_b": "torch.float32",
+        "dtype_equal": true,
+        "first_a": "19.636856079101562",
+        "first_b": "19.636852264404297",
+        "first_coordinate": [
+          0,
+          0,
+          0
+        ],
+        "max_abs": 5.7220458984375e-06,
+        "numerically_equal": false,
+        "raw_sha256_a": "53e82a2ecbc3f6d18436b7b30cc7e14bcfa3ce9e5bf779354567d0da91782080",
+        "raw_sha256_b": "c7dbada0027abc72b98357d5cce8116293a7fef4635e80d0f356f7284e364555",
+        "shape_a": [
+          9,
+          20,
+          21
+        ],
+        "shape_b": [
+          9,
+          20,
+          21
+        ],
+        "shape_equal": true
+      }
+    },
+    "difference": {
+      "bitwise_equal": false,
+      "different_elements": 690,
+      "dtype_a": "torch.float32",
+      "dtype_b": "torch.float32",
+      "dtype_equal": true,
+      "first_a": "0.35387352108955383",
+      "first_b": "0.35387325286865234",
+      "first_coordinate": [
+        0,
+        0
+      ],
+      "max_abs": 4.76837158203125e-07,
+      "numerically_equal": false,
+      "raw_sha256_a": "a588f91b53fc5e46f44b1a6771e93c39f5369112273ad357e324edcfa6daa296",
+      "raw_sha256_b": "3c2fe1e75c9e2bc807fac70329f16aac6af72e9f50c4db4761b026ec9c82e964",
+      "shape_a": [
+        9,
+        128
+      ],
+      "shape_b": [
+        9,
+        128
+      ],
+      "shape_equal": true
+    },
+    "earliest_captured_boundary": "SocialMotionEncoder.forward/000/output",
+    "exact_actual_priorities_equal": true,
+    "explicit_generator_states": {
+      "P2": {
+        "initial": {
+          "after_sha256": "6d438c8f6c5e1edb39f5c816d2a85f99eacecdec6bc55f7c3b3f5c7ba570201a",
+          "before_sha256": "9f67e4cca63526eea5d6d272a19565ab76173dd5b99f28695f3aaf8766b957c9",
+          "consumed_state_changed": true
+        },
+        "round_1": {
+          "after_sha256": "36b30c5f70796a76c11bb7e9aac36fcca29650317f9872ef8a140ae1e7739d50",
+          "before_sha256": "36b30c5f70796a76c11bb7e9aac36fcca29650317f9872ef8a140ae1e7739d50",
+          "consumed_state_changed": false
+        },
+        "round_2": {
+          "after_sha256": "df4de6cdb16ce9c20b09c0144c4042eb5fb211eabe258e58a48213a7b881a3ec",
+          "before_sha256": "df4de6cdb16ce9c20b09c0144c4042eb5fb211eabe258e58a48213a7b881a3ec",
+          "consumed_state_changed": false
+        }
+      },
+      "P3": {
+        "initial": {
+          "after_sha256": "6d438c8f6c5e1edb39f5c816d2a85f99eacecdec6bc55f7c3b3f5c7ba570201a",
+          "before_sha256": "9f67e4cca63526eea5d6d272a19565ab76173dd5b99f28695f3aaf8766b957c9",
+          "consumed_state_changed": true
+        },
+        "round_1": {
+          "after_sha256": "36b30c5f70796a76c11bb7e9aac36fcca29650317f9872ef8a140ae1e7739d50",
+          "before_sha256": "36b30c5f70796a76c11bb7e9aac36fcca29650317f9872ef8a140ae1e7739d50",
+          "consumed_state_changed": false
+        },
+        "round_2": {
+          "after_sha256": "df4de6cdb16ce9c20b09c0144c4042eb5fb211eabe258e58a48213a7b881a3ec",
+          "before_sha256": "df4de6cdb16ce9c20b09c0144c4042eb5fb211eabe258e58a48213a7b881a3ec",
+          "consumed_state_changed": false
+        }
+      }
+    },
+    "first_ID_divergent_round": null,
+    "formal_CPU_solver_calls": 72,
+    "qualifier": "diagnostic clue only; observer neutrality uncertified; not an operator or historical root-cause certification"
+  },
+  "untraced_P0_P1": {
+    "Round0_IDs_bitwise_equal": true,
+    "agent_feat_difference": {
+      "bitwise_equal": false,
+      "different_elements": 554,
+      "dtype_a": "torch.float32",
+      "dtype_b": "torch.float32",
+      "dtype_equal": true,
+      "first_a": "0.35387322306632996",
+      "first_b": "0.35387328267097473",
+      "first_coordinate": [
+        0,
+        0
+      ],
+      "max_abs": 3.5762786865234375e-07,
+      "numerically_equal": false,
+      "raw_sha256_a": "8e6fcba88a5a26336b598e81e7d47a3b6fdf4f0063a332fa84479730324a285d",
+      "raw_sha256_b": "78e64827d6f0a24a60f9d39018da292711729e8faddc0438b0cec6dea68b9d0f",
+      "shape_a": [
+        9,
+        128
+      ],
+      "shape_b": [
+        9,
+        128
+      ],
+      "shape_equal": true
+    },
+    "all_three_global_rng_boundaries_equal": true,
+    "first_ID_divergent_round": "UNKNOWN_ROUND1_OR_ROUND2; no internal untraced round1 payload",
+    "window13": {
+      "all_bitwise_equal": false,
+      "differences": {
+        "Y": {
+          "bitwise_equal": false,
+          "different_elements": 696,
+          "dtype_a": "torch.float32",
+          "dtype_b": "torch.float32",
+          "dtype_equal": true,
+          "first_a": "4.43648099899292",
+          "first_b": "4.492074966430664",
+          "first_coordinate": [
+            2,
+            0,
+            0,
+            0
+          ],
+          "max_abs": 2.2655719965696335,
+          "numerically_equal": false,
+          "raw_sha256_a": "fbbaed60c63f9b0670f5310925c6b026f47bc091e452be15b888ff19c9997cf3",
+          "raw_sha256_b": "68ec361ce689d639f16820ef557ebc094785f0ecb2342562a186c4f591513250",
+          "shape_a": [
+            9,
+            20,
+            12,
+            2
+          ],
+          "shape_b": [
+            9,
+            20,
+            12,
+            2
+          ],
+          "shape_equal": true
+        },
+        "edge_relation_embedding_original_world": {
+          "bitwise_equal": false,
+          "different_elements": 6706,
+          "dtype_a": "torch.float32",
+          "dtype_b": "torch.float32",
+          "dtype_equal": true,
+          "first_a": "0.06017680466175079",
+          "first_b": "0.0601767972111702",
+          "first_coordinate": [
+            0,
+            0,
+            1
+          ],
+          "max_abs": 0.03799504321068525,
+          "numerically_equal": false,
+          "raw_sha256_a": "2a66196cab7dc372bf8124f57a1e68b89638b6db1e70c749ca3660abfd5eb8cc",
+          "raw_sha256_b": "f129b4f16dad47eeaa70b1d56c1c130ef06a5d5f42ddd7d26b001fbd05045357",
+          "shape_a": [
+            36,
+            20,
+            16
+          ],
+          "shape_b": [
+            36,
+            20,
+            16
+          ],
+          "shape_equal": true
+        },
+        "joint_goals_map": {
+          "bitwise_equal": false,
+          "different_elements": 56,
+          "dtype_a": "torch.float32",
+          "dtype_b": "torch.float32",
+          "dtype_equal": true,
+          "first_a": "32.0",
+          "first_b": "33.0",
+          "first_coordinate": [
+            2,
+            0,
+            0
+          ],
+          "max_abs": 5.5,
+          "numerically_equal": false,
+          "raw_sha256_a": "808030615c35566fe9904287b7922ee94c3d4551a81ba0d85434bf3f04cc4134",
+          "raw_sha256_b": "f03602a69b8ee81fbc6e1342b279a911dbd666830515099137a40e9418b8aea2",
+          "shape_a": [
+            9,
+            20,
+            2
+          ],
+          "shape_b": [
+            9,
+            20,
+            2
+          ],
+          "shape_equal": true
+        },
+        "joint_goals_world": {
+          "bitwise_equal": false,
+          "different_elements": 58,
+          "dtype_a": "torch.float32",
+          "dtype_b": "torch.float32",
+          "dtype_equal": true,
+          "first_a": "-1.477278470993042",
+          "first_b": "-0.0963217094540596",
+          "first_coordinate": [
+            2,
+            0,
+            0
+          ],
+          "max_abs": 2.251969091594219,
+          "numerically_equal": false,
+          "raw_sha256_a": "aa56a4cd887d4cc9697db57fa61b09ec35ac4cdf6ce7b8d3883772022980f636",
+          "raw_sha256_b": "de13139313895bb042fa8ef2a948112122e8ad7c6da24eccfb0b3106edcb5fc0",
+          "shape_a": [
+            9,
+            20,
+            2
+          ],
+          "shape_b": [
+            9,
+            20,
+            2
+          ],
+          "shape_equal": true
+        },
+        "selected_candidate_ids": {
+          "bitwise_equal": false,
+          "different_elements": 29,
+          "dtype_a": "torch.int64",
+          "dtype_b": "torch.int64",
+          "dtype_equal": true,
+          "first_a": "20",
+          "first_b": "14",
+          "first_coordinate": [
+            2,
+            0
+          ],
+          "max_abs": 18.0,
+          "numerically_equal": false,
+          "raw_sha256_a": "f99a982d7da65e4d471fd9527bbee3dd1a78f50146c2ae39f0a0dea3b6ee743c",
+          "raw_sha256_b": "6071e9ddee680b178cc3ffa8bd441cdcc5582c412eaff1296ffde05b1d17fc0f",
+          "shape_a": [
+            9,
+            20
+          ],
+          "shape_b": [
+            9,
+            20
+          ],
+          "shape_equal": true
+        }
+      },
+      "equal_tensor_count": 17,
+      "keys_equal": true,
+      "tensor_count": 22
+    }
+  }
+}
