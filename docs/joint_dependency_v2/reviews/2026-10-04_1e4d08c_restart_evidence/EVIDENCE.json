@@ -1,0 +1,545 @@
+{
+  "status": "COMPLETE_READ_ONLY_INVENTORY",
+  "root_cause_status": "OPEN_INSUFFICIENT_INTERNAL_TRACES",
+  "reviewed_source_commit": "1e4d08c96ff058e7337c782fcdb5440d9ad631cf",
+  "scope": "Existing saved NPZ/metadata/file hashes and source inspection only; no metrics rerun, no model/torch import, no GPU, no sampling",
+  "prior_archive_files_sha256_verified": 13,
+  "prefix_records_per_attempt": 36,
+  "NPZ_records_authenticated": 72,
+  "first_different_saved_window_index": 9,
+  "prefix_changes": [
+    {
+      "window_index": 9,
+      "different_arrays": {
+        "edge_relation_embedding_original_world": {
+          "shape": [
+            21,
+            20,
+            16
+          ],
+          "dtype": "float32",
+          "different_elements": 3294,
+          "max_abs_difference": 7.450580596923828e-08,
+          "first_array_coordinate": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "window_index": 10,
+      "different_arrays": {
+        "edge_relation_embedding_original_world": {
+          "shape": [
+            28,
+            20,
+            16
+          ],
+          "dtype": "float32",
+          "different_elements": 3177,
+          "max_abs_difference": 7.450580596923828e-08,
+          "first_array_coordinate": [
+            0,
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "window_index": 11,
+      "different_arrays": {
+        "edge_relation_embedding_original_world": {
+          "shape": [
+            28,
+            20,
+            16
+          ],
+          "dtype": "float32",
+          "different_elements": 3427,
+          "max_abs_difference": 8.940696716308594e-08,
+          "first_array_coordinate": [
+            0,
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "window_index": 12,
+      "different_arrays": {
+        "edge_relation_embedding_original_world": {
+          "shape": [
+            36,
+            20,
+            16
+          ],
+          "dtype": "float32",
+          "different_elements": 4583,
+          "max_abs_difference": 5.960464477539063e-08,
+          "first_array_coordinate": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "window_index": 13,
+      "different_arrays": {
+        "Y": {
+          "shape": [
+            9,
+            20,
+            12,
+            2
+          ],
+          "dtype": "float32",
+          "different_elements": 696,
+          "max_abs_difference": 2.2655719965696335,
+          "first_array_coordinate": [
+            2,
+            0,
+            0,
+            0
+          ]
+        },
+        "selected_candidate_ids": {
+          "shape": [
+            9,
+            20
+          ],
+          "dtype": "int64",
+          "different_elements": 29,
+          "max_abs_difference": 18.0,
+          "first_array_coordinate": [
+            2,
+            0
+          ]
+        },
+        "joint_goals_world": {
+          "shape": [
+            9,
+            20,
+            2
+          ],
+          "dtype": "float32",
+          "different_elements": 58,
+          "max_abs_difference": 2.251969091594219,
+          "first_array_coordinate": [
+            2,
+            0,
+            0
+          ]
+        },
+        "joint_goals_map": {
+          "shape": [
+            9,
+            20,
+            2
+          ],
+          "dtype": "float32",
+          "different_elements": 56,
+          "max_abs_difference": 5.5,
+          "first_array_coordinate": [
+            2,
+            0,
+            0
+          ]
+        },
+        "edge_relation_embedding_original_world": {
+          "shape": [
+            36,
+            20,
+            16
+          ],
+          "dtype": "float32",
+          "different_elements": 7266,
+          "max_abs_difference": 0.03799504321068525,
+          "first_array_coordinate": [
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ],
+  "target_window13": {
+    "window_index": 13,
+    "source_id": "eth5/eth/val/biwi_eth.txt",
+    "window_id": "valid/valid_batch_0014.pkl",
+    "N": 9,
+    "E": 36,
+    "available_array_fields": [
+      "GT",
+      "Y",
+      "candidate_log_prior_K",
+      "component_index",
+      "degree",
+      "edge_index",
+      "edge_relation_embedding_original_world",
+      "edge_weight",
+      "frame_ids",
+      "future_mask",
+      "goal_candidates_map_K",
+      "goal_candidates_world_K",
+      "homography_H",
+      "joint_goals_map",
+      "joint_goals_world",
+      "metric_mask",
+      "sample_indices",
+      "sample_valid",
+      "sample_weights",
+      "selected_candidate_ids",
+      "trunk_candidate_id",
+      "trunk_goal_world"
+    ],
+    "equal_array_fields": [
+      "GT",
+      "candidate_log_prior_K",
+      "component_index",
+      "degree",
+      "edge_index",
+      "edge_weight",
+      "frame_ids",
+      "future_mask",
+      "goal_candidates_map_K",
+      "goal_candidates_world_K",
+      "homography_H",
+      "metric_mask",
+      "sample_indices",
+      "sample_valid",
+      "sample_weights",
+      "trunk_candidate_id",
+      "trunk_goal_world"
+    ],
+    "different_arrays": {
+      "Y": {
+        "shape": [
+          9,
+          20,
+          12,
+          2
+        ],
+        "dtype": "float32",
+        "different_elements": 696,
+        "max_abs_difference": 2.2655719965696335,
+        "first_array_coordinate": [
+          2,
+          0,
+          0,
+          0
+        ]
+      },
+      "selected_candidate_ids": {
+        "shape": [
+          9,
+          20
+        ],
+        "dtype": "int64",
+        "different_elements": 29,
+        "max_abs_difference": 18.0,
+        "first_array_coordinate": [
+          2,
+          0
+        ]
+      },
+      "joint_goals_world": {
+        "shape": [
+          9,
+          20,
+          2
+        ],
+        "dtype": "float32",
+        "different_elements": 58,
+        "max_abs_difference": 2.251969091594219,
+        "first_array_coordinate": [
+          2,
+          0,
+          0
+        ]
+      },
+      "joint_goals_map": {
+        "shape": [
+          9,
+          20,
+          2
+        ],
+        "dtype": "float32",
+        "different_elements": 56,
+        "max_abs_difference": 5.5,
+        "first_array_coordinate": [
+          2,
+          0,
+          0
+        ]
+      },
+      "edge_relation_embedding_original_world": {
+        "shape": [
+          36,
+          20,
+          16
+        ],
+        "dtype": "float32",
+        "different_elements": 7266,
+        "max_abs_difference": 0.03799504321068525,
+        "first_array_coordinate": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "input_bytes_rehashed": {
+      "raw_source_sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33",
+      "source_batch_sha256": "57c6a791ea5f9bb81a94a28f3a482a520ae953d2b503a54d2c195fc75d21ef16",
+      "deployment_cache_sha256": "d175d0a41a467682c026877e922781ace3322e671760d5acda85f7b9ed085bec"
+    },
+    "old_npz_sha256": "f04ab5f6532ce029530d23e8fd9f060826cc66c878c7ed4126ee7b0acc31206b",
+    "new_npz_sha256": "4cdc3fe3e89fbd83752eebf6c82f442c3c38f4c7bbf12954340aa172012d51f8",
+    "candidate_ID_changes": [
+      {
+        "agent_axis": 2,
+        "sample_axis": 0,
+        "old": 14,
+        "new": 20
+      },
+      {
+        "agent_axis": 2,
+        "sample_axis": 2,
+        "old": 2,
+        "new": 14
+      },
+      {
+        "agent_axis": 2,
+        "sample_axis": 9,
+        "old": 20,
+        "new": 2
+      },
+      {
+        "agent_axis": 3,
+        "sample_axis": 0,
+        "old": 9,
+        "new": 20
+      },
+      {
+        "agent_axis": 3,
+        "sample_axis": 2,
+        "old": 20,
+        "new": 12
+      },
+      {
+        "agent_axis": 3,
+        "sample_axis": 8,
+        "old": 10,
+        "new": 9
+      },
+      {
+        "agent_axis": 3,
+        "sample_axis": 10,
+        "old": 12,
+        "new": 5
+      },
+      {
+        "agent_axis": 3,
+        "sample_axis": 11,
+        "old": 6,
+        "new": 10
+      },
+      {
+        "agent_axis": 3,
+        "sample_axis": 17,
+        "old": 5,
+        "new": 2
+      },
+      {
+        "agent_axis": 3,
+        "sample_axis": 19,
+        "old": 2,
+        "new": 6
+      },
+      {
+        "agent_axis": 4,
+        "sample_axis": 1,
+        "old": 10,
+        "new": 16
+      },
+      {
+        "agent_axis": 5,
+        "sample_axis": 0,
+        "old": 19,
+        "new": 16
+      },
+      {
+        "agent_axis": 5,
+        "sample_axis": 2,
+        "old": 16,
+        "new": 19
+      },
+      {
+        "agent_axis": 6,
+        "sample_axis": 0,
+        "old": 8,
+        "new": 0
+      },
+      {
+        "agent_axis": 6,
+        "sample_axis": 4,
+        "old": 11,
+        "new": 8
+      },
+      {
+        "agent_axis": 6,
+        "sample_axis": 7,
+        "old": 0,
+        "new": 11
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 0,
+        "old": 3,
+        "new": 15
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 1,
+        "old": 19,
+        "new": 20
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 2,
+        "old": 2,
+        "new": 8
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 5,
+        "old": 14,
+        "new": 6
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 6,
+        "old": 20,
+        "new": 3
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 7,
+        "old": 15,
+        "new": 1
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 8,
+        "old": 8,
+        "new": 19
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 12,
+        "old": 1,
+        "new": 14
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 13,
+        "old": 6,
+        "new": 10
+      },
+      {
+        "agent_axis": 7,
+        "sample_axis": 15,
+        "old": 10,
+        "new": 2
+      },
+      {
+        "agent_axis": 8,
+        "sample_axis": 0,
+        "old": 20,
+        "new": 5
+      },
+      {
+        "agent_axis": 8,
+        "sample_axis": 4,
+        "old": 5,
+        "new": 8
+      },
+      {
+        "agent_axis": 8,
+        "sample_axis": 11,
+        "old": 8,
+        "new": 20
+      }
+    ],
+    "same_forward_baseline_delta_new_minus_old": {
+      "JADE": -0.0994449257850647,
+      "JFDE": -0.09996044635772705,
+      "RME_legacy_full_mask": 0.06967759132385254,
+      "minADE": 0.006935715675354004,
+      "minFDE": -0.0021141779919465753
+    }
+  },
+  "resolved_args_different_keys": [
+    "model_dir",
+    "save_dir"
+  ],
+  "model_config_helper_source_fingerprints_equal": true,
+  "saved_runtime_artifacts": {
+    "old": [
+      "runtime/evaluation_protocol.json"
+    ],
+    "new": [
+      "runtime/evaluation_protocol.json"
+    ]
+  },
+  "artifact_inventory_counts": {
+    "old": 353,
+    "new": 1396
+  },
+  "artifact_inventory_sha256": {
+    "old": "fa8ac9cfc5e25bdce20152f4843bf0e3a97c6524169a60444c3704661fcef0e0",
+    "new": "257d7c61d42e611e87313300bfc87f02895feae9a6c7b57c38712e6c8d2e46ed"
+  },
+  "non_window_artifacts": {
+    "old": [
+      "INCOMPLETE.json",
+      "RESOLVED_ARGS.json",
+      "runtime/evaluation_protocol.json"
+    ],
+    "new": [
+      "BANK_MANIFEST.json",
+      "INCOMPLETE.json",
+      "RECOVERY_SOURCE_INCOMPLETE.json",
+      "RECOVERY_SOURCE_RESOLVED_ARGS.json",
+      "RESOLVED_ARGS.json",
+      "runtime/evaluation_protocol.json"
+    ]
+  },
+  "missing_in_both_export_artifacts": [
+    "Round0 initial_candidate_index, sampled uniform/Gumbel bytes and generator states",
+    "Round1/Round2 conditional scores, source/destination energies and accumulated costs",
+    "exact-assignment realized tie priorities/objective tuples and intermediate selected IDs",
+    "encoder agent/edge features, base relation logits, unary score and operator dtype/device traces",
+    "trajectory generator noise, RNG snapshots/payloads before forward, velocity tensor",
+    "operator execution trace and first-difference instrumentation"
+  ],
+  "important_semantics": [
+    "Saved relation embedding is selected_joint_relation AFTER final selected IDs, not the per-round relation tensor.",
+    "Initial candidate IDs exist transiently in sampler return; the exporter does not serialize them.",
+    "diagnostic_callback defaults None; reviewed export path does not attach a round-trace writer.",
+    "Exact persistent refinement rounds do not use structured-Gumbel assignment noise; Round0 does use Gumbel initialization.",
+    "Seed and tie-generation source are derivation recipes, not recorded realized payload evidence.",
+    "rng_capture_serialization_unchanged is a boolean post-forward capture check, not persisted RNG state nor cross-run RNG equality.",
+    "First changed saved record is not the first changed internal operator; NPZ key order is not execution order."
+  ],
+  "replay_executed": false,
+  "training_started": false,
+  "SDD_resume_started": false
+}
