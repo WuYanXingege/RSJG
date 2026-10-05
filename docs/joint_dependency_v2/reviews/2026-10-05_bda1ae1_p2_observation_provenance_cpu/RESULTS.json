@@ -1,0 +1,622 @@
+{
+  "artifact_bytes": 8721506830,
+  "budget": {
+    "concurrent_compute_threads_max": 2,
+    "conservative_concurrent_rss_estimate_bytes": 3063652352,
+    "cumulative_wall_at_full_verify_seconds": 2812.804703235626,
+    "limit_artifact_bytes": 34359738368,
+    "limit_rss_bytes": 8589934592,
+    "limit_wall_seconds": 5400,
+    "materialization_peak_rss_bytes": 916168704,
+    "measured_all_process_combined_peak_rss": "UNKNOWN: data phases measured; earlier test/metadata process peaks not retained; estimate is not measured aggregate",
+    "total_task_including_archival_wall": "Final remote receipt timestamp; same 07:46:57 UTC origin, no restarted budget"
+  },
+  "canary_boundary_interventions": 0,
+  "canary_out_of_raster_slots": 1,
+  "canary_rule_interpretation": "No unauthorized temporal queries or modified raster boundary handling; not zero raster-exterior coordinates",
+  "completed": 4249,
+  "deliberate_cuda_query_attempts": 10,
+  "expected": 4249,
+  "failed": [],
+  "first_metadata_preparation_guard_snapshot": "NOT_RETAINED; only final metadata retry process snapshot retained",
+  "first_test_setup_guard_snapshot": "NOT_RETAINED; tests executed=0",
+  "forwarded_guarded_cuda_calls": 0,
+  "full_source_pickle_deserializations": 0,
+  "gpu_compute_calls": 0,
+  "hash_mismatch": 0,
+  "history_boundaries": [
+    "Old five checkpoints remain protocol-violating; not loaded or requalified",
+    "Historical CUDA query coverage gap, historical forward/backward/label exposure retained",
+    "Prior pairing effect, seed2036 non-bitwise resume and first-divergence causal limits unchanged",
+    "Real full20 input parity NOT_RUN; new-objective benefit NOT_TESTED"
+  ],
+  "independent_missing_conditions": {
+    "fresh_base": 1,
+    "fresh_goal": 1,
+    "future_stage_authorization": "NOT_GRANTED",
+    "l2_adapter": "NOT_IMPLEMENTED",
+    "map_qualification_windows": 4249,
+    "new_deployment_cache_windows": 4249,
+    "purpose_separated_targets": {
+      "inner_valid": 320,
+      "outer": "NOT_AUTHORIZED_NOT_REQUIRED",
+      "train": 3484
+    },
+    "raw_missing_artifact_refs": {
+      "deployment": {
+        "inner_valid": 320,
+        "outer": 445,
+        "train": 3484
+      },
+      "target": {
+        "inner_valid": 320,
+        "outer": 445,
+        "train": 3484
+      },
+      "teacher": {
+        "inner_valid": 320,
+        "outer": 445,
+        "train": 3484
+      }
+    },
+    "recording_windows": 4249,
+    "shared_initial_state": 1,
+    "train_only_teachers": 3484
+  },
+  "intercepted_cuda_queries": 10,
+  "local_output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/p2_observation_bda1ae1_20261005",
+  "map_provenance": "UNKNOWN",
+  "maximum_single_artifact_bytes": 12071433,
+  "missing": [],
+  "next_step": "Request explicit approval for the separately specified UNIV grouping proposal; no training and no automatic protocol migration",
+  "numerical_unknown": 0,
+  "observation_materialization": "COMPLETE",
+  "observation_payload_contract": "PASSED",
+  "out_of_raster_definition": "native pixel /8 outside downsampled grid center range [0,w-1] x [0,h-1]; not equivalent to outside original continuous raster area",
+  "per_source_read_accounting_file": "PER_SOURCE_READ_ACCOUNTING.json",
+  "performance_benefit_tested": false,
+  "preparation_grant_hash": "fc383470111b55b704bb305629e7ac3dee2e1b865a616d34b67b9d9c68909959",
+  "production_launch_readiness": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+  "proposal_status": "PROPOSAL_NOT_APPROVED",
+  "qualified_clean_base_count": 0,
+  "qualified_clean_goal_count": 0,
+  "real_launch_checks": [
+    {
+      "argv": [
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/CLEAN_GOAL_P2.yaml",
+        "--p2_manifest",
+        "docs/joint_dependency_v2/reviews/2026-10-05_bda1ae1_p2_observation_provenance_cpu/P2_RUNTIME_MANIFEST.json",
+        "--p2_manifest_hash",
+        "65d4532e3c6b9725249aee7705e745f645c848d949160104d7248f9df55efb7a",
+        "--device",
+        "cpu",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "mode": "goal",
+      "result": {
+        "device_calls": 0,
+        "reason": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "argv": [
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/CLEAN_JOINT_P2.yaml",
+        "--p2_manifest",
+        "docs/joint_dependency_v2/reviews/2026-10-05_bda1ae1_p2_observation_provenance_cpu/P2_RUNTIME_MANIFEST.json",
+        "--p2_manifest_hash",
+        "65d4532e3c6b9725249aee7705e745f645c848d949160104d7248f9df55efb7a",
+        "--device",
+        "cpu",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "mode": "joint",
+      "result": {
+        "device_calls": 0,
+        "reason": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "argv": [
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/A0_BLOCKED.yaml",
+        "--p2_manifest",
+        "docs/joint_dependency_v2/reviews/2026-10-05_bda1ae1_p2_observation_provenance_cpu/P2_RUNTIME_MANIFEST.json",
+        "--p2_manifest_hash",
+        "65d4532e3c6b9725249aee7705e745f645c848d949160104d7248f9df55efb7a",
+        "--device",
+        "cpu",
+        "--p2_launch_check",
+        "--p2_mode",
+        "cache",
+        "--phase",
+        "build-jdv2-cache"
+      ],
+      "exit_code": 2,
+      "mode": "cache",
+      "result": {
+        "device_calls": 0,
+        "reason": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "argv": [
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/A0_BLOCKED.yaml",
+        "--p2_manifest",
+        "docs/joint_dependency_v2/reviews/2026-10-05_bda1ae1_p2_observation_provenance_cpu/P2_RUNTIME_MANIFEST.json",
+        "--p2_manifest_hash",
+        "65d4532e3c6b9725249aee7705e745f645c848d949160104d7248f9df55efb7a",
+        "--device",
+        "cpu",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "mode": "l1_a0",
+      "result": {
+        "device_calls": 0,
+        "reason": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+        "status": "BLOCKED"
+      }
+    },
+    {
+      "argv": [
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/A1_BLOCKED.yaml",
+        "--p2_manifest",
+        "docs/joint_dependency_v2/reviews/2026-10-05_bda1ae1_p2_observation_provenance_cpu/P2_RUNTIME_MANIFEST.json",
+        "--p2_manifest_hash",
+        "65d4532e3c6b9725249aee7705e745f645c848d949160104d7248f9df55efb7a",
+        "--device",
+        "cpu",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "mode": "l1_a1",
+      "result": {
+        "device_calls": 0,
+        "reason": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+        "status": "BLOCKED"
+      }
+    }
+  ],
+  "real_model_backward_count": 0,
+  "real_model_constructors": 0,
+  "real_model_forward_count": 0,
+  "real_optimizer_updates": 0,
+  "real_run_counters": {
+    "completed": 4249,
+    "full_source_pickle_loads": 0,
+    "id_rows_parsed": 155688,
+    "observation_tensor_windows": 4249,
+    "raw_hash_bytes": 31252026,
+    "raw_hash_passes": 85,
+    "raw_scan_bytes": 5758268,
+    "real_future_queries": 0,
+    "real_target_tensors": 0,
+    "real_teacher_writes": 0,
+    "reused": 4257,
+    "static_asset_conversions": 16,
+    "unique_raw_obs_xy_decodes": 47758,
+    "window_local_observation_slots": 298192
+  },
+  "real_target_artifacts_created": 0,
+  "real_teacher_artifacts_created": 0,
+  "recording_provenance": "UNKNOWN",
+  "release_binding": "PARTIAL_AUTHOR_DISTRIBUTION_CHAIN_NO_LOCAL_MEMBER_BINDING",
+  "roles": {
+    "inner_valid": {
+      "agent_count_range": [
+        1,
+        5
+      ],
+      "agent_window_exposures": 621,
+      "boundary_interventions": 0,
+      "bytes": 205057856,
+      "completed": 320,
+      "expected": 320,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 1274953,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 22,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 320,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 4968
+    },
+    "outer": {
+      "agent_count_range": [
+        1,
+        8
+      ],
+      "agent_window_exposures": 1197,
+      "boundary_interventions": 0,
+      "bytes": 354382297,
+      "completed": 445,
+      "expected": 445,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 1897801,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 5,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 445,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 9576
+    },
+    "train": {
+      "agent_count_range": [
+        1,
+        57
+      ],
+      "agent_window_exposures": 35456,
+      "boundary_interventions": 0,
+      "bytes": 8162066677,
+      "completed": 3484,
+      "expected": 3484,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          60,
+          80
+        ],
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 12071433,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 1102,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 3484,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 283648
+    }
+  },
+  "runtime_manifest_hash": "65d4532e3c6b9725249aee7705e745f645c848d949160104d7248f9df55efb7a",
+  "sdd_changed": false,
+  "skills_or_apps_changed": false,
+  "source_rows_hash": "a3df43f81bd1c198d369b1607bf3e02ed7104c9197a094e9d93fcf6a0254e4c1",
+  "sources": {
+    "biwi_eth.txt": {
+      "agent_count_range": [
+        1,
+        9
+      ],
+      "agent_window_exposures": 368,
+      "boundary_interventions": 0,
+      "bytes": 81280655,
+      "completed": 139,
+      "expected": 139,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          60,
+          80
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 1561161,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 0,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 139,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 2944
+    },
+    "biwi_hotel.txt": {
+      "agent_count_range": [
+        1,
+        8
+      ],
+      "agent_window_exposures": 1197,
+      "boundary_interventions": 0,
+      "bytes": 354382297,
+      "completed": 445,
+      "expected": 445,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 1897801,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 5,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 445,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 9576
+    },
+    "crowds_zara01.txt": {
+      "agent_count_range": [
+        1,
+        14
+      ],
+      "agent_window_exposures": 2356,
+      "boundary_interventions": 0,
+      "bytes": 656865293,
+      "completed": 705,
+      "expected": 705,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 3143561,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 41,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 705,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 18848
+    },
+    "crowds_zara02.txt": {
+      "agent_count_range": [
+        1,
+        14
+      ],
+      "agent_window_exposures": 5910,
+      "boundary_interventions": 0,
+      "bytes": 1464449454,
+      "completed": 998,
+      "expected": 998,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 3143561,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 75,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 998,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 47280
+    },
+    "crowds_zara03.txt": {
+      "agent_count_range": [
+        1,
+        12
+      ],
+      "agent_window_exposures": 2488,
+      "boundary_interventions": 0,
+      "bytes": 681891531,
+      "completed": 695,
+      "expected": 695,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 2728329,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 53,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 695,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 19904
+    },
+    "students001.txt": {
+      "agent_count_range": [
+        13,
+        57
+      ],
+      "agent_window_exposures": 14295,
+      "boundary_interventions": 0,
+      "bytes": 3069077271,
+      "completed": 425,
+      "expected": 425,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 12071433,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 482,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 425,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 114360
+    },
+    "students003.txt": {
+      "agent_count_range": [
+        3,
+        40
+      ],
+      "agent_window_exposures": 10039,
+      "boundary_interventions": 0,
+      "bytes": 2208502473,
+      "completed": 522,
+      "expected": 522,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 8541769,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 451,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 522,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 80312
+    },
+    "uni_examples.txt": {
+      "agent_count_range": [
+        1,
+        5
+      ],
+      "agent_window_exposures": 621,
+      "boundary_interventions": 0,
+      "bytes": 205057856,
+      "completed": 320,
+      "expected": 320,
+      "failed": 0,
+      "hash_mismatch": 0,
+      "map_hw": [
+        [
+          72,
+          90
+        ]
+      ],
+      "map_protocol_permitted": 0,
+      "max_artifact_bytes": 1274953,
+      "missing": 0,
+      "numerical_unknown": 0,
+      "out_of_raster_obs_slots": 22,
+      "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+      "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+      "provenance_unknown": 320,
+      "real_future_queries": 0,
+      "real_targets": 0,
+      "real_teachers": 0,
+      "recording_verified": 0,
+      "window_local_obs_slots": 4968
+    }
+  },
+  "total": {
+    "agent_count_range": [
+      1,
+      57
+    ],
+    "agent_window_exposures": 37274,
+    "boundary_interventions": 0,
+    "bytes": 8721506830,
+    "completed": 4249,
+    "expected": 4249,
+    "failed": 0,
+    "hash_mismatch": 0,
+    "map_hw": [
+      [
+        60,
+        80
+      ],
+      [
+        72,
+        90
+      ]
+    ],
+    "map_protocol_permitted": 0,
+    "max_artifact_bytes": 12071433,
+    "missing": 0,
+    "numerical_unknown": 0,
+    "out_of_raster_obs_slots": 1129,
+    "per_group_peak_rss_bytes": "NOT_INSTRUMENTED; bounded by measured data-process high-water mark",
+    "per_group_runtime_seconds": "NOT_INSTRUMENTED; measured at process/phase scope in RUN files",
+    "provenance_unknown": 4249,
+    "real_future_queries": 0,
+    "real_targets": 0,
+    "real_teachers": 0,
+    "recording_verified": 0,
+    "window_local_obs_slots": 298192
+  },
+  "train_order_hash": "65b6b7216a5dfc2c77b897d6e3f12814b327d74f290769bd47fe6f67b6540557",
+  "training_runs": 0,
+  "uncovered_cuda_enumeration": "UNKNOWN: before torch import / unlisted native entrypoints",
+  "unique_cpu_tests_latest_passed": 50
+}

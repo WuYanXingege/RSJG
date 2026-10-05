@@ -1,0 +1,9 @@
+{
+  "status": "FAILED_BEFORE_TEST_EXECUTION",
+  "reason": "pytest plugin hook argument r must be named report; PluginValidationError during registration",
+  "test_cases_executed": 0,
+  "real_data_processing": 0,
+  "guard_installed": true,
+  "original_process_guard_counter_snapshot": "NOT_RETAINED; runner failed before final report",
+  "fix": "Correct hook signature and persist report even on setup exceptions. No production behavior changed."
+}

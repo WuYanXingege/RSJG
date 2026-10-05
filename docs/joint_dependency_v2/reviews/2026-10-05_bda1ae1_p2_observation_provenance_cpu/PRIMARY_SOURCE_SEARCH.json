@@ -1,0 +1,73 @@
+{
+  "searched_utc": "2026-10-05 07:49–07:58 UTC",
+  "direct_related_entries_limit": 8,
+  "direct_related_entries_used": 8,
+  "source_search_minutes_less_than": 15,
+  "new_annotation_archive_bytes_downloaded": 0,
+  "raw_videos_downloaded": 0,
+  "weights_downloaded": 0,
+  "entries": [
+    {
+      "url": "https://github.com/Winderting/GDTS",
+      "status": "READ",
+      "fixed_commit": "297d508558c10831983ea4b19c2b3e657459a449",
+      "local_fixed_read": "git -C ../GDTS show 297d508558c10831983ea4b19c2b3e657459a449:README.md",
+      "short_quote": "Provided by Goal-SAR",
+      "scope": "GDTS attributes dataset package to Goal-SAR, not proof of each local file/release member"
+    },
+    {
+      "url": "https://graphics.cs.ucy.ac.cy/research/downloads/crowd-data",
+      "status": "TIMEOUT",
+      "retries": 0
+    },
+    {
+      "url": "https://github.com/abduallahmohamed/Social-STGCNN",
+      "status": "READ_NO_BINDING_EVIDENCE",
+      "scope": "Auxiliary author implementation; no coordinate files read or numeric comparison"
+    },
+    {
+      "url": "https://github.com/luigifilippochiara/Goal-SAR",
+      "status": "READ",
+      "scope": "Author README references scripts/download_data.sh; no recording/segmentation producer binding"
+    },
+    {
+      "url": "https://github.com/Winderting/GDTS/blob/297d508558c10831983ea4b19c2b3e657459a449/download_data.sh",
+      "status": "WEB_CACHE_MISS_THEN_GITHUB_MCP_READ",
+      "git_blob_sha": "11494d64f6a78e1804fd5ce075413664448cab56",
+      "scope": "Exact same script bytes as Goal-SAR; archive link shared"
+    },
+    {
+      "url": "https://www.dropbox.com/s/luu2t6c6d24xvrb/dataset.zip?dl=1",
+      "status": "HEAD_FAILED_PROXY_DNS",
+      "error": "curl: (5) Could not resolve proxy: http",
+      "retries": 1,
+      "retry_result": "curl --noproxy '*' HEAD failed to connect to www.dropbox.com port 443; no response body",
+      "bytes_downloaded": 0,
+      "archive_sha256": null
+    },
+    {
+      "url": "https://github.com/luigifilippochiara/Goal-SAR/blob/main/scripts/download_data.sh",
+      "status": "GITHUB_MCP_READ",
+      "git_blob_sha": "11494d64f6a78e1804fd5ce075413664448cab56",
+      "fixed_content_identity": "Git blob 11494d64f6a78e1804fd5ce075413664448cab56; branch main fetched at stated access time",
+      "scope": "Same DropBox distribution URL; not archive SHA/member SHA or converter execution evidence"
+    },
+    {
+      "url": "https://openaccess.thecvf.com/content/CVPR2022W/Precognition/papers/Chiara_Goal-Driven_Self-Attentive_Recurrent_Networks_for_Trajectory_Prediction_CVPRW_2022_paper.pdf",
+      "status": "HTTP_403",
+      "scope": "No paper claims inferred from unavailable content"
+    }
+  ],
+  "conclusion": {
+    "release_path": "PARTIAL: GDTS author -> Goal-SAR distribution script -> shared Dropbox URL",
+    "local_member_binding": "UNKNOWN",
+    "recording_independence": "UNKNOWN",
+    "map_producer_permission": "UNKNOWN",
+    "protected_future_comparison": false
+  },
+  "local_search": {
+    "scope": "GDTS/RSJG repository README, download scripts, relative project archive/log/manifest filename search, registered source aliases and static assets; no unrelated filesystem search",
+    "archive_or_converter_execution_receipt_found": false,
+    "old_CMU_Google_NVlabs": "read archived fixed evidence, not relabelled or repeated as proof"
+  }
+}

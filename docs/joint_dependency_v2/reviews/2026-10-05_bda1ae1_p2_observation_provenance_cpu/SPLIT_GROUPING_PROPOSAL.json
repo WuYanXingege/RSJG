@@ -1,0 +1,45 @@
+{
+  "counts": {
+    "inner_valid": 1267,
+    "outer": 445,
+    "train": 2537
+  },
+  "family_draft": "p2_grouped_univ_hotel_v0",
+  "fixed_input_rows_hash": "a3df43f81bd1c198d369b1607bf3e02ed7104c9197a094e9d93fcf6a0254e4c1",
+  "goal_max_updates": 26250,
+  "joint_max_updates": 43750,
+  "map_qualification": "UNKNOWN",
+  "moved_member_hash": "bdcdd21cf6dd8995bea27d8881519704e37f8027a6d3b07b569cf884ce449ea9",
+  "moved_windows": 947,
+  "new_train_order": null,
+  "nominal_update_ratio_to_existing": 0.3147482014388489,
+  "packing": {
+    "inner_valid": {
+      "agent_window_exposures": 24955,
+      "packing_hash": "45153d0f74fe5bd78022872a5066e320e99d9b9fe48b6be7b6ddb700d13f428e",
+      "packs": 391
+    },
+    "train": {
+      "agent_window_exposures": 11122,
+      "packing_hash": "7f5ea9eb5214b31c3c1195dfd1f71dca6f416c4de8df7f93c92f9bd4ab73d1bd",
+      "packs": 175
+    }
+  },
+  "production_changes": 0,
+  "proposed_l1_native_windows": 2537,
+  "proposed_l1_reference_total_steps": "REQUIRES_NEW_PREREGISTRATION; not silently keep or change 3484",
+  "recording_independence_proven": false,
+  "schema_draft": "rsjg-p2-grouped-proposal-v0",
+  "source_role_mapping": {
+    "biwi_eth.txt": "train",
+    "biwi_hotel.txt": "outer",
+    "crowds_zara01.txt": "train",
+    "crowds_zara02.txt": "train",
+    "crowds_zara03.txt": "train",
+    "students001.txt": "inner_valid",
+    "students003.txt": "inner_valid",
+    "uni_examples.txt": "inner_valid"
+  },
+  "status": "PROPOSAL_NOT_APPROVED",
+  "wall_time_estimate": "UNKNOWN; cannot infer actual throughput or convergence"
+}

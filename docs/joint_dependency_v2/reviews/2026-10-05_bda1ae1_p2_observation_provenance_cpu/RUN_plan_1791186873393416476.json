@@ -1,0 +1,66 @@
+{
+  "budget": {
+    "bytes": 108,
+    "limits": {
+      "max_bytes": 34359738368,
+      "rss_bytes": 8589934592,
+      "seconds": 5400,
+      "start": 1791186417.0
+    },
+    "peak_rss_bytes": 770576384,
+    "wall_seconds": 457.4632408618927
+  },
+  "counters": {
+    "completed": 0,
+    "full_source_pickle_loads": 0,
+    "id_rows_parsed": 0,
+    "observation_tensor_windows": 0,
+    "raw_hash_bytes": 19735490,
+    "raw_hash_passes": 53,
+    "raw_scan_bytes": 0,
+    "real_future_queries": 0,
+    "real_target_tensors": 0,
+    "real_teacher_writes": 0,
+    "reused": 0,
+    "static_asset_conversions": 0,
+    "unique_raw_obs_xy_decodes": 0,
+    "window_local_observation_slots": 0
+  },
+  "errors": [],
+  "guard": {
+    "backward_calls": 0,
+    "counts": {},
+    "coverage": "Python calls and listed torch C entrypoints after torch import",
+    "entry": "CPU observation preparation",
+    "forwarded_cuda_calls": 0,
+    "gpu_compute_calls": 0,
+    "guarded_cuda_names": [
+      "_lazy_init",
+      "init",
+      "is_available",
+      "device_count",
+      "synchronize",
+      "get_device_name",
+      "get_device_properties",
+      "current_device",
+      "set_device",
+      "is_bf16_supported"
+    ],
+    "native_names": [
+      "_cuda_getDeviceCount",
+      "_cuda_init",
+      "_cuda_setDevice"
+    ],
+    "optimizer_updates": 0,
+    "pid": 2,
+    "ppid": 1,
+    "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+    "real_model_calls": 0,
+    "seconds": 4.063165329978801,
+    "torch_threads": 1
+  },
+  "phase": "plan",
+  "pid": 2,
+  "started_utc": "2026-10-05T07:54:33Z",
+  "status": "PLANNED"
+}

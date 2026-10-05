@@ -1,0 +1,740 @@
+{
+  "compute_threads_concurrent_max": 2,
+  "compute_threads_each": 1,
+  "first_metadata_preparation_guard_snapshot": "NOT_RETAINED: refreshed after evidence retry metadata; retained final process only; see COMMANDS_AND_FAILURE_HISTORY.md",
+  "first_test_setup_guard_snapshot": "NOT_RETAINED; zero test bodies executed",
+  "forwarded_guarded_cuda_calls": 0,
+  "guard_counts": {
+    "authorized_observation_loads": 8550,
+    "cuda_attempts": 8,
+    "cuda_intercepted": 8,
+    "cuda_native_attempts": 2,
+    "cuda_native_intercepted": 2,
+    "unauthorized_deserialization_attempts": 2,
+    "unauthorized_deserialization_intercepted": 2
+  },
+  "guarded_process_records": [
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "unauthorized_deserialization_attempts": 1,
+          "unauthorized_deserialization_intercepted": 1
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 2.9564932639477775,
+        "torch_threads": 1
+      },
+      "path": "CPU_TESTS_2.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 15
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 1.6849697559373453,
+        "torch_threads": 1
+      },
+      "path": "CPU_TESTS_3.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "cuda_attempts": 4,
+          "cuda_intercepted": 4,
+          "cuda_native_attempts": 1,
+          "cuda_native_intercepted": 1
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 1.6179119989974424,
+        "torch_threads": 1
+      },
+      "path": "CPU_TESTS_4.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 7
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 2.0971967929508537,
+        "torch_threads": 1
+      },
+      "path": "CPU_TESTS_5.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 22,
+          "cuda_attempts": 4,
+          "cuda_intercepted": 4,
+          "cuda_native_attempts": 1,
+          "cuda_native_intercepted": 1,
+          "unauthorized_deserialization_attempts": 1,
+          "unauthorized_deserialization_intercepted": 1
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 2.848532652016729,
+        "torch_threads": 1
+      },
+      "path": "CPU_TESTS_6.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 8
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 4.045068878098391,
+        "torch_threads": 1
+      },
+      "path": "RUN_canary_1791187198073790793.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 4249
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 1764.2767782780575,
+        "torch_threads": 1
+      },
+      "path": "RUN_export_1791187285499203640.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {},
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 4.063165329978801,
+        "torch_threads": 1
+      },
+      "path": "RUN_plan_1791186873393416476.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 4249
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 136.25069806200918,
+        "torch_threads": 1
+      },
+      "path": "RUN_verify_1791189095005215515.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {},
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 5,
+        "ppid": 2,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 3.2678466360084713,
+        "torch_threads": 1
+      },
+      "path": "METADATA_PROPOSAL_PROCESS.json"
+    },
+    {
+      "guard": {
+        "backward_calls": 0,
+        "counts": {},
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 5.4897744139889255,
+        "torch_threads": 1
+      },
+      "path": "LAUNCH_CHECKS.json"
+    }
+  ],
+  "non_compute_commands": "Shell/git/rg/sed/curl and stdlib-only archival scripts do not initialize tensors; not represented as instrumented Torch processes",
+  "pid_namespace": "Sandbox processes can each report pid=2/ppid=1; PID alone is not a globally unique process identity",
+  "pre_import_and_unlisted_native_cuda": "UNKNOWN",
+  "run_counters": {
+    "completed": 4249,
+    "full_source_pickle_loads": 0,
+    "id_rows_parsed": 155688,
+    "observation_tensor_windows": 4249,
+    "raw_hash_bytes": 31252026,
+    "raw_hash_passes": 85,
+    "raw_scan_bytes": 5758268,
+    "real_future_queries": 0,
+    "real_target_tensors": 0,
+    "real_teacher_writes": 0,
+    "reused": 4257,
+    "static_asset_conversions": 16,
+    "unique_raw_obs_xy_decodes": 47758,
+    "window_local_observation_slots": 298192
+  },
+  "synthetic_fixture_scope": "Full20/target only synthetic; tests never construct a neural network or optimizer",
+  "tests": [
+    {
+      "exit_code": null,
+      "guard": null,
+      "outcomes": {},
+      "path": "CPU_TESTS_1_SETUP_FAILURE.json",
+      "seconds": null,
+      "setup_failure": "FAILED_BEFORE_TEST_EXECUTION"
+    },
+    {
+      "exit_code": 1,
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "unauthorized_deserialization_attempts": 1,
+          "unauthorized_deserialization_intercepted": 1
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 2.9564932639477775,
+        "torch_threads": 1
+      },
+      "outcomes": {
+        "failed": 5,
+        "passed": 33
+      },
+      "path": "CPU_TESTS_2.json",
+      "seconds": 1.5268656919943169,
+      "setup_failure": null
+    },
+    {
+      "exit_code": 0,
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 15
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 1.6849697559373453,
+        "torch_threads": 1
+      },
+      "outcomes": {
+        "passed": 6
+      },
+      "path": "CPU_TESTS_3.json",
+      "seconds": 0.28818368806969374,
+      "setup_failure": null
+    },
+    {
+      "exit_code": 0,
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "cuda_attempts": 4,
+          "cuda_intercepted": 4,
+          "cuda_native_attempts": 1,
+          "cuda_native_intercepted": 1
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 1.6179119989974424,
+        "torch_threads": 1
+      },
+      "outcomes": {
+        "passed": 6
+      },
+      "path": "CPU_TESTS_4.json",
+      "seconds": 0.22272649698425084,
+      "setup_failure": null
+    },
+    {
+      "exit_code": 0,
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 7
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 2.0971967929508537,
+        "torch_threads": 1
+      },
+      "outcomes": {
+        "passed": 6
+      },
+      "path": "CPU_TESTS_5.json",
+      "seconds": 0.6422746140742674,
+      "setup_failure": null
+    },
+    {
+      "exit_code": 0,
+      "guard": {
+        "backward_calls": 0,
+        "counts": {
+          "authorized_observation_loads": 22,
+          "cuda_attempts": 4,
+          "cuda_intercepted": 4,
+          "cuda_native_attempts": 1,
+          "cuda_native_intercepted": 1,
+          "unauthorized_deserialization_attempts": 1,
+          "unauthorized_deserialization_intercepted": 1
+        },
+        "coverage": "Python calls and listed torch C entrypoints after torch import",
+        "entry": "CPU observation preparation",
+        "forwarded_cuda_calls": 0,
+        "gpu_compute_calls": 0,
+        "guarded_cuda_names": [
+          "_lazy_init",
+          "init",
+          "is_available",
+          "device_count",
+          "synchronize",
+          "get_device_name",
+          "get_device_properties",
+          "current_device",
+          "set_device",
+          "is_bf16_supported"
+        ],
+        "native_names": [
+          "_cuda_getDeviceCount",
+          "_cuda_init",
+          "_cuda_setDevice"
+        ],
+        "optimizer_updates": 0,
+        "pid": 2,
+        "ppid": 1,
+        "pre_torch_import_and_unlisted_native_cuda_coverage": "UNKNOWN",
+        "real_model_calls": 0,
+        "seconds": 2.848532652016729,
+        "torch_threads": 1
+      },
+      "outcomes": {
+        "passed": 50
+      },
+      "path": "CPU_TESTS_6.json",
+      "seconds": 1.4430915919365361,
+      "setup_failure": null
+    }
+  ],
+  "tests_are_multiple_runs": true,
+  "unique_latest_passed": 50,
+  "unique_test_last_outcomes": {
+    "tests/test_p2_observation_artifacts.py::test_artifact_tamper_and_atomic_resume[half]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_artifact_tamper_and_atomic_resume[old_bytes]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_artifact_tamper_and_atomic_resume[shape]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_artifact_tamper_and_atomic_resume[sidecar]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_artifact_tamper_and_atomic_resume[wrapper]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_atomic_failure_no_certified_completion": "passed",
+    "tests/test_p2_observation_artifacts.py::test_bad_rows[duplicate]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_bad_rows[fractional_id]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_bad_rows[missing]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_bad_rows[nonfinite]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_budget_and_no_reset[rss]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_budget_and_no_reset[storage]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_budget_and_no_reset[wall]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_changed_asset_binding_before_load": "passed",
+    "tests/test_p2_observation_artifacts.py::test_full_pickle_guard_before_deserialize": "passed",
+    "tests/test_p2_observation_artifacts.py::test_future_counterfactual_same_observation": "passed",
+    "tests/test_p2_observation_artifacts.py::test_gate_before_decode[address]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_gate_before_decode[grant]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_gate_before_decode[purpose]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_gate_before_decode[source]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_gaussian_independent_math_and_image_scaling": "passed",
+    "tests/test_p2_observation_artifacts.py::test_guard_intercepts_deliberate_cuda_queries[device_count]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_guard_intercepts_deliberate_cuda_queries[init]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_guard_intercepts_deliberate_cuda_queries[is_available]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_guard_intercepts_deliberate_cuda_queries[synchronize]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_guard_intercepts_native_query": "passed",
+    "tests/test_p2_observation_artifacts.py::test_integer_formats[+1]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_integer_formats[1.000]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_integer_formats[1]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_integer_formats[1e0]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_invalid_ids[1.5]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_invalid_ids[9223372036854775808]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_invalid_ids[Infinity]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_invalid_ids[NaN]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_invalid_ids[bad]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_manifest_hash_and_duplicate_members_rejected": "passed",
+    "tests/test_p2_observation_artifacts.py::test_observation_only_invalid_future_and_order[1]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_observation_only_invalid_future_and_order[3]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_original_geometry_swap_and_units[eth]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_original_geometry_swap_and_units[hotel]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_original_geometry_swap_and_units[univ]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_original_geometry_swap_and_units[zara1]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_original_outside_raster_behavior_no_clamp": "passed",
+    "tests/test_p2_observation_artifacts.py::test_overlapping_routes_are_window_local": "passed",
+    "tests/test_p2_observation_artifacts.py::test_real_outer_metric_rejected_before_provider": "passed",
+    "tests/test_p2_observation_artifacts.py::test_rehashed_wrong_wrapper_rejected[kind]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_rehashed_wrong_wrapper_rejected[source_identity]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_rehashed_wrong_wrapper_rejected[window_id]": "passed",
+    "tests/test_p2_observation_artifacts.py::test_synthetic_full20_input_parity_no_model": "passed",
+    "tests/test_p2_observation_artifacts.py::test_unknown_all_roles_preparation_but_production_denied": "passed"
+  },
+  "worker_concurrency_max": 2
+}
