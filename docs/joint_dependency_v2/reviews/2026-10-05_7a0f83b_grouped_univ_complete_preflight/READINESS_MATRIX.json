@@ -1,0 +1,113 @@
+{
+  "conditions": {
+    "CPU_model": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/MODEL_SMOKE_cpu.json",
+      "sha256": "0e30cbb5e4b6e84b5b91dc93b8a73a7f726ac4e89c12520a85be63a508377146",
+      "status": "PASS"
+    },
+    "CPU_tests": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/CPU_TEST_RESULT.json",
+      "sha256": "65add77fb7063e676cfebdc4d12f683cbe17859f7f5f2b2f4849c5253794e6f4",
+      "status": "PASS"
+    },
+    "CUDA_model": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/MODEL_SMOKE_cuda.json",
+      "sha256": "7b328cf41770d550ecee2b59986ef1e46fb9d14bb4e2c63afae75faf72bf7118",
+      "status": "PASS"
+    },
+    "artifact_export": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/ARTIFACT_EXPORT_RESULT.json",
+      "sha256": "804b7290b86131169d46f90b494d51853aa39541c778c6eb63d8c71f0f8f429b",
+      "status": "ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION"
+    },
+    "artifact_full_readback": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/ARTIFACT_VERIFY_RESULT.json",
+      "sha256": "48e7878d3f0d15ae152b15175d32fcde1f09dd54a5ba2111b1b27703545cf818",
+      "status": "ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION"
+    },
+    "fresh_initial": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/FRESH_INITIAL.json",
+      "sha256": "8c2c201f0ef9492ff4856615bd5aa4c446322774d59e78e248ee0b9193bba7ec",
+      "status": "UNUPDATED_INITIAL_NOT_QUALIFIED_PARENT"
+    },
+    "full_native_pack_artifact": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/FULL_NATIVE_PACK_ARTIFACT_AUDIT.json",
+      "sha256": "4da6faaa1b5c905e061d7930c5ec70df83c789a584640052ee5327eeb22ef323",
+      "status": "ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION"
+    },
+    "independent_reload": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/MODEL_SMOKE_reload.json",
+      "sha256": "3e3b507fef560ad2cea4a8c9a47555a1cf7aee9622e83d8d7bf4dfdc941c4ea8",
+      "status": "PASS"
+    },
+    "production_entry": {
+      "argv": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "main.py",
+        "--p2_config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight/FRESH_GOAL_BLOCKED.yaml",
+        "--p2_launch_check"
+      ],
+      "config_sha256": "1a8cb4c2ffc8626815dcd1f3053e901f28370a00419a728c2d2e89ea6844f168",
+      "exit": 2,
+      "status": "BLOCKED",
+      "stderr": "",
+      "stdout": "Program started 05 October 2026 at 19:02\nGit info. Current branch: research/joint-dependency-v2-clean\nLast commit: 7a0f83bb9341617b4f214cefc3563927961c08d6 Prepare and certify P2 obs8 CPU artifacts with provenance still blocked\n\n{\"status\": \"BLOCKED\", \"reason\": \"EXTERNAL_EVIDENCE_BLOCKED:SEMANTIC_QUALIFICATION_eth,SEMANTIC_QUALIFICATION_univ,SEMANTIC_QUALIFICATION_zara1,SEMANTIC_QUALIFICATION_zara2\", \"device_calls\": 0}\n"
+    },
+    "production_full_loader": {
+      "argv": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "tools/grouped_pack_audit.py",
+        "--archive",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight",
+        "--production"
+      ],
+      "exit": 1,
+      "file_reads_by_production_provider": 0,
+      "scope": "genuine production gate rejected before PackReader provider access",
+      "status": "EXTERNAL_EVIDENCE_BLOCKED",
+      "stderr": "Traceback (most recent call last):\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/tools/grouped_pack_audit.py\", line 53, in <module>\n    if __name__=='__main__':main()\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/tools/grouped_pack_audit.py\", line 22, in main\n    reader=PackReader(reg,role,preparation=None if a.production else grant);begin=time.monotonic();exposures=0;visited=[]\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/src/p2_grouped_training.py\", line 45, in __init__\n    if preparation is None:require_provenance(reg,(role,))\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/src/p2_grouped.py\", line 105, in require_provenance\n    if issues:raise RuntimeError('EXTERNAL_EVIDENCE_BLOCKED:'+','.join(issues))\nRuntimeError: EXTERNAL_EVIDENCE_BLOCKED:SEMANTIC_QUALIFICATION_eth,SEMANTIC_QUALIFICATION_zara1,SEMANTIC_QUALIFICATION_zara2\n"
+    },
+    "protocol": {
+      "counts": {
+        "inner_valid": 1267,
+        "outer": 445,
+        "train": 2537
+      },
+      "family": "p2_grouped_univ_hotel_v1",
+      "manifest_hash": "0319b91edcf1c1dcbdb9d21f9234d9ebbcf7ce7d0abfd7a1ae1686c5855bd10d",
+      "rows": "5b17b449313e33402a1b19eb50abca70ece02e275cb4dc4080b65f4773f74ff4",
+      "status": "PASS"
+    },
+    "qualified_inner_selection": {
+      "coverage": "explicit path exits before GPU enumeration/model constructor; import/native coverage remains UNKNOWN",
+      "gpu_queries": 0,
+      "inner_metrics": 0,
+      "inner_predictions": 0,
+      "issues": [
+        "SEMANTIC_QUALIFICATION_eth",
+        "SEMANTIC_QUALIFICATION_univ",
+        "SEMANTIC_QUALIFICATION_zara1",
+        "SEMANTIC_QUALIFICATION_zara2"
+      ],
+      "model_constructs": 0,
+      "optimizer_updates": 0,
+      "status": "EXTERNAL_EVIDENCE_BLOCKED"
+    },
+    "source_and_maps": {
+      "issues": [
+        "SEMANTIC_QUALIFICATION_eth",
+        "SEMANTIC_QUALIFICATION_univ",
+        "SEMANTIC_QUALIFICATION_zara1",
+        "SEMANTIC_QUALIFICATION_zara2"
+      ],
+      "status": "EXTERNAL_EVIDENCE_BLOCKED"
+    }
+  },
+  "formal_training_started": false,
+  "joint": "WAITING_FOR_QUALIFIED_GOAL",
+  "stage_a": "WAITING_FOR_QUALIFIED_BASE_AND_CACHE",
+  "status": "EXTERNAL_EVIDENCE_BLOCKED"
+}

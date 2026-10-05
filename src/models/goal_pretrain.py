@@ -61,11 +61,11 @@ def goal_architecture_config(args):
     }
 
 class Goal_Pretrain(torch.nn.Module):
-    def __init__(self, args, device):
+    def __init__(self, args, device, *, dataset=None):
         super().__init__()
         self.args = args
         self.device = device
-        self.dataset = create_dataset(
+        self.dataset = dataset if dataset is not None else create_dataset(
             self.args.dataset, load_visual_data=False)
 
         ##################

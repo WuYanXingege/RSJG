@@ -1,0 +1,1677 @@
+{
+  "classification": "SMOKE_ONLY",
+  "data_binding": "73206ec37a642b6702949c898661e2d45f23c27076a935d320e21ce6c88f26a7",
+  "gpu_held_seconds": 0,
+  "inner_selection": "BLOCKED_NOT_RUN_ON_UNQUALIFIED_INNER",
+  "results": [
+    {
+      "architecture": {
+        "goal_decoder": [
+          64,
+          64,
+          64,
+          32,
+          32
+        ],
+        "goal_encoder": [
+          14,
+          32,
+          32,
+          64,
+          64,
+          64
+        ],
+        "layer_specs": {
+          "": {},
+          "goal_module": {},
+          "goal_module.decoder": {},
+          "goal_module.decoder.dec_blocks": {},
+          "goal_module.decoder.dec_blocks.0": {},
+          "goal_module.decoder.dec_blocks.0.block": {},
+          "goal_module.decoder.dec_blocks.0.block.0": {
+            "in_channels": 128,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.0.block.1": {},
+          "goal_module.decoder.dec_blocks.0.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.0.block.3": {},
+          "goal_module.decoder.dec_blocks.1": {},
+          "goal_module.decoder.dec_blocks.1.block": {},
+          "goal_module.decoder.dec_blocks.1.block.0": {
+            "in_channels": 128,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.1.block.1": {},
+          "goal_module.decoder.dec_blocks.1.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.1.block.3": {},
+          "goal_module.decoder.dec_blocks.2": {},
+          "goal_module.decoder.dec_blocks.2.block": {},
+          "goal_module.decoder.dec_blocks.2.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.2.block.1": {},
+          "goal_module.decoder.dec_blocks.2.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.2.block.3": {},
+          "goal_module.decoder.dec_blocks.3": {},
+          "goal_module.decoder.dec_blocks.3.block": {},
+          "goal_module.decoder.dec_blocks.3.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.3.block.1": {},
+          "goal_module.decoder.dec_blocks.3.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.3.block.3": {},
+          "goal_module.decoder.upconvs": {},
+          "goal_module.decoder.upconvs.0": {},
+          "goal_module.decoder.upconvs.0.up": {},
+          "goal_module.decoder.upconvs.0.up.0": {},
+          "goal_module.decoder.upconvs.0.up.1": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.upconvs.1": {},
+          "goal_module.decoder.upconvs.1.up": {},
+          "goal_module.decoder.upconvs.1.up.0": {},
+          "goal_module.decoder.upconvs.1.up.1": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.upconvs.2": {},
+          "goal_module.decoder.upconvs.2.up": {},
+          "goal_module.decoder.upconvs.2.up.0": {},
+          "goal_module.decoder.upconvs.2.up.1": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.upconvs.3": {},
+          "goal_module.decoder.upconvs.3.up": {},
+          "goal_module.decoder.upconvs.3.up.0": {},
+          "goal_module.decoder.upconvs.3.up.1": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder": {},
+          "goal_module.encoder.enc_blocks": {},
+          "goal_module.encoder.enc_blocks.0": {},
+          "goal_module.encoder.enc_blocks.0.block": {},
+          "goal_module.encoder.enc_blocks.0.block.0": {
+            "in_channels": 14,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.0.block.1": {},
+          "goal_module.encoder.enc_blocks.0.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.0.block.3": {},
+          "goal_module.encoder.enc_blocks.1": {},
+          "goal_module.encoder.enc_blocks.1.block": {},
+          "goal_module.encoder.enc_blocks.1.block.0": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.1.block.1": {},
+          "goal_module.encoder.enc_blocks.1.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.1.block.3": {},
+          "goal_module.encoder.enc_blocks.2": {},
+          "goal_module.encoder.enc_blocks.2.block": {},
+          "goal_module.encoder.enc_blocks.2.block.0": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.2.block.1": {},
+          "goal_module.encoder.enc_blocks.2.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.2.block.3": {},
+          "goal_module.encoder.enc_blocks.3": {},
+          "goal_module.encoder.enc_blocks.3.block": {},
+          "goal_module.encoder.enc_blocks.3.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.3.block.1": {},
+          "goal_module.encoder.enc_blocks.3.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.3.block.3": {},
+          "goal_module.encoder.enc_blocks.4": {},
+          "goal_module.encoder.enc_blocks.4.block": {},
+          "goal_module.encoder.enc_blocks.4.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.4.block.1": {},
+          "goal_module.encoder.enc_blocks.4.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.4.block.3": {},
+          "goal_module.encoder.pool": {
+            "kernel_size": 2
+          },
+          "goal_module.head": {},
+          "goal_module.head.out_layer": {
+            "in_channels": 32,
+            "kernel_size": [
+              1,
+              1
+            ],
+            "out_channels": 12
+          }
+        },
+        "modules": {
+          "": "Goal_Pretrain",
+          "goal_module": "UNet",
+          "goal_module.decoder": "Decoder",
+          "goal_module.decoder.dec_blocks": "ModuleList",
+          "goal_module.decoder.dec_blocks.0": "DoubleConv",
+          "goal_module.decoder.dec_blocks.0.block": "Sequential",
+          "goal_module.decoder.dec_blocks.0.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.0.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.0.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.0.block.3": "ReLU",
+          "goal_module.decoder.dec_blocks.1": "DoubleConv",
+          "goal_module.decoder.dec_blocks.1.block": "Sequential",
+          "goal_module.decoder.dec_blocks.1.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.1.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.1.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.1.block.3": "ReLU",
+          "goal_module.decoder.dec_blocks.2": "DoubleConv",
+          "goal_module.decoder.dec_blocks.2.block": "Sequential",
+          "goal_module.decoder.dec_blocks.2.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.2.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.2.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.2.block.3": "ReLU",
+          "goal_module.decoder.dec_blocks.3": "DoubleConv",
+          "goal_module.decoder.dec_blocks.3.block": "Sequential",
+          "goal_module.decoder.dec_blocks.3.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.3.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.3.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.3.block.3": "ReLU",
+          "goal_module.decoder.upconvs": "ModuleList",
+          "goal_module.decoder.upconvs.0": "UpConv",
+          "goal_module.decoder.upconvs.0.up": "Sequential",
+          "goal_module.decoder.upconvs.0.up.0": "Upsample",
+          "goal_module.decoder.upconvs.0.up.1": "Conv2d",
+          "goal_module.decoder.upconvs.1": "UpConv",
+          "goal_module.decoder.upconvs.1.up": "Sequential",
+          "goal_module.decoder.upconvs.1.up.0": "Upsample",
+          "goal_module.decoder.upconvs.1.up.1": "Conv2d",
+          "goal_module.decoder.upconvs.2": "UpConv",
+          "goal_module.decoder.upconvs.2.up": "Sequential",
+          "goal_module.decoder.upconvs.2.up.0": "Upsample",
+          "goal_module.decoder.upconvs.2.up.1": "Conv2d",
+          "goal_module.decoder.upconvs.3": "UpConv",
+          "goal_module.decoder.upconvs.3.up": "Sequential",
+          "goal_module.decoder.upconvs.3.up.0": "Upsample",
+          "goal_module.decoder.upconvs.3.up.1": "Conv2d",
+          "goal_module.encoder": "Encoder",
+          "goal_module.encoder.enc_blocks": "ModuleList",
+          "goal_module.encoder.enc_blocks.0": "DoubleConv",
+          "goal_module.encoder.enc_blocks.0.block": "Sequential",
+          "goal_module.encoder.enc_blocks.0.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.0.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.0.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.0.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.1": "DoubleConv",
+          "goal_module.encoder.enc_blocks.1.block": "Sequential",
+          "goal_module.encoder.enc_blocks.1.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.1.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.1.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.1.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.2": "DoubleConv",
+          "goal_module.encoder.enc_blocks.2.block": "Sequential",
+          "goal_module.encoder.enc_blocks.2.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.2.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.2.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.2.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.3": "DoubleConv",
+          "goal_module.encoder.enc_blocks.3.block": "Sequential",
+          "goal_module.encoder.enc_blocks.3.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.3.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.3.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.3.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.4": "DoubleConv",
+          "goal_module.encoder.enc_blocks.4.block": "Sequential",
+          "goal_module.encoder.enc_blocks.4.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.4.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.4.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.4.block.3": "ReLU",
+          "goal_module.encoder.pool": "MaxPool2d",
+          "goal_module.head": "OutputLayer",
+          "goal_module.head.out_layer": "Conv2d"
+        },
+        "parameters": 613772,
+        "shapes": {
+          "goal_module.decoder.dec_blocks.0.block.0.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.0.block.0.weight": [
+            64,
+            128,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.0.block.2.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.0.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.1.block.0.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.1.block.0.weight": [
+            64,
+            128,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.1.block.2.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.1.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.2.block.0.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.2.block.0.weight": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.2.block.2.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.2.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.3.block.0.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.3.block.0.weight": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.3.block.2.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.3.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.0.up.1.bias": [
+            64
+          ],
+          "goal_module.decoder.upconvs.0.up.1.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.1.up.1.bias": [
+            64
+          ],
+          "goal_module.decoder.upconvs.1.up.1.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.2.up.1.bias": [
+            32
+          ],
+          "goal_module.decoder.upconvs.2.up.1.weight": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.3.up.1.bias": [
+            32
+          ],
+          "goal_module.decoder.upconvs.3.up.1.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.0.block.0.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.0.block.0.weight": [
+            32,
+            14,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.0.block.2.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.0.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.1.block.0.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.1.block.0.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.1.block.2.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.1.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.2.block.0.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.2.block.0.weight": [
+            64,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.2.block.2.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.2.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.3.block.0.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.3.block.0.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.3.block.2.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.3.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.4.block.0.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.4.block.0.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.4.block.2.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.4.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.head.out_layer.bias": [
+            12
+          ],
+          "goal_module.head.out_layer.weight": [
+            12,
+            32,
+            1,
+            1
+          ]
+        },
+        "trainable": 613772
+      },
+      "case": "goal_fp32",
+      "checkpoint": {
+        "architecture_hash": "a9175204f48b25acd9fde519e29d4df2b4a9ec5d5e12eaa6f404b1aa9d72f685",
+        "classification": "SMOKE_ONLY",
+        "data_binding": "73206ec37a642b6702949c898661e2d45f23c27076a935d320e21ce6c88f26a7",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/PREFLIGHT_SMOKE/cpu/1791197938409985931/goal_fp32/state.pt",
+        "progress": {
+          "agent_exposures": 64,
+          "attempts": 1,
+          "cursor": 1,
+          "epoch_completed": 0,
+          "failed": 0,
+          "skipped": 0,
+          "successful": 1
+        },
+        "sha256": "234dc7dd21c0073cfdb87b5797589f9bd1b21b2af0e0a6243c0d1fdd3df0a28d",
+        "state_sha256": "6419c41dd54821dd08a12508b35a0bdf2c1c7cdba0f80514b510446412a3fdb5"
+      },
+      "inference": null,
+      "inner_selection": "EXTERNAL_EVIDENCE_BLOCKED",
+      "peak_reserved": 0,
+      "replay_equal": null,
+      "replay_max_abs": null,
+      "replay_within_tolerance": null,
+      "rows": [
+        {
+          "agents": 64,
+          "case": "cpu/goal_fp32",
+          "components": {
+            "goal_BCE_loss": 0.6960741281509399
+          },
+          "event": "SUCCESS",
+          "family_changed": {
+            "goal_module.": true
+          },
+          "grad_norm": 0.15536673367023468,
+          "loss": 0.6960741281509399,
+          "loss_dtype": "torch.float32",
+          "number": 9,
+          "parameter_dtype": "torch.float32",
+          "parameters_changed": true,
+          "seconds": 2.051024892949499
+        }
+      ],
+      "seconds": 3.402168984990567,
+      "status": "PASS",
+      "updates": 1
+    },
+    {
+      "architecture": {
+        "goal_decoder": [
+          64,
+          64,
+          64,
+          32,
+          32
+        ],
+        "goal_encoder": [
+          14,
+          32,
+          32,
+          64,
+          64,
+          64
+        ],
+        "layer_specs": {
+          "": {},
+          "diffnet": {},
+          "diffnet.concat1": {},
+          "diffnet.concat1._hyper_bias": {
+            "in_features": 259,
+            "out_features": 512
+          },
+          "diffnet.concat1._hyper_gate": {
+            "in_features": 259,
+            "out_features": 512
+          },
+          "diffnet.concat1._layer": {
+            "in_features": 2,
+            "out_features": 512
+          },
+          "diffnet.concat3": {},
+          "diffnet.concat3._hyper_bias": {
+            "in_features": 259,
+            "out_features": 256
+          },
+          "diffnet.concat3._hyper_gate": {
+            "in_features": 259,
+            "out_features": 256
+          },
+          "diffnet.concat3._layer": {
+            "in_features": 512,
+            "out_features": 256
+          },
+          "diffnet.concat4": {},
+          "diffnet.concat4._hyper_bias": {
+            "in_features": 259,
+            "out_features": 128
+          },
+          "diffnet.concat4._hyper_gate": {
+            "in_features": 259,
+            "out_features": 128
+          },
+          "diffnet.concat4._layer": {
+            "in_features": 256,
+            "out_features": 128
+          },
+          "diffnet.layer": {},
+          "diffnet.layer.dropout": {
+            "p": 0.1
+          },
+          "diffnet.layer.dropout1": {
+            "p": 0.1
+          },
+          "diffnet.layer.dropout2": {
+            "p": 0.1
+          },
+          "diffnet.layer.linear1": {
+            "in_features": 512,
+            "out_features": 1024
+          },
+          "diffnet.layer.linear2": {
+            "in_features": 1024,
+            "out_features": 512
+          },
+          "diffnet.layer.norm1": {},
+          "diffnet.layer.norm2": {},
+          "diffnet.layer.self_attn": {
+            "batch_first": false,
+            "dropout": 0.1,
+            "num_heads": 4
+          },
+          "diffnet.layer.self_attn.out_proj": {
+            "in_features": 512,
+            "out_features": 512
+          },
+          "diffnet.linear": {},
+          "diffnet.linear._hyper_bias": {
+            "in_features": 259,
+            "out_features": 2
+          },
+          "diffnet.linear._hyper_gate": {
+            "in_features": 259,
+            "out_features": 2
+          },
+          "diffnet.linear._layer": {
+            "in_features": 128,
+            "out_features": 2
+          },
+          "diffnet.pos_emb": {},
+          "diffnet.pos_emb.dropout": {
+            "p": 0.1
+          },
+          "diffnet.transformer_encoder": {
+            "num_layers": 2
+          },
+          "diffnet.transformer_encoder.layers": {},
+          "diffnet.transformer_encoder.layers.0": {},
+          "diffnet.transformer_encoder.layers.0.dropout": {
+            "p": 0.1
+          },
+          "diffnet.transformer_encoder.layers.0.dropout1": {
+            "p": 0.1
+          },
+          "diffnet.transformer_encoder.layers.0.dropout2": {
+            "p": 0.1
+          },
+          "diffnet.transformer_encoder.layers.0.linear1": {
+            "in_features": 512,
+            "out_features": 1024
+          },
+          "diffnet.transformer_encoder.layers.0.linear2": {
+            "in_features": 1024,
+            "out_features": 512
+          },
+          "diffnet.transformer_encoder.layers.0.norm1": {},
+          "diffnet.transformer_encoder.layers.0.norm2": {},
+          "diffnet.transformer_encoder.layers.0.self_attn": {
+            "batch_first": false,
+            "dropout": 0.1,
+            "num_heads": 4
+          },
+          "diffnet.transformer_encoder.layers.0.self_attn.out_proj": {
+            "in_features": 512,
+            "out_features": 512
+          },
+          "diffnet.transformer_encoder.layers.1": {},
+          "diffnet.transformer_encoder.layers.1.dropout": {
+            "p": 0.1
+          },
+          "diffnet.transformer_encoder.layers.1.dropout1": {
+            "p": 0.1
+          },
+          "diffnet.transformer_encoder.layers.1.dropout2": {
+            "p": 0.1
+          },
+          "diffnet.transformer_encoder.layers.1.linear1": {
+            "in_features": 512,
+            "out_features": 1024
+          },
+          "diffnet.transformer_encoder.layers.1.linear2": {
+            "in_features": 1024,
+            "out_features": 512
+          },
+          "diffnet.transformer_encoder.layers.1.norm1": {},
+          "diffnet.transformer_encoder.layers.1.norm2": {},
+          "diffnet.transformer_encoder.layers.1.self_attn": {
+            "batch_first": false,
+            "dropout": 0.1,
+            "num_heads": 4
+          },
+          "diffnet.transformer_encoder.layers.1.self_attn.out_proj": {
+            "in_features": 512,
+            "out_features": 512
+          },
+          "goal_module": {},
+          "goal_module.decoder": {},
+          "goal_module.decoder.dec_blocks": {},
+          "goal_module.decoder.dec_blocks.0": {},
+          "goal_module.decoder.dec_blocks.0.block": {},
+          "goal_module.decoder.dec_blocks.0.block.0": {
+            "in_channels": 128,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.0.block.1": {},
+          "goal_module.decoder.dec_blocks.0.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.0.block.3": {},
+          "goal_module.decoder.dec_blocks.1": {},
+          "goal_module.decoder.dec_blocks.1.block": {},
+          "goal_module.decoder.dec_blocks.1.block.0": {
+            "in_channels": 128,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.1.block.1": {},
+          "goal_module.decoder.dec_blocks.1.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.dec_blocks.1.block.3": {},
+          "goal_module.decoder.dec_blocks.2": {},
+          "goal_module.decoder.dec_blocks.2.block": {},
+          "goal_module.decoder.dec_blocks.2.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.2.block.1": {},
+          "goal_module.decoder.dec_blocks.2.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.2.block.3": {},
+          "goal_module.decoder.dec_blocks.3": {},
+          "goal_module.decoder.dec_blocks.3.block": {},
+          "goal_module.decoder.dec_blocks.3.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.3.block.1": {},
+          "goal_module.decoder.dec_blocks.3.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.dec_blocks.3.block.3": {},
+          "goal_module.decoder.upconvs": {},
+          "goal_module.decoder.upconvs.0": {},
+          "goal_module.decoder.upconvs.0.up": {},
+          "goal_module.decoder.upconvs.0.up.0": {},
+          "goal_module.decoder.upconvs.0.up.1": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.upconvs.1": {},
+          "goal_module.decoder.upconvs.1.up": {},
+          "goal_module.decoder.upconvs.1.up.0": {},
+          "goal_module.decoder.upconvs.1.up.1": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.decoder.upconvs.2": {},
+          "goal_module.decoder.upconvs.2.up": {},
+          "goal_module.decoder.upconvs.2.up.0": {},
+          "goal_module.decoder.upconvs.2.up.1": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.decoder.upconvs.3": {},
+          "goal_module.decoder.upconvs.3.up": {},
+          "goal_module.decoder.upconvs.3.up.0": {},
+          "goal_module.decoder.upconvs.3.up.1": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder": {},
+          "goal_module.encoder.enc_blocks": {},
+          "goal_module.encoder.enc_blocks.0": {},
+          "goal_module.encoder.enc_blocks.0.block": {},
+          "goal_module.encoder.enc_blocks.0.block.0": {
+            "in_channels": 14,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.0.block.1": {},
+          "goal_module.encoder.enc_blocks.0.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.0.block.3": {},
+          "goal_module.encoder.enc_blocks.1": {},
+          "goal_module.encoder.enc_blocks.1.block": {},
+          "goal_module.encoder.enc_blocks.1.block.0": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.1.block.1": {},
+          "goal_module.encoder.enc_blocks.1.block.2": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 32
+          },
+          "goal_module.encoder.enc_blocks.1.block.3": {},
+          "goal_module.encoder.enc_blocks.2": {},
+          "goal_module.encoder.enc_blocks.2.block": {},
+          "goal_module.encoder.enc_blocks.2.block.0": {
+            "in_channels": 32,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.2.block.1": {},
+          "goal_module.encoder.enc_blocks.2.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.2.block.3": {},
+          "goal_module.encoder.enc_blocks.3": {},
+          "goal_module.encoder.enc_blocks.3.block": {},
+          "goal_module.encoder.enc_blocks.3.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.3.block.1": {},
+          "goal_module.encoder.enc_blocks.3.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.3.block.3": {},
+          "goal_module.encoder.enc_blocks.4": {},
+          "goal_module.encoder.enc_blocks.4.block": {},
+          "goal_module.encoder.enc_blocks.4.block.0": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.4.block.1": {},
+          "goal_module.encoder.enc_blocks.4.block.2": {
+            "in_channels": 64,
+            "kernel_size": [
+              3,
+              3
+            ],
+            "out_channels": 64
+          },
+          "goal_module.encoder.enc_blocks.4.block.3": {},
+          "goal_module.encoder.pool": {
+            "kernel_size": 2
+          },
+          "goal_module.head": {},
+          "goal_module.head.out_layer": {
+            "in_channels": 32,
+            "kernel_size": [
+              1,
+              1
+            ],
+            "out_channels": 12
+          },
+          "registrar": {},
+          "registrar.model_dict": {},
+          "registrar.model_dict.node_history_encoder": {
+            "batch_first": true,
+            "dropout": 0.0,
+            "hidden_size": 256,
+            "input_size": 8,
+            "num_layers": 1
+          },
+          "var_sched": {}
+        },
+        "modules": {
+          "": "GDTS",
+          "diffnet": "TransformerConcatLinear",
+          "diffnet.concat1": "ConcatSquashLinear",
+          "diffnet.concat1._hyper_bias": "Linear",
+          "diffnet.concat1._hyper_gate": "Linear",
+          "diffnet.concat1._layer": "Linear",
+          "diffnet.concat3": "ConcatSquashLinear",
+          "diffnet.concat3._hyper_bias": "Linear",
+          "diffnet.concat3._hyper_gate": "Linear",
+          "diffnet.concat3._layer": "Linear",
+          "diffnet.concat4": "ConcatSquashLinear",
+          "diffnet.concat4._hyper_bias": "Linear",
+          "diffnet.concat4._hyper_gate": "Linear",
+          "diffnet.concat4._layer": "Linear",
+          "diffnet.layer": "TransformerEncoderLayer",
+          "diffnet.layer.dropout": "Dropout",
+          "diffnet.layer.dropout1": "Dropout",
+          "diffnet.layer.dropout2": "Dropout",
+          "diffnet.layer.linear1": "Linear",
+          "diffnet.layer.linear2": "Linear",
+          "diffnet.layer.norm1": "LayerNorm",
+          "diffnet.layer.norm2": "LayerNorm",
+          "diffnet.layer.self_attn": "MultiheadAttention",
+          "diffnet.layer.self_attn.out_proj": "NonDynamicallyQuantizableLinear",
+          "diffnet.linear": "ConcatSquashLinear",
+          "diffnet.linear._hyper_bias": "Linear",
+          "diffnet.linear._hyper_gate": "Linear",
+          "diffnet.linear._layer": "Linear",
+          "diffnet.pos_emb": "PositionalEncoding",
+          "diffnet.pos_emb.dropout": "Dropout",
+          "diffnet.transformer_encoder": "TransformerEncoder",
+          "diffnet.transformer_encoder.layers": "ModuleList",
+          "diffnet.transformer_encoder.layers.0": "TransformerEncoderLayer",
+          "diffnet.transformer_encoder.layers.0.dropout": "Dropout",
+          "diffnet.transformer_encoder.layers.0.dropout1": "Dropout",
+          "diffnet.transformer_encoder.layers.0.dropout2": "Dropout",
+          "diffnet.transformer_encoder.layers.0.linear1": "Linear",
+          "diffnet.transformer_encoder.layers.0.linear2": "Linear",
+          "diffnet.transformer_encoder.layers.0.norm1": "LayerNorm",
+          "diffnet.transformer_encoder.layers.0.norm2": "LayerNorm",
+          "diffnet.transformer_encoder.layers.0.self_attn": "MultiheadAttention",
+          "diffnet.transformer_encoder.layers.0.self_attn.out_proj": "NonDynamicallyQuantizableLinear",
+          "diffnet.transformer_encoder.layers.1": "TransformerEncoderLayer",
+          "diffnet.transformer_encoder.layers.1.dropout": "Dropout",
+          "diffnet.transformer_encoder.layers.1.dropout1": "Dropout",
+          "diffnet.transformer_encoder.layers.1.dropout2": "Dropout",
+          "diffnet.transformer_encoder.layers.1.linear1": "Linear",
+          "diffnet.transformer_encoder.layers.1.linear2": "Linear",
+          "diffnet.transformer_encoder.layers.1.norm1": "LayerNorm",
+          "diffnet.transformer_encoder.layers.1.norm2": "LayerNorm",
+          "diffnet.transformer_encoder.layers.1.self_attn": "MultiheadAttention",
+          "diffnet.transformer_encoder.layers.1.self_attn.out_proj": "NonDynamicallyQuantizableLinear",
+          "goal_module": "UNet",
+          "goal_module.decoder": "Decoder",
+          "goal_module.decoder.dec_blocks": "ModuleList",
+          "goal_module.decoder.dec_blocks.0": "DoubleConv",
+          "goal_module.decoder.dec_blocks.0.block": "Sequential",
+          "goal_module.decoder.dec_blocks.0.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.0.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.0.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.0.block.3": "ReLU",
+          "goal_module.decoder.dec_blocks.1": "DoubleConv",
+          "goal_module.decoder.dec_blocks.1.block": "Sequential",
+          "goal_module.decoder.dec_blocks.1.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.1.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.1.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.1.block.3": "ReLU",
+          "goal_module.decoder.dec_blocks.2": "DoubleConv",
+          "goal_module.decoder.dec_blocks.2.block": "Sequential",
+          "goal_module.decoder.dec_blocks.2.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.2.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.2.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.2.block.3": "ReLU",
+          "goal_module.decoder.dec_blocks.3": "DoubleConv",
+          "goal_module.decoder.dec_blocks.3.block": "Sequential",
+          "goal_module.decoder.dec_blocks.3.block.0": "Conv2d",
+          "goal_module.decoder.dec_blocks.3.block.1": "ReLU",
+          "goal_module.decoder.dec_blocks.3.block.2": "Conv2d",
+          "goal_module.decoder.dec_blocks.3.block.3": "ReLU",
+          "goal_module.decoder.upconvs": "ModuleList",
+          "goal_module.decoder.upconvs.0": "UpConv",
+          "goal_module.decoder.upconvs.0.up": "Sequential",
+          "goal_module.decoder.upconvs.0.up.0": "Upsample",
+          "goal_module.decoder.upconvs.0.up.1": "Conv2d",
+          "goal_module.decoder.upconvs.1": "UpConv",
+          "goal_module.decoder.upconvs.1.up": "Sequential",
+          "goal_module.decoder.upconvs.1.up.0": "Upsample",
+          "goal_module.decoder.upconvs.1.up.1": "Conv2d",
+          "goal_module.decoder.upconvs.2": "UpConv",
+          "goal_module.decoder.upconvs.2.up": "Sequential",
+          "goal_module.decoder.upconvs.2.up.0": "Upsample",
+          "goal_module.decoder.upconvs.2.up.1": "Conv2d",
+          "goal_module.decoder.upconvs.3": "UpConv",
+          "goal_module.decoder.upconvs.3.up": "Sequential",
+          "goal_module.decoder.upconvs.3.up.0": "Upsample",
+          "goal_module.decoder.upconvs.3.up.1": "Conv2d",
+          "goal_module.encoder": "Encoder",
+          "goal_module.encoder.enc_blocks": "ModuleList",
+          "goal_module.encoder.enc_blocks.0": "DoubleConv",
+          "goal_module.encoder.enc_blocks.0.block": "Sequential",
+          "goal_module.encoder.enc_blocks.0.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.0.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.0.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.0.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.1": "DoubleConv",
+          "goal_module.encoder.enc_blocks.1.block": "Sequential",
+          "goal_module.encoder.enc_blocks.1.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.1.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.1.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.1.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.2": "DoubleConv",
+          "goal_module.encoder.enc_blocks.2.block": "Sequential",
+          "goal_module.encoder.enc_blocks.2.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.2.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.2.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.2.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.3": "DoubleConv",
+          "goal_module.encoder.enc_blocks.3.block": "Sequential",
+          "goal_module.encoder.enc_blocks.3.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.3.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.3.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.3.block.3": "ReLU",
+          "goal_module.encoder.enc_blocks.4": "DoubleConv",
+          "goal_module.encoder.enc_blocks.4.block": "Sequential",
+          "goal_module.encoder.enc_blocks.4.block.0": "Conv2d",
+          "goal_module.encoder.enc_blocks.4.block.1": "ReLU",
+          "goal_module.encoder.enc_blocks.4.block.2": "Conv2d",
+          "goal_module.encoder.enc_blocks.4.block.3": "ReLU",
+          "goal_module.encoder.pool": "MaxPool2d",
+          "goal_module.head": "OutputLayer",
+          "goal_module.head.out_layer": "Conv2d",
+          "registrar": "ModelRegistrar",
+          "registrar.model_dict": "ModuleDict",
+          "registrar.model_dict.node_history_encoder": "LSTM",
+          "var_sched": "VarianceSchedule"
+        },
+        "parameters": 7826588,
+        "shapes": {
+          "diffnet.concat1._hyper_bias.weight": [
+            512,
+            259
+          ],
+          "diffnet.concat1._hyper_gate.bias": [
+            512
+          ],
+          "diffnet.concat1._hyper_gate.weight": [
+            512,
+            259
+          ],
+          "diffnet.concat1._layer.bias": [
+            512
+          ],
+          "diffnet.concat1._layer.weight": [
+            512,
+            2
+          ],
+          "diffnet.concat3._hyper_bias.weight": [
+            256,
+            259
+          ],
+          "diffnet.concat3._hyper_gate.bias": [
+            256
+          ],
+          "diffnet.concat3._hyper_gate.weight": [
+            256,
+            259
+          ],
+          "diffnet.concat3._layer.bias": [
+            256
+          ],
+          "diffnet.concat3._layer.weight": [
+            256,
+            512
+          ],
+          "diffnet.concat4._hyper_bias.weight": [
+            128,
+            259
+          ],
+          "diffnet.concat4._hyper_gate.bias": [
+            128
+          ],
+          "diffnet.concat4._hyper_gate.weight": [
+            128,
+            259
+          ],
+          "diffnet.concat4._layer.bias": [
+            128
+          ],
+          "diffnet.concat4._layer.weight": [
+            128,
+            256
+          ],
+          "diffnet.layer.linear1.bias": [
+            1024
+          ],
+          "diffnet.layer.linear1.weight": [
+            1024,
+            512
+          ],
+          "diffnet.layer.linear2.bias": [
+            512
+          ],
+          "diffnet.layer.linear2.weight": [
+            512,
+            1024
+          ],
+          "diffnet.layer.norm1.bias": [
+            512
+          ],
+          "diffnet.layer.norm1.weight": [
+            512
+          ],
+          "diffnet.layer.norm2.bias": [
+            512
+          ],
+          "diffnet.layer.norm2.weight": [
+            512
+          ],
+          "diffnet.layer.self_attn.in_proj_bias": [
+            1536
+          ],
+          "diffnet.layer.self_attn.in_proj_weight": [
+            1536,
+            512
+          ],
+          "diffnet.layer.self_attn.out_proj.bias": [
+            512
+          ],
+          "diffnet.layer.self_attn.out_proj.weight": [
+            512,
+            512
+          ],
+          "diffnet.linear._hyper_bias.weight": [
+            2,
+            259
+          ],
+          "diffnet.linear._hyper_gate.bias": [
+            2
+          ],
+          "diffnet.linear._hyper_gate.weight": [
+            2,
+            259
+          ],
+          "diffnet.linear._layer.bias": [
+            2
+          ],
+          "diffnet.linear._layer.weight": [
+            2,
+            128
+          ],
+          "diffnet.pos_emb.pe": [
+            24,
+            1,
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.linear1.bias": [
+            1024
+          ],
+          "diffnet.transformer_encoder.layers.0.linear1.weight": [
+            1024,
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.linear2.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.linear2.weight": [
+            512,
+            1024
+          ],
+          "diffnet.transformer_encoder.layers.0.norm1.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.norm1.weight": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.norm2.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.norm2.weight": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.self_attn.in_proj_bias": [
+            1536
+          ],
+          "diffnet.transformer_encoder.layers.0.self_attn.in_proj_weight": [
+            1536,
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.self_attn.out_proj.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.0.self_attn.out_proj.weight": [
+            512,
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.linear1.bias": [
+            1024
+          ],
+          "diffnet.transformer_encoder.layers.1.linear1.weight": [
+            1024,
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.linear2.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.linear2.weight": [
+            512,
+            1024
+          ],
+          "diffnet.transformer_encoder.layers.1.norm1.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.norm1.weight": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.norm2.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.norm2.weight": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.self_attn.in_proj_bias": [
+            1536
+          ],
+          "diffnet.transformer_encoder.layers.1.self_attn.in_proj_weight": [
+            1536,
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.self_attn.out_proj.bias": [
+            512
+          ],
+          "diffnet.transformer_encoder.layers.1.self_attn.out_proj.weight": [
+            512,
+            512
+          ],
+          "goal_module.decoder.dec_blocks.0.block.0.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.0.block.0.weight": [
+            64,
+            128,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.0.block.2.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.0.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.1.block.0.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.1.block.0.weight": [
+            64,
+            128,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.1.block.2.bias": [
+            64
+          ],
+          "goal_module.decoder.dec_blocks.1.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.2.block.0.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.2.block.0.weight": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.2.block.2.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.2.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.3.block.0.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.3.block.0.weight": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.dec_blocks.3.block.2.bias": [
+            32
+          ],
+          "goal_module.decoder.dec_blocks.3.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.0.up.1.bias": [
+            64
+          ],
+          "goal_module.decoder.upconvs.0.up.1.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.1.up.1.bias": [
+            64
+          ],
+          "goal_module.decoder.upconvs.1.up.1.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.2.up.1.bias": [
+            32
+          ],
+          "goal_module.decoder.upconvs.2.up.1.weight": [
+            32,
+            64,
+            3,
+            3
+          ],
+          "goal_module.decoder.upconvs.3.up.1.bias": [
+            32
+          ],
+          "goal_module.decoder.upconvs.3.up.1.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.0.block.0.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.0.block.0.weight": [
+            32,
+            14,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.0.block.2.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.0.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.1.block.0.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.1.block.0.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.1.block.2.bias": [
+            32
+          ],
+          "goal_module.encoder.enc_blocks.1.block.2.weight": [
+            32,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.2.block.0.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.2.block.0.weight": [
+            64,
+            32,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.2.block.2.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.2.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.3.block.0.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.3.block.0.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.3.block.2.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.3.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.4.block.0.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.4.block.0.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.encoder.enc_blocks.4.block.2.bias": [
+            64
+          ],
+          "goal_module.encoder.enc_blocks.4.block.2.weight": [
+            64,
+            64,
+            3,
+            3
+          ],
+          "goal_module.head.out_layer.bias": [
+            12
+          ],
+          "goal_module.head.out_layer.weight": [
+            12,
+            32,
+            1,
+            1
+          ],
+          "registrar.model_dict.node_history_encoder.bias_hh_l0": [
+            1024
+          ],
+          "registrar.model_dict.node_history_encoder.bias_ih_l0": [
+            1024
+          ],
+          "registrar.model_dict.node_history_encoder.weight_hh_l0": [
+            1024,
+            256
+          ],
+          "registrar.model_dict.node_history_encoder.weight_ih_l0": [
+            1024,
+            8
+          ],
+          "var_sched.alpha_bars": [
+            101
+          ],
+          "var_sched.alphas": [
+            101
+          ],
+          "var_sched.betas": [
+            101
+          ],
+          "var_sched.sigmas_flex": [
+            101
+          ],
+          "var_sched.sigmas_inflex": [
+            101
+          ]
+        },
+        "trainable": 7826588
+      },
+      "case": "joint_fp32",
+      "checkpoint": {
+        "architecture_hash": "a1e11954281af3f89de0e81b630c555241b18976a6c4b1d9ff4989021baf3602",
+        "classification": "SMOKE_ONLY",
+        "data_binding": "73206ec37a642b6702949c898661e2d45f23c27076a935d320e21ce6c88f26a7",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/PREFLIGHT_SMOKE/cpu/1791197938409985931/joint_fp32/state.pt",
+        "progress": {
+          "agent_exposures": 64,
+          "attempts": 1,
+          "cursor": 1,
+          "epoch_completed": 0,
+          "failed": 0,
+          "skipped": 0,
+          "successful": 1
+        },
+        "sha256": "67f0c4b396f31872bb7847736dacb2276bd1a4f0b93cfaf0dd7c54eddadcca81",
+        "state_sha256": "731dfd876ea29a3cc81f741682db43d19a504584ab937b73818f5bd4b871ba53"
+      },
+      "inference": null,
+      "inner_selection": "EXTERNAL_EVIDENCE_BLOCKED",
+      "peak_reserved": 0,
+      "replay_equal": null,
+      "replay_max_abs": null,
+      "replay_within_tolerance": null,
+      "rows": [
+        {
+          "agents": 64,
+          "case": "cpu/joint_fp32",
+          "components": {
+            "diffusion_loss": 0.9910925030708313,
+            "goal_BCE_loss": 0.6960741281509399
+          },
+          "event": "SUCCESS",
+          "family_changed": {
+            "diffnet.": true,
+            "goal_module.": true,
+            "registrar.": true
+          },
+          "grad_norm": 3.18572735786438,
+          "loss": 14.912574768066406,
+          "loss_dtype": "torch.float32",
+          "number": 10,
+          "parameter_dtype": "torch.float32",
+          "parameters_changed": true,
+          "seconds": 1.8613548110006377
+        }
+      ],
+      "seconds": 4.244626746978611,
+      "status": "PASS",
+      "updates": 1
+    }
+  ],
+  "seconds": 8.061509937979281,
+  "smoke_grant": "cf34837f273737050941145504ea666e1a961663108758c5a64157291aaef58c",
+  "smoke_purpose_authorized_before_provider": true,
+  "source": {
+    "files": {
+      "src/losses.py": "6ee481c07d148ffb2ec8172dae94900599426a95a631f24b7bdd3a0a48e555c8",
+      "src/models/goal_pretrain.py": "250c9f2675fddb7fbb2da4ad50a8216667c7d82d11f5247f129089a395575661",
+      "src/models/model.py": "eb16c676dd4629aa45bd5f39b38b07a8d25638d3e77ab6f9f65dad7b3c853540",
+      "src/p2_data.py": "52a86ec51dd2386868e9eed0837450ddd8d86e75c2fa6df7b2607c237363e483",
+      "src/p2_grouped.py": "7563508ca3fe2d5d7b525b9e23b0d31d7486d54c85d045dde718f4141e380845",
+      "src/p2_grouped_artifacts.py": "93ff3892cb6420ac1550a8b32a900a992f86a91077bbf88aefb9b064a3a0ae69",
+      "src/p2_grouped_training.py": "ab0994ad605a84caf4ad136ae6fe6411ebd1853023281445ad367504261aaa75",
+      "src/parser.py": "3274e93b737817e16f9217dbc77dde2cc89238f8e11cca16a683b5771a8883fd"
+    },
+    "head": "7a0f83bb9341617b4f214cefc3563927961c08d6",
+    "numpy": "1.26.4",
+    "torch": "2.8.0+cu128"
+  },
+  "status": "PASS"
+}

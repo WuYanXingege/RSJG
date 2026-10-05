@@ -1,0 +1,550 @@
+{
+  "actual_max_sample_gap_seconds": 6.301101922988892,
+  "aggregate_sampled_peak_rss": 2889789440,
+  "failed_jobs": [
+    {
+      "aggregate_sampled_peak_rss": 19922944,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 28,
+      "job": "4f58996f40d1467caa65ffddf4907c97",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/release_range_probe_4f58996f40d1467caa65ffddf4907c97.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1089303, 60548906)": 12066816,
+        "('pid:[4026531836]', 1089304, 60548914)": 7942144
+      },
+      "seconds": 20.80917477607727,
+      "stage": "release_range_probe",
+      "stop": null,
+      "utc": "2026-10-05T09:08:58.447900+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1628823552,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 1,
+      "job": "7bba6d01aac14db98ad274412b4aeed7",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/cpu_tests_7bba6d01aac14db98ad274412b4aeed7.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 11, 61047510)": 902029312,
+        "('pid:[4026532916]', 2, 61047235)": 26689536,
+        "('pid:[4026532916]', 4, 61047267)": 708866048
+      },
+      "seconds": 36.01317763328552,
+      "stage": "cpu_tests",
+      "stop": null,
+      "utc": "2026-10-05T10:32:16.956042+00:00"
+    }
+  ],
+  "gaps": [
+    "First bootstrap/read-only discovery commands were not process-tree instrumented; no retroactive zero claim.",
+    "One-second nominal sampling can miss aggregate transient peaks. Per-process HWM is distinct from aggregate RSS.",
+    "OS thread count includes inactive runtime pools; numerical compute configured <=4 per sequential job.",
+    "Initial export ran an earlier CLI orchestration version; stable numerical producer SHA is sidecar-bound. Final verify uses current code.",
+    "Early supervised commands predate entrypoint hash instrumentation; command and numerical producer identity remain archived.",
+    "No certification of import-before-hook/native CUDA event completeness; no historical RSS gap repaired."
+  ],
+  "jobs": [
+    {
+      "aggregate_sampled_peak_rss": 19922944,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 28,
+      "job": "4f58996f40d1467caa65ffddf4907c97",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/release_range_probe_4f58996f40d1467caa65ffddf4907c97.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1089303, 60548906)": 12066816,
+        "('pid:[4026531836]', 1089304, 60548914)": 7942144
+      },
+      "seconds": 20.80917477607727,
+      "stage": "release_range_probe",
+      "stop": null,
+      "utc": "2026-10-05T09:08:58.447900+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 22949888,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "5092208718d542d287f91610060fb542",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/release_proxy_range_probe_5092208718d542d287f91610060fb542.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1089469, 60567427)": 12271616,
+        "('pid:[4026531836]', 1089471, 60567435)": 10678272
+      },
+      "seconds": 3.1896612644195557,
+      "stage": "release_proxy_range_probe",
+      "stop": null,
+      "utc": "2026-10-05T09:11:46.041893+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 838615040,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "d1ac7153a799441c9357f9044c73c8f8",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/metadata_migration_d1ac7153a799441c9357f9044c73c8f8.log",
+      "process_high_water": {
+        "('pid:[4026533276]', 2, 60581522)": 12132352,
+        "('pid:[4026533276]', 4, 60581528)": 855732224
+      },
+      "seconds": 8.319104194641113,
+      "stage": "metadata_migration",
+      "stop": null,
+      "utc": "2026-10-05T09:14:12.119571+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 23040000,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "9122293ca55c4fb3a7831bda052f032a",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/author_release_download_9122293ca55c4fb3a7831bda052f032a.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1089734, 60608974)": 12292096,
+        "('pid:[4026531836]', 1089736, 60608982)": 10747904
+      },
+      "seconds": 16.571742296218872,
+      "stage": "author_release_download",
+      "stop": null,
+      "utc": "2026-10-05T09:18:54.888655+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 842342400,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "859fc12fd88845d2a649fa9c6123f0c5",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/artifact_plan_859fc12fd88845d2a649fa9c6123f0c5.log",
+      "process_high_water": {
+        "('pid:[4026533039]', 2, 60626526)": 12107776,
+        "('pid:[4026533039]', 4, 60626532)": 847097856
+      },
+      "seconds": 10.622696876525879,
+      "stage": "artifact_plan",
+      "stop": null,
+      "utc": "2026-10-05T09:21:44.463450+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 916807680,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "1601f179dfea4216ac9ca51f13459f67",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/artifact_canary_1601f179dfea4216ac9ca51f13459f67.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 60627948)": 12259328,
+        "('pid:[4026532916]', 4, 60627986)": 904548352
+      },
+      "seconds": 9.75134801864624,
+      "stage": "artifact_canary",
+      "stop": null,
+      "utc": "2026-10-05T09:21:57.807943+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1140805632,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "073b367817284ab7b21679c83e0618e0",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/artifact_export_073b367817284ab7b21679c83e0618e0.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 60630478)": 21463040,
+        "('pid:[4026532916]', 4, 60630486)": 1147580416
+      },
+      "seconds": 4059.7510607242584,
+      "stage": "artifact_export",
+      "stop": null,
+      "utc": "2026-10-05T10:29:53.118052+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 810680320,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "a40742a7f363430bb284978729ee1d69",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/release_binding_a40742a7f363430bb284978729ee1d69.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61040570)": 26734592,
+        "('pid:[4026532916]', 4, 61040686)": 840753152
+      },
+      "seconds": 24.623076915740967,
+      "stage": "release_binding",
+      "stop": null,
+      "utc": "2026-10-05T10:30:59.935500+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1628823552,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 1,
+      "job": "7bba6d01aac14db98ad274412b4aeed7",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/cpu_tests_7bba6d01aac14db98ad274412b4aeed7.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 11, 61047510)": 902029312,
+        "('pid:[4026532916]', 2, 61047235)": 26689536,
+        "('pid:[4026532916]', 4, 61047267)": 708866048
+      },
+      "seconds": 36.01317763328552,
+      "stage": "cpu_tests",
+      "stop": null,
+      "utc": "2026-10-05T10:32:16.956042+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 825311232,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "8c1af9f239b940b9b94ebd2c27b2ffa7",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/release_binding_correct_source_link_8c1af9f239b940b9b94ebd2c27b2ffa7.log",
+      "process_high_water": {
+        "('pid:[4026533039]', 2, 61068753)": 26615808,
+        "('pid:[4026533039]', 4, 61068774)": 842510336
+      },
+      "seconds": 8.620141506195068,
+      "stage": "release_binding_correct_source_link",
+      "stop": null,
+      "utc": "2026-10-05T10:35:24.729786+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1628975104,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "4395699319e5468c9e8838c2e06c1f5f",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/cpu_tests_guarded_regression_4395699319e5468c9e8838c2e06c1f5f.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 11, 61073397)": 907464704,
+        "('pid:[4026532916]', 2, 61073053)": 26763264,
+        "('pid:[4026532916]', 4, 61073159)": 705986560,
+        "('pid:[4026532916]', 65, 61075964)": 796938240
+      },
+      "seconds": 34.86120581626892,
+      "stage": "cpu_tests_guarded_regression",
+      "stop": null,
+      "utc": "2026-10-05T10:36:33.976428+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 832221184,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "db061b3789974861917a18f470ae17cd",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/configure_db061b3789974861917a18f470ae17cd.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61080684)": 26767360,
+        "('pid:[4026532916]', 4, 61080692)": 841129984
+      },
+      "seconds": 6.392276048660278,
+      "stage": "configure",
+      "stop": null,
+      "utc": "2026-10-05T10:37:21.814380+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 868171776,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "34ce02140221402da0fcdaedb63c5dee",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/smoke_plan_34ce02140221402da0fcdaedb63c5dee.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61084544)": 26640384,
+        "('pid:[4026532916]', 4, 61084625)": 876941312
+      },
+      "seconds": 8.14195990562439,
+      "stage": "smoke_plan",
+      "stop": null,
+      "utc": "2026-10-05T10:38:02.172607+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1742778368,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "18899e82901444b29ca476ca37adff25",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/real_cpu_smoke_18899e82901444b29ca476ca37adff25.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61088090)": 26718208,
+        "('pid:[4026532916]', 4, 61088107)": 1820499968
+      },
+      "seconds": 15.878728151321411,
+      "stage": "real_cpu_smoke",
+      "stop": null,
+      "utc": "2026-10-05T10:38:45.358237+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 2858156032,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "c385691ec46f4d8780946dc0b191eca5",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/real_cuda_smoke_c385691ec46f4d8780946dc0b191eca5.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1094141, 61097295)": 26611712,
+        "('pid:[4026531836]', 1094143, 61097303)": 2862788608
+      },
+      "seconds": 27.63827919960022,
+      "stage": "real_cuda_smoke",
+      "stop": null,
+      "utc": "2026-10-05T10:40:29.171582+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1961353216,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "b78881fb47e54f3a992bf13c69048338",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/independent_cuda_reload_b78881fb47e54f3a992bf13c69048338.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1094204, 61102640)": 26730496,
+        "('pid:[4026531836]', 1094206, 61102651)": 1937178624
+      },
+      "seconds": 10.50533390045166,
+      "stage": "independent_cuda_reload",
+      "stop": null,
+      "utc": "2026-10-05T10:41:05.514375+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 868413440,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "5fa31f76f54549f381aa9c306d4b6f63",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/fresh_unupdated_initial_5fa31f76f54549f381aa9c306d4b6f63.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61107159)": 26853376,
+        "('pid:[4026532916]', 4, 61107180)": 878141440
+      },
+      "seconds": 7.532381057739258,
+      "stage": "fresh_unupdated_initial",
+      "stop": null,
+      "utc": "2026-10-05T10:41:47.701137+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1060024320,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "dfc3723b779845b59899f0a378f92338",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/artifact_full_verify_dfc3723b779845b59899f0a378f92338.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61110786)": 26755072,
+        "('pid:[4026532916]', 4, 61110795)": 1033363456
+      },
+      "seconds": 493.67764616012573,
+      "stage": "artifact_full_verify",
+      "stop": null,
+      "utc": "2026-10-05T10:50:30.123587+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1625628672,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "78246e92ba474d2fa7548c418304fdd3",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/final_cpu_regression_78246e92ba474d2fa7548c418304fdd3.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 11, 61180664)": 904347648,
+        "('pid:[4026532916]', 2, 61179027)": 26537984,
+        "('pid:[4026532916]', 4, 61179096)": 706027520,
+        "('pid:[4026532916]', 65, 61183604)": 794947584
+      },
+      "seconds": 51.794514417648315,
+      "stage": "final_cpu_regression",
+      "stop": null,
+      "utc": "2026-10-05T10:54:31.183614+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1102282752,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "65fc4bd7ac234aeda892260f7acb3b1f",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/full_native_pack_artifacts_65fc4bd7ac234aeda892260f7acb3b1f.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61188008)": 26718208,
+        "('pid:[4026532916]', 4, 61188015)": 1084461056
+      },
+      "seconds": 142.57551622390747,
+      "stage": "full_native_pack_artifacts",
+      "stop": null,
+      "utc": "2026-10-05T10:57:31.239597+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 1559187456,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "38cc63f17c034c04b906d7b079dcd275",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/final_real_cpu_smoke_38cc63f17c034c04b906d7b079dcd275.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61210359)": 26693632,
+        "('pid:[4026532916]', 4, 61210367)": 1817427968
+      },
+      "seconds": 15.029854774475098,
+      "stage": "final_real_cpu_smoke",
+      "stop": null,
+      "utc": "2026-10-05T10:59:07.201982+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 2889789440,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "b13f5e5a073e4eab885ada79a038b148",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/final_real_cuda_smoke_b13f5e5a073e4eab885ada79a038b148.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1095291, 61216374)": 26718208,
+        "('pid:[4026531836]', 1095293, 61216382)": 2865790976
+      },
+      "seconds": 26.18713402748108,
+      "stage": "final_real_cuda_smoke",
+      "stop": null,
+      "utc": "2026-10-05T11:00:18.506059+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 2198003712,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "3f93a29f5adf49628daf75dccdb3e5c1",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/final_independent_cuda_reload_3f93a29f5adf49628daf75dccdb3e5c1.log",
+      "process_high_water": {
+        "('pid:[4026531836]', 1095365, 61223098)": 26664960,
+        "('pid:[4026531836]', 1095367, 61223107)": 2173849600
+      },
+      "seconds": 9.448575496673584,
+      "stage": "final_independent_cuda_reload",
+      "stop": null,
+      "utc": "2026-10-05T11:01:09.017090+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 870936576,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "0700baa3fa9b41a387bd3aac9664eac5",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/final_fresh_unupdated_initial_0700baa3fa9b41a387bd3aac9664eac5.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61226995)": 26832896,
+        "('pid:[4026532916]', 4, 61227004)": 879902720
+      },
+      "seconds": 7.392111539840698,
+      "stage": "final_fresh_unupdated_initial",
+      "stop": null,
+      "utc": "2026-10-05T11:01:45.927608+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 2389626880,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "ad14ea3b44af4133b0e6ca1662a89267",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/production_and_pipeline_gates_ad14ea3b44af4133b0e6ca1662a89267.log",
+      "process_high_water": {
+        "('pid:[4026533039]', 11, 61233155)": 855547904,
+        "('pid:[4026533039]', 2, 61232905)": 26910720,
+        "('pid:[4026533039]', 21, 61233640)": 876032000,
+        "('pid:[4026533039]', 31, 61234320)": 841289728,
+        "('pid:[4026533039]', 38, 61234742)": 897892352,
+        "('pid:[4026533039]', 4, 61232912)": 710778880,
+        "('pid:[4026533039]', 49, 61235443)": 806969344,
+        "('pid:[4026533039]', 56, 61235915)": 842022912,
+        "('pid:[4026533039]', 63, 61236384)": 846413824,
+        "('pid:[4026533039]', 70, 61236856)": 841060352
+      },
+      "seconds": 45.53666853904724,
+      "stage": "production_and_pipeline_gates",
+      "stop": null,
+      "utc": "2026-10-05T11:03:23.175732+00:00"
+    },
+    {
+      "aggregate_sampled_peak_rss": 813756416,
+      "coverage": "1s samples may miss transient aggregate peaks; per-process high-water sampled while alive; import/native CUDA instrumentation separate",
+      "event": "END",
+      "exit_code": 0,
+      "job": "e8af3a9432a44bce89a6782f9af9f93b",
+      "log": "outputs/joint_dependency_v2/grouped_univ_preflight_7a0f83b_20261005/archive_consistency_e8af3a9432a44bce89a6782f9af9f93b.log",
+      "process_high_water": {
+        "('pid:[4026532916]', 2, 61256699)": 26910720,
+        "('pid:[4026532916]', 4, 61256708)": 840740864
+      },
+      "seconds": 6.428574562072754,
+      "stage": "archive_consistency",
+      "stop": null,
+      "utc": "2026-10-05T11:06:41.998269+00:00"
+    }
+  ],
+  "nominal_sampling_seconds": 1,
+  "open_bookkeeping_jobs_at_snapshot": [
+    "b84aaa4f258b4179ba649e867e095fba"
+  ],
+  "process_high_water_by_namespace_pid_start": {
+    "('pid:[4026531836]', 1089303, 60548906)": 12066816,
+    "('pid:[4026531836]', 1089304, 60548914)": 7942144,
+    "('pid:[4026531836]', 1089469, 60567427)": 12271616,
+    "('pid:[4026531836]', 1089471, 60567435)": 10678272,
+    "('pid:[4026531836]', 1089734, 60608974)": 12292096,
+    "('pid:[4026531836]', 1089736, 60608982)": 10747904,
+    "('pid:[4026531836]', 1094141, 61097295)": 26611712,
+    "('pid:[4026531836]', 1094143, 61097303)": 2862788608,
+    "('pid:[4026531836]', 1094204, 61102640)": 26730496,
+    "('pid:[4026531836]', 1094206, 61102651)": 1937178624,
+    "('pid:[4026531836]', 1095291, 61216374)": 26718208,
+    "('pid:[4026531836]', 1095293, 61216382)": 2865790976,
+    "('pid:[4026531836]', 1095365, 61223098)": 26664960,
+    "('pid:[4026531836]', 1095367, 61223107)": 2173849600,
+    "('pid:[4026532916]', 11, 61047510)": 902029312,
+    "('pid:[4026532916]', 11, 61073397)": 907464704,
+    "('pid:[4026532916]', 11, 61180664)": 904347648,
+    "('pid:[4026532916]', 2, 60627948)": 12259328,
+    "('pid:[4026532916]', 2, 60630478)": 21463040,
+    "('pid:[4026532916]', 2, 61040570)": 26734592,
+    "('pid:[4026532916]', 2, 61047235)": 26689536,
+    "('pid:[4026532916]', 2, 61073053)": 26763264,
+    "('pid:[4026532916]', 2, 61080684)": 26767360,
+    "('pid:[4026532916]', 2, 61084544)": 26640384,
+    "('pid:[4026532916]', 2, 61088090)": 26718208,
+    "('pid:[4026532916]', 2, 61107159)": 26853376,
+    "('pid:[4026532916]', 2, 61110786)": 26755072,
+    "('pid:[4026532916]', 2, 61179027)": 26537984,
+    "('pid:[4026532916]', 2, 61188008)": 26718208,
+    "('pid:[4026532916]', 2, 61210359)": 26693632,
+    "('pid:[4026532916]', 2, 61226995)": 26832896,
+    "('pid:[4026532916]', 2, 61256699)": 26910720,
+    "('pid:[4026532916]', 4, 60627986)": 904548352,
+    "('pid:[4026532916]', 4, 60630486)": 1147580416,
+    "('pid:[4026532916]', 4, 61040686)": 840753152,
+    "('pid:[4026532916]', 4, 61047267)": 708866048,
+    "('pid:[4026532916]', 4, 61073159)": 705986560,
+    "('pid:[4026532916]', 4, 61080692)": 841129984,
+    "('pid:[4026532916]', 4, 61084625)": 876941312,
+    "('pid:[4026532916]', 4, 61088107)": 1820499968,
+    "('pid:[4026532916]', 4, 61107180)": 878141440,
+    "('pid:[4026532916]', 4, 61110795)": 1033363456,
+    "('pid:[4026532916]', 4, 61179096)": 706027520,
+    "('pid:[4026532916]', 4, 61188015)": 1084461056,
+    "('pid:[4026532916]', 4, 61210367)": 1817427968,
+    "('pid:[4026532916]', 4, 61227004)": 879902720,
+    "('pid:[4026532916]', 4, 61256708)": 840740864,
+    "('pid:[4026532916]', 65, 61075964)": 796938240,
+    "('pid:[4026532916]', 65, 61183604)": 794947584,
+    "('pid:[4026533039]', 11, 61233155)": 855547904,
+    "('pid:[4026533039]', 2, 60626526)": 12107776,
+    "('pid:[4026533039]', 2, 61068753)": 26615808,
+    "('pid:[4026533039]', 2, 61232905)": 26910720,
+    "('pid:[4026533039]', 21, 61233640)": 876032000,
+    "('pid:[4026533039]', 31, 61234320)": 841289728,
+    "('pid:[4026533039]', 38, 61234742)": 897892352,
+    "('pid:[4026533039]', 4, 60626532)": 847097856,
+    "('pid:[4026533039]', 4, 61068774)": 842510336,
+    "('pid:[4026533039]', 4, 61232912)": 710778880,
+    "('pid:[4026533039]', 49, 61235443)": 806969344,
+    "('pid:[4026533039]', 56, 61235915)": 842022912,
+    "('pid:[4026533039]', 63, 61236384)": 846413824,
+    "('pid:[4026533039]', 70, 61236856)": 841060352,
+    "('pid:[4026533276]', 2, 60581522)": 12132352,
+    "('pid:[4026533276]', 4, 60581528)": 855732224
+  },
+  "snapshot_scope": "all completed acceptance jobs; current summarizer and later publication housekeeping are outside this end-of-job snapshot"
+}

@@ -1,0 +1,72 @@
+{
+  "blocked_assets": {
+    "eth": {
+      "bytes": 7424,
+      "mode": "L",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/pred_mask.png",
+      "sha256": "5c3510ddb5d3763741de83dc4fbb16d037f131d259d225721e5dcefc2e66232e",
+      "size": [
+        640,
+        480
+      ]
+    },
+    "hotel": {
+      "bytes": 3157,
+      "mode": "L",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/hotel/pred_mask.png",
+      "sha256": "dd55bde37b2c2ba8665010f229706ff77a0fa46f14760d0bb8da22832e89e2b2",
+      "size": [
+        720,
+        576
+      ]
+    },
+    "univ": {
+      "bytes": 5279,
+      "mode": "L",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/pred_mask.png",
+      "sha256": "5ba94820f52a38cde8355c56b764fc694ff5f8c9cfffc58927cf0753e48c95ad",
+      "size": [
+        720,
+        576
+      ]
+    },
+    "zara1": {
+      "bytes": 4081,
+      "mode": "L",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara1/pred_mask.png",
+      "sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d",
+      "size": [
+        720,
+        576
+      ]
+    },
+    "zara2": {
+      "bytes": 4081,
+      "mode": "L",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara2/pred_mask.png",
+      "sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d",
+      "size": [
+        720,
+        576
+      ]
+    }
+  },
+  "remedy": "Provide author raster generation manifest linking each SHA to segmentation weight SHA and training scene/label list excluding new inner/outer labels. Alternatively separately authorize a new input variant with an independently qualified train-only preprocessor; do not silently swap maps.",
+  "sources": [
+    {
+      "finding": "Goal-SAR describes learned semantic maps from pretrained Y-Net segmentation; segmentation trained on images of corresponding trajectory-training scenes. No raster-specific checkpoint/fold/label manifest binds these bytes to the new grouped split.",
+      "sections": [
+        "3.2 printed page 4/PDF index3",
+        "4.1 printed page 5/PDF index4",
+        "Implementation details printed page 6/PDF index5"
+      ],
+      "url": "https://arxiv.org/pdf/2204.11561"
+    },
+    {
+      "finding": "GDTS describes pretrained semantic predictor, not the exact released raster producer weight provenance.",
+      "section": "III-B",
+      "url": "https://arxiv.org/html/2311.14922v2"
+    }
+  ],
+  "status": "EXTERNAL_EVIDENCE_BLOCKED"
+}

@@ -45,11 +45,17 @@ def expected_role(s):
     return 'outer' if s==HOTEL else 'inner_valid' if s==INNER else 'train'
 
 def data_binding(registry):
+    if registry.manifest.get('family')=='p2_grouped_univ_hotel_v1':
+        from src.p2_grouped import data_binding as grouped_binding
+        return grouped_binding(registry)
     return digest([dict(source=r['source'],recording=r['recording'],map=r['map_provenance'])
                    for r in registry.records])
 
 class Registry:
     def __init__(self,manifest,expected_hash,*,registered_rows=REGISTERED_ROWS):
+        if manifest.get('family')=='p2_grouped_univ_hotel_v1':
+            from src.p2_grouped import init_registry
+            return init_registry(self,manifest,expected_hash)
         m=copy.deepcopy(manifest)
         if m.get('schema')!=SCHEMA or m.get('family')!=FAMILY:raise RuntimeError('P2 schema/family')
         if sealed(m)['manifest_hash']!=m.get('manifest_hash') or expected_hash!=m['manifest_hash']:
@@ -109,6 +115,9 @@ class Registry:
     def refs_unordered(self,role):
         return [r for r in self.records if r['role']==role]
     def require_provenance(self):
+        if self.manifest.get('family')=='p2_grouped_univ_hotel_v1':
+            from src.p2_grouped import require_provenance
+            return require_provenance(self,('train','inner_valid','outer'))
         if any(r['recording'].get('status')!='VERIFIED' for r in self.records):
             raise RuntimeError('BLOCKED_RECORDING_IDENTITY_UNVERIFIED')
         for r in self.records:
@@ -118,6 +127,9 @@ class Registry:
             if sm['status']=='LEARNED_PREPROCESSOR' and sm.get('training_roles')!=['train']:
                 raise RuntimeError('BLOCKED_MAP_TRAINING_PROVENANCE')
     def authorize(self,wid,purpose):
+        if self.manifest.get('family')=='p2_grouped_univ_hotel_v1':
+            from src.p2_grouped import authorize
+            return authorize(self,wid,purpose)
         self.require_provenance()
         r=self.by_id[wid];role=r['role']
         policies={
@@ -245,6 +257,11 @@ def split_window_payload(batch,source):
 
 def validate_parent(metadata,registry,role,actual_sha):
     if actual_sha in BAD_BASES:raise RuntimeError('KNOWN_PROTOCOL_VIOLATION')
+    if registry.manifest.get('family')=='p2_grouped_univ_hotel_v1':
+        from src.p2_grouped_training import qualify_parent
+        if metadata.get('sha256')!=actual_sha:raise RuntimeError('grouped parent SHA')
+        qualify_parent(metadata,registry,'goal' if role=='p2_goal' else 'base')
+        return metadata
     if metadata.get('artifact_role')!=role or metadata.get('sha256')!=actual_sha:
         raise RuntimeError('P2 parent role/hash')
     if metadata.get('data_binding')!=data_binding(registry) or metadata.get('gradient_roles')!=['train'] or metadata.get('selection_role')!='inner_valid':
@@ -277,7 +294,11 @@ def launch_guard(args):
     if mode not in expected_phase or args.phase!=expected_phase[mode]:raise RuntimeError('P2 phase/train-only dispatch')
     if getattr(args,'pretrain_path',None) or getattr(args,'load_checkpoint',None):raise RuntimeError('P2 fresh only; no full warm start/resume')
     reg=load_registry(args)
-    reg.require_provenance()
+    if reg.manifest.get('family')=='p2_grouped_univ_hotel_v1':
+        from src.p2_grouped_training import launch_guard as grouped_guard
+        accepted=grouped_guard(args,reg)
+        if accepted is not None:return accepted
+    else:reg.require_provenance()
     if getattr(args,'data_augmentation',False):raise RuntimeError('P2 augmentation not certified; explicitly disable')
     if getattr(args,'num_workers',0)!=0:raise RuntimeError('P2 requires num_workers=0')
     if mode in {'cache','l1'}:
@@ -330,7 +351,8 @@ def launch_guard(args):
         if not state.get('sha256') or file_hash(path(state['path']))!=state['sha256']:
             raise RuntimeError('P2 initial state hash')
         cache=reg.manifest.get('cache',{})
-        if cache.get('schema_version')!=CACHE_SCHEMA or cache.get('producer_sha256')!=state['base_sha256'] or cache.get('data_binding')!=data_binding(reg):
+        schema=('jdv2-p2-grouped-cache-v1' if reg.manifest.get('family')=='p2_grouped_univ_hotel_v1' else CACHE_SCHEMA)
+        if cache.get('schema_version')!=schema or cache.get('producer_sha256')!=state['base_sha256'] or cache.get('data_binding')!=data_binding(reg):
             raise RuntimeError('P2 candidate producer mismatch')
         pair=reg.manifest.get('pair_run')
         if not pair or not pair.get('failure_path') or not isinstance(pair.get('monotonic_start'),(int,float)):
@@ -351,7 +373,10 @@ def validate_bounds(args,native):
         raise RuntimeError('P2 resource limits')
 
 def dispatch(args,goal_factory,trainer_factory,cache_factory):
-    launch_guard(args)
+    reg=launch_guard(args)
+    if reg is not None and reg.manifest.get('family')=='p2_grouped_univ_hotel_v1' and args.p2_mode in {'goal','joint'}:
+        from src.p2_grouped_training import train
+        return train(args,reg)
     from src.utils import set_seed
     if getattr(args,'reproducibility',False):
         set_seed(seed_value=args.seed,use_cuda=args.use_cuda)

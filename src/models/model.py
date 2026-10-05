@@ -202,7 +202,7 @@ from src.joint_goal_loss import expected_conditional_composite
 
 
 class GDTS(torch.nn.Module):
-    def __init__(self, args, device):
+    def __init__(self, args, device, *, dataset=None):
         super().__init__()
         validate_mode(args, device)
         self.is_trainable = True
@@ -211,7 +211,7 @@ class GDTS(torch.nn.Module):
         # Cached batches already contain the downsampled visual tensors. Keep
         # only scene geometry in the model, avoiding ~10 GiB of redundant SDD
         # RGB/semantic arrays during training and evaluation.
-        self.dataset = create_dataset(
+        self.dataset = dataset if dataset is not None else create_dataset(
             self.args.dataset, load_visual_data=False)
 
         ##################

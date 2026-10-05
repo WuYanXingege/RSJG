@@ -110,7 +110,12 @@ class trainer(object):
         self._validations_without_improvement = 0
         self._collapse_signature_epochs = 0
         # initialize network
-        self.net = GDTS(self.args, self.device).to(self.device)
+        if self.p2_registry is not None and self.p2_registry.manifest.get('family') == 'p2_grouped_univ_hotel_v1':
+            from src.p2_grouped_training import geometry_dataset
+            self.net = GDTS(self.args, self.device, dataset=geometry_dataset(
+                self.p2_registry, ('train',))).to(self.device)
+        else:
+            self.net = GDTS(self.args, self.device).to(self.device)
         if objective_mode(args) == MC and args.phase in {'train', 'train_test'}:
             self._initialize_mc_objective()
         if (self.args.goal_pretrain_checkpoint and

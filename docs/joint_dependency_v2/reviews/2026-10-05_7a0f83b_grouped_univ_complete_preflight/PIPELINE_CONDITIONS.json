@@ -1,0 +1,57 @@
+{
+  "L1": {
+    "A0": "mean_energy",
+    "A1": "expected_conditional_mc S4 independent RNG",
+    "H": 500,
+    "arms_seconds": 900,
+    "beta_at_cap": 0.09854158454867955,
+    "learning_rate": 0.0001,
+    "new_protocol_not_old_L1": true,
+    "optimizer": "Adam",
+    "pair_seconds": 2700,
+    "progress_at_cap": 0.1970831690973591,
+    "reference_total_steps": 2537,
+    "reserved_bytes": 10737418240
+  },
+  "L2": {
+    "enabled": false,
+    "min_delta": 0.0,
+    "patience": 12,
+    "primary": "JADE",
+    "role": "inner_valid",
+    "selector": "src.p2_grouped_training.L2Selector",
+    "tie_break": "JFDE"
+  },
+  "auto_chain": false,
+  "dependencies": {
+    "cache": [
+      "qualified complete base",
+      "all consumed observations including outer semantic qualification"
+    ],
+    "joint": [
+      "qualified goal actual file SHA",
+      "fresh history/diffusion"
+    ],
+    "stage_a": [
+      "same base SHA for both arms",
+      "grouped deployment4249 teacher2537",
+      "shared untrained initial",
+      "reference2537"
+    ]
+  },
+  "formal_budget": {
+    "goal_epochs_max": 150,
+    "goal_updates_max": 26250,
+    "goal_wall_seconds": 86400,
+    "joint_epochs_max": 250,
+    "joint_updates_max": 43750,
+    "joint_wall_seconds": 172800,
+    "outer_metrics": false,
+    "partial_epoch": "no selection/scheduler/checkpoint; stop",
+    "resume": "FRESH_START_ONLY",
+    "selection_each_complete_epoch": true
+  },
+  "goal_status": "EXTERNAL_EVIDENCE_BLOCKED",
+  "joint_status": "WAITING_FOR_QUALIFIED_GOAL",
+  "stage_a_status": "WAITING_FOR_QUALIFIED_BASE_AND_CACHE"
+}

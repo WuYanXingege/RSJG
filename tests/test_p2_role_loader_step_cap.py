@@ -389,6 +389,19 @@ def test_default_network_loss_definitions_unchanged():
         relative=str(p.relative_to(root))
         old=subprocess.check_output(['git','show','28728bf:'+relative],cwd=root,text=True)
         before=ast.parse(old);after=ast.parse(p.read_text())
+        # Grouped-only dataset injection is the sole permitted model edit.
+        # Normalize its explicit optional argument and conditional assignment;
+        # all layers, losses and every other AST node still match the baseline.
+        if relative in {'src/models/model.py','src/models/goal_pretrain.py'}:
+            cls=next(n for n in after.body if isinstance(n,ast.ClassDef) and n.name in {'GDTS','Goal_Pretrain'})
+            init=next(n for n in cls.body if isinstance(n,ast.FunctionDef) and n.name=='__init__')
+            assert [x.arg for x in init.args.kwonlyargs]==['dataset']
+            assert ast.literal_eval(init.args.kw_defaults[0]) is None
+            init.args.kwonlyargs=[];init.args.kw_defaults=[]
+            assignment=next(n for n in init.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Attribute) and t.attr=='dataset' for t in n.targets))
+            assert ast.unparse(assignment.value.test)=='dataset is not None'
+            assert ast.unparse(assignment.value.body)=='dataset'
+            assignment.value=assignment.value.orelse
         if relative=='src/models/goal_pretrain.py':
             before=next(n for n in before.body if isinstance(n,ast.ClassDef) and n.name=='Goal_Pretrain')
             after=next(n for n in after.body if isinstance(n,ast.ClassDef) and n.name=='Goal_Pretrain')

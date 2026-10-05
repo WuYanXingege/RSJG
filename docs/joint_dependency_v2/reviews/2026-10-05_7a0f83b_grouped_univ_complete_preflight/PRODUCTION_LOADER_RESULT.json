@@ -1,0 +1,15 @@
+{
+  "argv": [
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+    "-B",
+    "tools/grouped_pack_audit.py",
+    "--archive",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight",
+    "--production"
+  ],
+  "exit": 1,
+  "file_reads_by_production_provider": 0,
+  "scope": "genuine production gate rejected before PackReader provider access",
+  "status": "EXTERNAL_EVIDENCE_BLOCKED",
+  "stderr": "Traceback (most recent call last):\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/tools/grouped_pack_audit.py\", line 53, in <module>\n    if __name__=='__main__':main()\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/tools/grouped_pack_audit.py\", line 22, in main\n    reader=PackReader(reg,role,preparation=None if a.production else grant);begin=time.monotonic();exposures=0;visited=[]\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/src/p2_grouped_training.py\", line 45, in __init__\n    if preparation is None:require_provenance(reg,(role,))\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/src/p2_grouped.py\", line 105, in require_provenance\n    if issues:raise RuntimeError('EXTERNAL_EVIDENCE_BLOCKED:'+','.join(issues))\nRuntimeError: EXTERNAL_EVIDENCE_BLOCKED:SEMANTIC_QUALIFICATION_eth,SEMANTIC_QUALIFICATION_zara1,SEMANTIC_QUALIFICATION_zara2\n"
+}

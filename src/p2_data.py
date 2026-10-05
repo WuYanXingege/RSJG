@@ -81,6 +81,8 @@ class RoleDataset:
 
 def get_p2_dataloader(args,set_name):
     reg=launch_guard(args)
+    if reg.manifest.get('family')=='p2_grouped_univ_hotel_v1' and args.p2_mode in {'goal','joint'}:
+        raise RuntimeError('Grouped base training uses the dedicated PackReader runner; legacy eager-target loader forbidden')
     if set_name=='test':raise PermissionError('P2 outer metrics locked')
     if args.p2_mode=='l1' and set_name!='train':raise PermissionError('P2 L1 no valid loader')
     role='train' if set_name=='train' else 'inner_valid'

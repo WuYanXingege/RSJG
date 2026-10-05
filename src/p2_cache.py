@@ -46,7 +46,8 @@ def execute(registry,providers,candidate,root,producer,teacher_fn=None):
             teacher=dict(future_pair_descriptor=descriptor.cpu(),contains_future_supervision=True)
             refs[r['window_id']]['teacher']=write('teacher',teacher,'.teacher')
             ledger['teacher_writes']+=1
-    manifest=dict(schema_version=CACHE_SCHEMA,producer_sha256=producer['sha256'],
+    schema=('jdv2-p2-grouped-cache-v1' if registry.manifest.get('family')=='p2_grouped_univ_hotel_v1' else CACHE_SCHEMA)
+    manifest=dict(schema_version=schema,producer_sha256=producer['sha256'],
         data_binding=data_binding(registry),role_manifest_hash=registry.manifest['manifest_hash'],
         K=21,dtype='float32',candidate_order='generate_goal_candidates-v1',coordinate_units='world_m',
         graph=dict(type='radius_ttc',radius=6.,ttc=8.,dt=.4),contains_future_supervision=True,
@@ -62,7 +63,11 @@ def build_from_owner(owner):
     from src.models.interaction_graph import build_interaction_graph
     from src.models.joint_dependency_v2.future_teacher import future_pair_descriptor
     a=owner.args;reg=owner.p2_registry;device=torch.device(a.device)
-    model=GDTS(a,device).to(device).eval()
+    if reg.manifest.get('family')=='p2_grouped_univ_hotel_v1':
+        from src.p2_grouped_training import geometry_dataset,qualify_parent
+        qualify_parent(reg.manifest['parents']['base'],reg,'base')
+        model=GDTS(a,device,dataset=geometry_dataset(reg,('train','inner_valid','outer'))).to(device).eval()
+    else:model=GDTS(a,device).to(device).eval()
     state=torch.load(owner.checkpoint,map_location='cpu',weights_only=False)['model_state_dict']
     model.goal_module.load_state_dict({k[len('goal_module.'):]:v for k,v in state.items() if k.startswith('goal_module.')},strict=True)
     def scene(r):return model.dataset.scenes[r['source']['scene_family']]

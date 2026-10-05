@@ -1,0 +1,25 @@
+{
+  "family": "p2_grouped_univ_hotel_v1",
+  "manifest_hash": "cf34837f273737050941145504ea666e1a961663108758c5a64157291aaef58c",
+  "members_hash": "f3d18d726d40b2dc58afb9ff414051ec34f984f27b4368f54361468bb665c4b5",
+  "outer_future": false,
+  "parent_manifest_hash": "ad7b58130b77770e779d5f907b295c07a5ad0906072b5284bf1ef8a8a1e9a238",
+  "production": false,
+  "rows_hash": "5b17b449313e33402a1b19eb50abca70ece02e275cb4dc4080b65f4773f74ff4",
+  "schema": "grouped-purpose-preparation-v1",
+  "teacher": false,
+  "uses": {
+    "inner_valid": [
+      "observation_validation",
+      "metric_target_preparation"
+    ],
+    "outer": [
+      "observation_validation"
+    ],
+    "train": [
+      "observation_validation",
+      "gradient_target_preparation",
+      "PREFLIGHT_SMOKE"
+    ]
+  }
+}

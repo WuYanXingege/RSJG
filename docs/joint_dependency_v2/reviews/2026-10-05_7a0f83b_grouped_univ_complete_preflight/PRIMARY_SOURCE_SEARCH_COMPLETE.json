@@ -1,0 +1,24 @@
+{
+  "search_closed_utc": "2026-10-05T09:47:19Z",
+  "search_elapsed_upper_bound_minutes": 43,
+  "new_search_not_needed_after_this_point": true,
+  "source": "https://arxiv.org/pdf/2204.11561",
+  "version": "arXiv:2204.11561v1, 25 April 2022",
+  "read_complete_relevant_passages": ["section 3.2, printed page 4", "section 4.1 datasets, printed page 5", "implementation details including segmentation training, printed page 6"],
+  "findings": [
+    "Goal-SAR uses a learned semantic segmenter attributed to Y-Net.",
+    "ETH and HOTEL are named as distinct scenes, alongside UNIV/ZARA1/ZARA2.",
+    "The segmentation training is described in terms of trajectory-training-scene images, not a raster-specific weight/fold manifest for this new split.",
+    "Thus the released raster bytes alone cannot establish exclusion of the new UNIV inner / HOTEL outer training labels."
+  ],
+  "other_primary": "https://arxiv.org/html/2311.14922v2#S3.SS2",
+  "other_primary_scope": "GDTS III-B pretrained semantic predictor; not a released-raster producer identity.",
+  "network_attempts": [
+    "actual direct GET tail: connect timeout after 20 s, zero body",
+    "per-command removal of malformed lowercase proxy variables, retaining existing valid uppercase proxy: successful HTTP206 tail 131072 bytes",
+    "same author URL actual full GET: successful 144912564-byte archive; no global proxy change"
+  ],
+  "archive_content_scope": "572 entries checked by ZIP central directory; no model weights or original video. Full author package downloaded, only ETH/UCY members decompressed in memory for byte hashes; no coordinate parsing in release binding.",
+  "credentials": "not included; raw response cookie headers remain local and excluded from GitHub",
+  "semantic_status": "EXTERNAL_EVIDENCE_BLOCKED pending artifact-specific preprocessor provenance"
+}
