@@ -1,0 +1,37 @@
+{
+  "gradient": 0,
+  "inner_prediction_or_metrics": 0,
+  "model_forward": 0,
+  "outer_targets": 0,
+  "production_loader": "EXTERNAL_EVIDENCE_BLOCKED",
+  "real_model_construct": 0,
+  "results": {
+    "inner_valid": {
+      "actual_observation_only_adapter": true,
+      "actual_pure_prepare_inputs": false,
+      "agent_window_exposures": 24955,
+      "packing_sha256": "45153d0f74fe5bd78022872a5066e320e99d9b9fe48b6be7b6ddb700d13f428e",
+      "packs": 391,
+      "reads": {
+        "observation": 1633,
+        "target": 1633
+      },
+      "seconds": 79.5207538959803
+    },
+    "train": {
+      "actual_observation_only_adapter": true,
+      "actual_pure_prepare_inputs": true,
+      "agent_window_exposures": 11122,
+      "packing_sha256": "7f5ea9eb5214b31c3c1195dfd1f71dca6f416c4de8df7f93c92f9bd4ab73d1bd",
+      "packs": 175,
+      "reads": {
+        "observation": 2667,
+        "target": 2667
+      },
+      "seconds": 56.05192326602992
+    }
+  },
+  "seconds": 135.5821666889824,
+  "status": "ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION",
+  "teacher": 0
+}

@@ -59,7 +59,7 @@ def main():
         atomic_json(dict(path=str(dest),sha256=file_hash(dest),state_sha256=state,updates=0,seed=3101,
             smoke_state_inherited=False,data_binding=data_binding(reg),source=source_fingerprint(),
             initialization_device='cpu; formal constructor also initializes parameters on CPU before device transfer',
-            formal_config_path=str(D/'FRESH_GOAL_BLOCKED.yaml'),formal_config_sha256=file_hash(D/'FRESH_GOAL_BLOCKED.yaml'),
+            formal_config_path=str(goal_config_path(D)),formal_config_sha256=file_hash(goal_config_path(D)),
             scope='fresh unupdated initialization audit, not a selected parent or resume checkpoint',
             status='UNUPDATED_INITIAL_NOT_QUALIFIED_PARENT'),D/'FRESH_INITIAL.json');return
     if device.startswith('cuda'):

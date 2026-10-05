@@ -8,6 +8,8 @@ from src.p2_protocol import (ROOT,Registry,REGISTERED_ROWS,HOTEL,INNER,digest,se
 FAMILY='p2_grouped_univ_hotel_v1'
 SCHEMA='rsjg-p2-grouped-role-v1'
 CACHE_SCHEMA='jdv2-p2-grouped-cache-v1'
+OFFICIAL_PRIOR='official_semantic_prior_v1'
+OFFICIAL_PROTOCOL='p2_grouped_univ_hotel_official_prior_v1'
 START='7a0f83bb9341617b4f214cefc3563927961c08d6'
 MOVED_HASH='bdcdd21cf6dd8995bea27d8881519704e37f8027a6d3b07b569cf884ce449ea9'
 UNIV={INNER,'a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b',
@@ -25,6 +27,8 @@ def init_registry(reg,manifest,expected_hash):
     m=copy.deepcopy(manifest)
     if m.get('schema')!=SCHEMA or m.get('family')!=FAMILY or sealed(m)['manifest_hash']!=expected_hash or m.get('manifest_hash')!=expected_hash:
         raise RuntimeError('GROUPED manifest/schema/hash')
+    if m.get('protocol_variant') not in (None,OFFICIAL_PRIOR):raise RuntimeError('GROUPED unknown protocol variant')
+    if m.get('protocol_variant')==OFFICIAL_PRIOR and m.get('protocol_id')!=OFFICIAL_PROTOCOL:raise RuntimeError('official prior protocol identity')
     rows=m.get('records')
     if rows is None:
         rows=[]
@@ -58,11 +62,39 @@ def init_registry(reg,manifest,expected_hash):
     if any(len(v)!=1 for v in groups.values()):raise RuntimeError('GROUPED cross-role isolation conflict')
     reg.manifest=m;reg.records=rows;reg.by_id={r['window_id']:r for r in rows};reg.counts=COUNTS.copy()
 def data_binding(reg):
-    return digest(dict(schema=SCHEMA,family=FAMILY,
+    value=dict(schema=SCHEMA,family=FAMILY,
         rows=[dict(source=r['source'],isolation_group=r['isolation_group']) for r in reg.records],
         assets=reg.manifest['assets'],order_hash=reg.manifest['train_order_hash'],
         qualification_contract='grouped-asset-specific-semantic-v1',
-        policy='train-gradient_inner-post-prediction-metric_outer-observation-only-v1'))
+        policy='train-gradient_inner-post-prediction-metric_outer-observation-only-v1')
+    if reg.manifest.get('protocol_variant')==OFFICIAL_PRIOR:
+        value.update(protocol_id=OFFICIAL_PROTOCOL,qualification_contract=OFFICIAL_PRIOR,
+            input_policy_acceptance=reg.manifest.get('input_policy_acceptance'))
+    return digest(value)
+
+def official_prior_accepted(reg,scene):
+    """Explicit user-approved input assumption; NEVER a clean provenance certificate."""
+    m=reg.manifest
+    if m.get('protocol_variant')!=OFFICIAL_PRIOR or m.get('protocol_id')!=OFFICIAL_PROTOCOL:return False
+    ref=m.get('input_policy_acceptance') or {}
+    if not ref.get('path') or not path(ref['path']).is_file() or file_hash(path(ref['path']))!=ref.get('sha256'):return False
+    consent=json.loads(path(ref['path']).read_text())
+    if consent.get('schema')!='rsjg-official-prior-acceptance-v1' or consent.get('protocol_id')!=OFFICIAL_PROTOCOL:return False
+    if consent.get('preprocessor_training_scope')!='UNKNOWN' or consent.get('strict_clean_claim') is not False:return False
+    if consent.get('gradient_roles')!=['train'] or consent.get('selection_roles')!=['inner_valid'] or consent.get('outer_metrics') is not False:return False
+    if consent.get('user_authorized') is not True or consent.get('all_arms_same_frozen_inputs') is not True:return False
+    asset=m['assets'][scene]['pred_mask.png']
+    semantic_hashes=consent.get('semantic_asset_sha256')
+    if not isinstance(semantic_hashes,dict) or semantic_hashes.get(scene)!=asset['sha256']:return False
+    refs=m['qualification'].get('release_binding',{}).get('evidence',[])
+    for evidence in refs:
+        if not path(evidence['path']).is_file() or file_hash(path(evidence['path']))!=evidence['sha256']:continue
+        release=json.loads(path(evidence['path']).read_text())
+        if release.get('status')!='VERIFIED_AUTHOR_ARCHIVE_MEMBERS' or release.get('archive_sha256')!=consent.get('author_archive_sha256'):continue
+        for member in release.get('members',[]):
+            if member.get('member')=='data/eth5/'+scene+'/pred_mask.png' and member.get('match') is True and member.get('member_sha256')==asset['sha256'] and member.get('local_actual_sha256')==asset['sha256']:
+                return True
+    return False
 def qualification_issues(reg,roles=('train','inner_valid')):
     q=reg.manifest['qualification'];issues=[]
     if q.get('known_cross_role_conflict'):issues.append('KNOWN_CROSS_ROLE_CONFLICT')
@@ -72,7 +104,9 @@ def qualification_issues(reg,roles=('train','inner_valid')):
     for scene in sorted(scenes):
         a=q.get('scenes',{}).get(scene,{})
         if a.get('geometry_status')!='VERIFIED_AUTHOR_BINDING':issues.append('GEOMETRY_'+scene)
-        if a.get('semantic_status') not in {'VERIFIED_PROVIDED_STATIC','VERIFIED_TRAIN_ONLY_PREPROCESSOR'} or a.get('protocol_permitted') is not True:
+        if reg.manifest.get('protocol_variant')==OFFICIAL_PRIOR:
+            if not official_prior_accepted(reg,scene):issues.append('OFFICIAL_PRIOR_ACCEPTANCE_'+scene)
+        elif a.get('semantic_status') not in {'VERIFIED_PROVIDED_STATIC','VERIFIED_TRAIN_ONLY_PREPROCESSOR'} or a.get('protocol_permitted') is not True:
             issues.append('SEMANTIC_QUALIFICATION_'+scene)
         else:
             # Distribution membership cannot be reused as a segmentation-training certificate.

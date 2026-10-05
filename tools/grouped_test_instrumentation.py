@@ -1,6 +1,7 @@
 """CPU fixture accounting, separate from real train-data smoke attempts."""
 from collections import Counter
-import time
+import time,os
+from pathlib import Path
 counts=Counter();optimizers=[]
 def pytest_sessionstart(session):
     import torch
@@ -23,5 +24,5 @@ def pytest_sessionstart(session):
 def pytest_sessionfinish(session,exitstatus):
     from src.p2_protocol import ROOT
     from src.p2_observation import atomic_json
-    d=ROOT/'docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight'
+    d=Path(os.environ.get('RSJG_TEST_ARCHIVE',str(ROOT/'docs/joint_dependency_v2/reviews/2026-10-05_7a0f83b_grouped_univ_complete_preflight')))
     atomic_json(dict(scope='synthetic CPU pytest fixtures; not real train-label updates',counts=dict(counts),optimizers=optimizers,exit=int(exitstatus)),d/('CPU_FIXTURE_ACCOUNTING_'+str(time.time_ns())+'.json'))

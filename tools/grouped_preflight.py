@@ -6,7 +6,7 @@ sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import yaml
 from src.p2_protocol import ROOT,Registry,digest,file_hash,path
 from src.p2_grouped import qualification_issues
-from src.p2_grouped_training import qualify_parent
+from src.p2_grouped_training import qualify_parent,goal_config_path
 from src.p2_observation import atomic_json
 
 def main():
@@ -67,7 +67,7 @@ def main():
         v=json.loads(p.read_text());conditions[name]=dict(status=v.get('status','PASS'),evidence=str(p.relative_to(ROOT)),sha256=file_hash(p))
     ip=D/'INNER_SELECTION_RESULT.json'
     conditions['qualified_inner_selection']=json.loads(ip.read_text()) if ip.exists() else dict(status='EXTERNAL_EVIDENCE_BLOCKED' if issues else 'NOT_COMPLETED')
-    cfg=D/'FRESH_GOAL_BLOCKED.yaml'
+    cfg=goal_config_path(D)
     command=[sys.executable,'-B','main.py','--p2_config',str(cfg),'--p2_launch_check']
     run=subprocess.run(command,cwd=ROOT,text=True,capture_output=True)
     conditions['production_entry']=dict(status='PASS' if run.returncode==0 else 'BLOCKED',argv=command,exit=run.returncode,stdout=run.stdout,stderr=run.stderr,config_sha256=file_hash(cfg))
@@ -75,6 +75,37 @@ def main():
     conditions['production_full_loader']=json.loads(pp.read_text()) if pp.exists() else dict(status='EXTERNAL_EVIDENCE_BLOCKED' if issues else 'NOT_COMPLETED',note='artifact/preparation traversal is not qualified production traversal')
     status='EXTERNAL_EVIDENCE_BLOCKED' if issues else 'FAILED_INCOMPLETE_ACCEPTANCE'
     if not issues and all(v['status'] in {'PASS','ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION','UNUPDATED_INITIAL_NOT_QUALIFIED_PARENT'} for v in conditions.values()):status='GOAL_TRAINING_READY'
-    result=dict(status=status,conditions=conditions,joint='WAITING_FOR_QUALIFIED_GOAL',stage_a='WAITING_FOR_QUALIFIED_BASE_AND_CACHE',formal_training_started=False)
+    from src.p2_protocol import data_binding
+    if m.get('protocol_variant')=='official_semantic_prior_v1':
+        from src.p2_grouped_training import source_fingerprint
+        current=source_fingerprint()['files'];binding=data_binding(reg);validation={}
+        f=D/'CPU_TEST_RESULT.json';v=json.loads(f.read_text()) if f.exists() else {}
+        validation['cpu_regression']=(v.get('status')=='PASS' and v.get('source',{}).get('files')==current)
+        for mode in ('cpu','cuda','reload'):
+            f=D/('MODEL_SMOKE_'+mode+'.json');v=json.loads(f.read_text()) if f.exists() else {}
+            validation['smoke_'+mode]=(v.get('status')=='PASS' and v.get('data_binding')==binding and v.get('source',{}).get('files')==current)
+        f=D/'PRODUCTION_LOADER_RESULT.json';v=json.loads(f.read_text()) if f.exists() else {}
+        validation['production_loader']=(v.get('status')=='PASS' and v.get('production_loader')=='PASS'
+            and v.get('data_binding')==binding and v.get('manifest_hash')==m['manifest_hash']
+            and v.get('results',{}).get('train',{}).get('packs')==175
+            and v.get('results',{}).get('train',{}).get('agent_window_exposures')==11122
+            and v.get('results',{}).get('inner_valid',{}).get('packs')==391
+            and v.get('results',{}).get('inner_valid',{}).get('agent_window_exposures')==24955)
+        f=D/'INNER_SELECTION_RESULT.json';v=json.loads(f.read_text()) if f.exists() else {}
+        goal=v.get('results',{}).get('goal',{})
+        validation['inner_selection']=(v.get('status')=='PASS' and v.get('validated_scope')=='goal'
+            and v.get('optimizer_updates')==0 and v.get('outer_access') is False
+            and v.get('data_binding')==binding and v.get('manifest_hash')==m['manifest_hash']
+            and goal.get('packs')==391 and goal.get('denominator')==24955)
+        f=D/'FRESH_INITIAL.json';v=json.loads(f.read_text()) if f.exists() else {}
+        validation['fresh_config']=(v.get('status')=='UNUPDATED_INITIAL_NOT_QUALIFIED_PARENT'
+            and v.get('updates')==0 and v.get('data_binding')==binding and v.get('formal_config_sha256')==file_hash(cfg)
+            and v.get('source',{}).get('files')==current
+            and bool(v.get('path')) and path(v['path']).is_file() and file_hash(path(v['path']))==v.get('sha256'))
+        conditions['current_protocol_receipts']=dict(status='PASS' if all(validation.values()) else 'FAILED_STALE_OR_MISSING_RECEIPT',checks=validation)
+        if not all(validation.values()):status='FAILED_INCOMPLETE_ACCEPTANCE'
+    result=dict(status=status,conditions=conditions,protocol_id=m.get('protocol_id',m['family']),
+        data_binding=data_binding(reg),manifest_hash=m['manifest_hash'],config_path=str(cfg),config_sha256=file_hash(cfg),
+        joint='WAITING_FOR_QUALIFIED_GOAL',stage_a='WAITING_FOR_QUALIFIED_BASE_AND_CACHE',formal_training_started=False)
     atomic_json(result,D/'READINESS_MATRIX.json');print(json.dumps(result));raise SystemExit(0 if status=='GOAL_TRAINING_READY' else 2)
 if __name__=='__main__':main()

@@ -1,0 +1,153 @@
+{
+  "conditions": {
+    "CPU_model": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/MODEL_SMOKE_cpu.json",
+      "sha256": "0a66c64ce35d90d57e727aa61a6de89df9333a2ba4039661f29fd5d96258bd30",
+      "status": "PASS"
+    },
+    "CPU_tests": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/CPU_TEST_RESULT.json",
+      "sha256": "80a76d062bdf813a1d342dea63706c1e894f9af03dfbd9869ed0507b14ec2b0f",
+      "status": "PASS"
+    },
+    "CUDA_model": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/MODEL_SMOKE_cuda.json",
+      "sha256": "950a548d47fb104564f6189362e4fda23aad2d243dd685a6373cd6b3f97eb455",
+      "status": "PASS"
+    },
+    "artifact_export": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/ARTIFACT_EXPORT_RESULT.json",
+      "sha256": "804b7290b86131169d46f90b494d51853aa39541c778c6eb63d8c71f0f8f429b",
+      "status": "ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION"
+    },
+    "artifact_full_readback": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/ARTIFACT_VERIFY_RESULT.json",
+      "sha256": "48e7878d3f0d15ae152b15175d32fcde1f09dd54a5ba2111b1b27703545cf818",
+      "status": "ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION"
+    },
+    "current_protocol_receipts": {
+      "checks": {
+        "cpu_regression": true,
+        "fresh_config": true,
+        "inner_selection": true,
+        "production_loader": true,
+        "smoke_cpu": true,
+        "smoke_cuda": true,
+        "smoke_reload": true
+      },
+      "status": "PASS"
+    },
+    "fresh_initial": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/FRESH_INITIAL.json",
+      "sha256": "2a0c4e2d63554e0a20f9639cbca4d5108a59502037c29a106dc4d799e975165c",
+      "status": "UNUPDATED_INITIAL_NOT_QUALIFIED_PARENT"
+    },
+    "full_native_pack_artifact": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/FULL_NATIVE_PACK_ARTIFACT_AUDIT.json",
+      "sha256": "4da6faaa1b5c905e061d7930c5ec70df83c789a584640052ee5327eeb22ef323",
+      "status": "ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION"
+    },
+    "independent_reload": {
+      "evidence": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/MODEL_SMOKE_reload.json",
+      "sha256": "4b4060964e9cd1714cdb93c835e7e79371e93c1dc09532dec90569a7c1d752ff",
+      "status": "PASS"
+    },
+    "production_entry": {
+      "argv": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "main.py",
+        "--p2_config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/FRESH_GOAL_CONFIG.yaml",
+        "--p2_launch_check"
+      ],
+      "config_sha256": "f1424de50b0b4457f7f62389c597d40ccfe762e94dad9ab50ab1290b702f85ae",
+      "exit": 0,
+      "status": "PASS",
+      "stderr": "",
+      "stdout": "Program started 05 October 2026 at 20:15\nGit info. Current branch: research/joint-dependency-v2-clean\nLast commit: 2c25c1f29151ec7727606833aa576a0edd0e51e7 Prepare grouped UNIV preflight with real targets and provenance gates\n\n{\"status\": \"METADATA_ACCEPTED_NO_EXECUTION\", \"device_calls\": 0}\n"
+    },
+    "production_full_loader": {
+      "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+      "gradient": 0,
+      "inner_prediction_or_metrics": 0,
+      "manifest_hash": "46bed190222c19c254137d9256f8bdb1dca1cf6e7269c7be17f05793f2270c75",
+      "model_forward": 0,
+      "outer_targets": 0,
+      "production_loader": "PASS",
+      "real_model_construct": 0,
+      "results": {
+        "inner_valid": {
+          "actual_observation_only_adapter": true,
+          "actual_pure_prepare_inputs": false,
+          "agent_window_exposures": 24955,
+          "packing_sha256": "45153d0f74fe5bd78022872a5066e320e99d9b9fe48b6be7b6ddb700d13f428e",
+          "packs": 391,
+          "reads": {
+            "observation": 1633,
+            "target": 1633
+          },
+          "seconds": 79.71584753098432
+        },
+        "train": {
+          "actual_observation_only_adapter": true,
+          "actual_pure_prepare_inputs": true,
+          "agent_window_exposures": 11122,
+          "packing_sha256": "7f5ea9eb5214b31c3c1195dfd1f71dca6f416c4de8df7f93c92f9bd4ab73d1bd",
+          "packs": 175,
+          "reads": {
+            "observation": 2667,
+            "target": 2667
+          },
+          "seconds": 87.4217756500002
+        }
+      },
+      "seconds": 167.15521491097752,
+      "status": "PASS",
+      "teacher": 0
+    },
+    "protocol": {
+      "counts": {
+        "inner_valid": 1267,
+        "outer": 445,
+        "train": 2537
+      },
+      "family": "p2_grouped_univ_hotel_v1",
+      "manifest_hash": "46bed190222c19c254137d9256f8bdb1dca1cf6e7269c7be17f05793f2270c75",
+      "rows": "5b17b449313e33402a1b19eb50abca70ece02e275cb4dc4080b65f4773f74ff4",
+      "status": "PASS"
+    },
+    "qualified_inner_selection": {
+      "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+      "manifest_hash": "46bed190222c19c254137d9256f8bdb1dca1cf6e7269c7be17f05793f2270c75",
+      "optimizer_updates": 0,
+      "outer_access": false,
+      "peak_reserved": 654311424,
+      "results": {
+        "goal": {
+          "checkpoint_sha256": "40390b75c5ddfc0ed159adce10af7bf7224335e2b466458c22c8913630c9014c",
+          "denominator": 24955.0,
+          "packs": 391,
+          "target_read_after_prediction": true,
+          "value": 0.6904862455030979
+        }
+      },
+      "scope": "SMOKE_ONLY engineering selection, not a performance result or parent",
+      "status": "PASS",
+      "validated_scope": "goal"
+    },
+    "source_and_maps": {
+      "issues": [],
+      "status": "PASS"
+    }
+  },
+  "config_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/FRESH_GOAL_CONFIG.yaml",
+  "config_sha256": "f1424de50b0b4457f7f62389c597d40ccfe762e94dad9ab50ab1290b702f85ae",
+  "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+  "formal_training_started": false,
+  "joint": "WAITING_FOR_QUALIFIED_GOAL",
+  "manifest_hash": "46bed190222c19c254137d9256f8bdb1dca1cf6e7269c7be17f05793f2270c75",
+  "protocol_id": "p2_grouped_univ_hotel_official_prior_v1",
+  "stage_a": "WAITING_FOR_QUALIFIED_BASE_AND_CACHE",
+  "status": "GOAL_TRAINING_READY"
+}

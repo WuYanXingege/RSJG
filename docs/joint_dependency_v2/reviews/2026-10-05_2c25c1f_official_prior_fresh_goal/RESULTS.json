@@ -1,0 +1,22 @@
+{
+  "status": "GOAL_TRAINING_READY",
+  "protocol_id": "p2_grouped_univ_hotel_official_prior_v1",
+  "protocol_variant": "official_semantic_prior_v1",
+  "strict_clean_claim": false,
+  "segmentation_training_scope": "UNKNOWN",
+  "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+  "manifest_hash": "46bed190222c19c254137d9256f8bdb1dca1cf6e7269c7be17f05793f2270c75",
+  "counts": {"train": 2537, "inner_valid": 1267, "outer": 445},
+  "production_packs": {"train": 175, "inner_valid": 391},
+  "agent_window_exposures": {"train": 11122, "inner_valid": 24955},
+  "cpu_tests": {"protocol_and_loader": 119, "observation_guard": 50, "status": "PASS"},
+  "optimizer_ledger": {"attempts": 24, "successes": 24, "failed": 0, "new_protocol_updates": 8, "hard_cap": 24},
+  "gpu_preflight_charged_seconds": 183.08772611618042,
+  "inner_selection": {"status": "PASS", "scope": "goal", "packs": 391, "denominator": 24955, "optimizer_updates": 0, "outer_access": false, "engineering_only": true},
+  "fresh_initial_state_sha256": "ff931446488399425f54ea689aaec0409c64319bd2a0ece74cf7366e65d7c8f0",
+  "config_sha256": "f1424de50b0b4457f7f62389c597d40ccfe762e94dad9ab50ab1290b702f85ae",
+  "formal_training_started_at_readiness": false,
+  "next_stage": "BACKGROUND_FRESH_GOAL_ONLY",
+  "joint": "WAITING_FOR_QUALIFIED_GOAL",
+  "stage_a": "WAITING_FOR_QUALIFIED_BASE_AND_CACHE"
+}

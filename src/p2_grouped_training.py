@@ -1,5 +1,5 @@
 """New-family only fresh training; legacy trainers and objectives unchanged."""
-import copy,json,math,random,re,time,subprocess
+import copy,json,math,random,re,time,subprocess,os
 from pathlib import Path
 from types import SimpleNamespace
 from collections import defaultdict
@@ -54,11 +54,13 @@ class PackReader:
         for wid,j in refs:
             r=self.reg.by_id[wid]
             if r['role']!=self.role:raise PermissionError('pack role changed')
+            groups[wid].append(j)
+        for wid in groups:
+            r=self.reg.by_id[wid]
             if self.preparation:
                 purpose='observation_validation' if kind=='observation' else ('gradient_target_preparation' if self.role=='train' else 'metric_target_preparation')
                 self.preparation.authorize(r,purpose)
             else:self.reg.authorize(wid,'gradient' if self.role=='train' else 'selection')
-            groups[wid].append(j)
         pieces=[]
         for wid,indices in groups.items():
             self.read_trace.append((i,kind,wid))
@@ -295,6 +297,10 @@ def qualify_parent(ref,reg,role):
 def formal_output(args):
     return path(Path('output')/str(args.test_set)/'runs'/args.run_name)
 
+def goal_config_path(archive):
+    current=Path(archive)/'FRESH_GOAL_CONFIG.yaml'
+    return current if current.exists() else Path(archive)/'FRESH_GOAL_BLOCKED.yaml'
+
 def launch_guard(args,reg):
     mode=args.p2_mode
     if mode in ('goal','joint'):
@@ -341,6 +347,9 @@ def evaluate(model,reader,device,goal,deadline=None):
             values=model.compute_model_metrics(metric_name='ADE',predictions=pred[0],metric_mask=mask,all_aux_outputs=pred[1],inputs=inputs,obs_length=8)
             return sum(values),len(values)
         acc.add(*reader.predict_then_metric(i,predict,metric))
+        if (i+1)%25==0 or i+1==len(reader.packs):
+            print(json.dumps(dict(event='INNER_SELECTION_PROGRESS',goal=goal,packs=i+1,
+                denominator=acc.denominator)),flush=True)
     return acc
 
 def train(args,reg):
@@ -355,8 +364,12 @@ def train(args,reg):
         parent=qualify_parent(reg.manifest['parents']['goal'],reg,'goal')
         model.goal_module.load_state_dict({k[len('goal_module.'):]:v for k,v in parent['model_state_dict'].items() if k.startswith('goal_module.')},strict=True)
     if not goal and state_hash({k:v for k,v in model.state_dict().items() if not k.startswith('goal_module.')})!=non_goal:raise RuntimeError('goal load touched fresh history/diffusion')
-    initial=state_hash(model.state_dict());atomic_tensor(dict(classification='FORMAL_INITIAL_UNUPDATED',state_sha256=initial,model_state_dict=model.state_dict(),optimizer_updates=0,seed=3101,
+    initial=state_hash(model.state_dict())
+    if goal and os.environ.get('RSJG_EXPECTED_FRESH_STATE_SHA256') not in (None,initial):raise RuntimeError('fresh initial differs from accepted preflight')
+    atomic_tensor(dict(classification='FORMAL_INITIAL_UNUPDATED',state_sha256=initial,model_state_dict=model.state_dict(),optimizer_updates=0,seed=3101,
         goal_parent=None if goal else reg.manifest['parents']['goal'],fresh_non_goal_sha256=non_goal),dest/'initial.pt')
+    print(json.dumps(dict(event='FRESH_INITIAL_SAVED',path=str(dest),state_sha256=initial,
+        protocol_id=reg.manifest.get('protocol_id',FAMILY),data_binding=data_binding(reg))),flush=True)
     opt=torch.optim.Adam(model.parameters(),lr=args.learning_rate);sched=torch.optim.lr_scheduler.ExponentialLR(opt,gamma=.99)
     tr=PackReader(reg,'train');va=PackReader(reg,'inner_valid');selector=Selector(patience=args.early_stopping_patience)
     p=dict(epoch_completed=0,cursor=0,attempts=0,successful=0,skipped=0,failed=0,agent_exposures=0,selection_history=[])
@@ -372,6 +385,9 @@ def train(args,reg):
             if not torch.isfinite(loss):p['failed']+=1;raise FloatingPointError('nonfinite loss')
             loss.backward();torch.nn.utils.clip_grad_norm_(model.parameters(),args.clip,error_if_nonfinite=True);opt.step()
             p['successful']+=1;p['cursor']=i+1;p['agent_exposures']+=len(tr.packs[i])
+            if i==0 or (i+1)%25==0:
+                print(json.dumps(dict(event='TRAIN_PROGRESS',epoch=epoch,pack=i+1,loss=float(loss.detach()),
+                    successful_updates=p['successful'],agent_exposures=p['agent_exposures'],elapsed_seconds=time.monotonic()-start)),flush=True)
         seed_snapshot=rng_snapshot(device);seed_all(args.validation_seed,device)
         try:metric=evaluate(model,va,device,goal,start+deadline)
         finally:restore_rng(seed_snapshot)
@@ -382,6 +398,8 @@ def train(args,reg):
         p['selection_history'].append(dict(epoch=epoch,value=metric.value(),denominator=metric.denominator,train_exposures=11122,updates=175))
         save_checkpoint(dest/('epoch_%03d.pt'%epoch),model,opt,sched,reg,args,dict(p),initial,'FORMAL_EPOCH',meta)
         atomic_json(dict(last_epoch=epoch,best_epoch=selector.epoch,best_value=selector.best,progress=p),dest/'selection.json')
+        print(json.dumps(dict(event='EPOCH_COMPLETE',epoch=epoch,selection=meta,best_epoch=selector.epoch,
+            successful_updates=p['successful'],elapsed_seconds=time.monotonic()-start)),flush=True)
         if stop:break
     best_path=dest/('epoch_%03d.pt'%selector.epoch)
     atomic_json(sealed(dict(run_complete=True,complete_epochs=p['epoch_completed'],best_epoch=selector.epoch,

@@ -1,0 +1,38 @@
+{
+  "runs": [
+    {
+      "argv": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "-m",
+        "pytest",
+        "-p",
+        "tools.grouped_test_instrumentation",
+        "-q",
+        "tests/test_p2_grouped_preflight.py",
+        "tests/test_p2_role_loader_step_cap.py",
+        "tests/test_official_prior.py"
+      ],
+      "exit": 1,
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/official_prior_fresh_goal_2c25c1f_20261005/cpu_1791200929952174687_0.log",
+      "seconds": 60.748480699025095,
+      "sha256": "d92ed4a1600223f5855744429867bbdd882232acfb44c474119e7c2d13990727",
+      "summary": "........................................................................ [ 60%]\n......................................F........                          [100%]\n=================================== FAILURES ===================================\n__ test_consent_tampering_not_a_generic_allow_unknown[semantic_asset_sha256] ___\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-41/test_consent_tampering_not_a_g7')\nfield = 'semantic_asset_sha256'\n\n    @pytest.mark.parametrize('field',['preprocessor_training_scope','strict_clean_claim','gradient_roles','selection_roles','outer_metrics','user_authorized','all_arms_same_frozen_inputs','semantic_asset_sha256','author_archive_sha256'])\n    def test_consent_tampering_not_a_generic_allow_unknown(tmp_path,field):\n        new=registry(D);ref=new.manifest['input_policy_acceptance'];v=json.loads((ROOT/ref['path']).read_text())\n        v[field]='forged';p=tmp_path/'acceptance.json';p.write_text(json.dumps(v))\n        new.manifest['input_policy_acceptance']={'path':str(p),'sha256':file_hash(p)}\n>       assert any('OFFICIAL_PRIOR_ACCEPTANCE' in x for x in qualification_issues(new))\n\ntests/test_official_prior.py:25: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/p2_grouped.py:107: in qualification_issues\n    if not official_prior_accepted(reg,scene):issues.append('OFFICIAL_PRIOR_ACCEPTANCE_'+scene)\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nreg = <src.p2_protocol.Registry object at 0x7f0b82f2fee0>, scene = 'eth'\n\n    def official_prior_accepted(reg,scene):\n        \"\"\"Explicit user-approved input assumption; NEVER a clean provenance certificate.\"\"\"\n        m=reg.manifest\n        if m.get('protocol_variant')!=OFFICIAL_PRIOR or m.get('protocol_id')!=OFFICIAL_PROTOCOL:return False\n        ref=m.get('input_policy_acceptance') or {}\n        if not ref.get('path') or not path(ref['path']).is_file() or file_hash(path(ref['path']))!=ref.get('sha256'):return False\n        consent=json.loads(path(ref['path']).read_text())\n        if consent.get('schema')!='rsjg-official-prior-acceptance-v1' or consent.get('protocol_id')!=OFFICIAL_PROTOCOL:return False\n        if consent.get('preprocessor_training_scope')!='UNKNOWN' or consent.get('strict_clean_claim') is not False:return False\n        if consent.get('gradient_roles')!=['train'] or consent.get('selection_roles')!=['inner_valid'] or consent.get('outer_metrics') is not False:return False\n        if consent.get('user_authorized') is not True or consent.get('all_arms_same_frozen_inputs') is not True:return False\n        asset=m['assets'][scene]['pred_mask.png']\n>       if consent.get('semantic_asset_sha256',{}).get(scene)!=asset['sha256']:return False\nE       AttributeError: 'str' object has no attribute 'get'\n\nsrc/p2_grouped.py:87: AttributeError\n=============================== warnings summary ===============================\ntests/test_p2_grouped_preflight.py::test_target_math_slots_and_mask\n  /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/site-packages/torch/functional.py:554: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at /pytorch/aten/src/ATen/native/TensorShape.cpp:4322.)\n    return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]\n\ntests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-mean_energy]\ntests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-expected_conditional_mc]\n  /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:182: UserWarning: Seems like `optimizer.step()` has been overridden after learning rate scheduler initialization. Please, make sure to call `optimizer.step()` before `lr_scheduler.step()`. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate\n    warnings.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_official_prior.py::test_consent_tampering_not_a_generic_allow_unknown[semantic_asset_sha256]\n1 failed, 118 passed, 3 warnings in 58.77s\n"
+    },
+    {
+      "argv": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_bda1ae1_p2_observation_provenance_cpu/run_tests.py",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/GUARDED_OBSERVATION_1791200929952174687.json",
+        "tests/test_p2_observation_artifacts.py"
+      ],
+      "exit": 0,
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/official_prior_fresh_goal_2c25c1f_20261005/cpu_1791200929952174687_1.log",
+      "seconds": 4.333747077034786,
+      "sha256": "34ba67ab86e4fb0acf53f4ac2ae506970743119e92fd08c07f263a87354f9379",
+      "summary": "{\"exit_code\": 0, \"outcomes\": {\"passed\": 50}, \"guard\": {\"pid\": 65, \"ppid\": 4, \"entry\": \"CPU observation preparation\", \"seconds\": 2.7902634269557893, \"torch_threads\": 1, \"counts\": {\"authorized_observation_loads\": 22, \"unauthorized_deserialization_attempts\": 1, \"unauthorized_deserialization_intercepted\": 1, \"cuda_attempts\": 4, \"cuda_intercepted\": 4, \"cuda_native_attempts\": 1, \"cuda_native_intercepted\": 1}, \"forwarded_cuda_calls\": 0, \"guarded_cuda_names\": [\"_lazy_init\", \"init\", \"is_available\", \"device_count\", \"synchronize\", \"get_device_name\", \"get_device_properties\", \"current_device\", \"set_device\", \"is_bf16_supported\"], \"native_names\": [\"_cuda_getDeviceCount\", \"_cuda_init\", \"_cuda_setDevice\"], \"coverage\": \"Python calls and listed torch C entrypoints after torch import\", \"pre_torch_import_and_unlisted_native_cuda_coverage\": \"UNKNOWN\", \"real_model_calls\": 0, \"backward_calls\": 0, \"optimizer_updates\": 0, \"gpu_compute_calls\": 0}, \"record\": \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal/GUARDED_OBSERVATION_1791200929952174687.json\"}\n"
+    }
+  ],
+  "status": "FAILED"
+}

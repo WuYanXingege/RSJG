@@ -12,7 +12,8 @@ from tools.grouped_model_smoke import arguments
 
 def main():
     ap=argparse.ArgumentParser();ap.add_argument('--archive',type=Path,required=True)
-    ap.add_argument('--seconds',type=float,default=600);a=ap.parse_args();D=a.archive.resolve()
+    ap.add_argument('--seconds',type=float,default=600);ap.add_argument('--kind',choices=['goal','both'],default='both')
+    a=ap.parse_args();D=a.archive.resolve()
     if not 0<a.seconds<=1200:ap.error('bounded selection seconds required')
     torch.set_num_threads(4);torch.set_num_interop_threads(1)
     m=json.loads((D/'QUALIFIED_INPUT_REVIEW_MANIFEST.json').read_text());reg=Registry(m,m['manifest_hash'])
@@ -36,6 +37,7 @@ def main():
     from src.models.goal_pretrain import Goal_Pretrain
     from src.models.model import GDTS
     for kind,cls in [('goal',Goal_Pretrain),('joint',GDTS)]:
+        if a.kind=='goal' and kind!='goal':continue
         ref=next(x['checkpoint'] for x in source['results'] if x['case']==kind+'_fp32')
         if file_hash(path(ref['path']))!=ref['sha256']:raise RuntimeError('smoke actual checkpoint SHA')
         value=torch.load(path(ref['path']),map_location='cpu',weights_only=True)
@@ -49,5 +51,6 @@ def main():
             checkpoint_sha256=ref['sha256'],target_read_after_prediction=True)
         del model;torch.cuda.empty_cache()
     atomic_json(dict(status='PASS',results=results,optimizer_updates=0,outer_access=False,
+        data_binding=data_binding(reg),manifest_hash=m['manifest_hash'],validated_scope=a.kind,
         peak_reserved=torch.cuda.max_memory_reserved(),scope='SMOKE_ONLY engineering selection, not a performance result or parent'),D/'INNER_SELECTION_RESULT.json')
 if __name__=='__main__':main()

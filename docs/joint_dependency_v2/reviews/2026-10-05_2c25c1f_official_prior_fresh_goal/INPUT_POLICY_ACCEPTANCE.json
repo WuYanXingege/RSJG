@@ -1,0 +1,35 @@
+{
+  "accepted_assumption": "Official released semantic rasters are fixed environmental priors shared by every arm; their segmentation training scope is not verified.",
+  "all_arms_same_frozen_inputs": true,
+  "author_archive_sha256": "47e9c37fe0c7496db0b6000e8ee81bf09c7b1be2d8b88c8beea057feeb0f760e",
+  "formal_authority": {
+    "epochs_max": 150,
+    "no_auto_A1": true,
+    "no_auto_joint": true,
+    "precision": "fp32",
+    "seed": 3101,
+    "stage": "fresh_goal_only",
+    "wall_seconds": 86400
+  },
+  "gradient_roles": [
+    "train"
+  ],
+  "outer_metrics": false,
+  "parent_review_commit": "2c25c1f29151ec7727606833aa576a0edd0e51e7",
+  "preprocessor_training_scope": "UNKNOWN",
+  "protocol_id": "p2_grouped_univ_hotel_official_prior_v1",
+  "schema": "rsjg-official-prior-acceptance-v1",
+  "selection_roles": [
+    "inner_valid"
+  ],
+  "semantic_asset_sha256": {
+    "eth": "5c3510ddb5d3763741de83dc4fbb16d037f131d259d225721e5dcefc2e66232e",
+    "hotel": "dd55bde37b2c2ba8665010f229706ff77a0fa46f14760d0bb8da22832e89e2b2",
+    "univ": "5ba94820f52a38cde8355c56b764fc694ff5f8c9cfffc58927cf0753e48c95ad",
+    "zara1": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d",
+    "zara2": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d"
+  },
+  "strict_clean_claim": false,
+  "user_authorized": true,
+  "user_request": "\u73b0\u5728\u5efa\u7acb\u72ec\u7acb\u534f\u8bae\uff0c\u9a8c\u6536\u901a\u8fc7\u540e\u540e\u53f0\u542f\u52a8 fresh goal"
+}

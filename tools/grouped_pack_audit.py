@@ -47,6 +47,7 @@ def main():
             reads=dict(reader.provider.counts),seconds=time.monotonic()-begin,
             actual_pure_prepare_inputs=role=='train',actual_observation_only_adapter=True)
     atomic_json(dict(status='PASS' if a.production else 'ARTIFACT_VALIDATION_ONLY_NOT_PRODUCTION',results=results,seconds=time.monotonic()-start,
+        data_binding=data_binding(reg),manifest_hash=m['manifest_hash'],
         real_model_construct=0,model_forward=0,gradient=0,outer_targets=0,teacher=0,
         production_loader='PASS' if a.production else 'EXTERNAL_EVIDENCE_BLOCKED',inner_prediction_or_metrics=0),
         D/('PRODUCTION_LOADER_RESULT.json' if a.production else 'FULL_NATIVE_PACK_ARTIFACT_AUDIT.json'))
