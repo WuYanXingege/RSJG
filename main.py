@@ -12,6 +12,10 @@ import os
 def main():
     # Parse input parameters and save/load config file
     args = main_parser()
+    from src.p2_protocol import enabled, dispatch
+    if enabled(args):
+        # Public constructors repeat the same guard; no preprocess or test wrapper.
+        return dispatch(args, goal_pretrainer, trainer, JointDependencyV2CacheBuilder)
 
     # Set seed for reproducibility
     if args.reproducibility:

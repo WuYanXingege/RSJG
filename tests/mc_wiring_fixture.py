@@ -197,7 +197,14 @@ if __name__ == '__main__':
     def forbidden(*a, **kw):
         raise AssertionError('No real module forward or CUDA in resume child')
     torch.nn.Module._call_impl = forbidden
-    torch.cuda._lazy_init = forbidden
+    for name in ('_lazy_init', 'init', 'is_available', 'device_count', 'synchronize',
+                 'get_device_name', 'get_device_properties'):
+        setattr(torch.cuda, name, forbidden)
+    # CPU optimizer diagnostic only; leave the actual update arithmetic intact.
+    def cpu_health(self):
+        assert all(p.device.type == 'cpu' for g in self.param_groups for p in g['params'])
+        COUNTS['cpu_optimizer_health_noops'] = COUNTS.get('cpu_optimizer_health_noops', 0) + 1
+    torch.optim.Optimizer._cuda_graph_capture_health_check = cpu_health
     item = harness(Path(sys.argv[1]))
     with contextlib.redirect_stdout(sys.stderr):
         start_epoch = item._load_or_restart()

@@ -1,0 +1,90 @@
+{
+  "status": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+  "recording_id": "UNKNOWN",
+  "local_conversion_script_and_release_binding": "UNKNOWN",
+  "collisions_are_identifiers_not_trajectory_proof": {
+    "students001--uni_examples": 76,
+    "students003--uni_examples": 29,
+    "students001--students003": 2984,
+    "zara02--zara03": 1297
+  },
+  "primary_sources": [
+    {
+      "repository": "CMU-TBD/social_group",
+      "commit": "74dbdcafb22ef5eea27ca0e1db69574b113d3bd5",
+      "path": "data_loader.py",
+      "blob_sha": "8f27f1cf32301ce18a5857027375325f69533bf9",
+      "url": "https://github.com/CMU-TBD/social_group/blob/74dbdcafb22ef5eea27ca0e1db69574b113d3bd5/data_loader.py#L230",
+      "lines": [
+        230,
+        254
+      ],
+      "short_quote": "Dummy video to capture frame information",
+      "scope": "UNIV maps to students003; UNIV2 to students001 in this implementation. Missing videos borrow another video's dimensions; NOT evidence of identical recording. uni_examples mapping absent.",
+      "accessed_utc": "2026-10-05 (06:45–06:56 UTC session window)",
+      "local_source_binding": "UNKNOWN"
+    },
+    {
+      "repository": "google/next-prediction",
+      "commit": "ea8790bb35acf457c1dd57171935e41580f84fdd",
+      "path": "README.md",
+      "blob_sha": "8f1ed139da3b4c0ba17b761957855b6ce8fcef8b",
+      "url": "https://github.com/google/next-prediction/blob/ea8790bb35acf457c1dd57171935e41580f84fdd/README.md#L84",
+      "lines": [
+        84,
+        85
+      ],
+      "short_quote": "ETH/UCY leave-one-scene-out experiment",
+      "scope": "Confirms repository describes five benchmark models; no binding to this local source SHA or semantic generating weights.",
+      "accessed_utc": "2026-10-05 (06:45–06:56 UTC session window)",
+      "local_source_binding": "UNKNOWN"
+    },
+    {
+      "repository": "NVlabs/trajdata",
+      "commit": "a2a54e54ba0eacf46185d15a013f02d2a9d15d19",
+      "path": "DATASETS.md",
+      "blob_sha": "528bae2b39a546429d3e7894825bed422a8d509d",
+      "url": "https://github.com/NVlabs/trajdata/blob/a2a54e54ba0eacf46185d15a013f02d2a9d15d19/DATASETS.md#L160",
+      "lines": [
+        160,
+        173
+      ],
+      "short_quote": "uni_examples.txt",
+      "scope": "Lists students001, students003 and uni_examples as required input files. This is a directory convention, not proof of independent recordings.",
+      "accessed_utc": "2026-10-05 (06:45–06:56 UTC session window)",
+      "local_source_binding": "UNKNOWN"
+    }
+  ],
+  "failed_accesses": [
+    {
+      "url": "https://graphics.cs.ucy.ac.cy/research/downloads/crowd-data",
+      "status": "TIMEOUT"
+    },
+    {
+      "url": "https://api.github.com/repos/CMU-TBD/social_group/commits/master",
+      "status": "web access unsuccessful; pinned commit/file obtained via GitHub MCP"
+    },
+    {
+      "url": "CMU raw file link via webpage",
+      "status": "web access unsuccessful; GitHub MCP fallback succeeded"
+    }
+  ],
+  "semantic_map": {
+    "observed_use": "provided semantic raster pred_mask.png, scene_base/scene_eth5 readers and repository README; deployment static input",
+    "producer_kind": "UNKNOWN; cannot certify as PROVIDED_STATIC_ASSET with approved provenance merely because current loader reads a raster",
+    "learned_weights_and_training_labels": "UNKNOWN",
+    "protocol_permission": "UNVERIFIED",
+    "same_scene_map_is_not_automatic_future_leak": true
+  },
+  "missing": [
+    "Original recording/session/camera and clip ranges bound to each local source SHA",
+    "ID namespace reset, frame offset/resampling, ID remap rules and exact export/release chain",
+    "Positive uni_examples relationship to students001/003",
+    "Semantic asset producer/release/protocol permission; learned precursor weights/training-label lineage if any",
+    "Independent obs8 artifacts bound per registered window; no real protected separation performed"
+  ],
+  "new_annotations_or_videos_downloaded": 0,
+  "protected_coordinates_compared": 0,
+  "old_five_checkpoint_reaudit": 0,
+  "automatic_membership_changes": 0
+}

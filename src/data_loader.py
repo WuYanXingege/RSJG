@@ -129,7 +129,9 @@ class dataset_set_name(BaseDataset):
     """
 
     def __init__(self, args, set_name, logical_role=None):
-
+        from src.p2_protocol import enabled
+        if enabled(args):
+            raise RuntimeError('P2 must use role-indexed independent artifacts, not physical dataset')
         self.physical_set_name = set_name
         self.logical_set_name = logical_role or set_name
         self.path_to_folder = os.path.join(
@@ -304,6 +306,10 @@ def _clean_role_records(args, logical_role, physical_dataset):
 
 def get_dataloader(args, set_name):
     """Create a loader while separating physical addressing from permissions."""
+    from src.p2_protocol import enabled
+    if enabled(args):
+        from src.p2_data import get_p2_dataloader
+        return get_p2_dataloader(args, set_name)
     assert set_name in ['train', 'valid', 'test']
     clean = bool(getattr(args, 'clean_split_protocol', False))
     if clean and set_name == 'test':

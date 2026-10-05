@@ -46,6 +46,9 @@ V4_DIAGNOSTIC_NAMES = (
 
 def _requested_data_splits(args):
     """Return only the splits authorized for this process."""
+    from src.p2_protocol import enabled, bounded
+    if enabled(args):
+        return ['train'] if bounded(args) else ['train', 'valid']
     clean = bool(getattr(args, 'clean_split_protocol', False))
     if clean:
         return ['test'] if args.phase == 'test' else ['train', 'valid']
@@ -54,6 +57,8 @@ def _requested_data_splits(args):
 
 class trainer(object):
     def __init__(self, args):
+        from src.p2_protocol import launch_guard
+        self.p2_registry = launch_guard(args)
         self.args = args
         validate_mode(args)  # Must precede data loaders, device and network.
         # initialize data loaders
@@ -119,6 +124,13 @@ class trainer(object):
         if initialization_checkpoint:
             self._load_state_file(
                 initialization_checkpoint, baseline_initialization=True)
+        from src.p2_protocol import bounded, enabled
+        if bounded(args):
+            from src.p2_checkpoint import load_shared_initial
+            load_shared_initial(self)
+        if enabled(args):
+            from src.p2_checkpoint import initialize_ledger
+            initialize_ledger(self)
 
         # Prepare log curve file and initialize best validation metrics
         self.log_curve_file = os.path.join(self.args.model_dir, 'log_curve.txt')
@@ -171,6 +183,11 @@ class trainer(object):
             raise FileNotFoundError(checkpoint_path)
         checkpoint = torch.load(
             checkpoint_path, map_location=self.device, weights_only=False)
+        from src.p2_protocol import enabled, data_binding
+        if enabled(self.args):
+            metadata=checkpoint.get('p2_provenance',{})
+            if metadata.get('artifact_role')!='p2_goal' or metadata.get('data_binding')!=data_binding(self.p2_registry):
+                raise RuntimeError('P2 goal checkpoint embedded provenance mismatch')
         if checkpoint.get('checkpoint_type') != 'gdts_goal_pretrain':
             raise RuntimeError(
                 'Goal initialization requires a typed goal-pretrain '
@@ -390,6 +407,21 @@ class trainer(object):
 
     def _write_evaluation_protocol(self):
         """Persist the exact model-selection/test separation used by a run."""
+        from src.p2_protocol import enabled
+        if enabled(self.args):
+            from src.joint_dependency_v2_cache import atomic_json_save
+            from src.p2_protocol import data_binding
+            atomic_json_save({
+                'schema':'rsjg-p2-execution-v1',
+                'manifest_hash':self.p2_registry.manifest['manifest_hash'],
+                'data_binding':data_binding(self.p2_registry),
+                'logical_window_counts':self.p2_registry.counts,
+                'loader_batches':{k:len(v) for k,v in self.data_loaders.items()},
+                'outer_metric_access':'LOCKED',
+                'validation_constructed':'valid' in self.data_loaders,
+                'packing':'independent source-contiguous agent64; Stage-A scene1',
+            },os.path.join(self.args.model_dir,'p2_evaluation_protocol.json'))
+            return
         protocol = {
             'model_selection_split': self.args.model_selection_split,
             'final_test_split': self.args.final_test_split,
@@ -582,9 +614,17 @@ class trainer(object):
                     raise RuntimeError('MC resume save requires optimizer state')
                 atomic_save(payload, saved_model_name)
                 return
-        torch.save(payload, saved_model_name)
+        from src.p2_protocol import enabled
+        if enabled(self.args):
+            from src.p2_checkpoint import save_base
+            save_base(self,payload,saved_model_name,epoch)
+        else:
+            torch.save(payload, saved_model_name)
 
     def _mc_total_steps(self):
+        from src.p2_protocol import bounded
+        if bounded(self.args):
+            return self.args.p2_reference_total_steps
         return max(self.args.num_epochs * len(self.data_loaders['train']), 1)
 
     def _initialize_mc_objective(self):
@@ -728,8 +768,12 @@ class trainer(object):
         checkpoint = torch.load(
             saved_model_name,
             map_location='cpu' if objective_mode(self.args) == MC else self.device)
+        if checkpoint.get('artifact_role') == 'bounded_stop_weights_only':
+            raise RuntimeError('bounded weights-only snapshot is not a resume checkpoint')
         training = (not weights_only and
                     getattr(self.args, 'phase', 'train') in {'train', 'train_test'})
+        if training and not baseline_initialization and checkpoint.get('p2_provenance') and checkpoint.get('resumable') is False:
+            raise RuntimeError('P2 base artifact has no certified training resume scope')
         mode = objective_mode(self.args)
         # Evaluation is weights-only regardless of checkpoint objective.
         if not training:
@@ -1004,6 +1048,11 @@ class trainer(object):
         Can start from scratch or resume training, depending on input
         self.args.load_checkpoint parameter.
         """
+        from src.p2_protocol import bounded
+        if bounded(self.args):
+            if self.args.load_checkpoint is not None:
+                raise RuntimeError('P2 bounded run cannot resume')
+            return 1  # no validation curve/header or legacy resume side effects
         # load pre-trained model to resume training
         if self.args.load_checkpoint is not None:
             loaded_epoch = self._load_checkpoint(self.args.load_checkpoint)
@@ -1266,6 +1315,23 @@ class trainer(object):
         parameters, save model, check results on validation set,
         print results and save log data.
         """
+        from src.p2_protocol import bounded
+        if bounded(self.args):
+            from src.p2_bounded import controller_for, finish_bounded
+            if not hasattr(self, 'p2_controller'):
+                self.p2_controller = controller_for(self)
+            from src.p2_checkpoint import state_hash
+            frozen_names={name for name,p in self.net.named_parameters() if not p.requires_grad}
+            self.p2_frozen_before=state_hash({k:v for k,v in self.net.state_dict().items() if k in frozen_names})
+            try:
+                self.net.configure_training_epoch(start_epoch)
+                self._train_epoch(start_epoch)
+                if self.p2_controller.complete_epoch and self.scheduler is not None:
+                    self.scheduler.step()
+            except Exception as exc:
+                finish_bounded(self, error=exc)
+                raise
+            return finish_bounded(self)
         # saved metrics before validation begins
         valid_metrics = {"valid_ADE": 0, "valid_FDE": 0}
 
@@ -1475,6 +1541,12 @@ class trainer(object):
         """
         Train one epoch of the model on the whole training set.
         """
+        from src.p2_protocol import bounded
+        control = getattr(self, 'p2_controller', None) if bounded(self.args) else None
+        if bounded(self.args) and control is None:
+            raise RuntimeError('P2 bounded controller must be installed before training')
+        if control and self.scaler.is_enabled():
+            raise RuntimeError('P2 L1 forbids GradScaler before loss/update')
         self.net.train()  # train mode
         if (self.args.training_stage == 'multiway_coupling' and
                 self.args.freeze_upstream_generator):
@@ -1490,11 +1562,14 @@ class trainer(object):
         losses_coeffs = self.net.set_losses_coeffs()
 
         # Progress bar
-        train_bar = tqdm(self.data_loaders['train'], ascii=True, ncols=100,
+        iterable = control.batches(self.data_loaders['train']) if control else self.data_loaders['train']
+        train_bar = tqdm(iterable, ascii=True, ncols=100,
                          desc=f'Epoch {epoch}. Train batches')
         num_train_batches = len(self.data_loaders['train'])
         total_stage_optimizer_steps = max(
             self.args.num_epochs * num_train_batches, 1)
+        if control:
+            total_stage_optimizer_steps = self.args.p2_reference_total_steps
         accumulation_steps = (
             self.args.coupling_grad_accum_steps
             if self.args.training_stage == 'multiway_coupling' else 1)
@@ -1507,10 +1582,16 @@ class trainer(object):
         def optimizer_step(pending, rescale_partial=False):
             if pending == 0:
                 return
+            if control:
+                control.counts['optimizer_attempts'] += 1
+                before_parameters=control.before_optimizer(self.net.parameters())
             if objective_mode(self.args) == MC:
                 if pending != 1 or accumulation_steps != 1:
                     raise RuntimeError('MC requires accumulation=1')
                 self._mc_optimizer_step()
+                if control:
+                    control.after_optimizer(before_parameters)
+                    control.outcome(True)
                 return
             if self.scaler.is_enabled():
                 self.scaler.unscale_(self.optimizer)
@@ -1533,11 +1614,18 @@ class trainer(object):
                 self.scaler.update()
             else:
                 self.optimizer.step()
+            if control:
+                if self.scaler.is_enabled():
+                    raise RuntimeError('P2 L1 requires unscaled BF16/FP32 updates')
+                control.after_optimizer(before_parameters)
+                control.outcome(True)
             if self.net.jdv2_active:
                 self._stage_optimizer_steps_completed += 1
             self.optimizer.zero_grad()
 
         for batch_index, batch in enumerate(train_bar):
+            if control:
+                control.before_loss()
             if self.net.jdv2_active:
                 # Curriculum state is a stage-local count of successful
                 # optimizer steps. Cross-stage loading initializes this at 0.
@@ -1553,6 +1641,10 @@ class trainer(object):
                 del batch, coupling
             else:
                 batch_data, batch_id = batch
+                from src.p2_protocol import enabled
+                if enabled(self.args):
+                    from src.p2_checkpoint import record_exposure
+                    record_exposure(self,batch_id)
                 inputs, seq_list = self.net.prepare_inputs(
                     batch_data, batch_id)
                 del batch_data
@@ -1574,6 +1666,9 @@ class trainer(object):
                 loss += losses_coeffs[loss_name]*loss_value
                 losses_epoch[loss_name] += loss_value.item()
             total_loss_epoch += float(loss.detach().cpu())
+            if control:
+                control.loss(float(loss.detach().cpu()))
+                control.components(losses,getattr(self.net,'last_joint_diagnostics',{}))
 
             if not torch.isfinite(loss).all():
                 raise FloatingPointError(
@@ -1627,6 +1722,8 @@ class trainer(object):
                     'degree_positive_agent_count', 0.0) == 0.0)
             if loss.requires_grad and stage_b_has_signal:
                 scaled_loss = loss / accumulation_steps
+                if control:
+                    control.counts['backward'] += 1
                 if self.scaler.is_enabled():
                     self.scaler.scale(scaled_loss).backward()
                 else:
@@ -1636,13 +1733,22 @@ class trainer(object):
                     optimizer_step(pending_backward)
                     pending_backward = 0
             elif objective_mode(self.args) == MC:
+                if control:
+                    control.counts['optimizer_attempts'] += 1
                 self._mc_optimizer_step(skip=True)
+                if control:
+                    control.outcome(False)
+            elif control:
+                control.outcome(False)
 
             del inputs, batch_id
             del seq_list, losses, loss
 
         # Do not discard the last incomplete accumulation group.
-        optimizer_step(pending_backward, rescale_partial=True)
+        if not control:
+            optimizer_step(pending_backward, rescale_partial=True)
+        elif pending_backward:
+            raise RuntimeError('P2 bounded stop with pending accumulation')
         if self.net.jdv2_active:
             self.args.jdv2_stage_progress = min(
                 self._stage_optimizer_steps_completed /
@@ -1651,10 +1757,11 @@ class trainer(object):
         # update losses
         for loss_name in losses_epoch.keys():
             # mean losses over batches
-            losses_epoch[loss_name] = losses_epoch[loss_name] / num_train_batches
+            denominator = control.counts['loss_samples'] if control else num_train_batches
+            losses_epoch[loss_name] = losses_epoch[loss_name] / (max(denominator, 1) if control else denominator)
         losses_epoch = add_dict_prefix(losses_epoch, prefix='train')
         losses_epoch['train_loss_total'] = (
-            total_loss_epoch / max(num_train_batches, 1))
+            total_loss_epoch / max(control.counts['loss_samples'] if control else num_train_batches, 1))
         self.last_train_joint_diagnostics = \
             self._finalize_joint_diagnostics(
                 diagnostic_sums, diagnostic_counts)
@@ -1809,6 +1916,12 @@ class trainer(object):
         Loop over the validation or test set once. Compute metrics and save
         output trajectories.
         """
+        from src.p2_protocol import enabled
+        if enabled(self.args):
+            if mode != 'valid' or self.args.p2_mode == 'l1':
+                raise RuntimeError('P2 evaluation purpose locked')
+            from src.p2_data import evaluate_inner
+            return evaluate_inner(self)
         if self.args.use_trajectory_bank_cache:
             return self._evaluate_cached_epoch(epoch, mode)
         self.net.eval()  # evaluation mode

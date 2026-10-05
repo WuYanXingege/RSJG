@@ -212,6 +212,8 @@ class JointDependencyV2CacheBuilder:
     """
 
     def __init__(self, args) -> None:
+        from src.p2_protocol import launch_guard
+        self.p2_registry = launch_guard(args)
         self.args = args
         if args.goal_model_type != "joint_dependency_v2" or \
                 not args.jdv2_active:
@@ -224,6 +226,11 @@ class JointDependencyV2CacheBuilder:
         self.root = jdv2_cache_root(args)
 
     def build(self) -> None:
+        from src.p2_protocol import enabled, launch_guard
+        if enabled(self.args):
+            self.p2_registry = launch_guard(self.args)
+            from src.p2_cache import build_from_owner
+            return build_from_owner(self)
         # Imports stay lazy so manifest/cache unit tests do not require the
         # image stack or construct a model.
         from src.data_grouping import batch_cache_path

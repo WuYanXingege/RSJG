@@ -1,0 +1,76 @@
+{
+  "actual_main_launch_checks": [
+    {
+      "config": "CLEAN_GOAL_P2.yaml",
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/CLEAN_GOAL_P2.yaml",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "stdout": "Program started 05 October 2026 at 15:16\nGit info. Current branch: research/joint-dependency-v2-clean\nLast commit: 28728bf96a290ccd83c5c637769deb987f477b07 audit: block P2 pilot on base provenance and prepare paired plan\n\n{\"status\": \"BLOCKED\", \"reason\": \"BLOCKED_RECORDING_IDENTITY_UNVERIFIED\", \"device_calls\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "config": "CLEAN_JOINT_P2.yaml",
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/CLEAN_JOINT_P2.yaml",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "stdout": "Program started 05 October 2026 at 15:16\nGit info. Current branch: research/joint-dependency-v2-clean\nLast commit: 28728bf96a290ccd83c5c637769deb987f477b07 audit: block P2 pilot on base provenance and prepare paired plan\n\n{\"status\": \"BLOCKED\", \"reason\": \"BLOCKED_RECORDING_IDENTITY_UNVERIFIED\", \"device_calls\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "config": "A0_BLOCKED.yaml",
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/A0_BLOCKED.yaml",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "stdout": "Program started 05 October 2026 at 15:16\nGit info. Current branch: research/joint-dependency-v2-clean\nLast commit: 28728bf96a290ccd83c5c637769deb987f477b07 audit: block P2 pilot on base provenance and prepare paired plan\n\n{\"status\": \"BLOCKED\", \"reason\": \"BLOCKED_RECORDING_IDENTITY_UNVERIFIED\", \"device_calls\": 0}\n",
+      "stderr": ""
+    },
+    {
+      "config": "A1_BLOCKED.yaml",
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../.conda/rsjg/bin/python",
+        "-B",
+        "main.py",
+        "--p2_config",
+        "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/A1_BLOCKED.yaml",
+        "--p2_launch_check"
+      ],
+      "exit_code": 2,
+      "stdout": "Program started 05 October 2026 at 15:16\nGit info. Current branch: research/joint-dependency-v2-clean\nLast commit: 28728bf96a290ccd83c5c637769deb987f477b07 audit: block P2 pilot on base provenance and prepare paired plan\n\n{\"status\": \"BLOCKED\", \"reason\": \"BLOCKED_RECORDING_IDENTITY_UNVERIFIED\", \"device_calls\": 0}\n",
+      "stderr": ""
+    }
+  ],
+  "direct_guard_tests": [
+    "parser",
+    "trainer",
+    "goal_pretrainer",
+    "JointDependencyV2CacheBuilder",
+    "main dispatch"
+  ],
+  "success_fixtures": [
+    "fresh goal requires no prior base; train not train_test",
+    "joint rejects missing/bad goal parent before device"
+  ],
+  "production_order": "metadata/provenance/purpose/artifact checks before device/RNG/network/checkpoint; loader then execution",
+  "p0_p1_default_dispatch": "unchanged",
+  "outer_metric_requests": "always denied before provider",
+  "launch_check_scope": "metadata acceptance only, not readiness, network construction or full parser runtime resolution",
+  "l2_selection_adapter": "NOT_IMPLEMENTED"
+}

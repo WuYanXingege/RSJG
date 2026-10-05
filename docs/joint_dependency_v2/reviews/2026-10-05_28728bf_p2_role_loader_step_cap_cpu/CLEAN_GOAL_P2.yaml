@@ -1,0 +1,26 @@
+# TEMPLATE_BLOCKED; use --p2_config FILE --p2_launch_check
+batch_size: 64
+clean_split_protocol: false
+clip: 1.0
+data_augmentation: false
+dataset: eth5
+device: cuda:0
+final_test_access: blocked
+goal_model_type: independent
+learning_rate: 0.001
+load_checkpoint: null
+num_epochs: 150
+num_workers: 0
+optimizer: Adam
+p2_manifest: docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/P2_RUNTIME_MANIFEST.json
+p2_manifest_hash: a768b1765d4345b17e450df04d81035f1407ee3338079dfbad1730b7a1f751b5
+p2_mode: goal
+phase: goal_pretrain
+pretrain_path: null
+run_name: p2_clean_goal_seed3101
+scheduler: ExponentialLR
+seed: 3101
+shuffle_train_batches: false
+test_set: eth
+training_stage: baseline
+use_wandb: false

@@ -1,0 +1,118 @@
+{
+  "schema": "jdv2-p2-cache-v2",
+  "task_hash": "2b5610325aaf3add9c5533da0f9b4e2d27ee3c5d328c3c9df41baa2a90dc6ebd",
+  "deployment": 4249,
+  "teachers": 3484,
+  "protected_teachers": 0,
+  "executed_real": 0,
+  "producer": null,
+  "address_rule": "NEW root / original physical split / original index.pt; identity wrapper required",
+  "tasks_example": [
+    {
+      "window_id": "11d3a618a9e29aeabfca6b6e235d459e966dd8ab5159775b7800d248e28f3d0a",
+      "role": "outer",
+      "source": {
+        "agent_ids": [
+          240
+        ],
+        "cache_filename": "train_batch_0001.pkl",
+        "candidate_path": "outputs/joint_dependency_v2/cache/eth_full_stage_a/train/000000.pt",
+        "content_sha256": "3d2eed1afa569ad4b84b68f13d46c44a250e405c118c3d744861bf7ce5141b1e",
+        "frame_ids": [
+          10560,
+          10570,
+          10580,
+          10590,
+          10600,
+          10610,
+          10620,
+          10630,
+          10640,
+          10650,
+          10660,
+          10670,
+          10680,
+          10690,
+          10700,
+          10710,
+          10720,
+          10730,
+          10740,
+          10750
+        ],
+        "frame_range": [
+          10560,
+          10750
+        ],
+        "id_sha256": "5ede1cb450b64917b384ffb4c9c5e99ec7ed08116b76070efdbfa4cc5b6f7d4c",
+        "logical_role": "outer",
+        "original_source_path": "data/eth5/eth/train/biwi_hotel.txt",
+        "physical_index": 0,
+        "physical_split": "train",
+        "scene_family": "hotel",
+        "source_batch_path": "outputs/joint_dependency_v2/cache/source_batches/eth5/eth/data_batches_jdv2_v2/train_batches/train_batch_0001.pkl",
+        "source_batch_sha256": "ace570ff6ac76395e8e26490ba98abc70dace3f4a3df4cb17db310dc533f49e7",
+        "source_id": "sha256:9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+        "source_sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+        "window_steps": 20
+      },
+      "deployment_address": "train/000000.pt",
+      "teacher": false
+    },
+    {
+      "window_id": "1e55e0e8ea54aaf82871a9905310b37aa7137cf5e52a65ba6e6467b76f611789",
+      "role": "outer",
+      "source": {
+        "agent_ids": [
+          104,
+          105,
+          106,
+          107,
+          112
+        ],
+        "cache_filename": "train_batch_0002.pkl",
+        "candidate_path": "outputs/joint_dependency_v2/cache/eth_full_stage_a/train/000001.pt",
+        "content_sha256": "eb8869c80bfe7837cd17dfda6d552d95844872bfbdfa2a31af56f6ad98601bd6",
+        "frame_ids": [
+          4690,
+          4700,
+          4710,
+          4720,
+          4730,
+          4740,
+          4750,
+          4760,
+          4770,
+          4780,
+          4790,
+          4800,
+          4810,
+          4820,
+          4830,
+          4840,
+          4850,
+          4860,
+          4870,
+          4880
+        ],
+        "frame_range": [
+          4690,
+          4880
+        ],
+        "id_sha256": "4773b430fa1b55a3ee6c1ec50ac36a8fc0df79f11ab4d65ee12db433b1247698",
+        "logical_role": "outer",
+        "original_source_path": "data/eth5/eth/train/biwi_hotel.txt",
+        "physical_index": 1,
+        "physical_split": "train",
+        "scene_family": "hotel",
+        "source_batch_path": "outputs/joint_dependency_v2/cache/source_batches/eth5/eth/data_batches_jdv2_v2/train_batches/train_batch_0002.pkl",
+        "source_batch_sha256": "76258c8325bcfe3c580325bb1f7a18a4f87ce5d46efce3039330f0ecc957f65a",
+        "source_id": "sha256:9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+        "source_sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+        "window_steps": 20
+      },
+      "deployment_address": "train/000001.pt",
+      "teacher": false
+    }
+  ]
+}

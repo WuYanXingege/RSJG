@@ -1,0 +1,12 @@
+{
+  "selection": "16 previously failed bounded tests only",
+  "runner": "run_cpu.py /tmp/rsjg_p2_cpu_repair.json tests/test_p2_role_loader_step_cap.py -k 'actual_train_loop or actual_failure or limit_empty'",
+  "status": "RECORDING_FAILED",
+  "test_outcomes": "UNKNOWN: stdout captured in memory but JSON writer rejected NaN from intentional nonfinite ledger; do not count as passed",
+  "error": "ValueError: Out of range float values are not JSON compliant: nan",
+  "fix": "Encode nonfinite first/last loss as explicit string in production bounded ledger, sanitize recorder nonfinite values. Preserve this failed attempt; rerun affected selection with full persisted reports.",
+  "real_models": 0,
+  "real_data_updates": 0,
+  "cuda_execution": 0,
+  "note": "Synthetic steps may have occurred before recorder failure; recover separately from /tmp bounded ledgers, never call total optimizer updates zero."
+}

@@ -1,0 +1,40 @@
+{
+  "exit_code": 0,
+  "seconds": 1.635325804934837,
+  "reports": [
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_cache_graph_contract_before_parent_or_device",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.005460433894768357,
+      "error": null
+    }
+  ],
+  "counts": {},
+  "fixture_counts": {
+    "production_loss_calls": 0,
+    "synthetic_encode_calls": 0,
+    "relation_chunks": 0,
+    "energy_factor_chunks": 0,
+    "energy_mixtures": 0,
+    "backward_calls": 0,
+    "toy_optimizer_updates": 0,
+    "draws": 0,
+    "sampled_rows": 0,
+    "checkpoint_save_calls": 0,
+    "checkpoint_load_calls": 0
+  },
+  "p2_counts": {},
+  "bounded_traces": [],
+  "mc_measurements": {},
+  "real_models": 0,
+  "real_data_updates": 0,
+  "protected_future_reads": 0,
+  "cuda_execution": 0,
+  "stdout": ".                                                                        [100%]\n1 passed in 1.41s\n",
+  "command": [
+    "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py",
+    "/tmp/rsjg_p2_cache_guard.json",
+    "tests/test_p2_role_loader_step_cap.py::test_cache_graph_contract_before_parent_or_device"
+  ]
+}

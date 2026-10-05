@@ -1,0 +1,43 @@
+{
+  "real": {
+    "observation_payload_reads": 0,
+    "protected_target_reads": 0,
+    "teacher_reads": 0,
+    "future_descriptor_calls": 0,
+    "cache_writes": 0,
+    "model_candidate_calls": 0
+  },
+  "synthetic_per_cache_case": {
+    "fake_candidate_calls": 4,
+    "observation_reads": 4,
+    "train_target_reads": 2,
+    "train_descriptor_calls": 2,
+    "train_teacher_writes": 2,
+    "inner_outer_teacher_calls": 0,
+    "inner_outer_teacher_writes": 0
+  },
+  "synthetic_cache_case_executions": 2,
+  "synthetic_totals": {
+    "fake_candidates": 8,
+    "pure_descriptors": 4,
+    "teacher_writes": 4
+  },
+  "instrumented_provider_totals": {
+    "loop_fetch": 48,
+    "fake_loss_calls": 46,
+    "actual_toy_optimizer_updates": 34,
+    "provider_observation": 8,
+    "provider_target": 6,
+    "fake_candidate_calls": 4,
+    "descriptor_calls": 2,
+    "teacher_writes": 2,
+    "fake_selection_forward": 1
+  },
+  "first_uninstrumented": "first cache/permission cases passed; provider aggregate not independently recorded",
+  "actual_plan": {
+    "deployment": 4249,
+    "train_teacher": 3484,
+    "protected_teacher": 0,
+    "executed": 0
+  }
+}

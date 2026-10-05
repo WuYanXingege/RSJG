@@ -35,6 +35,9 @@ GOAL_MODEL_ALIASES = {
 # Execution controls must come from the current command, not leak from a
 # preprocessing/training invocation through the shared experiment config.
 TRANSIENT_CONFIG_DEFAULTS = {
+    'p2_mode': 'off',
+    'p2_config': None,
+    'p2_launch_check': False,
     'phase': 'train_test',
     'load_checkpoint': None,
     'pretrain_path': None,
@@ -560,6 +563,18 @@ def get_parser():
               "inherited."))
     # parser.add_argument(
     #     '--if_plot', default=False, type=str2bool, const=True, nargs='?', help="Set to True to plot the results")
+    parser.add_argument('--p2_mode', choices=['off','goal','joint','cache','l1'], default='off')
+    parser.add_argument('--p2_manifest', default=None)
+    parser.add_argument('--p2_manifest_hash', default=None)
+    parser.add_argument('--p2_launch_check', action='store_true')
+    parser.add_argument('--p2_config', default=None, help='Explicit P2-only YAML; never legacy --config')
+    parser.add_argument('--p2_max_update_attempts', type=int, default=0)
+    parser.add_argument('--p2_reference_total_steps', type=int, default=0)
+    parser.add_argument('--p2_skip_validation', type=str2bool, default=False)
+    parser.add_argument('--p2_no_automatic_resume', type=str2bool, default=False)
+    parser.add_argument('--p2_arm_seconds', type=float, default=900)
+    parser.add_argument('--p2_stage_seconds', type=float, default=2700)
+    parser.add_argument('--p2_reserved_bytes', type=int, default=10737418240)
     return parser
 
 
@@ -612,6 +627,8 @@ def check_and_add_additional_args(args):
     """
     Add default paths, device and other additional args to parsed args
     """
+    from src.p2_protocol import launch_guard
+    launch_guard(args)
     args.goal_model_type = normalize_goal_model_type(args.goal_model_type)
     if args.validation_seed is None:
         args.validation_seed = args.seed
@@ -1082,6 +1099,9 @@ def check_and_add_additional_args(args):
             if args.clean_evaluation_target not in {'stage_a', 'stage_b'}:
                 raise ValueError(
                     'Clean final evaluation requires a locked target')
+    elif getattr(args,'p2_mode','off') != 'off':
+        if args.final_test_access != 'blocked':
+            raise ValueError('P2 outer metrics must remain blocked')
     elif args.final_test_access != 'legacy':
         raise ValueError(
             'Non-clean runs must retain legacy final-test access semantics')
@@ -1201,7 +1221,35 @@ def main_parser():
     # Parse input parameters
     parser = get_parser()
     parsed_args = parser.parse_args()
+    if parsed_args.p2_config:
+        with open(parsed_args.p2_config) as handle:
+            fields = yaml.safe_load(handle)
+        if not isinstance(fields, dict) or fields.get('p2_mode','off') == 'off':
+            raise ValueError('p2_config must explicitly enable P2')
+        known = vars(parsed_args)
+        if set(fields) - set(known):
+            raise ValueError('unknown P2 config fields: ' + str(set(fields)-set(known)))
+        # Explicit command-line options win over this P2-only config.
+        supplied = {arg.split('=')[0].lstrip('-') for arg in sys.argv[1:] if arg.startswith('--')}
+        for key, value in fields.items():
+            if key not in supplied:
+                setattr(parsed_args, key, value)
+    if parsed_args.p2_launch_check:
+        from src.p2_protocol import launch_guard, enabled
+        import json
+        try:
+            if not enabled(parsed_args):
+                raise RuntimeError('launch-check requires explicit P2')
+            launch_guard(parsed_args)
+        except (RuntimeError, ValueError, OSError, KeyError) as exc:
+            print(json.dumps({'status':'BLOCKED','reason':str(exc),'device_calls':0}))
+            raise SystemExit(2)
+        print(json.dumps({'status':'METADATA_ACCEPTED_NO_EXECUTION','device_calls':0}))
+        raise SystemExit(0)
     parsed_args = check_and_add_additional_args(parsed_args)
+    if getattr(parsed_args,'p2_mode','off') != 'off':
+        # Explicit config only: never import a legacy run's common YAML.
+        return parsed_args
 
     # Prefer the common cross-phase config. On first use of an older checkout,
     # import its phase-specific YAML and immediately migrate it.

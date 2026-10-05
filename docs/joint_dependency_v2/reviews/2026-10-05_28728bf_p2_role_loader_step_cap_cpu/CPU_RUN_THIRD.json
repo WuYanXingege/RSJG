@@ -1,0 +1,347 @@
+{
+  "exit_code": 1,
+  "seconds": 2.7202513909433037,
+  "reports": [
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[1-5-mean_energy]",
+      "when": "call",
+      "outcome": "failed",
+      "seconds": 0.03166725195478648,
+      "error": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and0')\nmode = 'mean_energy', cap = 1, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1589: in optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[1-5-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "failed",
+      "seconds": 0.011681558913551271,
+      "error": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and1')\nmode = 'expected_conditional_mc', cap = 1, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1565: in optimizer_step\n    self._mc_optimizer_step()\nsrc/trainer.py:643: in _mc_optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-5-mean_energy]",
+      "when": "call",
+      "outcome": "failed",
+      "seconds": 0.005995318992063403,
+      "error": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and2')\nmode = 'mean_energy', cap = 3, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1589: in optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-5-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "failed",
+      "seconds": 0.007943318109028041,
+      "error": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and3')\nmode = 'expected_conditional_mc', cap = 3, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1565: in optimizer_step\n    self._mc_optimizer_step()\nsrc/trainer.py:643: in _mc_optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-mean_energy]",
+      "when": "call",
+      "outcome": "failed",
+      "seconds": 0.006316276965662837,
+      "error": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and4')\nmode = 'mean_energy', cap = 3, native = 3\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1589: in optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "failed",
+      "seconds": 0.008298204047605395,
+      "error": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and5')\nmode = 'expected_conditional_mc', cap = 3, native = 3\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1565: in optimizer_step\n    self._mc_optimizer_step()\nsrc/trainer.py:643: in _mc_optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[skip-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.004233768908306956,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[skip-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.005449536023661494,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[forward-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0039007440209388733,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[forward-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.005031770910136402,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[nonfinite-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.004515505977906287,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[nonfinite-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.005573860020376742,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[clock]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0012110669631510973,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[memory]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.001204610918648541,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[empty]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0013173759216442704,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[identity]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.001368500990793109,
+      "error": null
+    }
+  ],
+  "counts": {
+    "synthetic_backward_calls": 6,
+    "toy_optimizer_attempts": 6,
+    "forbidden_attempts": 6
+  },
+  "fixture_counts": {
+    "production_loss_calls": 12,
+    "synthetic_encode_calls": 12,
+    "relation_chunks": 24,
+    "energy_factor_chunks": 24,
+    "energy_mixtures": 48,
+    "backward_calls": 0,
+    "toy_optimizer_updates": 0,
+    "draws": 6,
+    "sampled_rows": 120,
+    "checkpoint_save_calls": 0,
+    "checkpoint_load_calls": 0
+  },
+  "p2_counts": {
+    "loop_fetch": 13,
+    "fake_loss_calls": 12,
+    "actual_toy_optimizer_updates": 6
+  },
+  "bounded_traces": [
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 1,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "SKIPPED_UPDATE",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": 1.1173033714294434,
+      "last_loss": 1.1173033714294434,
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 1,
+        "successful_updates": 0,
+        "skipped": 1,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "SKIPPED_UPDATE",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": 0.89579176902771,
+      "last_loss": 0.89579176902771,
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 0
+      },
+      "stop_reason": "ValueError: synthetic forward failure",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": null,
+      "last_loss": null,
+      "loss_denominator": 0,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 0
+      },
+      "stop_reason": "ValueError: synthetic forward failure",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": null,
+      "last_loss": null,
+      "loss_denominator": 0,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "FloatingPointError: Non-finite total loss; components={'jdv2_pl_post': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_pl_prior': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_relation_kl': tensor(nan, grad_fn=<MulBackward0>)}",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": "nan",
+      "last_loss": "nan",
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "FloatingPointError: Non-finite total loss; components={'jdv2_pl_post': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_pl_prior': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_relation_kl': tensor(nan, grad_fn=<MulBackward0>)}",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": "nan",
+      "last_loss": "nan",
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    }
+  ],
+  "real_models": 0,
+  "real_data_updates": 0,
+  "protected_future_reads": 0,
+  "cuda_execution": 0,
+  "stdout": "FFFFFF..........                                                         [100%]\n=================================== FAILURES ===================================\n___________ test_actual_train_loop_cap_and_snapshot[1-5-mean_energy] ___________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and0')\nmode = 'mean_energy', cap = 1, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1589: in optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError\n----------------------------- Captured stderr call -----------------------------\n\rEpoch 1. Train batches: 0it [00:00, ?it/s]\rEpoch 1. Train batches: 0it [00:00, ?it/s]\n_____ test_actual_train_loop_cap_and_snapshot[1-5-expected_conditional_mc] _____\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and1')\nmode = 'expected_conditional_mc', cap = 1, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1565: in optimizer_step\n    self._mc_optimizer_step()\nsrc/trainer.py:643: in _mc_optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError\n----------------------------- Captured stderr call -----------------------------\n\rEpoch 1. Train batches: 0it [00:00, ?it/s]\rEpoch 1. Train batches: 0it [00:00, ?it/s]\n___________ test_actual_train_loop_cap_and_snapshot[3-5-mean_energy] ___________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and2')\nmode = 'mean_energy', cap = 3, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1589: in optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError\n----------------------------- Captured stderr call -----------------------------\n\rEpoch 1. Train batches: 0it [00:00, ?it/s]\rEpoch 1. Train batches: 0it [00:00, ?it/s]\n_____ test_actual_train_loop_cap_and_snapshot[3-5-expected_conditional_mc] _____\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and3')\nmode = 'expected_conditional_mc', cap = 3, native = 5\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1565: in optimizer_step\n    self._mc_optimizer_step()\nsrc/trainer.py:643: in _mc_optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError\n----------------------------- Captured stderr call -----------------------------\n\rEpoch 1. Train batches: 0it [00:00, ?it/s]\rEpoch 1. Train batches: 0it [00:00, ?it/s]\n___________ test_actual_train_loop_cap_and_snapshot[3-3-mean_energy] ___________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and4')\nmode = 'mean_energy', cap = 3, native = 3\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1589: in optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError\n----------------------------- Captured stderr call -----------------------------\n\rEpoch 1. Train batches: 0it [00:00, ?it/s]\rEpoch 1. Train batches: 0it [00:00, ?it/s]\n_____ test_actual_train_loop_cap_and_snapshot[3-3-expected_conditional_mc] _____\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-24/test_actual_train_loop_cap_and5')\nmode = 'expected_conditional_mc', cap = 3, native = 3\n\n    @pytest.mark.parametrize('mode',['mean_energy','expected_conditional_mc'])\n    @pytest.mark.parametrize('cap,native',[(1,5),(3,5),(3,3)])\n    def test_actual_train_loop_cap_and_snapshot(tmp_path,mode,cap,native):\n        item=loop_fixture(tmp_path,mode,cap,native);before=COUNTS.copy()\n        step=item.scheduler.last_epoch\n>       result=item._train_loop(1,1)\n\ntests/test_p2_role_loader_step_cap.py:211: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \nsrc/trainer.py:1303: in _train_loop\n    self._train_epoch(start_epoch)\nsrc/trainer.py:1704: in _train_epoch\n    optimizer_step(pending_backward)\nsrc/trainer.py:1565: in optimizer_step\n    self._mc_optimizer_step()\nsrc/trainer.py:643: in _mc_optimizer_step\n    self.optimizer.step()\ntests/test_p2_role_loader_step_cap.py:200: in counted\n    def counted(*a,**k):COUNTS['actual_toy_optimizer_updates']+=1;return original(*a,**k)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:133: in wrapper\n    return func.__get__(opt, opt.__class__)(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:516: in wrapper\n    out = func(*args, **kwargs)\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:28: in counted\n    result=_old(self,*a,**kw)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:81: in _use_grad\n    ret = func(*args, **kwargs)\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/adam.py:221: in step\n    self._cuda_graph_capture_health_check()\n../.conda/rsjg/lib/python3.10/site-packages/torch/optim/optimizer.py:457: in _cuda_graph_capture_health_check\n    and torch.cuda.is_available()\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\na = (), kw = {}\n\n    def forbidden(*a,**kw):\n        counts['forbidden_attempts']+=1\n>       raise AssertionError('CPU acceptance prohibits real network/CUDA')\nE       AssertionError: CPU acceptance prohibits real network/CUDA\n\ndocs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py:18: AssertionError\n----------------------------- Captured stderr call -----------------------------\n\rEpoch 1. Train batches: 0it [00:00, ?it/s]\rEpoch 1. Train batches: 0it [00:00, ?it/s]\n=========================== short test summary info ============================\nFAILED tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[1-5-mean_energy]\nFAILED tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[1-5-expected_conditional_mc]\nFAILED tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-5-mean_energy]\nFAILED tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-5-expected_conditional_mc]\nFAILED tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-mean_energy]\nFAILED tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-expected_conditional_mc]\n6 failed, 10 passed, 33 deselected in 2.49s\n",
+  "command": [
+    "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py",
+    "/tmp/rsjg_p2_cpu_repair3.json",
+    "tests/test_p2_role_loader_step_cap.py",
+    "-k",
+    "actual_train_loop or actual_failure or limit_empty"
+  ]
+}

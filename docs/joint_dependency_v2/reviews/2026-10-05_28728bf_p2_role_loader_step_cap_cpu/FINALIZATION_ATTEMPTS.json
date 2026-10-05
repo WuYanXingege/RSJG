@@ -1,0 +1,8 @@
+{
+  "metadata_only": true,
+  "first": "Completed aggregation and four actual read-only launch checks.",
+  "second": "Added cache guard test; aggregation stopped at historical evidence hash assertion because the old manifest also covers the living reviews/README.md index, which this round is authorized to update. Old archive files unchanged.",
+  "correction": "Verify the living index against input-commit bytes; verify immutable old archive files against current bytes. Do not rewrite old evidence manifest.",
+  "test_rerun": false,
+  "real_model_or_gpu_calls": 0
+}

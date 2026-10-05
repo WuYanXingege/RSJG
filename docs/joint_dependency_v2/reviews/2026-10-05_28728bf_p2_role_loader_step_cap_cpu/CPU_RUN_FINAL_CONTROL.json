@@ -1,0 +1,807 @@
+{
+  "exit_code": 0,
+  "seconds": 1.8502355240052566,
+  "reports": [
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[1-5-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.04794823098927736,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[1-5-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.014140567975118756,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-5-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.01899335696361959,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-5-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.02542803401593119,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.018959921086207032,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.025032424950040877,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[skip-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0039002749836072326,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[skip-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.005426147952675819,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[forward-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.00413543195463717,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[forward-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0054788850247859955,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[nonfinite-mean_energy]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0045787839917466044,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_actual_failure_no_replacement[nonfinite-expected_conditional_mc]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.005728575983084738,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[clock]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.001322070020250976,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[memory]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.001253049005754292,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[empty]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0013164299307391047,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_limit_empty_identity[identity]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0014740420738235116,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_pair_failure_stops_other_arm_before_fetch",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0006961598992347717,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_nonfinite_ledger_json_and_failure_count",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0003227109555155039,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_sdd_goal_pretrain_protocol.py::test_joint_trainer_resolves_explicit_last_checkpoint",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0005049579776823521,
+      "error": null
+    }
+  ],
+  "counts": {
+    "synthetic_backward_calls": 14,
+    "toy_optimizer_attempts": 14,
+    "cpu_optimizer_health_noops": 14,
+    "toy_optimizer_completed": 14,
+    "synthetic_loads": 12
+  },
+  "fixture_counts": {
+    "production_loss_calls": 20,
+    "synthetic_encode_calls": 20,
+    "relation_chunks": 40,
+    "energy_factor_chunks": 40,
+    "energy_mixtures": 80,
+    "backward_calls": 0,
+    "toy_optimizer_updates": 0,
+    "draws": 10,
+    "sampled_rows": 200,
+    "checkpoint_save_calls": 0,
+    "checkpoint_load_calls": 0
+  },
+  "p2_counts": {
+    "loop_fetch": 21,
+    "fake_loss_calls": 20,
+    "actual_toy_optimizer_updates": 14
+  },
+  "bounded_traces": [
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 1,
+        "optimizer_attempts": 1,
+        "successful_updates": 1,
+        "skipped": 0,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "ATTEMPT_CAP",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.2,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": 1.1173033714294434,
+      "last_loss": 1.1173033714294434,
+      "first_components": {
+        "jdv2_pl_post": 1.117342233657837,
+        "jdv2_pl_prior": 1.1172643899917603,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 1.117342233657837,
+        "jdv2_pl_prior": 1.1172643899917603,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "gradient_norms": [
+        0.23055066845223615
+      ],
+      "update_norms": [
+        0.05127809742111011
+      ],
+      "scene_sizes": [
+        {}
+      ],
+      "loss_denominator": 1,
+      "success_denominator": 1,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false,
+      "frozen_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_equal": true
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 1,
+        "optimizer_attempts": 1,
+        "successful_updates": 1,
+        "skipped": 0,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "ATTEMPT_CAP",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.2,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": 0.89579176902771,
+      "last_loss": 0.89579176902771,
+      "first_components": {
+        "jdv2_pl_post": 0.8958337306976318,
+        "jdv2_pl_prior": 0.8957498073577881,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 0.8958337306976318,
+        "jdv2_pl_prior": 0.8957498073577881,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "gradient_norms": [
+        0.05807679796874396
+      ],
+      "update_norms": [
+        0.05109596161880404
+      ],
+      "scene_sizes": [
+        {}
+      ],
+      "loss_denominator": 1,
+      "success_denominator": 1,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false,
+      "frozen_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_equal": true,
+      "mc": {
+        "draw_calls": 1,
+        "sampled_agent_draws": 20,
+        "pending_backward": false,
+        "successful_optimizer_updates": 1
+      }
+    },
+    {
+      "counts": {
+        "fetch_attempts": 3,
+        "batch_fetch": 3,
+        "loss_attempts": 3,
+        "backward": 3,
+        "optimizer_attempts": 3,
+        "successful_updates": 3,
+        "skipped": 0,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 3
+      },
+      "stop_reason": "ATTEMPT_CAP",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.6,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 3,
+      "first_loss": 1.1173033714294434,
+      "last_loss": 1.1154851913452148,
+      "first_components": {
+        "jdv2_pl_post": 1.117342233657837,
+        "jdv2_pl_prior": 1.1172643899917603,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 1.114400029182434,
+        "jdv2_pl_prior": 1.1143256425857544,
+        "jdv2_relation_kl": 0.011223179288208485
+      },
+      "gradient_norms": [
+        0.23055066845223615,
+        0.2295400568560632,
+        0.2285087313420445
+      ],
+      "update_norms": [
+        0.05127809742111011,
+        0.045974022590228036,
+        0.047092170891437336
+      ],
+      "scene_sizes": [
+        {},
+        {},
+        {}
+      ],
+      "loss_denominator": 3,
+      "success_denominator": 3,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false,
+      "frozen_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_equal": true
+    },
+    {
+      "counts": {
+        "fetch_attempts": 3,
+        "batch_fetch": 3,
+        "loss_attempts": 3,
+        "backward": 3,
+        "optimizer_attempts": 3,
+        "successful_updates": 3,
+        "skipped": 0,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 3
+      },
+      "stop_reason": "ATTEMPT_CAP",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.6,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 3,
+      "first_loss": 0.89579176902771,
+      "last_loss": 0.8957121968269348,
+      "first_components": {
+        "jdv2_pl_post": 0.8958337306976318,
+        "jdv2_pl_prior": 0.8957498073577881,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 0.8946088552474976,
+        "jdv2_pl_prior": 0.8945624828338623,
+        "jdv2_relation_kl": 0.011265553534030914
+      },
+      "gradient_norms": [
+        0.05807679796874396,
+        0.05706936293556173,
+        0.055361652821313535
+      ],
+      "update_norms": [
+        0.05109596161880404,
+        0.04322186561721817,
+        0.04362722846765885
+      ],
+      "scene_sizes": [
+        {},
+        {},
+        {}
+      ],
+      "loss_denominator": 3,
+      "success_denominator": 3,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false,
+      "frozen_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_equal": true,
+      "mc": {
+        "draw_calls": 3,
+        "sampled_agent_draws": 60,
+        "pending_backward": false,
+        "successful_optimizer_updates": 3
+      }
+    },
+    {
+      "counts": {
+        "fetch_attempts": 3,
+        "batch_fetch": 3,
+        "loss_attempts": 3,
+        "backward": 3,
+        "optimizer_attempts": 3,
+        "successful_updates": 3,
+        "skipped": 0,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 3
+      },
+      "stop_reason": "ATTEMPT_CAP",
+      "native_epoch": 3,
+      "epoch_complete": true,
+      "partial_epoch": false,
+      "before_progress": 0.0,
+      "after_progress": 1.0,
+      "reference_total_steps": 3,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 3,
+      "first_loss": 1.1173033714294434,
+      "last_loss": 1.1154851913452148,
+      "first_components": {
+        "jdv2_pl_post": 1.117342233657837,
+        "jdv2_pl_prior": 1.1172643899917603,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 1.114400029182434,
+        "jdv2_pl_prior": 1.1143256425857544,
+        "jdv2_relation_kl": 0.011223179288208485
+      },
+      "gradient_norms": [
+        0.23055066845223615,
+        0.2295400568560632,
+        0.2285087313420445
+      ],
+      "update_norms": [
+        0.05127809742111011,
+        0.045974022590228036,
+        0.047092170891437336
+      ],
+      "scene_sizes": [
+        {},
+        {},
+        {}
+      ],
+      "loss_denominator": 3,
+      "success_denominator": 3,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false,
+      "frozen_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_equal": true
+    },
+    {
+      "counts": {
+        "fetch_attempts": 3,
+        "batch_fetch": 3,
+        "loss_attempts": 3,
+        "backward": 3,
+        "optimizer_attempts": 3,
+        "successful_updates": 3,
+        "skipped": 0,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 3
+      },
+      "stop_reason": "ATTEMPT_CAP",
+      "native_epoch": 3,
+      "epoch_complete": true,
+      "partial_epoch": false,
+      "before_progress": 0.0,
+      "after_progress": 1.0,
+      "reference_total_steps": 3,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 3,
+      "first_loss": 0.89579176902771,
+      "last_loss": 0.8957121968269348,
+      "first_components": {
+        "jdv2_pl_post": 0.8958337306976318,
+        "jdv2_pl_prior": 0.8957498073577881,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 0.8946088552474976,
+        "jdv2_pl_prior": 0.8945624828338623,
+        "jdv2_relation_kl": 0.011265553534030914
+      },
+      "gradient_norms": [
+        0.05807679796874396,
+        0.05706936293556173,
+        0.055361652821313535
+      ],
+      "update_norms": [
+        0.05109596161880404,
+        0.04322186561721817,
+        0.04362722846765885
+      ],
+      "scene_sizes": [
+        {},
+        {},
+        {}
+      ],
+      "loss_denominator": 3,
+      "success_denominator": 3,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false,
+      "frozen_before": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_after": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "frozen_equal": true,
+      "mc": {
+        "draw_calls": 3,
+        "sampled_agent_draws": 60,
+        "pending_backward": false,
+        "successful_optimizer_updates": 3
+      }
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 1,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "SKIPPED_UPDATE",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": 1.1173033714294434,
+      "last_loss": 1.1173033714294434,
+      "first_components": {
+        "jdv2_pl_post": 1.117342233657837,
+        "jdv2_pl_prior": 1.1172643899917603,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 1.117342233657837,
+        "jdv2_pl_prior": 1.1172643899917603,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "gradient_norms": [],
+      "update_norms": [],
+      "scene_sizes": [
+        {}
+      ],
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 1,
+        "successful_updates": 0,
+        "skipped": 1,
+        "failed": 0,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "SKIPPED_UPDATE",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": 0.89579176902771,
+      "last_loss": 0.89579176902771,
+      "first_components": {
+        "jdv2_pl_post": 0.8958337306976318,
+        "jdv2_pl_prior": 0.8957498073577881,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "last_components": {
+        "jdv2_pl_post": 0.8958337306976318,
+        "jdv2_pl_prior": 0.8957498073577881,
+        "jdv2_relation_kl": 0.011725712567567825
+      },
+      "gradient_norms": [],
+      "update_norms": [],
+      "scene_sizes": [
+        {}
+      ],
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 0
+      },
+      "stop_reason": "ValueError: synthetic forward failure",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": null,
+      "last_loss": null,
+      "first_components": null,
+      "last_components": null,
+      "gradient_norms": [],
+      "update_norms": [],
+      "scene_sizes": [],
+      "loss_denominator": 0,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 0
+      },
+      "stop_reason": "ValueError: synthetic forward failure",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": null,
+      "last_loss": null,
+      "first_components": null,
+      "last_components": null,
+      "gradient_norms": [],
+      "update_norms": [],
+      "scene_sizes": [],
+      "loss_denominator": 0,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "FloatingPointError: Non-finite total loss; components={'jdv2_pl_post': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_pl_prior': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_relation_kl': tensor(nan, grad_fn=<MulBackward0>)}",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": "nan",
+      "last_loss": "nan",
+      "first_components": {
+        "jdv2_pl_post": "nan",
+        "jdv2_pl_prior": "nan",
+        "jdv2_relation_kl": "nan"
+      },
+      "last_components": {
+        "jdv2_pl_post": "nan",
+        "jdv2_pl_prior": "nan",
+        "jdv2_relation_kl": "nan"
+      },
+      "gradient_norms": [],
+      "update_norms": [],
+      "scene_sizes": [
+        {}
+      ],
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    },
+    {
+      "counts": {
+        "fetch_attempts": 1,
+        "batch_fetch": 1,
+        "loss_attempts": 1,
+        "backward": 0,
+        "optimizer_attempts": 0,
+        "successful_updates": 0,
+        "skipped": 0,
+        "failed": 1,
+        "unknown": 0,
+        "loss_samples": 1
+      },
+      "stop_reason": "FloatingPointError: Non-finite total loss; components={'jdv2_pl_post': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_pl_prior': tensor(nan, grad_fn=<MulBackward0>), 'jdv2_relation_kl': tensor(nan, grad_fn=<MulBackward0>)}",
+      "native_epoch": 5,
+      "epoch_complete": false,
+      "partial_epoch": true,
+      "before_progress": 0.0,
+      "after_progress": 0.0,
+      "reference_total_steps": 5,
+      "exposure": [],
+      "exposure_hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "batch_cursor": 1,
+      "first_loss": "nan",
+      "last_loss": "nan",
+      "first_components": {
+        "jdv2_pl_post": "nan",
+        "jdv2_pl_prior": "nan",
+        "jdv2_relation_kl": "nan"
+      },
+      "last_components": {
+        "jdv2_pl_post": "nan",
+        "jdv2_pl_prior": "nan",
+        "jdv2_relation_kl": "nan"
+      },
+      "gradient_norms": [],
+      "update_norms": [],
+      "scene_sizes": [
+        {}
+      ],
+      "loss_denominator": 1,
+      "success_denominator": 0,
+      "peak_reserved": 0,
+      "elapsed": 0,
+      "limits_checked_at_boundaries_only": true,
+      "resumable": false
+    }
+  ],
+  "real_models": 0,
+  "real_data_updates": 0,
+  "protected_future_reads": 0,
+  "cuda_execution": 0,
+  "stdout": "...................                                                      [100%]\n=============================== warnings summary ===============================\ntests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-mean_energy]\ntests/test_p2_role_loader_step_cap.py::test_actual_train_loop_cap_and_snapshot[3-3-expected_conditional_mc]\n  /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/site-packages/torch/optim/lr_scheduler.py:182: UserWarning: Seems like `optimizer.step()` has been overridden after learning rate scheduler initialization. Please, make sure to call `optimizer.step()` before `lr_scheduler.step()`. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate\n    warnings.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n19 passed, 40 deselected, 2 warnings in 1.62s\n",
+  "command": [
+    "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py",
+    "/tmp/rsjg_p2_final_control.json",
+    "tests/test_p2_role_loader_step_cap.py",
+    "-k",
+    "actual_train_loop or actual_failure or limit_empty or nonfinite_ledger or pair_failure or joint_trainer_resolves",
+    "tests/test_sdd_goal_pretrain_protocol.py::test_joint_trainer_resolves_explicit_last_checkpoint"
+  ]
+}

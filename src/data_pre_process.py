@@ -46,6 +46,9 @@ def is_legitimate_traj(traj_df, step):
 
 class Trajectory_Data_Pre_Process(object):
     def __init__(self, args):
+        from src.p2_protocol import enabled
+        if enabled(args):
+            raise RuntimeError('P2 forbids implicit physical preprocessing; use independent artifacts')
         self.args = args
 
         # Trajectories and data_batches folder

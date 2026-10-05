@@ -1,0 +1,31 @@
+{
+  "input_commit": "28728bf96a290ccd83c5c637769deb987f477b07",
+  "ENGINEERING_CPU_ACCEPTANCE": "PASSED",
+  "acceptance_scope": "CPU synthetic production wiring only; historical execution compliance exception disclosed",
+  "EXECUTION_BOUNDARY_COMPLIANCE": "EXCEPTION_UNGUARDED_CPU_CHILD_CUDA_AVAILABILITY_QUERY",
+  "DATA_BASE_READINESS": "BLOCKED_RECORDING_IDENTITY_UNVERIFIED",
+  "TRAINING_EXECUTION": "NOT_AUTHORIZED_NOT_STARTED",
+  "counts": {
+    "outer": 445,
+    "train": 3484,
+    "inner_valid": 320
+  },
+  "p2_tests": 63,
+  "scoped_unique_tests": 157,
+  "cpu_summary": "CPU_RUN.json",
+  "known_toy_updates": 151,
+  "qualified_clean_bases": 0,
+  "new_real_caches": 0,
+  "real_initial_state": null,
+  "missing_observation_only_artifacts": 4249,
+  "semantic_map_provenance": "UNKNOWN",
+  "l2_selection": "NOT_IMPLEMENTED",
+  "real_neural_calls": 0,
+  "real_data_updates": 0,
+  "real_protected_reads": 0,
+  "real_outer_metrics": 0,
+  "cuda_enumeration_and_initialization": "NOT_ZERO_CERTIFIABLE: historical child diagnostic guard gap",
+  "gpu_compute": 0,
+  "legacy_checkpoint_reaudit": 0,
+  "next_action": "Bind positive recording/map provenance and per-window obs-only artifacts; separately authorize fresh goal -> joint; then certify base/cache before L1"
+}

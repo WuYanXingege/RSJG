@@ -165,7 +165,8 @@ def test_joint_trainer_resolves_explicit_last_checkpoint(tmp_path):
     checkpoint.touch()
     loaded = []
 
-    def load_state_file(path):
+    def load_state_file(path, weights_only=False):
+        assert weights_only is False
         loaded.append(path)
         return 23
 

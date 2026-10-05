@@ -1,0 +1,15 @@
+{
+  "command": "CUDA_VISIBLE_DEVICES='' ../.conda/rsjg/bin/python -B -m pytest -q -p no:cacheprovider tests/test_p2_role_loader_step_cap.py",
+  "passed": 33,
+  "failed": 16,
+  "seconds": 9.79,
+  "failure": "All 16 bounded-loop fixtures called GDTS.train(), whose mode-control helper expected absent goal_module/registrar/diffnet on the constructor-free raw-Parameter fixture. No real model was constructed. Fix only stubs fixture.train mode control; production loop unchanged.",
+  "output_boundary": "Terminal failure trace truncated; all 16 failed node names and common root cause returned. Original attempt not erased or counted as passed.",
+  "real_model_constructions": 0,
+  "real_neural_forward": 0,
+  "actual_toy_optimizer_steps": 0,
+  "fake_candidate_calls": 4,
+  "pure_descriptor_calls": 2,
+  "protected_future_reads": 0,
+  "cuda": 0
+}

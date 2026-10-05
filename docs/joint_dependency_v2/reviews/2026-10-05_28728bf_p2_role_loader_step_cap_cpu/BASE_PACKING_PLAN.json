@@ -1,0 +1,23 @@
+{
+  "batch_size": 64,
+  "rule": "archived source/window order; keep every agent; flush source boundary and at64",
+  "roles": {
+    "train": {
+      "packs": 556,
+      "agent_window_exposures": 35456,
+      "packing_sha256": "2d02a55782b6fee737460aa5d8692eecda6d2ce4a5d564442e4cf68e46c798f4",
+      "max_agents": 64,
+      "all_members_preserved": true
+    },
+    "inner_valid": {
+      "packs": 10,
+      "agent_window_exposures": 621,
+      "packing_sha256": "730feef78f4d137249f9e88f6b897d299c3aa85b9b20ab95a5a842cf16b8db0c",
+      "max_agents": 64,
+      "all_members_preserved": true
+    }
+  },
+  "stage_a_native_updates": 3484,
+  "goal_update_cap": 83400,
+  "joint_update_cap": 139000
+}

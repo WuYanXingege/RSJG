@@ -1,0 +1,184 @@
+{
+  "exit_code": 0,
+  "seconds": 2.430867886985652,
+  "reports": [
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[hash]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0010653759818524122,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[member]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0012651269789785147,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[address]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0012441070284694433,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[alias]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0012913470854982734,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[recording]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0013378269504755735,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[role]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0012608419638127089,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[boundary]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0012606179807335138,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_registry_tamper[order]",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0014127199538052082,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_real_provider_identity_and_hash",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0055028370115906,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_role_dataset_and_base_packing",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.003493302036076784,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_cache_production_tasks_descriptor_serializer",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.006852279999293387,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_fresh_goal_no_base_dependency_and_train_only_dispatch",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.011275463970378041,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_joint_dependency_parent_before_device",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.011521041044034064,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_input_adapter_and_selection_never_feed_future",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0021877200342714787,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_new_base_atomic_metadata_not_auto_qualified",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.006004616967402399,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_pair_failure_stops_other_arm_before_fetch",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.000684716971591115,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_nonfinite_ledger_json_and_failure_count",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0003284680424258113,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_observation_alias_full_batch_hash_rejected",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0013294139644131064,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_p2_loader_dispatch_and_no_valid_for_l1",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0012941960012540221,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_default_network_loss_definitions_unchanged",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.6982263359241188,
+      "error": null
+    }
+  ],
+  "counts": {
+    "synthetic_loads": 2
+  },
+  "fixture_counts": {
+    "production_loss_calls": 0,
+    "synthetic_encode_calls": 0,
+    "relation_chunks": 0,
+    "energy_factor_chunks": 0,
+    "energy_mixtures": 0,
+    "backward_calls": 0,
+    "toy_optimizer_updates": 0,
+    "draws": 0,
+    "sampled_rows": 0,
+    "checkpoint_save_calls": 0,
+    "checkpoint_load_calls": 0
+  },
+  "p2_counts": {
+    "provider_observation": 8,
+    "provider_target": 6,
+    "fake_candidate_calls": 4,
+    "descriptor_calls": 2,
+    "teacher_writes": 2,
+    "fake_selection_forward": 1
+  },
+  "bounded_traces": [],
+  "real_models": 0,
+  "real_data_updates": 0,
+  "protected_future_reads": 0,
+  "cuda_execution": 0,
+  "stdout": "....................                                                     [100%]\n20 passed, 39 deselected in 2.19s\n",
+  "command": [
+    "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py",
+    "/tmp/rsjg_p2_additional.json",
+    "tests/test_p2_role_loader_step_cap.py",
+    "-k",
+    "registry_tamper or real_provider or cache_production or role_dataset or fresh_goal or joint_dependency or input_adapter or new_base or pair_failure or nonfinite_ledger or observation_alias or p2_loader_dispatch or default_network",
+    "tests/test_sdd_goal_pretrain_protocol.py::test_joint_trainer_resolves_explicit_last_checkpoint"
+  ]
+}

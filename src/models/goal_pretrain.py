@@ -204,6 +204,8 @@ class Goal_Pretrain(torch.nn.Module):
 
 class goal_pretrainer(object):
     def __init__(self, args):
+        from src.p2_protocol import launch_guard
+        self.p2_registry = launch_guard(args)
         self.args = args
         # initialize data loaders
         self.data_loaders = dict()
@@ -214,6 +216,10 @@ class goal_pretrainer(object):
         self.device = self._set_device()
         # initialize network
         self.net = Goal_Pretrain(self.args, self.device).to(self.device)
+        from src.p2_protocol import enabled
+        if enabled(args):
+            from src.p2_checkpoint import initialize_ledger
+            initialize_ledger(self)
         self.args.model_name = 'goal_pretrain'
         # Prepare log curve file and initialize best validation metrics
         self.log_curve_file = os.path.join(self.args.model_dir, 'pretrain_log_curve.txt')
@@ -310,7 +316,12 @@ class goal_pretrainer(object):
                 saved_models_path,
                 self.args.model_name + '_epoch_' +
                 str(epoch).zfill(3) + '.pt')
-        torch.save(self._checkpoint_payload(epoch), saved_model_name)
+        from src.p2_protocol import enabled
+        if enabled(self.args):
+            from src.p2_checkpoint import save_base
+            save_base(self,self._checkpoint_payload(epoch),saved_model_name,epoch)
+        else:
+            torch.save(self._checkpoint_payload(epoch), saved_model_name)
 
     def _load_checkpoint(self, load_checkpoint):
         """
@@ -339,6 +350,8 @@ class goal_pretrainer(object):
                 print('Loading checkpoint ...')
                 checkpoint = torch.load(saved_model_name,
                                         map_location=self.device)
+                if checkpoint.get('artifact_role')=='bounded_stop_weights_only':
+                    raise RuntimeError('bounded weights-only snapshot is not resumable')
                 model_epoch = checkpoint['epoch']
                 if checkpoint.get('checkpoint_type') not in {
                         None, 'gdts_goal_pretrain'}:
@@ -566,6 +579,10 @@ class goal_pretrainer(object):
 
 
         for batch_data, batch_id in train_bar:
+            from src.p2_protocol import enabled
+            if enabled(self.args):
+                from src.p2_checkpoint import record_exposure
+                record_exposure(self,batch_id)
 
             inputs, _, seq_list = \
                 self.net.prepare_inputs(batch_data, batch_id)
@@ -601,6 +618,12 @@ class goal_pretrainer(object):
         Loop over the validation or test set once. Compute metrics and save
         output trajectories.
         """
+        from src.p2_protocol import enabled
+        if enabled(self.args):
+            if mode != 'valid':
+                raise RuntimeError('P2 outer selection locked')
+            from src.p2_data import evaluate_inner
+            return evaluate_inner(self, goal=True)
         self.net.eval()  # evaluation mode
 
         # INIT LOSSES and METRICS

@@ -1,0 +1,298 @@
+{
+  "input_commit": "28728bf96a290ccd83c5c637769deb987f477b07",
+  "modified_tracked": [
+    "docs/joint_dependency_v2/reviews/README.md",
+    "main.py",
+    "src/data_loader.py",
+    "src/data_pre_process.py",
+    "src/joint_dependency_v2_cache.py",
+    "src/models/goal_pretrain.py",
+    "src/parser.py",
+    "src/trainer.py",
+    "tests/mc_wiring_fixture.py",
+    "tests/test_sdd_goal_pretrain_protocol.py"
+  ],
+  "new_code": [
+    "src/p2_protocol.py",
+    "src/p2_data.py",
+    "src/p2_cache.py",
+    "src/p2_bounded.py",
+    "src/p2_checkpoint.py",
+    "tests/test_p2_role_loader_step_cap.py",
+    "tools/p2_metadata_plan.py"
+  ],
+  "neural_loss_definitions": [
+    {
+      "path": "src/models/trajectory_pair_relation.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "36d199c6625e341d363f8b41c5ba14c29d709e83203d480191e4b840e6ae7669",
+      "after_file_sha256": "36d199c6625e341d363f8b41c5ba14c29d709e83203d480191e4b840e6ae7669"
+    },
+    {
+      "path": "src/models/__init__.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/models/interaction_graph.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "ba616bcbd95a25e1d649d129bb6379b75130beb0ed60350ec82c38801952993a",
+      "after_file_sha256": "ba616bcbd95a25e1d649d129bb6379b75130beb0ed60350ec82c38801952993a"
+    },
+    {
+      "path": "src/models/goal_pretrain.py",
+      "scope": "Goal_Pretrain class only",
+      "unchanged": true,
+      "before_file_sha256": "3910343fd53cbf42a68352f90c23cb1c00fef625fc762090b46a5102577d3800",
+      "after_file_sha256": "f433c1ae13c7a02a9514a9060f304bdb996fd5d1a01965b372603750269af923"
+    },
+    {
+      "path": "src/models/common.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "3f0154ca0eb542b0162201e087479d40dcd23c64146267feeba21b27cc6a0e07",
+      "after_file_sha256": "3f0154ca0eb542b0162201e087479d40dcd23c64146267feeba21b27cc6a0e07"
+    },
+    {
+      "path": "src/models/relation_inference.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "241a1887cce419edd5603580cbfed868d1da011a8f012e61ae3ca8209988e194",
+      "after_file_sha256": "241a1887cce419edd5603580cbfed868d1da011a8f012e61ae3ca8209988e194"
+    },
+    {
+      "path": "src/models/trajectory_pair_energy.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "ad5c8b0e57c760d9f0cf9d4b84ccf619a8f1a34c07f498f76a16866abe7cc3e4",
+      "after_file_sha256": "ad5c8b0e57c760d9f0cf9d4b84ccf619a8f1a34c07f498f76a16866abe7cc3e4"
+    },
+    {
+      "path": "src/models/hungarian_projection.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "633bc55f2ad6e0e0d871d3a203eb2654a432aeaee87c7184c52937eed50b2350",
+      "after_file_sha256": "633bc55f2ad6e0e0d871d3a203eb2654a432aeaee87c7184c52937eed50b2350"
+    },
+    {
+      "path": "src/models/trajectory_aligner.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "3845a7d38c3ce4347954d379575be7a3b7f247cfedf36a9deaeaaeb87334dd25",
+      "after_file_sha256": "3845a7d38c3ce4347954d379575be7a3b7f247cfedf36a9deaeaaeb87334dd25"
+    },
+    {
+      "path": "src/models/joint_sampler.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "6dfea9f048db0dec1d331eed8465fc9cca04d64600a93ccc6c670d529dcd9197",
+      "after_file_sha256": "6dfea9f048db0dec1d331eed8465fc9cca04d64600a93ccc6c670d529dcd9197"
+    },
+    {
+      "path": "src/models/continuous_goal_refiner.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "20d813334d93e2bb14559597492c665af6a2697832848fcb957d261b82023d3b",
+      "after_file_sha256": "20d813334d93e2bb14559597492c665af6a2697832848fcb957d261b82023d3b"
+    },
+    {
+      "path": "src/models/multiway_trajectory_coupler.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "2a0e1a8518e5390172218e69e1ac503acfc543c6fc704fa8c197a3065dcadd83",
+      "after_file_sha256": "2a0e1a8518e5390172218e69e1ac503acfc543c6fc704fa8c197a3065dcadd83"
+    },
+    {
+      "path": "src/models/joint_goal.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "330d8e124011194d0a77ab5a3c904222fd438b6da2563fc42cb62162dc0f83da",
+      "after_file_sha256": "330d8e124011194d0a77ab5a3c904222fd438b6da2563fc42cb62162dc0f83da"
+    },
+    {
+      "path": "src/models/model.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "10f92963067541a28280b372a271d12a25286594a06d74904b26e01a2bc66947",
+      "after_file_sha256": "10f92963067541a28280b372a271d12a25286594a06d74904b26e01a2bc66947"
+    },
+    {
+      "path": "src/models/goal_energy.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "132543b07caebb1661c78062acefce1c7824619d191e1f5a30e040fa45a2a31a",
+      "after_file_sha256": "132543b07caebb1661c78062acefce1c7824619d191e1f5a30e040fa45a2a31a"
+    },
+    {
+      "path": "src/models/permutation_synchronizer.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "d8ddb04de477fb170b8c5ede1e1e87cf36053640c357bf4aaef7b4461becd9fe",
+      "after_file_sha256": "d8ddb04de477fb170b8c5ede1e1e87cf36053640c357bf4aaef7b4461becd9fe"
+    },
+    {
+      "path": "src/models/diffusion.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "6fea56bdfba0550b4f29775646d0b5ae3313ac9acb09eae53c6945d1923bbd0f",
+      "after_file_sha256": "6fea56bdfba0550b4f29775646d0b5ae3313ac9acb09eae53c6945d1923bbd0f"
+    },
+    {
+      "path": "src/models/social_encoder.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "f63fe71a37ec902018928a4ef1e57b563a32a8a4f3063cd2fef3753ec43f9afb",
+      "after_file_sha256": "f63fe71a37ec902018928a4ef1e57b563a32a8a4f3063cd2fef3753ec43f9afb"
+    },
+    {
+      "path": "src/models/model_utils/__init__.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "after_file_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "src/models/model_utils/model_registrar.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "caaa5bff944e5c25eafb2fa5287adef674b9fbd04ea2083a05d60e2569338807",
+      "after_file_sha256": "caaa5bff944e5c25eafb2fa5287adef674b9fbd04ea2083a05d60e2569338807"
+    },
+    {
+      "path": "src/models/model_utils/hist_traj_rnn_encoder.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "4dcc583f3e570bc394b9d519eead497db4b34a2b0126ac0feba58057d6794809",
+      "after_file_sha256": "4dcc583f3e570bc394b9d519eead497db4b34a2b0126ac0feba58057d6794809"
+    },
+    {
+      "path": "src/models/model_utils/cnn_big_images_utils.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "10568df896564ac523537b4b46acedde40a2a9d5e6e75a0e6e23ec0ed685097d",
+      "after_file_sha256": "10568df896564ac523537b4b46acedde40a2a9d5e6e75a0e6e23ec0ed685097d"
+    },
+    {
+      "path": "src/models/model_utils/sampling_2D_map.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "72890345b1aec35640471eda15ebbde344f2f07ce0e957431cd1668fa605c8da",
+      "after_file_sha256": "72890345b1aec35640471eda15ebbde344f2f07ce0e957431cd1668fa605c8da"
+    },
+    {
+      "path": "src/models/model_utils/U_net_CNN.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "8e7afcc209b95bf28c3d22575840961278d6f6749479c3344920cf6ec5aa3b2b",
+      "after_file_sha256": "8e7afcc209b95bf28c3d22575840961278d6f6749479c3344920cf6ec5aa3b2b"
+    },
+    {
+      "path": "src/models/model_utils/kmeans.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "65097b63cc5500638029567173cf3fddca7816ac543ec8542c98a2247c90b795",
+      "after_file_sha256": "65097b63cc5500638029567173cf3fddca7816ac543ec8542c98a2247c90b795"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/scene_latent.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "2d4215c90c2892706d16089880fab6801565713e2180934536a2f9811183bc59",
+      "after_file_sha256": "2d4215c90c2892706d16089880fab6801565713e2180934536a2f9811183bc59"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/unary_goal.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "f35a23bb2489c78cb53e43a22f0f563fd5317bde0f0573c50b94af6602b53831",
+      "after_file_sha256": "f35a23bb2489c78cb53e43a22f0f563fd5317bde0f0573c50b94af6602b53831"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/__init__.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "7aae7e85b6ce1f5fa50f784502f76837639ed61aafbeeac56b103ddc9e58696f",
+      "after_file_sha256": "7aae7e85b6ce1f5fa50f784502f76837639ed61aafbeeac56b103ddc9e58696f"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/dependency_corrector.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "0ff28eb7107e49a0ad6f2bf339a65d8847f83c4a7cf315faa5a80cac4dc00522",
+      "after_file_sha256": "0ff28eb7107e49a0ad6f2bf339a65d8847f83c4a7cf315faa5a80cac4dc00522"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/joint_energy.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "4c06e612701ebf71ac54079106e90f5f77ee8ffbcc4a94c97647eb2382c1e719",
+      "after_file_sha256": "4c06e612701ebf71ac54079106e90f5f77ee8ffbcc4a94c97647eb2382c1e719"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/future_teacher.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "a4e98c2d0f4013b4dcca356fe4d4a84b62778006284d720e0f4f0468cba55c9d",
+      "after_file_sha256": "a4e98c2d0f4013b4dcca356fe4d4a84b62778006284d720e0f4f0468cba55c9d"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/joint_sampler.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "c2c9e4db2f144eec41104eef6ff7716f151a845e9c2dc5ac22562ada5ccb0144",
+      "after_file_sha256": "c2c9e4db2f144eec41104eef6ff7716f151a845e9c2dc5ac22562ada5ccb0144"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/exact_lexicographic_assignment.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "093c8109c7ecd2b47c5436323a921af2434c59361aa7836f87653af6e3fffa1d",
+      "after_file_sha256": "093c8109c7ecd2b47c5436323a921af2434c59361aa7836f87653af6e3fffa1d"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/dynamic_relation.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "0ab28fd1d5141afe53ffb80fc7fc32b5b42ae527a51b96e4b680860ee6768127",
+      "after_file_sha256": "0ab28fd1d5141afe53ffb80fc7fc32b5b42ae527a51b96e4b680860ee6768127"
+    },
+    {
+      "path": "src/models/joint_dependency_v2/component_residual_projection.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "355de2a9ace3265efe1d5fc1ed4b5a6c054a621fc452a7ad95d70b6a2c3b5630",
+      "after_file_sha256": "355de2a9ace3265efe1d5fc1ed4b5a6c054a621fc452a7ad95d70b6a2c3b5630"
+    },
+    {
+      "path": "src/joint_goal_loss.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "a1abf3ef4d905c9d30b06ef4c65597d9396cba873cc147fc4ef4bfdb7e09eb63",
+      "after_file_sha256": "a1abf3ef4d905c9d30b06ef4c65597d9396cba873cc147fc4ef4bfdb7e09eb63"
+    },
+    {
+      "path": "src/jdv2_objective_state.py",
+      "scope": "whole module AST",
+      "unchanged": true,
+      "before_file_sha256": "adb602d477ae636bebce2952d048b829668ae06b9b90c7525eafef861ed645b7",
+      "after_file_sha256": "adb602d477ae636bebce2952d048b829668ae06b9b90c7525eafef861ed645b7"
+    }
+  ],
+  "new_parameters": 0,
+  "new_buffers": 0,
+  "p1_contract_byte_unchanged": true,
+  "old_archive_preserved_files": 41,
+  "living_index": "updated separately; original input-commit bytes verified",
+  "old_five_checkpoint_reaudit": 0,
+  "default_disabled_dispatch": "existing legacy/P1 branches retained; tested in scoped regression",
+  "nonproduction_test_repairs": [
+    "SDD checkpoint test stub accepts existing weights_only=False keyword",
+    "CPU MC child optimizer diagnostic no-op with CPU assertion and explicit CUDA query guards"
+  ],
+  "sdd_skills_apps_intervention": false,
+  "unrelated_untracked_files_staged": false
+}

@@ -1,0 +1,109 @@
+{
+  "exit_code": 0,
+  "seconds": 6.132209292030893,
+  "reports": [
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_p2_execution_protocol_counts_not_legacy",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.0015500480076298118,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_p2_base_not_training_resume",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.004099678015336394,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_p2_role_loader_step_cap.py::test_shared_initial_authentication",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 0.003973018028773367,
+      "error": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_separate_process_exact_resume",
+      "when": "call",
+      "outcome": "passed",
+      "seconds": 4.426201418042183,
+      "error": null
+    }
+  ],
+  "counts": {
+    "synthetic_loads": 3,
+    "synthetic_backward_calls": 12,
+    "toy_optimizer_attempts": 12,
+    "cpu_optimizer_health_noops": 12,
+    "toy_optimizer_completed": 12
+  },
+  "fixture_counts": {
+    "production_loss_calls": 12,
+    "synthetic_encode_calls": 12,
+    "relation_chunks": 24,
+    "energy_factor_chunks": 24,
+    "energy_mixtures": 48,
+    "backward_calls": 12,
+    "toy_optimizer_updates": 12,
+    "draws": 12,
+    "sampled_rows": 240,
+    "checkpoint_save_calls": 1,
+    "checkpoint_load_calls": 0
+  },
+  "p2_counts": {},
+  "bounded_traces": [],
+  "mc_measurements": {
+    "resume": {
+      "exact": true,
+      "continuous_updates": 9,
+      "prefix_updates": 3,
+      "child_updates": 6,
+      "independent_resume_processes": 1,
+      "child_counts": {
+        "production_loss_calls": 6,
+        "synthetic_encode_calls": 6,
+        "relation_chunks": 12,
+        "energy_factor_chunks": 12,
+        "energy_mixtures": 24,
+        "backward_calls": 6,
+        "toy_optimizer_updates": 6,
+        "draws": 6,
+        "sampled_rows": 120,
+        "checkpoint_save_calls": 0,
+        "checkpoint_load_calls": 1,
+        "cpu_optimizer_health_noops": 6
+      },
+      "compared_fields": [
+        "step",
+        "ids",
+        "losses",
+        "total",
+        "coefficients",
+        "gradients",
+        "parameters",
+        "optimizer",
+        "scheduler",
+        "progress",
+        "rng_sha256",
+        "draws",
+        "rows",
+        "updates"
+      ],
+      "trace_sha256": "88d99c99a1ead16e6d2405672cfa239289564af4606e8beb9a1afaea08bab433"
+    }
+  },
+  "real_models": 0,
+  "real_data_updates": 0,
+  "protected_future_reads": 0,
+  "cuda_execution": 0,
+  "stdout": "....                                                                     [100%]\n4 passed in 5.91s\n",
+  "command": [
+    "docs/joint_dependency_v2/reviews/2026-10-05_28728bf_p2_role_loader_step_cap_cpu/run_cpu.py",
+    "/tmp/rsjg_p2_last_guards.json",
+    "tests/test_p2_role_loader_step_cap.py::test_p2_execution_protocol_counts_not_legacy",
+    "tests/test_p2_role_loader_step_cap.py::test_p2_base_not_training_resume",
+    "tests/test_p2_role_loader_step_cap.py::test_shared_initial_authentication",
+    "tests/test_jdv2_mc_wiring.py::test_separate_process_exact_resume"
+  ]
+}
