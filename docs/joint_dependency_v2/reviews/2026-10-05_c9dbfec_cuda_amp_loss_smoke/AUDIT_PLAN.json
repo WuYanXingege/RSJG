@@ -1,0 +1,21 @@
+{
+  "source_commit": "c9dbfecf64eb95504664c2901d3c2bb26f41aea5",
+  "synthetic_input_manifest": "SYNTHETIC_PLAN.json",
+  "synthetic_native_inputs": "SYNTHETIC_INPUTS.pt",
+  "illegal_expected": {"cuda_float64":"FP32 effective input required, predraw", "cuda_float16":"FP32 effective input required, predraw", "bf16_cost":"cost dtype mismatch, loss-only no draw", "cpu_ids":"wrong device, loss-only no draw", "nonfinite_unary":"finite input required, predraw", "trainable_q":"fixed labels required, predraw", "cross_scene":"within-scene edges required, predraw", "empty_mask":"nonempty support required, predraw"},
+  "cpu_plan_development": {"syntax_failure":1,"empty_cost_bound_failure":1,"partial_first_run_cpu_forward_backward_pairs":4,"partial_first_run_draws":3,"completed_run_cpu_forward_backward_pairs":48,"completed_run_draws":16,"cuda_calls":0},
+  "device_backend": "cuda_fp32_bf16_v1",
+  "gpu_valid_cases": ["asymmetric_fp32", "asymmetric_bf16", "singleton_fp32", "singleton_bf16", "empty_unequal_fp32", "empty_unequal_bf16", "masked_permuted_noncontiguous_fp32", "masked_permuted_noncontiguous_bf16", "mixture_fp32", "mixture_bf16", "repeat_fp32", "repeat_bf16", "toy_update_fp32", "toy_update_bf16", "toy_skip_fp32", "toy_skip_bf16"],
+  "illegal_cases": ["cuda_float64", "cuda_float16", "bf16_cost", "cpu_ids", "nonfinite_unary", "trainable_q", "cross_scene", "empty_mask"],
+  "valid_case_semantics": "One top-level scalar forward and one total backward per case; mixture contains two post/prior primitive CE calls in the single scalar graph. CPU reference work counted separately.",
+  "synthetic_limits": {"N":5,"K":4,"E":8,"S":4,"abs_u_C":2},
+  "real_cases": ["R1 edge mean FP32", "R2 same edge MC FP32", "R3 same edge MC BF16-autocast", "R4 real singleton/E0 MC BF16-autocast"],
+  "real_selection": "Prefer train; sort source/frame/window; first N<=8,E<=32 edge and first E0/singleton. Development valid fallback only if train unavailable; no final-test payload or new selection by loss.",
+  "cuda_tolerances": {"atol":1e-5,"rtol":1e-4},
+  "cpu_tolerances": {"fp32_atol":1e-6,"fp32_rtol":1e-5,"fp64_atol":1e-10,"fp64_rtol":1e-8},
+  "rng_ids_bytes_counters": "exact, same actual FP32 q and original CPU generator state",
+  "gpu_wall_seconds":900,"gpu_reserved_bytes":4294967296,"minimum_free_mib":6144,
+  "gpu_toy_updates":2,"real_optimizer_updates":0,"real_loss_attempts_max":4,
+  "sampler_diffusion_corrector_full_trajectory_calls":0,
+  "failure_policy":"Stop corresponding GPU gate; no automatic retry, no window replacement, no numerical-policy changes. BF16 unsupported does not permit FP16 substitution."
+}

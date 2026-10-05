@@ -1,4 +1,4 @@
-"""CPU-only experimental objective state; deliberately NOT an nn.Module.
+"""Independent CPU sampling state with explicit loss compute backends.
 
 Resume covers fixed-input optimizer boundaries, not data/worker/global RNG.
 """
@@ -17,6 +17,22 @@ MC = 'expected_conditional_mc'
 FIELD = 'jdv2_goal_objective_state'
 NAMESPACE = 'jdv2.expected-conditional.cpu.v1'
 SCOPE = 'fixed-input objective RNG + optimizer/scheduler/progress; epoch boundary'
+CPU_BACKEND = 'cpu_v1'
+CUDA_BACKEND = 'cuda_fp32_bf16_v1'
+
+
+def compute_backend(args):
+    return getattr(args, 'jdv2_mc_backend', CPU_BACKEND)
+
+
+def validate_compute_context(backend):
+    if backend not in {CPU_BACKEND, CUDA_BACKEND}:
+        raise ValueError('Unknown MC compute backend')
+    if backend == CPU_BACKEND and torch.is_autocast_enabled('cpu'):
+        raise ValueError('CPU MC AMP is not supported')
+    if (backend == CUDA_BACKEND and torch.is_autocast_enabled('cuda') and
+            torch.get_autocast_dtype('cuda') != torch.bfloat16):
+        raise ValueError('CUDA MC only permits BF16 autocast, not FP16')
 
 
 @lru_cache(maxsize=1)
@@ -54,10 +70,16 @@ def validate_mode(args, device=None):
         raise ValueError('neighbor seed must be integer in [0,2**63)')
     if getattr(args, 'jdv2_edge_chunk_size', 1) <= 0:
         raise ValueError('MC edge chunk must be positive')
-    if (torch.device(device or getattr(args, 'device', 'cpu')).type != 'cpu' or
-            getattr(args, 'amp_enabled', False) or
-            getattr(args, 'amp_dtype', 'fp32') != 'fp32'):
-        raise ValueError('MC is CPU FP32/FP64 only; CUDA/AMP certification pending')
+    backend = compute_backend(args)
+    if backend not in {CPU_BACKEND, CUDA_BACKEND}:
+        raise ValueError('Unknown MC compute backend')
+    kind = torch.device(device or getattr(args, 'device', 'cpu')).type
+    amp, dtype = getattr(args, 'amp_enabled', False), getattr(args, 'amp_dtype', 'fp32')
+    if backend == CPU_BACKEND:
+        if kind != 'cpu' or amp or dtype != 'fp32':
+            raise ValueError('cpu_v1 requires CPU FP32/FP64 without AMP')
+    elif kind != 'cuda' or (amp, dtype) not in {(False, 'fp32'), (True, 'bf16')}:
+        raise ValueError('CUDA MC requires explicit CUDA device, FP32 or BF16 autocast')
 
 
 def semantic_fingerprint(args):
@@ -72,17 +94,27 @@ def semantic_fingerprint(args):
     for key in ('jdv2_cache_manifest_hash', 'jdv2_source_checkpoint_hash',
                 'clean_split_manifest_hash', 'dataset', 'test_set'):
         config[key] = getattr(args, key, None)
+    if compute_backend(args) == CUDA_BACKEND:
+        config.update(loss_compute_backend=CUDA_BACKEND, effective_dtype='float32',
+                      amp_policy='bf16' if getattr(args, 'amp_enabled', False) else 'off')
     return hashlib.sha256(json.dumps(config, sort_keys=True,
                                     allow_nan=False).encode()).hexdigest()
 
 
-def validate_request(u, q, scenes, edges, mask):
+def validate_request(u, q, scenes, edges, mask, backend=CPU_BACKEND):
     """Reject invalid labels/geometry BEFORE consuming the objective generator."""
+    validate_compute_context(backend)
+    expected_kind = 'cpu' if backend == CPU_BACKEND else 'cuda'
+    if not isinstance(u, torch.Tensor):
+        raise TypeError('MC unary tensor required')
     for value in (u, q, scenes, edges, mask):
         if not isinstance(value, torch.Tensor):
             raise TypeError('MC request tensors required')
-        if value.device.type != 'cpu' or value.layout != torch.strided:
-            raise ValueError('MC request requires dense CPU tensors')
+        if (value.device.type != expected_kind or value.device != u.device or
+                value.layout != torch.strided):
+            raise ValueError('MC request requires dense tensors on one backend device')
+    if backend == CUDA_BACKEND and u.dtype != torch.float32:
+        raise TypeError('CUDA MC effective inputs must be FP32')
     if u.dtype not in (torch.float32, torch.float64) or q.dtype != u.dtype:
         raise TypeError('MC u/q must share FP32/FP64 dtype')
     if u.ndim != 2 or min(u.shape) <= 0 or q.shape != u.shape:
@@ -96,7 +128,7 @@ def validate_request(u, q, scenes, edges, mask):
             (q < 0).any() or (q[~mask] != 0).any()):
         raise ValueError('MC u/q must be finite; q nonnegative and zero off support')
     tol = 1e-12 if q.dtype == torch.float64 else 1e-6
-    if not torch.allclose(q.sum(-1), torch.ones(n, dtype=q.dtype), atol=tol, rtol=0):
+    if not torch.allclose(q.sum(-1), torch.ones(n, dtype=q.dtype, device=q.device), atol=tol, rtol=0):
         raise ValueError('MC endpoint q must be normalized')
     if scenes.dtype != torch.int64 or scenes.shape != (n,):
         raise ValueError('MC scene_index must be int64 [N]')
@@ -122,6 +154,8 @@ class ObjectiveRNG:
         if type(seed) is not int or not 0 <= seed < 2**63:
             raise ValueError('neighbor seed must be integer in [0,2**63)')
         self.initialization_seed = seed
+        self.backend = compute_backend(args)
+        self.amp_policy = 'bf16' if getattr(args, 'amp_enabled', False) else 'off'
         self.generator = torch.Generator(device='cpu').manual_seed(seed)
         self.fingerprint = semantic_fingerprint(args)
         self.source_commit = implementation_source_commit()
@@ -132,16 +166,17 @@ class ObjectiveRNG:
     def draw(self, u, q, scenes, edges, mask):
         if self.pending_backward:
             raise RuntimeError('Previous MC request unfinished; stop, do not retry')
-        if torch.is_autocast_enabled('cpu'):
-            raise ValueError('MC AMP is not certified')
-        validate_request(u, q, scenes, edges, mask)
-        ids = torch.multinomial(q.detach(), 4, replacement=True,
+        validate_request(u, q, scenes, edges, mask, self.backend)
+        # Validate on the compute device first. ONLY fixed endpoint labels cross
+        # to CPU; unary/cost/upstream tensors never leave their gradient device.
+        fixed_q = q.detach().to(device='cpu')
+        ids = torch.multinomial(fixed_q, 4, replacement=True,
                                 generator=self.generator).T.contiguous()
         self.draw_calls += 1
         self.sampled_agent_draws += 4 * q.shape[0]
         # A failure after this point retains consumed state and forbids saves/retry.
         self.pending_backward = True
-        return ids
+        return ids.to(device=u.device)
 
     def finish_update(self, successful):
         if not self.pending_backward:
@@ -159,7 +194,7 @@ class ObjectiveRNG:
             raise ValueError('Positive total_steps required')
         if not 0 <= self.successful_optimizer_updates <= total_steps:
             raise ValueError('MC updates exceed fixed stage budget')
-        return dict(format_version=1, objective=MC, neighbor_draws=4,
+        state = dict(format_version=1, objective=MC, neighbor_draws=4,
                     generator_device='cpu', generator_algorithm='torch.cpu.MT19937',
                     sampling_semantics_version='multinomial-replacement-Nx4-transpose-v1',
                     torch_version=str(torch.__version__), namespace=NAMESPACE,
@@ -172,11 +207,19 @@ class ObjectiveRNG:
                     checkpoint_role=role, pending_backward=False,
                     objective_semantic_fingerprint=self.fingerprint,
                     source_commit=self.source_commit, resume_scope=SCOPE)
+        if self.backend == CUDA_BACKEND:
+            state.update(format_version=2, loss_compute_backend=CUDA_BACKEND,
+                         loss_effective_dtype='float32', amp_policy=self.amp_policy,
+                         resume_scope=SCOPE + '; CUDA exact resume NOT certified')
+        return state
 
     def validated_state(self, state, total_steps):
         if not isinstance(state, dict):
             raise ValueError('Missing MC objective state; same-stage warm start forbidden')
         expected = self.snapshot(total_steps, 'resume_last')
+        for key in ('loss_compute_backend', 'loss_effective_dtype', 'amp_policy'):
+            if key in expected and state.get(key) != expected[key]:
+                raise ValueError(f'MC checkpoint mismatch: {key}')
         for key in ('format_version', 'objective', 'neighbor_draws', 'generator_device',
                     'generator_algorithm', 'sampling_semantics_version', 'torch_version',
                     'namespace', 'stage_total_optimizer_steps', 'checkpoint_role',

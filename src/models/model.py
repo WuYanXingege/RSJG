@@ -195,7 +195,9 @@ def jdv2_scene_timesteps(
     return scene_timestep[compact]
 
 
-from src.jdv2_objective_state import MC, objective_mode, validate_mode
+from src.jdv2_objective_state import (
+    MC, objective_mode, validate_mode, compute_backend, validate_compute_context,
+)
 from src.joint_goal_loss import expected_conditional_composite
 
 
@@ -2919,12 +2921,11 @@ class GDTS(torch.nn.Module):
         return losses
 
     def _jdv2_mc_goal_losses(self, inputs):
-        """CPU experimental objective. One owner draw shared by both CE terms."""
+        """Experimental objective. One CPU-generator draw shared by both CE terms."""
         validate_mode(self.args, self.device)
         if not self.training:
             raise RuntimeError("MC diagnostic loss in eval mode is unsupported")
-        if torch.is_autocast_enabled("cpu"):
-            raise ValueError("MC AMP certification pending")
+        validate_compute_context(compute_backend(self.args))
         _, structured = self.encode(inputs, if_test=False, for_loss=True)
         target = build_soft_goal_target(
             structured['goal_candidates_world'], inputs['world_coord'][-1],
@@ -3023,12 +3024,14 @@ class GDTS(torch.nn.Module):
                     full_relation['log_prob'], target, chunk_edge))
 
         # Both lists retain all upstream graphs until backward, not chunk-bounded memory.
+        backend_options = ({} if compute_backend(self.args) == 'cpu_v1' else
+                           {'compute_backend': compute_backend(self.args)})
         pl_post = expected_conditional_composite(
             unary, target, scene_index, edge_index, post_chunks, neighbor_ids,
-            structured['candidate_mask'])
+            structured['candidate_mask'], **backend_options)
         pl_prior = expected_conditional_composite(
             unary, target, scene_index, edge_index, prior_chunks, neighbor_ids,
-            structured['candidate_mask'])
+            structured['candidate_mask'], **backend_options)
         if relation_kl_parts:
             relation_kl = torch.cat(relation_kl_parts).mean()
         else:

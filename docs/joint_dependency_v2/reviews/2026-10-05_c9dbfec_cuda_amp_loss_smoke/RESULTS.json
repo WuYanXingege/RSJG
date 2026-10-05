@@ -1,0 +1,1890 @@
+{
+  "status": "CUDA_FP32_BF16_LOSS_SMOKE_CERTIFIED_NO_TRAINING",
+  "input_commit": "c9dbfecf64eb95504664c2901d3c2bb26f41aea5",
+  "branch": "research/joint-dependency-v2-clean",
+  "execution_source": "input commit plus backend patch; exact source bytes in SOURCE_SCOPE.json and EVIDENCE_MANIFEST.json; final Git commit identifies published tree",
+  "cpu": {
+    "unique_tests": 172,
+    "passed": 172,
+    "runs": 1,
+    "raw_capture_truncated": true,
+    "summary": "CPU_RUN.json",
+    "independent_resume_child_processes": 1,
+    "cuda_initializations": 0,
+    "real_forwards": 0,
+    "toy_optimizer_updates_parent": 109,
+    "toy_optimizer_updates_child": 6
+  },
+  "gpu": {
+    "source_batch_reads": 2,
+    "candidate_cache_reads": 2,
+    "teacher_cache_reads": 2,
+    "cuda_initialization_attempted": 1,
+    "cuda_initialization_completed": 1,
+    "synthetic_valid_attempted": 16,
+    "synthetic_draws": 16,
+    "synthetic_agent_draws": 288,
+    "synthetic_forward_attempted": 16,
+    "synthetic_forward_completed": 16,
+    "synthetic_backward_attempted": 16,
+    "synthetic_backward_completed": 16,
+    "synthetic_valid_completed": 16,
+    "toy_optimizer_updates": 2,
+    "illegal_attempted": 8,
+    "illegal_rejected": 8,
+    "real_model_construction_attempted": 1,
+    "real_model_construction_completed": 1,
+    "real_checkpoint_read_attempted": 1,
+    "real_checkpoint_read_completed": 1,
+    "real_get_loss_attempted": 4,
+    "real_encode_attempted": 4,
+    "real_encode_completed": 4,
+    "real_get_loss_completed": 4,
+    "real_backward_attempted": 4,
+    "real_backward_completed": 4,
+    "real_objective_draws": 3,
+    "real_agent_draws": 28,
+    "real_optimizer_updates": 0,
+    "data_training": 0,
+    "data_evaluation": 0,
+    "sampler_forward": 0,
+    "diffusion_forward": 0,
+    "corrector_forward": 0,
+    "full_trajectory": 0,
+    "valid_failed": 0,
+    "illegal_unexpected": 0,
+    "real_get_loss_failed": 0,
+    "real_get_loss_unknown": 0,
+    "real_encode_failed": 0,
+    "real_encode_unknown": 0,
+    "real_backward_failed": 0,
+    "real_backward_unknown": 0,
+    "seconds": 3.334182852995582,
+    "peak_allocated": 135195136,
+    "peak_reserved": 150994944,
+    "full_ledger": "gpu_run/RESULTS.json"
+  },
+  "gates": {
+    "cpu": "PASSED",
+    "cuda_fp32": "PASSED",
+    "cuda_bf16_native": "PASSED",
+    "real_stage_a_loss": "PASSED"
+  },
+  "environment": {
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002,
+    "device": "NVIDIA GeForce RTX 5070 Ti",
+    "capability": [
+      12,
+      0
+    ],
+    "bf16_native": true
+  },
+  "policy_before": {
+    "threads": 10,
+    "interop_threads": 10,
+    "deterministic": false,
+    "matmul_tf32": false,
+    "cudnn_tf32": true,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "float32_matmul_precision": "highest"
+  },
+  "policy_after": {
+    "threads": 10,
+    "interop_threads": 10,
+    "deterministic": false,
+    "matmul_tf32": false,
+    "cudnn_tf32": true,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "float32_matmul_precision": "highest"
+  },
+  "selection": {
+    "edge": {
+      "source": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/data/eth5/eth/train/biwi_hotel.txt",
+      "frame": 0,
+      "filename": "train_batch_0241.pkl",
+      "index": 240,
+      "N": 3,
+      "E": 3,
+      "source_batch_sha256": "25c787e64c1ba9e68351affd1d73c415340fbeffa922c24ddc3877b53df0cc7f",
+      "cache_sha256": "75ba96655b6a35e019a75d232eebc1062c8b8c495a4d1b231ee9ff67b89fd2d5",
+      "teacher_sha256": "59acd9e6fbc90fbcc6fdc15c6cf8ffe4528389f8b6e91fd9d9e59000605c13c7"
+    },
+    "empty": {
+      "source": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/data/eth5/eth/train/biwi_hotel.txt",
+      "frame": 620,
+      "filename": "train_batch_0176.pkl",
+      "index": 175,
+      "N": 1,
+      "E": 0,
+      "source_batch_sha256": "71dbb49a1bb1de38923d9baaadc090be9251dad5b989efe49269a3a5d547621b",
+      "cache_sha256": "62e5998099b42c9efbdc8e06b5399294b50378e085069f59ccdef96e919f6e4c",
+      "teacher_sha256": "783aa53c06b86c15a51bb9c88859feae440e82664fd1a2c95754de3ca3daf608"
+    }
+  },
+  "real": [
+    {
+      "name": "R1",
+      "selection": "edge",
+      "objective": "mean_energy",
+      "amp": false,
+      "status": "PASSED",
+      "before_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "losses": {
+        "jdv2_pl_post": 3.043879270553589,
+        "jdv2_pl_prior": 3.043930768966675,
+        "jdv2_relation_kl": 0.01414329931139946
+      },
+      "coefficients": {
+        "jdv2_pl_post": 0.5,
+        "jdv2_pl_prior": 0.5,
+        "jdv2_relation_kl": 0.1
+      },
+      "total": 3.0453193187713623,
+      "loss_dtypes": {
+        "jdv2_pl_post": "torch.float32",
+        "jdv2_pl_prior": "torch.float32",
+        "jdv2_relation_kl": "torch.float32"
+      },
+      "gradient_families": {
+        "social_encoder": 15,
+        "relation_inference": 6,
+        "jdv2_future_teacher": 6,
+        "jdv2_unary": 14,
+        "jdv2_dynamic_relation": 6,
+        "jdv2_joint_energy": 15
+      },
+      "after_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "same_effective_input_references": [],
+      "weights_buffers_unchanged": true
+    },
+    {
+      "name": "R2",
+      "selection": "edge",
+      "objective": "expected_conditional_mc",
+      "amp": false,
+      "status": "PASSED",
+      "before_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "losses": {
+        "jdv2_pl_post": 3.044130325317383,
+        "jdv2_pl_prior": 3.0448522567749023,
+        "jdv2_relation_kl": 0.01414329931139946
+      },
+      "coefficients": {
+        "jdv2_pl_post": 0.5,
+        "jdv2_pl_prior": 0.5,
+        "jdv2_relation_kl": 0.1
+      },
+      "total": 3.045905590057373,
+      "loss_dtypes": {
+        "jdv2_pl_post": "torch.float32",
+        "jdv2_pl_prior": "torch.float32",
+        "jdv2_relation_kl": "torch.float32"
+      },
+      "gradient_families": {
+        "social_encoder": 15,
+        "relation_inference": 6,
+        "jdv2_future_teacher": 6,
+        "jdv2_unary": 14,
+        "jdv2_dynamic_relation": 6,
+        "jdv2_joint_energy": 15
+      },
+      "after_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "rng": {
+        "draws": 1,
+        "agent_draws": 12,
+        "success": 0,
+        "skip": 1,
+        "pending": false,
+        "state_sha256": "df380540764eafb9c56c7baba01689b13e3293f09b8989a8224e802cd9cf82ab",
+        "same_post_prior_ids": true,
+        "same_q_cpu_bridge_exact": true
+      },
+      "same_effective_input_references": [
+        {
+          "max_abs": 9.00625183319903e-8,
+          "max_relative": 2.9585630719684752e-8,
+          "reference_scale": 3.044130415379901,
+          "passed": true
+        },
+        {
+          "max_abs": 3.683079810024026e-7,
+          "max_relative": 1.2096088561727878e-7,
+          "reference_scale": 3.0448518884669213,
+          "passed": true
+        }
+      ],
+      "weights_buffers_unchanged": true
+    },
+    {
+      "name": "R3",
+      "selection": "edge",
+      "objective": "expected_conditional_mc",
+      "amp": true,
+      "status": "PASSED",
+      "before_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "losses": {
+        "jdv2_pl_post": 3.044140338897705,
+        "jdv2_pl_prior": 3.0448529720306396,
+        "jdv2_relation_kl": 0.014205045998096466
+      },
+      "coefficients": {
+        "jdv2_pl_post": 0.5,
+        "jdv2_pl_prior": 0.5,
+        "jdv2_relation_kl": 0.1
+      },
+      "total": 3.04591703414917,
+      "loss_dtypes": {
+        "jdv2_pl_post": "torch.float32",
+        "jdv2_pl_prior": "torch.float32",
+        "jdv2_relation_kl": "torch.float32"
+      },
+      "gradient_families": {
+        "social_encoder": 15,
+        "relation_inference": 6,
+        "jdv2_future_teacher": 6,
+        "jdv2_unary": 14,
+        "jdv2_dynamic_relation": 6,
+        "jdv2_joint_energy": 15
+      },
+      "after_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "rng": {
+        "draws": 1,
+        "agent_draws": 12,
+        "success": 0,
+        "skip": 1,
+        "pending": false,
+        "state_sha256": "df380540764eafb9c56c7baba01689b13e3293f09b8989a8224e802cd9cf82ab",
+        "same_post_prior_ids": true,
+        "same_q_cpu_bridge_exact": true
+      },
+      "same_effective_input_references": [
+        {
+          "max_abs": 2.4763206285527417e-7,
+          "max_relative": 8.134713102257979e-8,
+          "reference_scale": 3.0441400912656422,
+          "passed": true
+        },
+        {
+          "max_abs": 1.2051121967004974e-7,
+          "max_relative": 3.957866785250825e-8,
+          "reference_scale": 3.04485285151942,
+          "passed": true
+        }
+      ],
+      "weights_buffers_unchanged": true
+    },
+    {
+      "name": "R4",
+      "selection": "empty",
+      "objective": "expected_conditional_mc",
+      "amp": true,
+      "status": "PASSED",
+      "before_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "losses": {
+        "jdv2_pl_post": 3.0287842750549316,
+        "jdv2_pl_prior": 3.0287842750549316,
+        "jdv2_relation_kl": 0
+      },
+      "coefficients": {
+        "jdv2_pl_post": 0.5,
+        "jdv2_pl_prior": 0.5,
+        "jdv2_relation_kl": 0.1
+      },
+      "total": 3.0287842750549316,
+      "loss_dtypes": {
+        "jdv2_pl_post": "torch.float32",
+        "jdv2_pl_prior": "torch.float32",
+        "jdv2_relation_kl": "torch.float32"
+      },
+      "gradient_families": {
+        "social_encoder": 12,
+        "jdv2_unary": 14
+      },
+      "after_state_sha256": "025044aa75dbfa5366a34d65b0f7cc54c45c017e18aae9cbc216c9b8cf4f113c",
+      "rng": {
+        "draws": 1,
+        "agent_draws": 4,
+        "success": 0,
+        "skip": 1,
+        "pending": false,
+        "state_sha256": "05dc575b1cdc98a4d70e63e7353efd26fab5af5a53a00bbea2327f0d0ea7fbe9",
+        "same_post_prior_ids": true,
+        "same_q_cpu_bridge_exact": true
+      },
+      "same_effective_input_references": [
+        {
+          "max_abs": 9.95352369415059e-8,
+          "max_relative": 3.2863097741969246e-8,
+          "reference_scale": 3.0287843745901686,
+          "passed": true
+        },
+        {
+          "max_abs": 9.95352369415059e-8,
+          "max_relative": 3.2863097741969246e-8,
+          "reference_scale": 3.0287843745901686,
+          "passed": true
+        }
+      ],
+      "weights_buffers_unchanged": true
+    }
+  ],
+  "synthetic": [
+    {
+      "name": "asymmetric_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "asymmetric_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "singleton_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 0,
+            "max_relative": 0,
+            "reference_scale": 1.184051513671875,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 2.9802322387695312e-8,
+            "max_relative": 1.6283657403898128e-7,
+            "reference_scale": 0.2046908736228943,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.2158065221257175e-8,
+            "max_relative": 1.0268189311048091e-8,
+            "reference_scale": 1.1840515258299402,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.1886273909578193e-8,
+            "max_relative": 7.891392006819676e-8,
+            "reference_scale": 0.2046908557068458,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.2158065221257175e-8,
+            "max_relative": 1.0268189311048091e-8,
+            "reference_scale": 1.1840515258299402,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.1886273909578193e-8,
+            "max_relative": 7.891392006819676e-8,
+            "reference_scale": 0.2046908557068458,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.184051513671875,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 4,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "singleton_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 0,
+            "max_relative": 0,
+            "reference_scale": 1.184051513671875,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 2.9802322387695312e-8,
+            "max_relative": 1.6283657403898128e-7,
+            "reference_scale": 0.2046908736228943,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.2158065221257175e-8,
+            "max_relative": 1.0268189311048091e-8,
+            "reference_scale": 1.1840515258299402,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.1886273909578193e-8,
+            "max_relative": 7.891392006819676e-8,
+            "reference_scale": 0.2046908557068458,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.2158065221257175e-8,
+            "max_relative": 1.0268189311048091e-8,
+            "reference_scale": 1.1840515258299402,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.1886273909578193e-8,
+            "max_relative": 7.891392006819676e-8,
+            "reference_scale": 0.2046908557068458,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.184051513671875,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 4,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "empty_unequal_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 0,
+            "max_relative": 0,
+            "reference_scale": 1.20192289352417,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 0.0000016398792392928184,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 3.6690796179073004e-8,
+            "max_relative": 3.0526748010883e-8,
+            "reference_scale": 1.2019228568333737,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 9.980217263727553e-9,
+            "max_relative": 0.0000016439965359805225,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 3.6690796179073004e-8,
+            "max_relative": 3.0526748010883e-8,
+            "reference_scale": 1.2019228568333737,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 9.980217263727553e-9,
+            "max_relative": 0.0000016439965359805225,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.20192289352417,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "empty_unequal_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 0,
+            "max_relative": 0,
+            "reference_scale": 1.20192289352417,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 0.0000016398792392928184,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 3.6690796179073004e-8,
+            "max_relative": 3.0526748010883e-8,
+            "reference_scale": 1.2019228568333737,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 9.980217263727553e-9,
+            "max_relative": 0.0000016439965359805225,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 3.6690796179073004e-8,
+            "max_relative": 3.0526748010883e-8,
+            "reference_scale": 1.2019228568333737,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 9.980217263727553e-9,
+            "max_relative": 0.0000016439965359805225,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.20192289352417,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "masked_permuted_noncontiguous_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.740845772312211e-8,
+            "reference_scale": 1.2238084077835083,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 4.925397467262114e-7,
+            "reference_scale": 0.10234542191028595,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 7.450580596923828e-9,
+            "max_relative": 8.46789114792063e-7,
+            "reference_scale": 0.04722652956843376,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 7.450580596923828e-9,
+            "max_relative": 8.46789114792063e-7,
+            "reference_scale": 0.04722652956843376,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 2.7059328333578492e-8,
+            "max_relative": 2.211075371273327e-8,
+            "reference_scale": 1.2238084999334695,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.0312636092302263e-8,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.375339770519183e-9,
+            "max_relative": 0.0000010619892480731232,
+            "reference_scale": 0.04722653399073063,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.375339770519183e-9,
+            "max_relative": 0.0000010619892480731232,
+            "reference_scale": 0.04722653399073063,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 2.7059328333578492e-8,
+            "max_relative": 2.211075371273327e-8,
+            "reference_scale": 1.2238084999334695,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.0312636092302263e-8,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.375339770519183e-9,
+            "max_relative": 0.0000010619892480731232,
+            "reference_scale": 0.04722653399073063,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.2238085269927979,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "masked_permuted_noncontiguous_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.740845772312211e-8,
+            "reference_scale": 1.2238084077835083,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 4.925397467262114e-7,
+            "reference_scale": 0.10234542191028595,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 7.450580596923828e-9,
+            "max_relative": 8.46789114792063e-7,
+            "reference_scale": 0.04722652956843376,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 7.450580596923828e-9,
+            "max_relative": 8.46789114792063e-7,
+            "reference_scale": 0.04722652956843376,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 2.7059328333578492e-8,
+            "max_relative": 2.211075371273327e-8,
+            "reference_scale": 1.2238084999334695,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.0312636092302263e-8,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.375339770519183e-9,
+            "max_relative": 0.0000010619892480731232,
+            "reference_scale": 0.04722653399073063,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.375339770519183e-9,
+            "max_relative": 0.0000010619892480731232,
+            "reference_scale": 0.04722653399073063,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 2.7059328333578492e-8,
+            "max_relative": 2.211075371273327e-8,
+            "reference_scale": 1.2238084999334695,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.0312636092302263e-8,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.375339770519183e-9,
+            "max_relative": 0.0000010619892480731232,
+            "reference_scale": 0.04722653399073063,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.2238085269927979,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "mixture_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 0,
+            "max_relative": 0,
+            "reference_scale": 1.1993136405944824,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 0.0000016324158612054738,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "deploy": {
+            "max_abs": 1.0986695997416973e-9,
+            "max_relative": 0.00030425616123483476,
+            "reference_scale": 0.00026532207266427577,
+            "passed": true
+          },
+          "teacher": {
+            "max_abs": 5.311449058353901e-10,
+            "max_relative": 0.0000701514810555892,
+            "reference_scale": 0.00017319401376880705,
+            "passed": true
+          },
+          "left": {
+            "max_abs": 3.4924596548080444e-10,
+            "max_relative": 0.000006580580706335604,
+            "reference_scale": 0.0014328649267554283,
+            "passed": true
+          },
+          "right": {
+            "max_abs": 4.656612873077393e-10,
+            "max_relative": 0.0014289722867323784,
+            "reference_scale": 0.003022016491740942,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 2.7939677238464355e-9,
+            "max_relative": 0.000011881682208567088,
+            "reference_scale": 0.015979666262865067,
+            "passed": true
+          },
+          "C1": {
+            "max_abs": 5.122274160385132e-9,
+            "max_relative": 0.00002831614200287795,
+            "reference_scale": 0.015997983515262604,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 5.314812767664989e-8,
+            "max_relative": 4.4315451373522165e-8,
+            "reference_scale": 1.19931369374261,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 7.302415432758336e-9,
+            "max_relative": 0.0000015149347938038817,
+            "reference_scale": 0.10234542785342292,
+            "passed": true
+          },
+          "deploy": {
+            "max_abs": 5.628214511400865e-10,
+            "max_relative": 0.00011962873853319853,
+            "reference_scale": 0.0002653221697635881,
+            "passed": true
+          },
+          "teacher": {
+            "max_abs": 3.7526171068941096e-10,
+            "max_relative": 0.00003485591275801295,
+            "reference_scale": 0.00017319415663324053,
+            "passed": true
+          },
+          "left": {
+            "max_abs": 3.7876359942337276e-10,
+            "max_relative": 0.000005665927093637003,
+            "reference_scale": 0.0014328648992791098,
+            "passed": true
+          },
+          "right": {
+            "max_abs": 3.351498306853641e-10,
+            "max_relative": 0.0022946665379675922,
+            "reference_scale": 0.0030220165582696577,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 2.785483655363963e-9,
+            "max_relative": 0.000008375536152298599,
+            "reference_scale": 0.015979666454747403,
+            "passed": true
+          },
+          "C1": {
+            "max_abs": 3.981937429092808e-9,
+            "max_relative": 0.000022012174941559766,
+            "reference_scale": 0.015997984096683755,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 5.525698787423039e-8,
+            "max_relative": 4.607384045172592e-8,
+            "reference_scale": 1.1993136958514703,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 5.989174267639896e-9,
+            "max_relative": 0.000002417718171579362,
+            "reference_scale": 0.10234542785342292,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 1.933118564528824e-9,
+            "max_relative": 0.000007936594033899327,
+            "reference_scale": 0.01597966626627073,
+            "passed": true
+          },
+          "C1": {
+            "max_abs": 4.733957987765325e-9,
+            "max_relative": 0.000026169458070911558,
+            "reference_scale": 0.0159979849947464,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.1993136405944824,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "mixture_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 0,
+            "max_relative": 0,
+            "reference_scale": 1.1993136405944824,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 0.0000016324158612054738,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "deploy": {
+            "max_abs": 1.0986695997416973e-9,
+            "max_relative": 0.00030425616123483476,
+            "reference_scale": 0.00026532207266427577,
+            "passed": true
+          },
+          "teacher": {
+            "max_abs": 5.311449058353901e-10,
+            "max_relative": 0.0000701514810555892,
+            "reference_scale": 0.00017319401376880705,
+            "passed": true
+          },
+          "left": {
+            "max_abs": 3.4924596548080444e-10,
+            "max_relative": 0.000006580580706335604,
+            "reference_scale": 0.0014328649267554283,
+            "passed": true
+          },
+          "right": {
+            "max_abs": 4.656612873077393e-10,
+            "max_relative": 0.0014289722867323784,
+            "reference_scale": 0.003022016491740942,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 2.7939677238464355e-9,
+            "max_relative": 0.000011881682208567088,
+            "reference_scale": 0.015979666262865067,
+            "passed": true
+          },
+          "C1": {
+            "max_abs": 5.122274160385132e-9,
+            "max_relative": 0.00002831614200287795,
+            "reference_scale": 0.015997983515262604,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 5.314812767664989e-8,
+            "max_relative": 4.4315451373522165e-8,
+            "reference_scale": 1.19931369374261,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 7.302415432758336e-9,
+            "max_relative": 0.0000015149347938038817,
+            "reference_scale": 0.10234542785342292,
+            "passed": true
+          },
+          "deploy": {
+            "max_abs": 5.628214511400865e-10,
+            "max_relative": 0.00011962873853319853,
+            "reference_scale": 0.0002653221697635881,
+            "passed": true
+          },
+          "teacher": {
+            "max_abs": 3.7526171068941096e-10,
+            "max_relative": 0.00003485591275801295,
+            "reference_scale": 0.00017319415663324053,
+            "passed": true
+          },
+          "left": {
+            "max_abs": 3.7876359942337276e-10,
+            "max_relative": 0.000005665927093637003,
+            "reference_scale": 0.0014328648992791098,
+            "passed": true
+          },
+          "right": {
+            "max_abs": 3.351498306853641e-10,
+            "max_relative": 0.0022946665379675922,
+            "reference_scale": 0.0030220165582696577,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 2.785483655363963e-9,
+            "max_relative": 0.000008375536152298599,
+            "reference_scale": 0.015979666454747403,
+            "passed": true
+          },
+          "C1": {
+            "max_abs": 3.981937429092808e-9,
+            "max_relative": 0.000022012174941559766,
+            "reference_scale": 0.015997984096683755,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 5.525698787423039e-8,
+            "max_relative": 4.607384045172592e-8,
+            "reference_scale": 1.1993136958514703,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 5.989174267639896e-9,
+            "max_relative": 0.000002417718171579362,
+            "reference_scale": 0.10234542785342292,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 1.933118564528824e-9,
+            "max_relative": 0.000007936594033899327,
+            "reference_scale": 0.01597966626627073,
+            "passed": true
+          },
+          "C1": {
+            "max_abs": 4.733957987765325e-9,
+            "max_relative": 0.000026169458070911558,
+            "reference_scale": 0.0159979849947464,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.1993136405944824,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "repeat_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "repeat_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "toy_update_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "toy": {
+        "skipped": false,
+        "changed": true,
+        "progress": 0.1
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 1,
+      "pending": false
+    },
+    {
+      "name": "toy_update_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "toy": {
+        "skipped": false,
+        "changed": true,
+        "progress": 0.1
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 1,
+      "pending": false
+    },
+    {
+      "name": "toy_skip_fp32",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "toy": {
+        "skipped": true,
+        "changed": false,
+        "progress": 0
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    },
+    {
+      "name": "toy_skip_bf16",
+      "status": "PASSED",
+      "comparisons": {
+        "cpu_fp32": {
+          "value": {
+            "max_abs": 1.1920928955078125e-7,
+            "max_relative": 9.566086158294237e-8,
+            "reference_scale": 1.2461657524108887,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 1.4901161193847656e-8,
+            "max_relative": 2.619133011098489e-7,
+            "reference_scale": 0.10234543681144714,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 3.725290298461914e-9,
+            "max_relative": 0.000002282452335262576,
+            "reference_scale": 0.04366804659366608,
+            "passed": true
+          }
+        },
+        "cpu_fp64_loop": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "c": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        },
+        "cpu_fp64_identical_effective_inputs": {
+          "value": {
+            "max_abs": 1.8297256154653496e-8,
+            "max_relative": 1.4682844668329268e-8,
+            "reference_scale": 1.246165614904343,
+            "passed": true
+          },
+          "u": {
+            "max_abs": 6.587345793840349e-9,
+            "max_relative": 4.2618259164090817e-7,
+            "reference_scale": 0.1023454278534229,
+            "passed": true
+          },
+          "C0": {
+            "max_abs": 5.43829700716536e-9,
+            "max_relative": 0.0000011261603756151603,
+            "reference_scale": 0.043668052031963084,
+            "passed": true
+          }
+        }
+      },
+      "toy": {
+        "skipped": true,
+        "changed": false,
+        "progress": 0
+      },
+      "value": 1.2461656332015991,
+      "rng_ids_exact": true,
+      "rng_state_exact": true,
+      "global_cpu_cuda_eval_rng_unchanged": true,
+      "draws": 1,
+      "agent_draws": 20,
+      "successful_updates": 0,
+      "pending": false
+    }
+  ],
+  "illegal": [
+    {
+      "name": "cuda_float64",
+      "status": "REJECTED_EXPECTED",
+      "error": "CUDA MC effective inputs must be FP32"
+    },
+    {
+      "name": "cuda_float16",
+      "status": "REJECTED_EXPECTED",
+      "error": "CUDA MC effective inputs must be FP32"
+    },
+    {
+      "name": "bf16_cost",
+      "status": "REJECTED_EXPECTED",
+      "error": "chunk cost and unary_score must share dtype"
+    },
+    {
+      "name": "cpu_ids",
+      "status": "REJECTED_EXPECTED",
+      "error": "neighbor_ids must be dense strided on the same backend device"
+    },
+    {
+      "name": "nonfinite_unary",
+      "status": "REJECTED_EXPECTED",
+      "error": "MC u/q must be finite; q nonnegative and zero off support"
+    },
+    {
+      "name": "trainable_q",
+      "status": "REJECTED_EXPECTED",
+      "error": "endpoint q must be fixed, not trainable"
+    },
+    {
+      "name": "cross_scene",
+      "status": "REJECTED_EXPECTED",
+      "error": "MC edges must be unique canonical within-scene pairs"
+    },
+    {
+      "name": "empty_mask",
+      "status": "REJECTED_EXPECTED",
+      "error": "invalid MC candidate support"
+    }
+  ],
+  "postcheck": {
+    "real_FP32_vs_BF16_effective_inputs": [
+      {
+        "u": {
+          "exact": false,
+          "max_abs": 0.02557063102722168
+        },
+        "q": {
+          "exact": true,
+          "max_abs": 0
+        },
+        "C": {
+          "exact": false,
+          "max_abs": 0.014153480529785156
+        },
+        "z": {
+          "exact": true,
+          "max_abs": 0
+        }
+      },
+      {
+        "u": {
+          "exact": false,
+          "max_abs": 0.02557063102722168
+        },
+        "q": {
+          "exact": true,
+          "max_abs": 0
+        },
+        "C": {
+          "exact": false,
+          "max_abs": 0.01458597183227539
+        },
+        "z": {
+          "exact": true,
+          "max_abs": 0
+        }
+      }
+    ],
+    "repeats": {
+      "fp32": {
+        "value": {
+          "exact": true,
+          "max_abs": 0
+        },
+        "grads": {
+          "u": {
+            "exact": true,
+            "max_abs": 0
+          },
+          "c": {
+            "exact": true,
+            "max_abs": 0
+          }
+        }
+      },
+      "bf16": {
+        "value": {
+          "exact": true,
+          "max_abs": 0
+        },
+        "grads": {
+          "u": {
+            "exact": true,
+            "max_abs": 0
+          },
+          "c": {
+            "exact": true,
+            "max_abs": 0
+          }
+        }
+      }
+    },
+    "synthetic_max_abs": {
+      "cpu_fp32": 1.1920928955078125e-7,
+      "cpu_fp64_loop": 5.314812767664989e-8,
+      "cpu_fp64_identical_effective_inputs": 5.525698787423039e-8
+    },
+    "real_reference_max_abs": 3.683079810024026e-7,
+    "real_hashes_all_equal": true,
+    "cuda_initialized": false
+  },
+  "artifact_reads": {
+    "preparation": {
+      "source_batches": 4112,
+      "candidate_cache": 22,
+      "teacher_cache": 2,
+      "checkpoint_deserializations": 0,
+      "exploratory": {
+        "train_deployment_000000": 1,
+        "train_batch_0001": 1
+      }
+    },
+    "gpu_process_cpu_input_preparation": {
+      "source_batches": 2,
+      "candidate_cache": 2,
+      "teacher_cache": 2
+    },
+    "canonical_checkpoint_deserializations": 1,
+    "note": "Whole manifest validation also hashes source provenance files without opening new final-test tensor labels. Native audit .pt rereads are evidence reads, not real checkpoint/cache reads."
+  },
+  "evidence_limits": [
+    "Synthetic mixture references reconstruct energy algebra from identical raw FP32 inputs; CPU vs GPU effective C is not claimed bitwise identical. The field cpu_fp64_identical_effective_inputs uses CPU-built effective C in these two cases; same-actual-C real R2/R3 references are captured after CUDA backward. Other 14 synthetic CE cases have fixed identical effective u/q/C inputs.",
+    "Module pre-hooks count native Python module calls, not kernel operations. Method calls that bypass Module.__call__ are represented by submodule hooks; no profiler or internal operator observer.",
+    "CPU stdout per-phase event middle truncated; complete pytest success summary and tail counters retained; no rerun merely to recapture.",
+    "Real R1 is runtime/gradient control, not old-commit CUDA bitwise parity.",
+    "Fresh real owners use common seed and actual same-q parity is verified; this is not full training resume.",
+    "Frozen dropout policies unchanged; GPU observer neutrality not certified."
+  ],
+  "open": [
+    "JADE/JFDE and generalization",
+    "learned nonseparable interaction causal contribution and novelty",
+    "complete data/worker/global RNG/CUDA training resume",
+    "historical 29 IDs causal chain and observer neutrality",
+    "full sampler/diffusion deployment",
+    "clean split/base provenance"
+  ],
+  "defaults": {
+    "goal_objective": "mean_energy",
+    "mc_backend_if_missing": "cpu_v1",
+    "new_parameters": 0,
+    "new_buffers": 0,
+    "production_yaml_modified": false,
+    "training_authorized": false,
+    "sdd_intervention": false,
+    "skills_apps_changed": false
+  }
+}

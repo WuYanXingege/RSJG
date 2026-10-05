@@ -187,6 +187,8 @@ def get_parser():
     parser.add_argument('--jdv2_goal_objective', default='mean_energy',
                         choices=['mean_energy', 'expected_conditional_mc'])
     parser.add_argument('--jdv2_neighbor_draws', default=4, type=int)
+    parser.add_argument('--jdv2_mc_backend', default='cpu_v1',
+                        choices=['cpu_v1', 'cuda_fp32_bf16_v1'])
     parser.add_argument('--jdv2_neighbor_seed', default=None, type=int)
     parser.add_argument(
         '--jdv2_latent_objective',
@@ -1091,6 +1093,7 @@ def check_and_add_additional_args(args):
         args.device = 'cpu'
         args.use_cuda = False
     # dataset and test_set checks
+    validate_mode(args)  # Explicit CUDA backend must never silently fall back to CPU.
     if args.dataset == 'eth5':
         assert args.test_set in ['eth', 'hotel', 'univ', 'zara1', 'zara2']
     else:

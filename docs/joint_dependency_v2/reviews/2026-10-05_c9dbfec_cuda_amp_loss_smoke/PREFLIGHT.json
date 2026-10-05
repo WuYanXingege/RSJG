@@ -1,0 +1,904 @@
+{
+  "status": "READY_CPU_PROVENANCE",
+  "checkpoint": {
+    "path": "outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt",
+    "sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb"
+  },
+  "config": {
+    "path": "configs/joint_dependency_v2/jdv2_stage_a_frozen_eth.yaml",
+    "sha256": "bf5d4a692b0a9e841de8523f2780013147ec3e9bcb78877cc3c352571bc63e62"
+  },
+  "cache_manifest_sha256": "eadae55391b45224a3d7920e6128764db9a56298ffe70d723030ec00193786dd",
+  "validated_manifest": {
+    "K": 21,
+    "candidate_order": "generate_goal_candidates-v1",
+    "completed_splits": [
+      "test",
+      "train",
+      "valid"
+    ],
+    "contains_future_supervision": true,
+    "coordinate_units": {
+      "position": "world_m",
+      "velocity": "world_m_per_s"
+    },
+    "creation_time": "2026-09-17T09:56:22.859095+00:00",
+    "dataset_hash": "cfe8cabd980d32da8071b0be573967c413a5e486418ecfb950ce4fad8f8ef0c2",
+    "deterministic_seed": 2035,
+    "dt": 0.4,
+    "dtype": "float32",
+    "goal_checkpoint_hash": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "graph_config": {
+      "adaptive": false,
+      "radius": 6,
+      "ttc_threshold": 8,
+      "type": "radius_ttc"
+    },
+    "preprocess_config": {
+      "dataset": "eth5",
+      "down_factor": 8,
+      "obs_length": 8,
+      "pred_length": 12,
+      "skip_ts_window": 1,
+      "test_set": "eth"
+    },
+    "schema_version": "jdv2-cache-v1",
+    "source_commit": "4b75110a571e6fd200938ff951a3a218ca4eb1e8",
+    "split_hash": {
+      "test": "1e6957be09ffc7e2dc4230e1a13d1750f9019769f55d2d16538d6975348c11d8",
+      "train": "bbaf9d04b1dce61c7ddf6ac5b60cdf3121217f58753b16161bf3c9aabf82e64b",
+      "valid": "cdc91af22ef46355d7edf0e807e5bafb5344ed9f2080bcbd7388ce6d4e6c69d7"
+    },
+    "manifest_hash": "2d525a0f441a148dc6ff25c8f14eae3bd10d45b764cac17a25553ab76b93b949"
+  },
+  "selection": {
+    "edge": {
+      "source": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/data/eth5/eth/train/biwi_hotel.txt",
+      "frame": 0,
+      "filename": "train_batch_0241.pkl",
+      "index": 240,
+      "N": 3,
+      "E": 3,
+      "source_batch_sha256": "25c787e64c1ba9e68351affd1d73c415340fbeffa922c24ddc3877b53df0cc7f",
+      "cache_sha256": "75ba96655b6a35e019a75d232eebc1062c8b8c495a4d1b231ee9ff67b89fd2d5",
+      "teacher_sha256": "59acd9e6fbc90fbcc6fdc15c6cf8ffe4528389f8b6e91fd9d9e59000605c13c7",
+      "prepared": {
+        "abs_pixel_coord": {
+          "shape": [
+            20,
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            6,
+            2,
+            1
+          ],
+          "sha256": "c2b67ae28556feedd8424a6bd93368448cb0deefcaabfa150e8a9ddc480f4d6d"
+        },
+        "seq_list": {
+          "shape": [
+            20,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "bbed51f708d626993f6d4fb055e0af05327c653d7953eb0b81d6968eb6304aea"
+        },
+        "scene_index": {
+          "shape": [
+            3
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0"
+        },
+        "scene_ptr": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "96fb5e4a2704b410bbf097c41e40ff8118ef0bc819ccf4344f31f694d12d536a"
+        },
+        "frame_ids": {
+          "shape": [
+            20,
+            3
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "db5f5ee7aca67632ab6d5f6447819fbcd2079831f71ac99b07ecee14d14738d0"
+        },
+        "batch_format_version": {
+          "shape": [],
+          "dtype": "torch.int64",
+          "stride": [],
+          "sha256": "d86e8112f3c4c4442126f8e9f44f16867da487f29052bf91b810457db34209a4"
+        },
+        "tensor_image": {
+          "shape": [
+            6,
+            72,
+            90
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            6480,
+            90,
+            1
+          ],
+          "sha256": "cc07347ec0dbc0cd553d83bfaf723d76af4b98c4916609a93275e8a71658d843"
+        },
+        "input_traj_maps": {
+          "shape": [
+            3,
+            20,
+            72,
+            90
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            129600,
+            6480,
+            90,
+            1
+          ],
+          "sha256": "755bb39df300f2a75cef1256c06c7fd0296cc74e4840578490ff35a7a9328905"
+        },
+        "tensor_map": {
+          "shape": [
+            3,
+            72,
+            90
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            6480,
+            90,
+            1
+          ],
+          "sha256": "3bf59c03771cc81e394571777d74472bbc57771eb096b5f8dbf052203dafb030"
+        },
+        "jdv2_cache": {
+          "cache_id": "list",
+          "scene_index": {
+            "shape": [
+              3
+            ],
+            "dtype": "torch.int64",
+            "stride": [
+              1
+            ],
+            "sha256": "9d908ecfb6b256def8b49a7c504e6c889c4b0e41fe6ce3e01863dd7b61a20aa0"
+          },
+          "scene_ptr": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.int64",
+            "stride": [
+              1
+            ],
+            "sha256": "96fb5e4a2704b410bbf097c41e40ff8118ef0bc819ccf4344f31f694d12d536a"
+          },
+          "frame_ids": {
+            "shape": [
+              20,
+              3
+            ],
+            "dtype": "torch.int64",
+            "stride": [
+              3,
+              1
+            ],
+            "sha256": "db5f5ee7aca67632ab6d5f6447819fbcd2079831f71ac99b07ecee14d14738d0"
+          },
+          "edge_index": {
+            "shape": [
+              2,
+              3
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              3,
+              1
+            ],
+            "sha256": "7e693c6bfdcc23e481fe47b7058042a1913ab3e0c2a173ad475f8359b68dcd86"
+          },
+          "edge_feat": {
+            "shape": [
+              3,
+              14
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              14,
+              1
+            ],
+            "sha256": "e5af079323ce202c227b8aa40eb16476f10d52c102392c27f55a23c024cfc104"
+          },
+          "edge_weight": {
+            "shape": [
+              3
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              1
+            ],
+            "sha256": "8a31a40ecac0ceb4d87b30bd156ca7a547e8e33dc071454b765fbc777d1c34a1"
+          },
+          "goal_candidates_map": {
+            "shape": [
+              3,
+              21,
+              2
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              42,
+              2,
+              1
+            ],
+            "sha256": "b19247472ada2a490dc2f3b2ab2d21e8a2c76c72341ad6b0b59714a3a06ef6c9"
+          },
+          "goal_candidates_world": {
+            "shape": [
+              3,
+              21,
+              2
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              42,
+              2,
+              1
+            ],
+            "sha256": "53aa04985eb0ed8128d01b83906d1d4c6bbe2e899f577a0abcc2f5c4c851124e"
+          },
+          "candidate_log_prior": {
+            "shape": [
+              3,
+              21
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              21,
+              1
+            ],
+            "sha256": "8e52988512896d3ae3e5aa6f5b8692ff24c87ce65ac4b8b3bac0890d95b9d214"
+          },
+          "contains_future_supervision": {
+            "shape": [],
+            "dtype": "torch.float32",
+            "stride": [],
+            "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+          }
+        },
+        "jdv2_teacher_cache": {
+          "cache_id": "list",
+          "future_pair_descriptor": {
+            "shape": [
+              3,
+              6
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              6,
+              1
+            ],
+            "sha256": "796eb891f0159371087dc07288d4e9808257055b3e5cf84f4b42f1588c379f64"
+          },
+          "contains_future_supervision": {
+            "shape": [],
+            "dtype": "torch.float32",
+            "stride": [],
+            "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+          }
+        },
+        "x_augmented": {
+          "shape": [
+            20,
+            3,
+            8
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            24,
+            8,
+            1
+          ],
+          "sha256": "7aa35d7493d1d94021c2c5a7489aebedea6dbfe72e0f17b6d45fe29c13a4d632"
+        },
+        "world_coord": {
+          "shape": [
+            20,
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            1,
+            40,
+            20
+          ],
+          "sha256": "ef5af2e8212c03d4796d320d548543199e0c56178fa5a2fb09e008e4f30d0da9"
+        },
+        "obs_traj_world": {
+          "shape": [
+            3,
+            8,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            16,
+            2,
+            1
+          ],
+          "sha256": "78a820bb0ef6b5b5662c17ef511bfbc93c5d2f1cb6a6a30bf9ccb47416453b5c"
+        }
+      },
+      "sequence": {
+        "shape": [
+          20,
+          3
+        ],
+        "dtype": "torch.float32",
+        "stride": [
+          3,
+          1
+        ],
+        "sha256": "bbed51f708d626993f6d4fb055e0af05327c653d7953eb0b81d6968eb6304aea"
+      }
+    },
+    "empty": {
+      "source": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/data/eth5/eth/train/biwi_hotel.txt",
+      "frame": 620,
+      "filename": "train_batch_0176.pkl",
+      "index": 175,
+      "N": 1,
+      "E": 0,
+      "source_batch_sha256": "71dbb49a1bb1de38923d9baaadc090be9251dad5b989efe49269a3a5d547621b",
+      "cache_sha256": "62e5998099b42c9efbdc8e06b5399294b50378e085069f59ccdef96e919f6e4c",
+      "teacher_sha256": "783aa53c06b86c15a51bb9c88859feae440e82664fd1a2c95754de3ca3daf608",
+      "prepared": {
+        "abs_pixel_coord": {
+          "shape": [
+            20,
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            2,
+            2,
+            1
+          ],
+          "sha256": "858268e0f0d2d7f5bdec1db9dec774c8e95c9d2632bf7b40cdf96c67a6ec6457"
+        },
+        "seq_list": {
+          "shape": [
+            20,
+            1
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            1,
+            1
+          ],
+          "sha256": "822d06342bcaebfe6cffcbf978ac916b9b7e7fc9e7b788b5e9d74af71c2e5eef"
+        },
+        "scene_index": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+        },
+        "scene_ptr": {
+          "shape": [
+            2
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "9d34149fbd1fe777eb238799054c8cbfbce372255f219f8740838def9bfd02db"
+        },
+        "frame_ids": {
+          "shape": [
+            20,
+            1
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1,
+            1
+          ],
+          "sha256": "9e223c424186298511300d4ba162259d0335a6feea7f0980e7624e9f7bfdf2cf"
+        },
+        "batch_format_version": {
+          "shape": [],
+          "dtype": "torch.int64",
+          "stride": [],
+          "sha256": "d86e8112f3c4c4442126f8e9f44f16867da487f29052bf91b810457db34209a4"
+        },
+        "tensor_image": {
+          "shape": [
+            6,
+            72,
+            90
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            6480,
+            90,
+            1
+          ],
+          "sha256": "cc07347ec0dbc0cd553d83bfaf723d76af4b98c4916609a93275e8a71658d843"
+        },
+        "input_traj_maps": {
+          "shape": [
+            1,
+            20,
+            72,
+            90
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            129600,
+            6480,
+            90,
+            1
+          ],
+          "sha256": "a6d672bc1f5836953558408e03e914b0914780bccc23004c0a43b0781aff24d5"
+        },
+        "tensor_map": {
+          "shape": [
+            3,
+            72,
+            90
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            6480,
+            90,
+            1
+          ],
+          "sha256": "3bf59c03771cc81e394571777d74472bbc57771eb096b5f8dbf052203dafb030"
+        },
+        "jdv2_cache": {
+          "cache_id": "list",
+          "scene_index": {
+            "shape": [
+              1
+            ],
+            "dtype": "torch.int64",
+            "stride": [
+              1
+            ],
+            "sha256": "af5570f5a1810b7af78caf4bc70a660f0df51e42baf91d4de5b2328de0e83dfc"
+          },
+          "scene_ptr": {
+            "shape": [
+              2
+            ],
+            "dtype": "torch.int64",
+            "stride": [
+              1
+            ],
+            "sha256": "9d34149fbd1fe777eb238799054c8cbfbce372255f219f8740838def9bfd02db"
+          },
+          "frame_ids": {
+            "shape": [
+              20,
+              1
+            ],
+            "dtype": "torch.int64",
+            "stride": [
+              1,
+              1
+            ],
+            "sha256": "9e223c424186298511300d4ba162259d0335a6feea7f0980e7624e9f7bfdf2cf"
+          },
+          "edge_index": {
+            "shape": [
+              2,
+              0
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              1,
+              1
+            ],
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "edge_feat": {
+            "shape": [
+              0,
+              14
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              14,
+              1
+            ],
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "edge_weight": {
+            "shape": [
+              0
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              1
+            ],
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "goal_candidates_map": {
+            "shape": [
+              1,
+              21,
+              2
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              42,
+              2,
+              1
+            ],
+            "sha256": "41af920be0295e36bdcc2a46424203871cd1bc52b3a37de4021bd4fbd3e81c8d"
+          },
+          "goal_candidates_world": {
+            "shape": [
+              1,
+              21,
+              2
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              42,
+              2,
+              1
+            ],
+            "sha256": "6cdca4fd011919949e09eb8cbd4e508ec8bac009e542958484cf46f26b77e87c"
+          },
+          "candidate_log_prior": {
+            "shape": [
+              1,
+              21
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              21,
+              1
+            ],
+            "sha256": "ab1666dac53ba264f3062ffdc8399ee0c85a8d7e6699034f82343f1abd37660a"
+          },
+          "contains_future_supervision": {
+            "shape": [],
+            "dtype": "torch.float32",
+            "stride": [],
+            "sha256": "df3f619804a92fdb4057192dc43dd748ea778adc52bc498ce80524c014b81119"
+          }
+        },
+        "jdv2_teacher_cache": {
+          "cache_id": "list",
+          "future_pair_descriptor": {
+            "shape": [
+              0,
+              6
+            ],
+            "dtype": "torch.float32",
+            "stride": [
+              6,
+              1
+            ],
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "contains_future_supervision": {
+            "shape": [],
+            "dtype": "torch.float32",
+            "stride": [],
+            "sha256": "e00e5eb9444182f352323374ef4e08ebcb784725fdd4fd612d7730540b3e0c8c"
+          }
+        },
+        "x_augmented": {
+          "shape": [
+            20,
+            1,
+            8
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            8,
+            8,
+            1
+          ],
+          "sha256": "86d71fa086ab14a7fee4ce1bd39487ca6ad761547b871ec1759446f4acfc47c8"
+        },
+        "world_coord": {
+          "shape": [
+            20,
+            1,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            1,
+            40,
+            20
+          ],
+          "sha256": "05fbed0761873fe49774db092388c91f9bcbf6b39cb63693880510863285aaa9"
+        },
+        "obs_traj_world": {
+          "shape": [
+            1,
+            8,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            16,
+            2,
+            1
+          ],
+          "sha256": "f5d66e206665a19358d50700fe8affc8450f080f29a893f2ff4eb74f9f15849a"
+        }
+      },
+      "sequence": {
+        "shape": [
+          20,
+          1
+        ],
+        "dtype": "torch.float32",
+        "stride": [
+          1,
+          1
+        ],
+        "sha256": "822d06342bcaebfe6cffcbf978ac916b9b7e7fc9e7b788b5e9d74af71c2e5eef"
+      }
+    }
+  },
+  "selection_rule": "sorted (source absolute path, first frame, physical filename); first N<=8 E<=32 of each type",
+  "fallback_used": false,
+  "source_batch_deserializations": 4112,
+  "candidate_cache_deserializations": 22,
+  "teacher_cache_deserializations": 2,
+  "checkpoint_deserializations": 0,
+  "checkpoint_hash_reads": 1,
+  "exploratory_reads_before_script": {
+    "train_deployment_000000": 1,
+    "train_batch_0001": 1
+  },
+  "resolved_cpu_args": {
+    "dataset": "eth5",
+    "test_set": "eth",
+    "run_name": "jdv2_stage_a_frozen_eth",
+    "skip_ts_window": 1,
+    "down_factor": 8,
+    "phase": "train",
+    "load_checkpoint": null,
+    "num_epochs": 300,
+    "batch_size": 64,
+    "learning_rate": 0.0001,
+    "optimizer": "Adam",
+    "scheduler": "ExponentialLR",
+    "device": "cpu",
+    "num_workers": 0,
+    "clip": 1,
+    "data_augmentation": false,
+    "save_every": 10,
+    "batch_cache_root": "outputs/joint_dependency_v2/cache/source_batches",
+    "compress_batch_cache": false,
+    "start_validation": 5,
+    "validate_every": 20,
+    "early_stopping_patience": 0,
+    "shuffle_train_batches": true,
+    "shuffle_test_batches": false,
+    "num_samples": 20,
+    "use_ttst": true,
+    "e_dim": 256,
+    "ddpm_step": 100,
+    "ddim_step": 20,
+    "trunk_stage_step": 30,
+    "goal_model_type": "joint_dependency_v2",
+    "use_scene_latent": false,
+    "use_dynamic_relation": true,
+    "use_joint_energy": true,
+    "use_dependency_corrector": true,
+    "jdv2_active": true,
+    "jdv2_scene_modes": 4,
+    "jdv2_relation_modes": 4,
+    "jdv2_energy_rank": 8,
+    "jdv2_edge_chunk_size": 256,
+    "jdv2_minimum_active_mode": false,
+    "jdv2_cache_root": "outputs/joint_dependency_v2/cache/eth_full_stage_a",
+    "jdv2_cache_schema": "jdv2-cache-v1",
+    "jdv2_source_checkpoint": "../GDTS/output/eth/saved_models/best_model.pt",
+    "jdv2_cache_manifest_hash": "2d525a0f441a148dc6ff25c8f14eae3bd10d45b764cac17a25553ab76b93b949",
+    "jdv2_source_checkpoint_hash": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "stage_a_parent_checkpoint_sha256": null,
+    "stage_a_freeze_manifest_sha256": null,
+    "stage_a_freeze_manifest_path": null,
+    "cross_dataset_protocol_target": null,
+    "stage_a_freeze_source_commit": null,
+    "stage_b_architecture_version": null,
+    "jdv2_residual_projection": "none",
+    "jdv2_cache_source_commit": "4b75110a571e6fd200938ff951a3a218ca4eb1e8",
+    "jdv2_stage_progress": 0,
+    "jdv2_goal_objective": "mean_energy",
+    "jdv2_neighbor_draws": 4,
+    "jdv2_mc_backend": "cpu_v1",
+    "jdv2_neighbor_seed": null,
+    "jdv2_latent_objective": "strict_no_z",
+    "jdv2_refinement_policy": "exact_lexicographic_persistent_tie",
+    "jdv2_early_collapse_gate": true,
+    "lambda_JG": 1,
+    "lambda_relative": 0.05,
+    "amp_enabled": false,
+    "amp_dtype": "fp32",
+    "use_social_encoder": true,
+    "joint_goal_enabled": true,
+    "social_feature_dim": 128,
+    "social_attention_layers": 1,
+    "num_social_modes": 8,
+    "num_relation_modes": 4,
+    "num_goal_candidates": 21,
+    "goal_pair_rank": 8,
+    "graph_type": "radius_ttc",
+    "graph_radius": 6,
+    "ttc_threshold": 8,
+    "num_joint_samples": 20,
+    "num_refinement_steps": 2,
+    "joint_sampling_temperature": 1,
+    "joint_sampling_mode": "sample",
+    "joint_sampling_strategy": "coverage",
+    "goal_candidate_prior": "heatmap",
+    "goal_candidate_temperature": 1,
+    "energy_weight": 1,
+    "pair_energy_normalization": "mean",
+    "adaptive_graph": false,
+    "adaptive_graph_hidden_dim": 64,
+    "adaptive_graph_top_k": 0,
+    "adaptive_graph_gate_floor": 0.05,
+    "adaptive_graph_target_density": 0.5,
+    "lambda_graph_density": 0,
+    "goal_soft_sigma": 1,
+    "lambda_goal": 20,
+    "lambda_mode": 1,
+    "lambda_PL": 1,
+    "lambda_joint_rank": 0,
+    "joint_rank_target_temperature": 0.5,
+    "joint_rank_score_temperature": 1,
+    "lambda_diff": 1,
+    "lambda_relation_entropy": 0.01,
+    "lambda_relation_balance": 0.05,
+    "lambda_mode_balance": 0.05,
+    "normalize_mode_loss_by_agents": true,
+    "hard_relation": false,
+    "use_group_relative_feature": true,
+    "pairwise_neighbor_target": "soft",
+    "training_stage": "joint_goal",
+    "baseline_lr_scale": 1,
+    "structured_lr_scale": 1,
+    "baseline_unfreeze_epoch": 1,
+    "continuous_refinement": false,
+    "continuous_refinement_steps": 1,
+    "continuous_refinement_max_delta": 0.5,
+    "lambda_continuous_refinement": 0,
+    "lambda_refinement_delta": 0,
+    "trajectory_alignment": false,
+    "trajectory_alignment_hidden_dim": 128,
+    "trajectory_alignment_sinkhorn_iters": 8,
+    "trajectory_alignment_steps": 2,
+    "trajectory_alignment_temperature": 0.15,
+    "trajectory_alignment_target_temperature": 0.5,
+    "trajectory_alignment_fde_weight": 1,
+    "trajectory_alignment_keep_threshold": 0.6,
+    "trajectory_alignment_top_k_edges": 4,
+    "lambda_trajectory_alignment": 0,
+    "lambda_trajectory_pair": 0,
+    "lambda_alignment_no_harm": 0,
+    "lambda_alignment_entropy": 0,
+    "trajectory_coupling": "none",
+    "upstream_generator": "stage0_independent",
+    "trajectory_conditioned_relation": true,
+    "pair_specific_gate": true,
+    "trajectory_energy_type": "lowrank",
+    "trajectory_dim": 128,
+    "trajectory_pair_rank": 8,
+    "synchronizer": "multiway",
+    "sync_iterations": 4,
+    "sinkhorn_iterations": 8,
+    "sync_temperature": 0.2,
+    "sync_inference_top_k_edges": 0,
+    "hard_projection": "hungarian",
+    "use_identity_bypass": true,
+    "keep_threshold": 0.6,
+    "use_pair_assignment_loss": true,
+    "lambda_alignment": 1,
+    "lambda_pair_score": 0.5,
+    "lambda_pair_assignment": 0.5,
+    "lambda_no_harm": 2,
+    "lambda_perm_entropy": 0.02,
+    "lambda_relation_prior": 0.02,
+    "lambda_gate_reg": 0,
+    "coupling_fde_weight": 1,
+    "coupling_rel_geom_weight": 1,
+    "coupling_rel_endpoint_weight": 1,
+    "coupling_joint_temperature": 0.5,
+    "coupling_pair_target_temperature": 0.5,
+    "coupling_pair_pred_temperature": 0.2,
+    "coupling_no_harm_margin": 0,
+    "freeze_upstream_generator": true,
+    "use_component_mode": false,
+    "social_mode_scope": "off",
+    "coupling_grad_accum_steps": 1,
+    "cache_frozen_trajectory_banks": false,
+    "use_trajectory_bank_cache": false,
+    "use_multi_scene_packing": false,
+    "scene_balanced_loss": false,
+    "num_cached_seeds_per_window": 4,
+    "trajectory_bank_seed_base": 42,
+    "force_rebuild_trajectory_bank": false,
+    "trajectory_bank_cache_root": null,
+    "max_agents_per_pack": 32,
+    "max_edges_per_pack": 256,
+    "max_scenes_per_pack": 8,
+    "trajectory_dt": 0.4,
+    "model_selection_split": "dataset_valid",
+    "internal_validation_fraction": 0.1,
+    "internal_validation_seed": 2025,
+    "internal_validation_strategy": "source_block",
+    "final_test_split": "heldout_test",
+    "clean_split_protocol": false,
+    "clean_split_manifest_path": null,
+    "clean_split_manifest_hash": null,
+    "final_test_access": "legacy",
+    "final_test_lock_path": null,
+    "clean_evaluation_target": null,
+    "best_metric": "JFDE",
+    "collision_threshold_meter": null,
+    "collision_interpolation_steps": 2,
+    "goal_recall_threshold_meter": null,
+    "force_reprocess": false,
+    "joint_diagnostics": true,
+    "use_wandb": false,
+    "num_test_runs": 5,
+    "fast_debug": false,
+    "fast_debug_num": 3,
+    "reproducibility": true,
+    "seed": 2035,
+    "validation_seed": 2035,
+    "pretrain_path": null,
+    "goal_pretrain_checkpoint": null,
+    "use_cuda": false,
+    "obs_length": 8,
+    "pred_length": 12,
+    "seq_length": 20,
+    "base_dir": ".",
+    "save_base_dir": "outputs/joint_dependency_v2",
+    "save_dir": "./outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_frozen_eth",
+    "model_dir": "/tmp/rsjg_cuda_loss_smoke_unused",
+    "config": "./outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_frozen_eth/config.yaml",
+    "branch_stage_step": 14
+  },
+  "cuda_initialized": false,
+  "preparation_log": "Train dataset contains 4110 data batches.\n"
+}

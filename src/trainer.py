@@ -595,15 +595,18 @@ class trainer(object):
         self._mc_scheduler_epoch = 0
 
     def _mc_optimizer_step(self, skip=False):
-        """CPU update only; skipped requests consume draws but not progress."""
+        """Backend-checked unscaled update; skips consume draws, not progress."""
+        validate_mode(self.args, self.device)
         owner = self.jdv2_objective_rng
         if not owner.pending_backward:
             raise RuntimeError('MC update without pending request')
         if self.scaler.is_enabled():
             raise RuntimeError('MC AMP certification pending')
         parameters = list(self.net.parameters())
-        if any(p.device.type != 'cpu' for p in parameters):
-            raise RuntimeError('MC optimizer is CPU only')
+        if any(p.device != self.device for p in parameters):
+            raise RuntimeError('MC optimizer parameters must share the compute device')
+        if self.device.type == 'cuda' and any(p.dtype != torch.float32 for p in parameters):
+            raise RuntimeError('CUDA MC optimizer parameters must be FP32')
         if not skip:
             gradients = [p.grad for p in parameters if p.grad is not None]
             if not gradients:
@@ -722,7 +725,9 @@ class trainer(object):
 
     def _load_state_file(self, saved_model_name, baseline_initialization=False,
                          weights_only=False):
-        checkpoint = torch.load(saved_model_name, map_location=self.device)
+        checkpoint = torch.load(
+            saved_model_name,
+            map_location='cpu' if objective_mode(self.args) == MC else self.device)
         training = (not weights_only and
                     getattr(self.args, 'phase', 'train') in {'train', 'train_test'})
         mode = objective_mode(self.args)

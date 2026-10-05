@@ -937,11 +937,13 @@ def expected_conditional_composite(
         edge_cost_chunks: Iterable[Tuple[int, int, torch.Tensor]],
         neighbor_ids: torch.Tensor,
         candidate_mask: Optional[torch.Tensor] = None,
+        *, compute_backend: str = 'cpu_v1',
 ) -> torch.Tensor:
     """Scene-balanced conditional CE averaged over externally supplied draws.
 
-    This standalone, CPU-only loss is NOT integrated into model/trainer.
-    Floating inputs u/q/C must all be dense strided CPU FP32 or all FP64.
+    Default cpu_v1 accepts dense CPU FP32/FP64. Explicit
+    cuda_fp32_bf16_v1 accepts same-device CUDA FP32 effective inputs, including
+    under outer BF16 autocast. Loss arithmetic disables autocast.
     FP64 is preserved (including reductions); no implicit dtype conversion.
     All entries, including masked entries, must be finite. Numerical overflow
     in accumulated costs/logits/log probabilities/loss raises FloatingPointError.
@@ -956,7 +958,7 @@ def expected_conditional_composite(
     edge_index: int64 [2,E], unique canonical src<dst edges inside a scene.
     neighbor_ids: int64 [S,N], S>0, valid candidate IDs for their own agents.
     candidate_mask: optional bool [N,K], at least one True per agent.
-    All integer/mask tensors must also be dense strided CPU tensors.
+    All integer/mask tensors must be dense strided on the same compute device.
 
     Chunks form a one-pass iterable of (start, stop, C[stop-start,K,K]).
     Bounds are Python ints and must cover [0,E) in order, without empty,
@@ -969,8 +971,13 @@ def expected_conditional_composite(
     Extra working tensors are O(S*N*K) and per-draw O(E_chunk*K) gathers;
     no S copies of the full E*K*K cost are created. Autograd retains its graph
     across chunks, so this is not a guarantee of chunk-bounded backward memory.
-    CUDA, reduced precision and production integration remain unvalidated.
+    Reduced-precision effective inputs and CUDA FP64 are rejected.
     """
+    from src.jdv2_objective_state import validate_compute_context, CUDA_BACKEND
+    validate_compute_context(compute_backend)
+    expected_kind = 'cuda' if compute_backend == CUDA_BACKEND else 'cpu'
+    if not isinstance(unary_score, torch.Tensor):
+        raise TypeError('unary_score must be a Tensor')
     tensors = {
         "unary_score": unary_score, "soft_goal_target": soft_goal_target,
         "scene_index": scene_index, "edge_index": edge_index,
@@ -981,8 +988,11 @@ def expected_conditional_composite(
     for name, value in tensors.items():
         if not isinstance(value, torch.Tensor):
             raise TypeError(f"{name} must be a Tensor")
-        if value.device.type != "cpu" or value.layout != torch.strided:
-            raise ValueError(f"{name} must be a dense strided CPU tensor")
+        if (value.device.type != expected_kind or value.device != unary_score.device
+                or value.layout != torch.strided):
+            raise ValueError(f"{name} must be dense strided on the same backend device")
+    if compute_backend == CUDA_BACKEND and unary_score.dtype != torch.float32:
+        raise TypeError('CUDA effective unary/q/cost must be FP32')
     if unary_score.dtype not in (torch.float32, torch.float64):
         raise TypeError("unary_score must be FP32 or FP64")
     if soft_goal_target.dtype != unary_score.dtype:
@@ -1040,7 +1050,7 @@ def expected_conditional_composite(
     if (scene_index[src] != scene_index[dst]).any():
         raise ValueError("cross-scene edge")
 
-    with torch.autocast(device_type="cpu", enabled=False):
+    with torch.autocast(device_type=unary_score.device.type, enabled=False):
         local = [torch.zeros_like(unary_score) for _ in range(neighbor_ids.shape[0])]
         cursor = 0
         for chunk in edge_cost_chunks:
@@ -1053,8 +1063,8 @@ def expected_conditional_composite(
                 raise ValueError("chunks must cover edges in contiguous nonempty order")
             if not isinstance(cost, torch.Tensor):
                 raise TypeError("chunk cost must be a Tensor")
-            if cost.device.type != "cpu" or cost.layout != torch.strided:
-                raise ValueError("chunk cost must be a dense strided CPU tensor")
+            if cost.device != unary_score.device or cost.layout != torch.strided:
+                raise ValueError("chunk cost must be dense strided on the unary device")
             if cost.dtype != unary_score.dtype:
                 raise TypeError("chunk cost and unary_score must share dtype")
             if cost.shape != (stop - start, k, k):

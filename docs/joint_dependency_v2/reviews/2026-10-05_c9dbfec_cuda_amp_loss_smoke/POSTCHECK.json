@@ -1,0 +1,82 @@
+{
+  "real_FP32_vs_BF16_effective_inputs": [
+    {
+      "u": {
+        "exact": false,
+        "max_abs": 0.02557063102722168
+      },
+      "q": {
+        "exact": true,
+        "max_abs": 0.0
+      },
+      "C": {
+        "exact": false,
+        "max_abs": 0.014153480529785156
+      },
+      "z": {
+        "exact": true,
+        "max_abs": 0.0
+      }
+    },
+    {
+      "u": {
+        "exact": false,
+        "max_abs": 0.02557063102722168
+      },
+      "q": {
+        "exact": true,
+        "max_abs": 0.0
+      },
+      "C": {
+        "exact": false,
+        "max_abs": 0.01458597183227539
+      },
+      "z": {
+        "exact": true,
+        "max_abs": 0.0
+      }
+    }
+  ],
+  "repeats": {
+    "fp32": {
+      "value": {
+        "exact": true,
+        "max_abs": 0.0
+      },
+      "grads": {
+        "u": {
+          "exact": true,
+          "max_abs": 0.0
+        },
+        "c": {
+          "exact": true,
+          "max_abs": 0.0
+        }
+      }
+    },
+    "bf16": {
+      "value": {
+        "exact": true,
+        "max_abs": 0.0
+      },
+      "grads": {
+        "u": {
+          "exact": true,
+          "max_abs": 0.0
+        },
+        "c": {
+          "exact": true,
+          "max_abs": 0.0
+        }
+      }
+    }
+  },
+  "synthetic_max_abs": {
+    "cpu_fp32": 1.1920928955078125e-07,
+    "cpu_fp64_loop": 5.314812767664989e-08,
+    "cpu_fp64_identical_effective_inputs": 5.525698787423039e-08
+  },
+  "real_reference_max_abs": 3.683079810024026e-07,
+  "real_hashes_all_equal": true,
+  "cuda_initialized": false
+}

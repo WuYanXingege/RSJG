@@ -1,0 +1,3296 @@
+Warning: truncated output (original token count: 30793)
+Total output lines: 3730
+
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "wall_seconds": 10.029251717031002,
+  "selectors": [
+    "tests/test_jdv2_mc_wiring.py",
+    "tests/test_jdv2_cuda_backend_contract.py",
+    "tests/test_jdv2_expected_conditional.py",
+    "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+    "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+    "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+    "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+    "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+    "tests/test_joint_dependency_v2.py::test_kl_warmup",
+    "tests/test_joint_dependency_v2.py::test_teacher_curriculum",
+    "tests/test_jdv2_resume_stopping_state.py",
+    "tests/test_joint_dependency_v2_integration.py::test_validation_seed_defaults_to_training_seed",
+    "tests/test_joint_dependency_v2_integration.py::test_cross_stage_load_resets_epoch_and_progress_while_same_stage_resumes"
+  ],
+  "events": [
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_legacy_actual_method_against_pinned_source",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009227939881384373,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_legacy_actual_method_against_pinned_source",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.045720681082457304,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_legacy_actual_method_against_pinned_source",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00043871498201042414,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-True]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008982109138742089,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-True]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03558536199852824,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-True]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00045230204705148935,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[4-True]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009167169919237494,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[4-True]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03221235703676939,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[4-True]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004614690551534295,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-False]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009161299094557762,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-False]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.016711442032828927,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-False]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00040670204907655716,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[1-False]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009219140047207475,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[1-False]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.006845535011962056,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[1-False]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003619730705395341,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_rng_isolation_seed_snapshot_restore",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006508410442620516,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_rng_isolation_seed_snapshot_restore",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.005444301990792155,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_rng_isolation_seed_snapshot_restore",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00030945800244808197,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006932810647413135,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005148079944774508,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027711899019777775,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mass]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006837879773229361,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mass]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005821079248562455,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mass]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000276923063211143,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[trainable]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006176140159368515,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[trainable]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00043127196840941906,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[trainable]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002755459863692522,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mask]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007185719441622496,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mask]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005091270431876183,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mask]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027826603036373854,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000630393042229116,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000453796936199069,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002755459863692522,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006206190446391702,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00047480908688157797,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00030241801869124174,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[scene]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006558540044352412,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[scene]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007004380458965898,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[scene]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027684809174388647,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[edge]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006214720197021961,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[edge]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006035760743543506,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[edge]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029214401729404926,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[device-cuda:0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000718788942322135,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[device-cuda:0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003042250173166394,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[device-cuda:0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002899110550060868,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_enabled-True]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007107560522854328,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_enabled-True]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003017570124939084,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_enabled-True]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028975994791835546,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_dtype-bf16]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009442530572414398,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_dtype-bf16]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003012019442394376,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_dtype-bf16]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002899330575019121,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_draws-8]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008373970631510019,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_draws-8]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00032028695568442345,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_draws-8]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002895150100812316,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_goal_objective-unknown]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007139130029827356,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_goal_objective-unknown]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002944630105048418,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_goal_objective-unknown]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003369749756529927,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_trajectory]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008390629664063454,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_trajectory]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002942619612440467,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_trajectory]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028990593273192644,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_finetune]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007124199764803052,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_finetune]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029144599102437496,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_finetune]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002900540130212903,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_latent_objective-v2_marginal_responsibility]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007655880181118846,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_latent_objective-v2_marginal_responsibility]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029024097602814436,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_latent_objective-v2_marginal_responsibility]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002870949683710933,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[goal_model_type-independent]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007140239467844367,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[goal_model_type-independent]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029213703237473965,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[goal_model_type-independent]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028806005138903856,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[dataset-sdd]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000750852981582284,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[dataset-sdd]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002972130896523595,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[dataset-sdd]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002897470258176327,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[trajectory_coupling-multiway_v4]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007159209344536066,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[trajectory_coupling-multiway_v4]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029232201632112265,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[trajectory_coupling-multiway_v4]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002879559760913253,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_seed--1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007139539811760187,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_seed--1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029357802122831345,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_seed--1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028763897716999054,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0005871099419891834,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.004934477969072759,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002774009481072426,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006348090246319771,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03652068495284766,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004219390684738755,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007688839687034488,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.034083844046108425,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003597330069169402,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007576440693810582,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03411264601163566,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004100030055269599,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007241029525175691,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03391363297123462,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003356379456818104,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007249639602378011,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.034919871017336845,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00045662897173315287,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008282699855044484,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03400203003548086,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003722079563885927,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007998469518497586,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03500304906629026,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00037123996298760176,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007920260541141033,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03394964593462646,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003445229958742857,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007113129831850529,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.034852094016969204,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0005316080059856176,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000813591992482543,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03389227902516723,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003386309836059809,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[successful_optimizer_updates]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007542549865320325,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[successful_optimizer_updates]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03480824001599103,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[successful_optimizer_updates]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00044792203698307276,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_progress]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000821433961391449,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_progress]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03411605104338378,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_progress]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004337639547884464,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[pending_backward]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0010432540439069271,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[pending_backward]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03537271497771144,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[pending_backward]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003976590232923627,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[checkpoint_role]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007410160033032298,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[checkpoint_role]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03476553410291672,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[checkpoint_role]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000454592052847147,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_total_optimizer_steps]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008220910094678402,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_total_optimizer_steps]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.034580109058879316,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_total_optimizer_steps]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004366929642856121,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[torch_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007469370029866695,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[torch_version]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.034971699002198875,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[torch_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00046053703408688307,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[top_progress]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0010200700489804149,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[top_progress]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.034775686101056635,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[top_progress]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003503640182316303,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_epoch]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007518319180235267,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_epoch]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03460166300646961,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_epoch]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003513479605317116,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000776719069108367,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03224231395870447,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00042628298979252577,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007340710144490004,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.035284449928440154,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00036205898504704237,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[architecture]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009267140412703156,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[architecture]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03598523105029017,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[architecture]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000341185019351542,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[provenance]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007922850782051682,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[provenance]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.035608545993454754,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[provenance]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003777920501306653,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer_step]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008203889010474086,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer_step]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03438975801691413,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer_step]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003447309136390686,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007848159875720739,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03489794197957963,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00039900699630379677,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_progress]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007357819704338908,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_progress]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03486810892354697,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_progress]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003534139832481742,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_lr]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009358470560982823,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_lr]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03560526797082275,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_lr]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00034702406264841557,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006747930310666561,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0617061429657042,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003658370114862919,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_error_after_draw_pending_and_skipped_update",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000628073001280427,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_error_after_draw_pending_and_skipped_update",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.015287382993847132,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_error_after_draw_pending_and_skipped_update",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003750820178538561,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[serialize]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008304460207000375,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[serialize]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.001948605990037322,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[serialize]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003358829999342561,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[flush]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007640119874849916,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[flush]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0018298220820724964,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[flush]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003370540216565132,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[file_fsync]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0010872429702430964,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[file_fsync]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0017620360013097525,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[file_fsync]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00033813691698014736,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[replace]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006817139219492674,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[replace]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.002355747972615063,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[replace]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002887430600821972,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007288720225915313,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0026963879354298115,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029092596378177404,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_separate_process_exact_resume",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006138900062069297,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_separate_process_exact_resume",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 4.566451772931032,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_separate_process_exact_resume",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00039628101512789726,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_fresh_baseline_initialization_resets_mc_training_state",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007400830509141088,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_fresh_baseline_initialization_resets_mc_training_state",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.026189823052845895,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_fresh_baseline_initialization_resets_mc_training_state",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003840469289571047,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_direct_invalid_rng_restore_is_transactional_and_fp64_draw",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007436259184032679,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_direct_invalid_rng_restore_is_transactional_and_fp64_draw",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000987820909358561,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_direct_invalid_rng_restore_is_transactional_and_fp64_draw",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00031233392655849457,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[mask]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00073325599078089,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[mask]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0012389810290187597,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[mask]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003239649813622236,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[scene]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007487389957532287,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[scene]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0014345579547807574,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[scene]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00032292294781655073,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[unary_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007483409717679024,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[unary_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0012104889610782266,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[unary_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00032335601281374693,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[amp]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007500209612771869,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[amp]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009275400079786777,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_invalid_before_draw[amp]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003285860875621438,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_deferred_production_restore_and_semantic_mismatch",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006531699327751994,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_deferred_production_restore_and_semantic_mismatch",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.04958626301959157,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_deferred_production_restore_and_semantic_mismatch",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003449879586696625,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[nan_cost]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007940659997984767,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[nan_cost]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0035744160413742065,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[nan_cost]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00033106899354606867,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[optimizer_error]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007649189792573452,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[optimizer_error]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.008066414971835911,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[optimizer_error]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035381107591092587,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_cpu_v1_fingerprint_and_schema_unchanged",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007062390213832259,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_cpu_v1_fingerprint_and_schema_unchanged",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.005342022981494665,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_cpu_v1_fingerprint_and_schema_unchanged",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003141139168292284,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_metadata_matrix_without_cuda",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000676390016451478,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_metadata_matrix_without_cuda",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009009529603645205,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_metadata_matrix_without_cuda",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002732699504122138,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[amp_dtype-fp16]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007201950065791607,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[amp_dtype-fp16]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029964500572532415,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[amp_dtype-fp16]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00033579091541469097,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[device-cpu]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007304889149963856,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[device-cpu]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002951800124719739,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[device-cpu]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003253059694543481,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[jdv2_mc_backend-unknown]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007117179920896888,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[jdv2_mc_backend-unknown]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029063201509416103,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_backend_invalid_config[jdv2_mc_backend-unknown]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000283151981420815,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_cuda_owner_rejects_cpu_request_before_draw",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006665179971605539,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_cuda_owner_rejects_cpu_request_before_draw",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004316329723224044,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_cuda_backend_contract.py::test_cuda_owner_rejects_cpu_request_before_draw",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027181697078049183,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034257397055625916,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.026177765103057027,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00041358196176588535,
+ …3793 tokens truncated…endent_gradient",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003923670155927539,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_masked_reference_and_one_valid_candidate_gradients[dtype0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0005410860758274794,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_masked_reference_and_one_valid_candidate_gradients[dtype0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.013525423011742532,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_masked_reference_and_one_valid_candidate_gradients[dtype0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003700299421325326,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_masked_reference_and_one_valid_candidate_gradients[dtype1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004260929999873042,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_masked_reference_and_one_valid_candidate_gradients[dtype1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.013139353948645294,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_masked_reference_and_one_valid_candidate_gradients[dtype1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003438120475038886,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_label_tolerance_does_not_silently_renormalize",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003115159925073385,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_label_tolerance_does_not_silently_renormalize",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0014153249794617295,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_label_tolerance_does_not_silently_renormalize",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029833894222974777,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[missing]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004175200592726469,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[missing]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0010473330039530993,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[missing]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029758503660559654,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[overlap]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003901049494743347,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[overlap]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009607889223843813,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[overlap]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00032676802948117256,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[repeat]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00033337599597871304,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[repeat]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009295230265706778,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[repeat]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029632810037583113,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[out_of_order]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035002001095563173,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[out_of_order]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007578920340165496,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[out_of_order]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002646109787747264,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[empty]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00036393303889781237,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[empty]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006590529810637236,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[empty]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00032957002986222506,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[too_far]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035020895302295685,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[too_far]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007159479428082705,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[too_far]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00031718506943434477,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003830429632216692,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006768479943275452,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00026491505559533834,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[wrong_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003692000173032284,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[wrong_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006990290712565184,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[wrong_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002883580746129155,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_float]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00036273710429668427,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_float]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0008090769406408072,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_float]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029724498745054007,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_bool]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003831839421764016,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_bool]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000655425013974309,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_bool]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002949759364128113,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bad_tuple]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00033344700932502747,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bad_tuple]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007367429789155722,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bad_tuple]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00031473604030907154,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[cost_not_tensor]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00033222895581275225,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[cost_not_tensor]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000743432086892426,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[cost_not_tensor]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002632599789649248,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[nan]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003835749812424183,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[nan]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007062670774757862,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[nan]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00026416301261633635,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003647729754447937,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006888910429552197,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00034240109380334616,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[negative_inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00033374899066984653,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[negative_inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000688409898430109,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[negative_inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002647649962455034,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[meta_device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003936770372092724,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[meta_device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007780629675835371,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[meta_device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00026606093160808086,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_trainable]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00033418601378798485,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_trainable]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00039542699232697487,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_trainable]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002967170439660549,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003701089881360531,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005453670164570212,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027085503097623587,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0005245549837127328,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000644186045974493,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002639699960127473,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_not_normalized]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003339920658618212,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_not_normalized]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006039530271664262,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_not_normalized]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002963370643556118,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_nan]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003958350280299783,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_nan]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005671059479936957,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_nan]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028304499574005604,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00038204703014343977,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005390469450503588,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000310740084387362,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_nan]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003502259496599436,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_nan]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00045846705324947834,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_nan]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002674739807844162,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003647339763119817,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004887949908152223,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035500095691531897,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_half]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003505850909277797,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_half]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004160370444878936,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_half]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002804369432851672,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003374840598553419,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004322099266573787,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002619050210341811,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003864150494337082,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004228251054883003,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002642410108819604,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003313700435683131,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00046093203127384186,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002627429785206914,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00039342395029962063,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00044931890442967415,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002662210026755929,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003776400117203593,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00048070307821035385,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00031011307146400213,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003513869596645236,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005601809825748205,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002993620000779629,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_empty]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00033293396700173616,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_empty]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005036729853600264,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_empty]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00026882707607001066,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_off_support]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003647789126262069,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_off_support]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005175300175324082,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_off_support]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002646589418873191,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_off_support]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00038650992792099714,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_off_support]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006026539485901594,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_off_support]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028325500898063183,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003606150858104229,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005505310837179422,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00032780191395431757,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_too_large]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035218289121985435,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_too_large]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006115779979154468,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_too_large]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002648560330271721,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00036326295230537653,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005934979999437928,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00032289500813931227,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_too_large]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00033395003993064165,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_too_large]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006335750222206116,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_too_large]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003304959973320365,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[self_edge]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003718219231814146,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[self_edge]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005904239369556308,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[self_edge]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002816910855472088,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[reverse_edge]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00036416901275515556,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[reverse_edge]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007478889310732484,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[reverse_edge]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027026201132684946,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[duplicate]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000339647987857461,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[duplicate]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007478930056095123,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[duplicate]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00026380294002592564,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[cross_scene]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003651499282568693,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[cross_scene]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006570949917659163,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[cross_scene]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002966079628095031,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003562190104275942,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00041717500425875187,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002729670377448201,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034377502743154764,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004130820743739605,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027215899899601936,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034304196015000343,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00042419799137860537,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027489091735333204,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003444269532337785,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004156680079177022,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027264608070254326,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034264405257999897,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004171699983999133,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000270304037258029,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[N_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034379796124994755,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[N_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00042150693479925394,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[N_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000275610014796257,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[K_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003444569883868098,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[K_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004209190374240279,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[K_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000272013945505023,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[S_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034251902252435684,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[S_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00041782099287956953,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[S_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002715290756896138,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[not_tensor]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003429920179769397,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[not_tensor]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003946560900658369,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[not_tensor]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002729350235313177,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[meta_device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003425179747864604,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[meta_device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000410222914069891,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[meta_device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002724949736148119,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_nonfinite_masked_values_also_rejected_and_overflow_explicit",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002618349390104413,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_nonfinite_masked_values_also_rejected_and_overflow_explicit",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0015926379710435867,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_nonfinite_masked_values_also_rejected_and_overflow_explicit",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002712809946388006,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00026705802883952856,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.001154996920377016,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002940769772976637,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00029483099933713675,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0032506840070709586,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002950370544567704,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00029647001065313816,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009601629571989179,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000298632076010108,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002962870057672262,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006999169709160924,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029281899333000183,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002961170393973589,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0010738469427451491,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002958490513265133,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.0-0.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004904520465061069,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.0-0.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000490795006044209,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.0-0.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00031731196213513613,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.1-0.05]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00045431393664330244,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.1-0.05]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00032418803311884403,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.1-0.05]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003167300019413233,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.2-0.1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00046429899521172047,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.2-0.1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003166409442201257,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.2-0.1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003218019846826792,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[1.0-0.1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004554729675874114,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[1.0-0.1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00031574605964124203,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[1.0-0.1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003130839904770255,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.0-1.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00045567797496914864,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.0-1.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00031996099278330803,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.0-1.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003157209139317274,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.2-1.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004542319802567363,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.2-1.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003146559465676546,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.2-1.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003149739932268858,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.4-0.5]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000454363995231688,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.4-0.5]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002824690891429782,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.4-0.5]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028010597452521324,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.6-0.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00041163002606481314,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.6-0.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002798810601234436,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.6-0.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028033601120114326,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[1.0-0.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004099650541320443,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[1.0-0.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00027948699425905943,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[1.0-0.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000287226983346045,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006731729954481125,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.005375283071771264,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028127909172326326,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_cross_stage_and_legacy_stopping_state_fallbacks",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006488910876214504,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_cross_stage_and_legacy_stopping_state_fallbacks",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009065310005098581,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_cross_stage_and_legacy_stopping_state_fallbacks",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027264992240816355,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2_integration.py::test_validation_seed_defaults_to_training_seed",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006110050017014146,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2_integration.py::test_validation_seed_defaults_to_training_seed",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0041945610428228974,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2_integration.py::test_validation_seed_defaults_to_training_seed",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00026973593048751354,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2_integration.py::test_cross_stage_load_resets_epoch_and_progress_while_same_stage_resumes",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000250010984018445,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2_integration.py::test_cross_stage_load_resets_epoch_and_progress_while_same_stage_resumes",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002900210674852133,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2_integration.py::test_cross_stage_load_resets_epoch_and_progress_while_same_stage_resumes",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000354300020262599,
+      "failure": null
+    }
+  ],
+  "threads": 10,
+  "counts": {
+    "module_forward": 0,
+    "cuda_initialization": 0,
+    "toy_load": 71,
+    "toy_save": 70,
+    "objective_draw_attempts": 137,
+    "objective_draws": 124,
+    "sampled_agent_draws": 2268,
+    "actual_no_z_dispatch_calls": 115,
+    "actual_mc_method_calls": 114,
+    "adam_steps": 109,
+    "real_artifact_attempts": 0
+  },
+  "fixture_counts": {
+    "production_loss_calls": 115,
+    "synthetic_encode_calls": 114,
+    "relation_chunks": 215,
+    "energy_factor_chunks": 215,
+    "energy_mixtures": 428,
+    "backward_calls": 111,
+    "toy_optimizer_updates": 99,
+    "draws": 108,
+    "sampled_rows": 2140,
+    "checkpoint_save_calls": 36,
+    "checkpoint_load_calls": 40
+  },
+  "measurements": {
+    "legacy_pinned_value_gradient_keys_coefficients_exact": true,
+    "5_True_jdv2_pl_post": 0.0,
+    "5_True_jdv2_pl_prior": 0.0,
+    "5_True_jdv2_relation_kl": 8.009374141693115e-08,
+    "5_True_gradient_0": 2.3283064365386963e-09,
+    "5_True_gradient_1": 4.656612873077393e-10,
+    "5_True_gradient_2": 1.8553691916167736e-10,
+    "5_True_gradient_3": 1.1641532182693481e-09,
+    "5_True_gradient_4": 3.4924596548080444e-10,
+    "5_True_gradient_5": 1.8917489796876907e-10,
+    "4_True_jdv2_pl_post": 0.0,
+    "4_True_jdv2_pl_prior": 0.0,
+    "4_True_jdv2_relation_kl": 7.916241884231567e-08,
+    "4_True_gradient_0": 4.6566128730773926e-09,
+    "4_True_gradient_1": 9.313225746154785e-10,
+    "4_True_gradient_2": 3.2741809263825417e-10,
+    "4_True_gradient_3": 7.8580342233181e-10,
+    "4_True_gradient_4": 6.984919309616089e-10,
+    "4_True_gradient_5": 5.093170329928398e-10,
+    "5_False_jdv2_pl_post": 5.960464477539063e-08,
+    "5_False_jdv2_pl_prior": 5.960464477539063e-08,
+    "5_False_jdv2_relation_kl": 0.0,
+    "5_False_gradient_0": 3.725290298461914e-09,
+    "5_False_gradient_1": 7.566995918750763e-10,
+    "1_False_jdv2_pl_post": 0.0,
+    "1_False_jdv2_pl_prior": 0.0,
+    "1_False_jdv2_relation_kl": 0.0,
+    "1_False_gradient_0": 0.0,
+    "1_False_gradient_1": 0.0,
+    "resume": {
+      "exact": true,
+      "continuous_updates": 9,
+      "prefix_updates": 3,
+      "child_updates": 6,
+      "independent_resume_processes": 1,
+      "child_counts": {
+        "production_loss_calls": 6,
+        "synthetic_encode_calls": 6,
+        "relation_chunks": 12,
+        "energy_factor_chunks": 12,
+        "energy_mixtures": 24,
+        "backward_calls": 6,
+        "toy_optimizer_updates": 6,
+        "draws": 6,
+        "sampled_rows": 120,
+        "checkpoint_save_calls": 0,
+        "checkpoint_load_calls": 1
+      },
+      "compared_fields": [
+        "step",
+        "ids",
+        "losses",
+        "total",
+        "coefficients",
+        "gradients",
+        "parameters",
+        "optimizer",
+        "scheduler",
+        "progress",
+        "rng_sha256",
+        "draws",
+        "rows",
+        "updates"
+      ],
+      "trace_sha256": "88d99c99a1ead16e6d2405672cfa239289564af4606e8beb9a1afaea08bab433"
+    }
+  },
+  "stdout": "........................................................................ [ 41%]\n........................................................................ [ 83%]\n............................                                             [100%]\n172 passed in 9.79s\n"
+}

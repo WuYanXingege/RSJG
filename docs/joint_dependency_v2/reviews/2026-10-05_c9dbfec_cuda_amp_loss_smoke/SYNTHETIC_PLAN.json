@@ -1,0 +1,1886 @@
+{
+  "cases": {
+    "asymmetric_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "asymmetric_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "singleton_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "a71d2f7ac69e06850276adee485cc371c60458f57902c1beb5809341faf0efc4"
+        },
+        "c": {
+          "shape": [
+            0,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "q": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "fa3998a500602821811b7e988c135c4e167927cad30feff312123ded427b67ef"
+        },
+        "scenes": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "a2ca73c6c50871106e5922a407955f2a50023aada125e68cddd1171bf435de22"
+        },
+        "edges": {
+          "shape": [
+            2,
+            0
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "mask": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "75c8fd04ad916aec3e3d5cb76a452b116b3d4d0912a0a485e9fb8e3d240e210c"
+        }
+      },
+      "z": [
+        [
+          0
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          0
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "e823adaf93d08140f217e6d88743b407122acd7f7c052bcf2a47c8fb822b12bf",
+      "cpu_fp32_value": 1.184051513671875,
+      "cpu_fp64_value": 1.1840515258299402,
+      "draw_calls": 1,
+      "agent_draws": 4
+    },
+    "singleton_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "a71d2f7ac69e06850276adee485cc371c60458f57902c1beb5809341faf0efc4"
+        },
+        "c": {
+          "shape": [
+            0,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "q": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "fa3998a500602821811b7e988c135c4e167927cad30feff312123ded427b67ef"
+        },
+        "scenes": {
+          "shape": [
+            1
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "a2ca73c6c50871106e5922a407955f2a50023aada125e68cddd1171bf435de22"
+        },
+        "edges": {
+          "shape": [
+            2,
+            0
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "mask": {
+          "shape": [
+            1,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "75c8fd04ad916aec3e3d5cb76a452b116b3d4d0912a0a485e9fb8e3d240e210c"
+        }
+      },
+      "z": [
+        [
+          0
+        ],
+        [
+          2
+        ],
+        [
+          2
+        ],
+        [
+          0
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "e823adaf93d08140f217e6d88743b407122acd7f7c052bcf2a47c8fb822b12bf",
+      "cpu_fp32_value": 1.184051513671875,
+      "cpu_fp64_value": 1.1840515258299402,
+      "draw_calls": 1,
+      "agent_draws": 4
+    },
+    "empty_unequal_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            0,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            0
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.20192289352417,
+      "cpu_fp64_value": 1.2019228568333737,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "empty_unequal_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            0,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            0
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.20192289352417,
+      "cpu_fp64_value": 1.2019228568333737,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "masked_permuted_noncontiguous_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            1,
+            5
+          ],
+          "sha256": "29354e7aca8cb90b9ddc82e4de2368cdc79f9cf35d17e4ef0ac26a8a086f9002"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            1,
+            3
+          ],
+          "sha256": "7732182d9b726459c0e17859b30c495bef88d3cbb7d580d912a37b9f3ad952b2"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "51039d9e76ae0308fd5de6d17a0c848e874c676b1e42b42367b7f5b001c1b34a"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "efdabf149bad6e04312ac02428b6e92c8765b5030016f5a05329001f445157d5"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "f9b9132dc3cee6faccf91e0c4728aeaae889680450fa7dfea233521a540afd65"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          1
+        ],
+        [
+          2,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          1
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2238084077835083,
+      "cpu_fp64_value": 1.2238084999334695,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "masked_permuted_noncontiguous_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            1,
+            5
+          ],
+          "sha256": "29354e7aca8cb90b9ddc82e4de2368cdc79f9cf35d17e4ef0ac26a8a086f9002"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            1,
+            3
+          ],
+          "sha256": "7732182d9b726459c0e17859b30c495bef88d3cbb7d580d912a37b9f3ad952b2"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "51039d9e76ae0308fd5de6d17a0c848e874c676b1e42b42367b7f5b001c1b34a"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "efdabf149bad6e04312ac02428b6e92c8765b5030016f5a05329001f445157d5"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "f9b9132dc3cee6faccf91e0c4728aeaae889680450fa7dfea233521a540afd65"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          1
+        ],
+        [
+          2,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          1
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2238084077835083,
+      "cpu_fp64_value": 1.2238084999334695,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "mixture_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        },
+        "deploy": {
+          "shape": [
+            4,
+            3,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            36,
+            12,
+            4,
+            1
+          ],
+          "sha256": "42ce32dfd68f6ae6d1a1458874355288ca74ae141f27d7fe9bd26fdfb5ed60b9"
+        },
+        "teacher": {
+          "shape": [
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "66c05127e24349a70cc6b409c1b4cd30a2a0425c04ca6778214b10e349ce2185"
+        },
+        "left": {
+          "shape": [
+            4,
+            4,
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            24,
+            6,
+            2,
+            1
+          ],
+          "sha256": "7a8e18df4da6596983c7f78e32e4a8950db8efa2b6df6ec3e06d0ba08b1e4e00"
+        },
+        "right": {
+          "shape": [
+            4,
+            4,
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            24,
+            6,
+            2,
+            1
+          ],
+          "sha256": "2f54e470689ab848ddfb7e107dacce14dd3542baef94d1be55f878fc510442e7"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.1993136405944824,
+      "cpu_fp64_value": 1.19931369374261,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "mixture_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        },
+        "deploy": {
+          "shape": [
+            4,
+            3,
+            3,
+            4
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            36,
+            12,
+            4,
+            1
+          ],
+          "sha256": "42ce32dfd68f6ae6d1a1458874355288ca74ae141f27d7fe9bd26fdfb5ed60b9"
+        },
+        "teacher": {
+          "shape": [
+            4,
+            4
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "66c05127e24349a70cc6b409c1b4cd30a2a0425c04ca6778214b10e349ce2185"
+        },
+        "left": {
+          "shape": [
+            4,
+            4,
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            24,
+            6,
+            2,
+            1
+          ],
+          "sha256": "7a8e18df4da6596983c7f78e32e4a8950db8efa2b6df6ec3e06d0ba08b1e4e00"
+        },
+        "right": {
+          "shape": [
+            4,
+            4,
+            3,
+            2
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            24,
+            6,
+            2,
+            1
+          ],
+          "sha256": "2f54e470689ab848ddfb7e107dacce14dd3542baef94d1be55f878fc510442e7"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.1993136405944824,
+      "cpu_fp64_value": 1.19931369374261,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "repeat_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "repeat_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "toy_update_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "toy_update_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "toy_skip_fp32": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    },
+    "toy_skip_bf16": {
+      "inputs": {
+        "u": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "918f6b8dfd2a107b7e05998c6172abced3c0d52fde58721c3f694abdad3a748f"
+        },
+        "c": {
+          "shape": [
+            4,
+            3,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            9,
+            3,
+            1
+          ],
+          "sha256": "401e6459cf4f065e5dea055a3194b470d9ccf76880c25c04c454d60e48683d20"
+        },
+        "q": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.float32",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "ff551d9559bea9daf47408d4181b8f2bbb90be7777639ef917f029b9d4aaba01"
+        },
+        "scenes": {
+          "shape": [
+            5
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            1
+          ],
+          "sha256": "3b4785707ef410cfb1a0d7f8d630d248f69dcb0925958f5ef06f788feac77d9a"
+        },
+        "edges": {
+          "shape": [
+            2,
+            4
+          ],
+          "dtype": "torch.int64",
+          "stride": [
+            4,
+            1
+          ],
+          "sha256": "533cf58fc085f78860d2cbd5b8a4ea81cf6b9bd0fb37f7240a629d00f4b073e2"
+        },
+        "mask": {
+          "shape": [
+            5,
+            3
+          ],
+          "dtype": "torch.bool",
+          "stride": [
+            3,
+            1
+          ],
+          "sha256": "69801b353a8f248b5399788172cf8a7758625782651ae1e8b733fd3f5cd875a8"
+        }
+      },
+      "z": [
+        [
+          0,
+          2,
+          2,
+          1,
+          2
+        ],
+        [
+          2,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          2,
+          0,
+          2,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          2
+        ]
+      ],
+      "start_sha256": "7b608b52222c64ff81c0639d13d9ad5c609ca4c56dff2b23b485e93b998c7b0a",
+      "end_sha256": "4deee726ff70df1d59a104e84b1195665e8c6c88186fb39880af35c8016e8aac",
+      "cpu_fp32_value": 1.2461657524108887,
+      "cpu_fp64_value": 1.246165614904343,
+      "draw_calls": 1,
+      "agent_draws": 20
+    }
+  },
+  "payload_sha256": "be6bc77321851b19edf9ede4c26451ba75ae1475e2272176b5de75bc30302bbc",
+  "cuda_initialized": false
+}

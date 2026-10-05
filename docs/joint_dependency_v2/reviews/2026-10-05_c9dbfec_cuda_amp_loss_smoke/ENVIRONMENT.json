@@ -1,0 +1,42 @@
+{
+  "resources_before": {
+    "gpu": "NVIDIA GeForce RTX 5070 Ti, 570.133.07, 16303, 15170",
+    "compute_owners": ""
+  },
+  "environment": {
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002,
+    "device": "NVIDIA GeForce RTX 5070 Ti",
+    "capability": [
+      12,
+      0
+    ],
+    "bf16_native": true
+  },
+  "policy_before": {
+    "threads": 10,
+    "interop_threads": 10,
+    "deterministic": false,
+    "matmul_tf32": false,
+    "cudnn_tf32": true,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "float32_matmul_precision": "highest"
+  },
+  "policy_after": {
+    "threads": 10,
+    "interop_threads": 10,
+    "deterministic": false,
+    "matmul_tf32": false,
+    "cudnn_tf32": true,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "float32_matmul_precision": "highest"
+  },
+  "policies_unchanged": true,
+  "gpu_seconds": 3.334182852995582,
+  "peak_allocated": 135195136,
+  "peak_reserved": 150994944,
+  "initial_sandbox_query": "nvidia-smi unavailable inside sandbox; escalated read-only query succeeded. Actual audit uses escalated GPU access; no driver/environment changes."
+}
