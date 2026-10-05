@@ -1,5 +1,6 @@
 {
-  "status": "GOAL_TRAINING_READY",
+  "status": "FRESH_GOAL_RUNNING",
+  "readiness_status": "GOAL_TRAINING_READY",
   "protocol_id": "p2_grouped_univ_hotel_official_prior_v1",
   "protocol_variant": "official_semantic_prior_v1",
   "strict_clean_claim": false,
@@ -16,6 +17,9 @@
   "fresh_initial_state_sha256": "ff931446488399425f54ea689aaec0409c64319bd2a0ece74cf7366e65d7c8f0",
   "config_sha256": "f1424de50b0b4457f7f62389c597d40ccfe762e94dad9ab50ab1290b702f85ae",
   "formal_training_started_at_readiness": false,
+  "formal_training_started_after_readiness": true,
+  "source_commit": "2fe1320bd775a10ba1e90a1a3452a9cf6aaf1b11",
+  "launch_snapshot": "LAUNCH_SNAPSHOT.json",
   "next_stage": "BACKGROUND_FRESH_GOAL_ONLY",
   "joint": "WAITING_FOR_QUALIFIED_GOAL",
   "stage_a": "WAITING_FOR_QUALIFIED_BASE_AND_CACHE"

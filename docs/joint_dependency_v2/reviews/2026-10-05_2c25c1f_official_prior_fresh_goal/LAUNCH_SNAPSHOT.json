@@ -1,0 +1,33 @@
+{
+  "status": "FRESH_GOAL_RUNNING",
+  "snapshot_time": "2026-10-05T20:27:39+08:00",
+  "source_commit": "2fe1320bd775a10ba1e90a1a3452a9cf6aaf1b11",
+  "pid": 1099608,
+  "session_id": 1099608,
+  "run_name": "grouped_fresh_goal_official_prior_seed3101_20261005_114637",
+  "protocol_id": "p2_grouped_univ_hotel_official_prior_v1",
+  "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+  "fresh_initial_state_sha256": "ff931446488399425f54ea689aaec0409c64319bd2a0ece74cf7366e65d7c8f0",
+  "first_complete_epoch": {
+    "epoch": 1,
+    "checkpoint_sha256": "e230a2e15b8bacfcc92661b7070c1d67f48071f3af8d3311f2b9fcd53e121954",
+    "classification": "FORMAL_EPOCH",
+    "successful_updates": 175,
+    "failed": 0,
+    "skipped": 0,
+    "train_agent_window_exposures": 11122,
+    "inner_packs": 391,
+    "inner_denominator": 24955,
+    "inner_masked_bce": 0.01014839362041837,
+    "scheduler_last_epoch": 1,
+    "boundary": "complete_epoch_post_scheduler",
+    "state_hash_readback": true
+  },
+  "observed_next_progress": {"epoch": 2, "pack_at_least": 75, "successful_updates_at_least": 250},
+  "gpu_snapshot": {"uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484", "used_memory_mib": 1340},
+  "output_dir": "output/hotel/runs/grouped_fresh_goal_official_prior_seed3101_20261005_114637",
+  "runtime_log": "outputs/joint_dependency_v2/official_prior_fresh_goal_2c25c1f_20261005/formal_launch/fresh_goal.log",
+  "no_auto_joint": true,
+  "no_auto_A1": true,
+  "scope": "immutable point-in-time launch snapshot; live logs and checkpoints remain local"
+}

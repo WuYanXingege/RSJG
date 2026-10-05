@@ -1,6 +1,6 @@
 # 官方语义先验独立协议与 fresh goal 验收
 
-结论：**GOAL_TRAINING_READY**。本协议明确采用 GDTS/Goal-SAR 作者发布的语义栅格作为冻结环境输入；分割器训练范围仍为 `UNKNOWN`，因此本结论不是 strict-clean 语义来源认证，也不改变上一份 strict-clean 协议的 `EXTERNAL_EVIDENCE_BLOCKED` 状态。
+结论：验收达到 **GOAL_TRAINING_READY**，随后已在发布 commit `2fe1320bd775a10ba1e90a1a3452a9cf6aaf1b11` 上后台启动，当前状态为 **FRESH_GOAL_RUNNING**。本协议明确采用 GDTS/Goal-SAR 作者发布的语义栅格作为冻结环境输入；分割器训练范围仍为 `UNKNOWN`，因此本结论不是 strict-clean 语义来源认证，也不改变上一份 strict-clean 协议的 `EXTERNAL_EVIDENCE_BLOCKED` 状态。
 
 协议身份为 `p2_grouped_univ_hotel_official_prior_v1`，data binding 为 `c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff`。所有实验臂须使用完全相同、逐文件 SHA256 冻结的作者语义输入；只有 train 可产生梯度，inner 只在预测后读取 target 做选模，outer 不参与训练、调参或本次指标。
 
@@ -20,6 +20,8 @@
 
 权威机器状态见 [READINESS_MATRIX.json](READINESS_MATRIX.json)，配置见 [FRESH_GOAL_CONFIG.yaml](FRESH_GOAL_CONFIG.yaml)，汇总见 [RESULTS.json](RESULTS.json)。
 
+启动快照见 [LAUNCH_SNAPSHOT.json](LAUNCH_SNAPSHOT.json)：宿主 PID/SID `1099608`，fresh 初态逐位身份匹配；首个完整 epoch 已完成 175 次成功更新、11122 train exposures 和 391-pack/24955 分母 inner selection，并生成 `FORMAL_EPOCH` 原子 checkpoint。快照时已进入 epoch 2。运行中的日志和 checkpoint 保持本地，不提交到 GitHub。
+
 ## 结论边界
 
 - 作者 archive 到本地 `H.txt`、RGB、`pred_mask.png` 的文件字节绑定已核对；这不证明分割模型的训练 fold 或标签来源。
@@ -31,4 +33,4 @@
 
 首次 CPU 回归有 1 个反例触发了未结构化的 `AttributeError`；修复为类型检查后完整重跑通过。失败 attempt 和后续两次通过记录均保留，没有覆盖历史证据。
 
-本归档先随训练源码提交并上传；正式训练启动后另写只读启动快照，不把运行中的日志或 checkpoint 提交到 Git。
+本归档先随训练源码提交并上传，启动快照再以文档提交追加；不把运行中的日志或 checkpoint 提交到 Git。
