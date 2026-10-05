@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "source_commit": "cb5160fa8783cd7c90f0f0453809bf3e84665ed6",
+  "old_definitions_byte_identical": [
+    "_normalize_soft_target",
+    "_reduce_loss",
+    "build_soft_goal_target",
+    "low_rank_mode_log_likelihood",
+    "low_rank_social_mode_loss",
+    "scene_joint_ranking_loss",
+    "best_joint_continuous_refinement_loss",
+    "marginal_goal_log_prob",
+    "pseudo_likelihood_loss",
+    "JointGoalLoss",
+    "scene_balanced_mean",
+    "jdv2_scene_mode_log_score",
+    "jdv2_mixture_composite_loss",
+    "jdv2_posterior_distillation",
+    "jdv2_pseudo_likelihood",
+    "jdv2_scene_kl",
+    "jdv2_relation_kl_per_edge_mode",
+    "jdv2_no_z_pseudo_likelihood_from_local",
+    "jdv2_no_z_relation_kl_per_edge",
+    "jdv2_relation_kl",
+    "jdv2_warmup_beta",
+    "jdv2_teacher_probability",
+    "sparse_relative_motion_loss"
+  ],
+  "new_definitions": [
+    "expected_conditional_composite"
+  ],
+  "production_callers": [],
+  "protected_tracked_paths_unchanged": [
+    "src/models/model.py",
+    "src/parser.py",
+    "src/trainer.py",
+    "src/models",
+    "configs",
+    "docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture"
+  ],
+  "tracked_diff_at_check": [
+    "docs/joint_dependency_v2/reviews/README.md",
+    "src/joint_goal_loss.py"
+  ],
+  "added_parameters": 0,
+  "added_buffers": 0,
+  "model_strict_load_executed": false,
+  "semantics_note": "new standalone library function added; existing definitions unchanged",
+  "library_sha256": "b239b541a5090c18d9d902a6bd1b97da44aef1787e611e4095b92db4d98614aa"
+}

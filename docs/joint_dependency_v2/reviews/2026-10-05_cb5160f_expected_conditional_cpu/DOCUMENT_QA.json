@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "checks": [
+    "json:AUDIT_PLAN.json",
+    "json:CPU_RUN_1.json",
+    "json:CPU_RUN_2.json",
+    "json:RESULTS.json",
+    "json:SOURCE_SCOPE.json",
+    "syntax:joint_goal_loss.py",
+    "syntax:test_jdv2_expected_conditional.py",
+    "syntax:verify_scope.py",
+    "syntax:run_cpu_audit.py",
+    "markdown:COMMANDS.md",
+    "markdown:REVIEW.md",
+    "markdown:INPUT_CONTRACT.md",
+    "MC predeclared constants and all components",
+    "all final test IDs passed"
+  ],
+  "no_tensor_operations": true,
+  "library_sha256": "b239b541a5090c18d9d902a6bd1b97da44aef1787e611e4095b92db4d98614aa",
+  "test_sha256": "57218904d041a08c3b1f3c76f6968625ac90e5215c9892ea349c34f2f8dcb4b3"
+}

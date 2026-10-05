@@ -1,0 +1,2364 @@
+{
+  "status": "PASS",
+  "pytest_exit_code": 0,
+  "wall_seconds": 3.3208351609064266,
+  "environment": {
+    "python": "3.10.21",
+    "torch": "2.8.0+cu128",
+    "pytest": "9.1.1",
+    "threads": 1,
+    "CUDA_VISIBLE_DEVICES": "",
+    "torch_build_cuda": "12.8",
+    "note": "CUDA build version is metadata, not a runtime query"
+  },
+  "test_selectors": [
+    "tests/test_jdv2_expected_conditional.py",
+    "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+    "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+    "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+    "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+    "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+    "tests/test_joint_dependency_v2.py::test_kl_warmup",
+    "tests/test_joint_dependency_v2.py::test_teacher_curriculum"
+  ],
+  "tests": {
+    "attempted": 88,
+    "completed": 88,
+    "failed": 0,
+    "unknown": 0
+  },
+  "synthetic_loss_audit": {
+    "forward_attempted": 1153,
+    "forward_completed": 1098,
+    "forward_rejected": 55,
+    "loss_output_backward_hook_visits": 1073,
+    "grad_attempted": 1071,
+    "grad_completed": 1071,
+    "grad_failed": 0,
+    "measurements": {
+      "chunk_value_torch.float32_[0, 4]": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_gradient_u_torch.float32_[0, 4]": {
+        "max_abs_error": 7.450580596923828e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_gradient_C_torch.float32_[0, 4]": {
+        "max_abs_error": 3.725290298461914e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_value_torch.float32_[0, 1, 3, 4]": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_gradient_u_torch.float32_[0, 1, 3, 4]": {
+        "max_abs_error": 7.450580596923828e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_gradient_C_torch.float32_[0, 1, 3, 4]": {
+        "max_abs_error": 3.725290298461914e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_value_torch.float32_[0, 1, 2, 3, 4]": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_gradient_u_torch.float32_[0, 1, 2, 3, 4]": {
+        "max_abs_error": 7.450580596923828e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_gradient_C_torch.float32_[0, 1, 2, 3, 4]": {
+        "max_abs_error": 3.725290298461914e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "chunk_value_torch.float64_[0, 4]": {
+        "max_abs_error": 0,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_gradient_u_torch.float64_[0, 4]": {
+        "max_abs_error": 1.3877787807814457e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_gradient_C_torch.float64_[0, 4]": {
+        "max_abs_error": 6.938893903907228e-18,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_value_torch.float64_[0, 1, 3, 4]": {
+        "max_abs_error": 0,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_gradient_u_torch.float64_[0, 1, 3, 4]": {
+        "max_abs_error": 1.3877787807814457e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_gradient_C_torch.float64_[0, 1, 3, 4]": {
+        "max_abs_error": 6.938893903907228e-18,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_value_torch.float64_[0, 1, 2, 3, 4]": {
+        "max_abs_error": 0,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_gradient_u_torch.float64_[0, 1, 2, 3, 4]": {
+        "max_abs_error": 1.3877787807814457e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "chunk_gradient_C_torch.float64_[0, 1, 2, 3, 4]": {
+        "max_abs_error": 6.938893903907228e-18,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "onehot_S1_value": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S1_u_gradient": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S1_C_gradient": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S4_value": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S4_u_gradient": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S4_C_gradient": {
+        "max_abs_error": 7.450580596923828e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S7_value": {
+        "max_abs_error": 1.1920928955078125e-7,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S7_u_gradient": {
+        "max_abs_error": 2.9802322387695312e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "onehot_S7_C_gradient": {
+        "max_abs_error": 1.4901161193847656e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "weighted_enumeration_uniform_True": {
+        "max_abs_error": 2.220446049250313e-16,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "weighted_enum_grad_u_True": {
+        "max_abs_error": 1.3877787807814457e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "weighted_enum_grad_C_True": {
+        "max_abs_error": 1.734723475976807e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "weighted_enumeration_uniform_False": {
+        "max_abs_error": 2.220446049250313e-16,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "weighted_enum_grad_u_False": {
+        "max_abs_error": 1.3877787807814457e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "weighted_enum_grad_C_False": {
+        "max_abs_error": 2.7755575615628914e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "N3_K3_chain_27_states": {
+        "max_abs_error": 0,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "rational_S32_value": {
+        "max_abs_error": 2.220446049250313e-16,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "rational_S32_gradient_u": {
+        "max_abs_error": 1.3877787807814457e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "rational_S32_gradient_C": {
+        "max_abs_error": 4.163336342344337e-17,
+        "atol": 1e-10,
+        "rtol": 1e-8,
+        "dtype": "torch.float64"
+      },
+      "Jensen": {
+        "mean_energy_node0": 2.1269280110429727,
+        "expected_conditional_node0": 2.3556485542388774,
+        "performance_result": false
+      },
+      "MC": {
+        "seed": 527015,
+        "repetitions": 1024,
+        "S": 4,
+        "draw_vectors": 4096,
+        "enumerated_states": 8,
+        "N": 3,
+        "K": 2,
+        "E": 2,
+        "dtype": "float64",
+        "exact": [
+          1.1511866389562833,
+          -0.10402556149282642,
+          0.10402556149282641,
+          0.20938565110065702,
+          -0.20938565110065702,
+          -0.05196475510960763,
+          0.05196475510960765,
+          -0.13541165512083156,
+          0.23943721661365797,
+          -0.07397399597982546,
+          -0.03005156551300094,
+          -0.05727405947558889,
+          -0.15211159162506813,
+          0.10923881458519652,
+          0.10014683651546048
+        ],
+        "mean": [
+          1.1484943456785737,
+          -0.10413827090211322,
+          0.1041382709021132,
+          0.2091490490622824,
+          -0.2091490490622824,
+          -0.051222356360102236,
+          0.05122235636010226,
+          -0.1359511368848518,
+          0.24008940778696494,
+          -0.07319791217743057,
+          -0.03094035872468265,
+          -0.05893357752407418,
+          -0.1502154715382082,
+          0.11015593388417641,
+          0.09899311517810594
+        ],
+        "standard_error": [
+          0.003379341913059336,
+          0.00010830632845246521,
+          0.00010830632845246557,
+          0.0004462633406377051,
+          0.0004462633406377052,
+          0.0007133963642914072,
+          0.0007133963642914069,
+          0.0015484104327682282,
+          0.0015936321004851922,
+          0.0014791265492058476,
+          0.001525856509022273,
+          0.001669762498245402,
+          0.002058101141395715,
+          0.001438850578289861,
+          0.0018785462377112077
+        ],
+        "absolute_bias": [
+          0.00269229327770959,
+          0.0001127094092868014,
+          0.00011270940928678752,
+          0.00023660203837461147,
+          0.00023660203837461147,
+          0.0007423987495053935,
+          0.0007423987495053935,
+          0.0005394817640202443,
+          0.0006521911733069763,
+          0.0007760838023948835,
+          0.0008887932116817092,
+          0.0016595180484852909,
+          0.001896120086859937,
+          0.0009171192989798904,
+          0.0011537213373545435
+        ],
+        "bound": [
+          0.01689670966529668,
+          0.0005415317422623261,
+          0.0005415317422623279,
+          0.0022313168031885254,
+          0.002231316803188526,
+          0.003566981921457036,
+          0.0035669819214570343,
+          0.007742052263841141,
+          0.00796816060242596,
+          0.007395632846029237,
+          0.007629282645111365,
+          0.008348812591227009,
+          0.010290505806978574,
+          0.0071942529914493045,
+          0.009392731288556038
+        ],
+        "all_components_pass": true,
+        "component_order": "loss, u row-major (6), C row-major (8)"
+      },
+      "mixture_post_value": {
+        "max_abs_error": 5.960464477539063e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_post_u": {
+        "max_abs_error": 1.4901161193847656e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_post_teacher": {
+        "max_abs_error": 1.979060471057892e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_post_left_factor": {
+        "max_abs_error": 4.6566128730773926e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_post_right_factor": {
+        "max_abs_error": 1.862645149230957e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "gradient_paths_post": {
+        "u": 0.1382235437631607,
+        "teacher": 0.011516454629600048,
+        "deploy": null,
+        "left_factor": 0.02741301618516445,
+        "right_factor": 0.024092670530080795
+      },
+      "mixture_prior_value": {
+        "max_abs_error": 5.960464477539063e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_prior_u": {
+        "max_abs_error": 1.1175870895385742e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_prior_deploy": {
+        "max_abs_error": 2.7939677238464355e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_prior_left_factor": {
+        "max_abs_error": 1.3969838619232178e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_prior_right_factor": {
+        "max_abs_error": 2.7939677238464355e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "gradient_paths_prior": {
+        "u": 0.13248330354690552,
+        "teacher": null,
+        "deploy": 0.011063933372497559,
+        "left_factor": 0.015207132324576378,
+        "right_factor": 0.01736951619386673
+      },
+      "mixture_KL_value": {
+        "max_abs_error": 5.960464477539063e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_KL_teacher": {
+        "max_abs_error": 2.9802322387695312e-8,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_KL_deploy": {
+        "max_abs_error": 7.683411240577698e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "gradient_paths_KL": {
+        "u": null,
+        "teacher": 0.06423496454954147,
+        "deploy": 0.0409926138818264,
+        "left_factor": null,
+        "right_factor": null
+      },
+      "mixture_total_value": {
+        "max_abs_error": 0,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_total_u": {
+        "max_abs_error": 9.313225746154785e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_total_teacher": {
+        "max_abs_error": 2.3283064365386963e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_total_deploy": {
+        "max_abs_error": 1.862645149230957e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_total_left_factor": {
+        "max_abs_error": 2.3283064365386963e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "mixture_total_right_factor": {
+        "max_abs_error": 1.3969838619232178e-9,
+        "atol": 0.000001,
+        "rtol": 0.00001,
+        "dtype": "torch.float32"
+      },
+      "gradient_paths_total": {
+        "u": 0.13535341620445251,
+        "teacher": 0.010254675522446632,
+        "deploy": 0.005360819865018129,
+        "left_factor": 0.021310076117515564,
+        "right_factor": 0.02029622718691826
+      }
+    }
+  },
+  "forbidden_operation_attempts": {
+    "module_forward_attempts": 0,
+    "cuda_initialization_attempts": 0,
+    "checkpoint_load_attempts": 0
+  },
+  "events": [
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00036864797584712505,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.23736126499716192,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00042890897020697594,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0005467640003189445,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.1124121710890904,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00025323498994112015,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00032169907353818417,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00438507494982332,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002179659204557538,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[4]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002913550706580281,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[4]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.003208577982150018,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[4]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000244980095885694,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[7]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002827990101650357,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[7]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.003722155001014471,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_one_hot_matches_existing_fp32_helper_value_and_gradients[7]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021094991825520992,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[1-1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035074097104370594,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[1-1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.001500384067185223,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[1-1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021761504467576742,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[1-3]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034504698123782873,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[1-3]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0015599930193275213,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[1-3]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021771702449768782,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[5-3]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003458049613982439,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[5-3]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.003607862046919763,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_empty_edges_unary_ce_and_unequal_scene_weight[5-3]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0005584700265899301,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_zero_cost_keeps_scene_mean_not_global_agent_mean",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00031249201856553555,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_zero_cost_keeps_scene_mean_not_global_agent_mean",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.002144612022675574,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_zero_cost_keeps_scene_mean_not_global_agent_mean",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00025564106181263924,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_uniform_and_nonuniform_weighted_enumeration",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002027680166065693,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_uniform_and_nonuniform_weighted_enumeration",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03344779892358929,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_uniform_and_nonuniform_weighted_enumeration",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00023284205235540867,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_three_candidate_chain_uniform_enumeration",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020425301045179367,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_three_candidate_chain_uniform_enumeration",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.051079001976177096,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_three_candidate_chain_uniform_enumeration",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00023681006859987974,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_rational_repeated_configurations_are_exact_not_unweighted",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002037340309470892,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_rational_repeated_configurations_are_exact_not_unweighted",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.01867716701235622,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_rational_repeated_configurations_are_exact_not_unweighted",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021805695723742247,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_jensen_counterexample_is_a_target_difference",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020476197823882103,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_jensen_counterexample_is_a_target_difference",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00858890893869102,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_jensen_counterexample_is_a_target_difference",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00020127801690250635,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_s4_mc_mean_and_gradient_against_exact_expectation",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020008499268442392,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_s4_mc_mean_and_gradient_against_exact_expectation",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 1.820414943038486,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_s4_mc_mean_and_gradient_against_exact_expectation",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00023937097284942865,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_fp64_gradcheck_unary_and_asymmetric_cost",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002563321031630039,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_fp64_gradcheck_unary_and_asymmetric_cost",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.27984205400571227,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_fp64_gradcheck_unary_and_asymmetric_cost",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00025149702560156584,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_raw_m4_mixture_dual_ce_and_existing_kl_gradients",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00021553004626184702,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_raw_m4_mixture_dual_ce_and_existing_kl_gradients",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.033080472028814256,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_raw_m4_mixture_dual_ce_and_existing_kl_gradients",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00023858703207224607,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_packed_equals_equal_individual_scene_losses_and_gradients",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020960101392120123,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_packed_equals_equal_individual_scene_losses_and_gradients",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.003856229013763368,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_packed_equals_equal_individual_scene_losses_and_gradients",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00020382797811180353,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_agent_relabel_canonical_flip_transposes_cost_and_gradient",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002034639474004507,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_agent_relabel_canonical_flip_transposes_cost_and_gradient",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.003399053937755525,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_agent_relabel_canonical_flip_transposes_cost_and_gradient",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00020132993813604116,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_candidate_relabel_mask_and_gradient",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020354194566607475,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_candidate_relabel_mask_and_gradient",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.004048167960718274,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_candidate_relabel_mask_and_gradient",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002686668885871768,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_noncontiguous_mask_rng_no_input_mutation_and_repeat_backward",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020964699797332287,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_noncontiguous_mask_rng_no_input_mutation_and_repeat_backward",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.024765709065832198,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_noncontiguous_mask_rng_no_input_mutation_and_repeat_backward",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00023445102851837873,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_chunk_iterable_consumed_once",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020828901324421167,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_chunk_iterable_consumed_once",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.002591770957224071,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_chunk_iterable_consumed_once",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00028074299916625023,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[missing]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00047470605932176113,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[missing]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.001042915042489767,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[missing]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021927303168922663,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[overlap]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00029604590963572264,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[overlap]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00102908699773252,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[overlap]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002173089887946844,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[repeat]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028919894248247147,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[repeat]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009126720251515508,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[repeat]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021374400239437819,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[out_of_order]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00029519095551222563,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[out_of_order]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006908020004630089,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[out_of_order]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021334493067115545,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[empty]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002857120707631111,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[empty]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006347710732370615,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[empty]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002130270004272461,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[too_far]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028653605841100216,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[too_far]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006233700551092625,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[too_far]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002611679956316948,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002867700532078743,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007051200373098254,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021191290579736233,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[wrong_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028617901261895895,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[wrong_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006435730028897524,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[wrong_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021241710055619478,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_float]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028566201217472553,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_float]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006245749536901712,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_float]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002135460963472724,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_bool]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034897204022854567,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_bool]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006276719504967332,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bound_bool]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021221698261797428,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bad_tuple]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002850819146260619,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bad_tuple]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007056810427457094,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[bad_tuple]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029541191179305315,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[cost_not_tensor]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00036281009670346975,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[cost_not_tensor]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006864620372653008,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[cost_not_tensor]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002154569374397397,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[nan]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002867619041353464,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[nan]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006748880259692669,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[nan]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021286995615810156,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002858290681615472,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006738569354638457,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002122080186381936,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[negative_inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028658402152359486,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[negative_inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007323140744119883,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[negative_inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021305307745933533,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[meta_device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002849799348041415,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[meta_device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.01089774805586785,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_chunks_rejected[meta_device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00022245198488235474,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_trainable]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00030304596293717623,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_trainable]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004547419957816601,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_trainable]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002128100022673607,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028634502086788416,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00043069408275187016,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021178589668124914,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002863520057871938,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005203330656513572,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021293095778673887,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_not_normalized]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00029179104603827,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_not_normalized]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000492024002596736,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_not_normalized]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021253200247883797,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_nan]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028746493626385927,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_nan]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004134270129725337,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_nan]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021108496002852917,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028400495648384094,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00041111698374152184,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002596980193629861,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_nan]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028576108161360025,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_nan]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00040196406189352274,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_nan]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021120510064065456,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_inf]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002874589990824461,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_inf]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004070729482918978,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_inf]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021070707589387894,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_half]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028509204275906086,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_half]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009231040021404624,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_half]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021424400620162487,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002854570047929883,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00035738805308938026,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021083001047372818,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028849602676928043,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00036289601121097803,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00023008801508694887,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004058720078319311,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004820919129997492,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003535320283845067,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00029394507873803377,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00036149309016764164,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021376204676926136,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028800906147807837,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003564439248293638,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021097902208566666,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002854869235306978,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003624788951128721,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021188403479754925,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_empty]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003411940997466445,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_empty]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003938219742849469,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[mask_empty]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021232501603662968,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_off_support]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028450903482735157,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_off_support]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004821689799427986,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_off_support]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021210999693721533,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_off_support]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028520997148007154,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_off_support]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005767419934272766,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_off_support]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021299195941537619,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003374230582267046,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005176080157980323,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002128429478034377,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_too_large]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028608995489776134,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_too_large]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005200069863349199,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_too_large]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021301000379025936,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028604804538190365,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005415660561993718,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021384202409535646,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_too_large]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003332009073346853,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_too_large]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005407310090959072,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_too_large]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021263398230075836,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[self_edge]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002864160342141986,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[self_edge]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005544299492612481,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[self_edge]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021146005019545555,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[reverse_edge]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028509495314210653,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[reverse_edge]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005816590273752809,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[reverse_edge]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021133199334144592,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[duplicate]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004033850273117423,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[duplicate]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0008616249542683363,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[duplicate]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002772919833660126,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[cross_scene]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003477269783616066,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[cross_scene]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006444050231948495,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[cross_scene]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002150359796360135,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002910420298576355,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00041297893039882183,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[u_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021413702052086592,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002855050843209028,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00035586790181696415,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[q_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002119269920513034,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028990290593355894,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00035968597512692213,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[scene_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002107660984620452,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028485595248639584,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00035445590037852526,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[edge_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002105210442095995,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_shape]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028797006234526634,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_shape]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00036008108872920275,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[z_shape]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002108569024130702,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[N_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028656201902776957,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[N_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003579700132831931,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[N_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002102219732478261,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[K_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002846240531653166,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[K_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003656770568341017,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[K_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021116901189088821,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[S_zero]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002859480446204543,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[S_zero]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00040464894846081734,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[S_zero]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021135900169610977,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[not_tensor]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00028525199741125107,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[not_tensor]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00033718894701451063,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[not_tensor]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021159998141229153,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[meta_device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002859359374269843,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[meta_device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003507710061967373,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_invalid_inputs_rejected[meta_device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021231896243989468,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_nonfinite_masked_values_also_rejected_and_overflow_explicit",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020257593132555485,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_nonfinite_masked_values_also_rejected_and_overflow_explicit",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0020002679666504264,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_expected_conditional.py::test_nonfinite_masked_values_also_rejected_and_overflow_explicit",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021654600277543068,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002071260241791606,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0009775700746104121,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_pseudo_likelihood_no_edges_reduces_to_unary_scene_balanced",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002004449488595128,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00020261097233742476,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.046865515992976725,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_scene_mode_score_and_mixture_match_manual_enumeration",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003949180245399475,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00025025103241205215,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0011333960574120283,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_mixture_and_posterior_distillation_gradient_ownership",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00023099302779883146,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0002302589127793908,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006801020354032516,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_and_scene_kl_are_finite_with_empty_edge",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002720440970733762,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00022937904577702284,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0011751080164685845,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_relation_kl_detaches_scene_responsibility_weight",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00022534001618623734,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.0-0.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0004279121058061719,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.0-0.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00031525001395493746,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.0-0.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002197090070694685,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.1-0.05]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035141000989824533,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.1-0.05]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00022299401462078094,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.1-0.05]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021807895973324776,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.2-0.1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035191792994737625,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.2-0.1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00029029499273747206,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[0.2-0.1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002172669628635049,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[1.0-0.1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003533370327204466,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[1.0-0.1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00022366410121321678,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_kl_warmup[1.0-0.1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002171848900616169,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.0-1.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0003562869969755411,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.0-1.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00022064405493438244,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.0-1.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002164600882679224,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.2-1.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00034902303013950586,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.2-1.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00022171996533870697,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.2-1.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021564390044659376,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.4-0.5]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00040853896643966436,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.4-0.5]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00022133905440568924,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.4-0.5]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021742295939475298,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.6-0.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035023398231714964,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.6-0.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00022079003974795341,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[0.6-0.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00021794892381876707,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[1.0-0.0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.00035058101639151573,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[1.0-0.0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002195499837398529,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_joint_dependency_v2.py::test_teacher_curriculum[1.0-0.0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002179740695282817,
+      "failure": null
+    }
+  ],
+  "pytest_stdout": "........................................................................ [ 81%]\n................                                                         [100%]\n=============================== warnings summary ===============================\ntests/test_jdv2_expected_conditional.py::test_asymmetric_direction_dense_chunks_reference_gradients[dtype0]\n  /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/tests/test_jdv2_expected_conditional.py:146: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.\n  Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:835.)\n    assert abs(float(wrong-reference)) > .01  # fixture detects axis reversal\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n88 passed, 1 warning in 3.08s\n"
+}

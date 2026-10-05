@@ -1,0 +1,13 @@
+{
+  "status": "PREDECLARED_BEFORE_FIRST_TEST_RUN",
+  "scope": "standalone CPU loss and synthetic tensor tests only",
+  "mc": {"seed": 527015, "independent_repetitions": 1024, "S": 4, "dtype": "float64", "N": 3, "K": 2, "E": 2, "acceptance": "each loss/gradient component abs(mean-reference) <= 5*SE + 1e-10", "resampling_on_failure": false},
+  "reference_tolerances": {"float64": {"atol": 1e-10, "rtol": 1e-8}, "float32": {"atol": 1e-6, "rtol": 1e-5}},
+  "gradcheck": {"dtype": "float64", "eps": 1e-6, "atol": 1e-5, "rtol": 0.001, "fast_mode": false, "reason": "finite-difference discretization tolerance distinct from exact reference comparisons"},
+  "labels": "reject requires_grad=True; no normalization or detach",
+  "devices": "CPU only; no AMP/CUDA certification",
+  "cpu_test_wall_cap_seconds": 3600,
+  "model_calls_permitted": 0,
+  "gpu_calls_permitted": 0,
+  "training_runs_permitted": 0
+}

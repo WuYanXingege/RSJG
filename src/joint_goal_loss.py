@@ -1,6 +1,6 @@
 """Numerically stable objectives for low-rank, sparse joint goal models."""
 
-from typing import Dict, Optional, Tuple, Union
+from typing import Dict, Iterable, Optional, Tuple, Union
 
 import torch
 from torch import nn
@@ -929,6 +929,170 @@ def sparse_relative_motion_loss(
         predicted_relative.float(), target_relative.float(), reduction="mean")
 
 
+def expected_conditional_composite(
+        unary_score: torch.Tensor,
+        soft_goal_target: torch.Tensor,
+        scene_index: torch.Tensor,
+        edge_index: torch.Tensor,
+        edge_cost_chunks: Iterable[Tuple[int, int, torch.Tensor]],
+        neighbor_ids: torch.Tensor,
+        candidate_mask: Optional[torch.Tensor] = None,
+) -> torch.Tensor:
+    """Scene-balanced conditional CE averaged over externally supplied draws.
+
+    This standalone, CPU-only loss is NOT integrated into model/trainer.
+    Floating inputs u/q/C must all be dense strided CPU FP32 or all FP64.
+    FP64 is preserved (including reductions); no implicit dtype conversion.
+    All entries, including masked entries, must be finite. Numerical overflow
+    in accumulated costs/logits/log probabilities/loss raises FloatingPointError.
+
+    u/q: [N,K], N,K>0. Endpoint q must NOT require gradients; rows must be
+    nonnegative, positive-mass, normalized within absolute tolerance 1e-6
+    (FP32) or 1e-12 (FP64), and exactly zero off support. No renormalization or
+    detach occurs. This restriction does NOT apply to relation-teacher logits
+    upstream of C: cost and unary autograd paths are preserved.
+
+    scene_index: int64 [N], arbitrary (possibly non-contiguous/signed) labels.
+    edge_index: int64 [2,E], unique canonical src<dst edges inside a scene.
+    neighbor_ids: int64 [S,N], S>0, valid candidate IDs for their own agents.
+    candidate_mask: optional bool [N,K], at least one True per agent.
+    All integer/mask tensors must also be dense strided CPU tensors.
+
+    Chunks form a one-pass iterable of (start, stop, C[stop-start,K,K]).
+    Bounds are Python ints and must cover [0,E) in order, without empty,
+    overlapping, repeated or missing intervals. E=0 requires an empty iterable.
+    C axis 1 belongs to src; axis 2 to dst. No input tensor is modified.
+
+    All chunks are accumulated before a single candidate log_softmax per
+    draw/agent; then agents are averaged inside each occupied scene, scenes
+    equally, and finally draws equally. No degree normalization or RNG.
+    Extra working tensors are O(S*N*K) and per-draw O(E_chunk*K) gathers;
+    no S copies of the full E*K*K cost are created. Autograd retains its graph
+    across chunks, so this is not a guarantee of chunk-bounded backward memory.
+    CUDA, reduced precision and production integration remain unvalidated.
+    """
+    tensors = {
+        "unary_score": unary_score, "soft_goal_target": soft_goal_target,
+        "scene_index": scene_index, "edge_index": edge_index,
+        "neighbor_ids": neighbor_ids,
+    }
+    if candidate_mask is not None:
+        tensors["candidate_mask"] = candidate_mask
+    for name, value in tensors.items():
+        if not isinstance(value, torch.Tensor):
+            raise TypeError(f"{name} must be a Tensor")
+        if value.device.type != "cpu" or value.layout != torch.strided:
+            raise ValueError(f"{name} must be a dense strided CPU tensor")
+    if unary_score.dtype not in (torch.float32, torch.float64):
+        raise TypeError("unary_score must be FP32 or FP64")
+    if soft_goal_target.dtype != unary_score.dtype:
+        raise TypeError("soft_goal_target and unary_score must share dtype")
+    if unary_score.ndim != 2 or min(unary_score.shape) <= 0:
+        raise ValueError("unary_score must have shape [N,K] with N,K>0")
+    n, k = unary_score.shape
+    if soft_goal_target.shape != (n, k):
+        raise ValueError("soft_goal_target must have shape [N,K]")
+    if soft_goal_target.requires_grad:
+        raise ValueError("endpoint soft_goal_target must not require gradients")
+    for name in ("scene_index", "edge_index", "neighbor_ids"):
+        if tensors[name].dtype != torch.int64:
+            raise TypeError(f"{name} must be int64")
+    if scene_index.shape != (n,):
+        raise ValueError("scene_index must have shape [N]")
+    if edge_index.ndim != 2 or edge_index.shape[0] != 2:
+        raise ValueError("edge_index must have shape [2,E]")
+    if neighbor_ids.ndim != 2 or neighbor_ids.shape[1] != n or \
+            neighbor_ids.shape[0] <= 0:
+        raise ValueError("neighbor_ids must have shape [S,N] with S>0")
+    if candidate_mask is None:
+        mask = torch.ones((n, k), dtype=torch.bool, device=unary_score.device)
+    else:
+        if candidate_mask.dtype != torch.bool:
+            raise TypeError("candidate_mask must be bool")
+        if candidate_mask.shape != (n, k):
+            raise ValueError("candidate_mask must have shape [N,K]")
+        mask = candidate_mask
+    if not mask.any(dim=-1).all():
+        raise ValueError("every agent must have nonempty candidate support")
+    if not torch.isfinite(unary_score).all() or \
+            not torch.isfinite(soft_goal_target).all():
+        raise ValueError("unary_score and soft_goal_target must be all finite")
+    if (soft_goal_target < 0).any() or \
+            (soft_goal_target.masked_select(~mask) != 0).any():
+        raise ValueError("endpoint q must be nonnegative and zero off support")
+    mass = soft_goal_target.sum(dim=-1)
+    tolerance = 1e-12 if unary_score.dtype == torch.float64 else 1e-6
+    if (mass <= 0).any() or not torch.allclose(
+            mass, torch.ones_like(mass), atol=tolerance, rtol=0):
+        raise ValueError("endpoint q rows must have positive normalized mass")
+    if ((neighbor_ids < 0) | (neighbor_ids >= k)).any():
+        raise ValueError("neighbor_ids candidate index out of range")
+    if not mask.gather(1, neighbor_ids.transpose(0, 1)).all():
+        raise ValueError("neighbor_ids must belong to each agent's support")
+    e = edge_index.shape[1]
+    if ((edge_index < 0) | (edge_index >= n)).any():
+        raise ValueError("edge_index agent index out of range")
+    src, dst = edge_index.unbind(0)
+    if (src >= dst).any():
+        raise ValueError("edges must be canonical src<dst, without self edges")
+    if torch.unique(edge_index, dim=1).shape[1] != e:
+        raise ValueError("duplicate undirected edge")
+    if (scene_index[src] != scene_index[dst]).any():
+        raise ValueError("cross-scene edge")
+
+    with torch.autocast(device_type="cpu", enabled=False):
+        local = [torch.zeros_like(unary_score) for _ in range(neighbor_ids.shape[0])]
+        cursor = 0
+        for chunk in edge_cost_chunks:
+            if not isinstance(chunk, (tuple, list)) or len(chunk) != 3:
+                raise ValueError("each chunk must be (start, stop, cost)")
+            start, stop, cost = chunk
+            if type(start) is not int or type(stop) is not int:
+                raise TypeError("chunk bounds must be Python ints")
+            if start != cursor or not start < stop <= e:
+                raise ValueError("chunks must cover edges in contiguous nonempty order")
+            if not isinstance(cost, torch.Tensor):
+                raise TypeError("chunk cost must be a Tensor")
+            if cost.device.type != "cpu" or cost.layout != torch.strided:
+                raise ValueError("chunk cost must be a dense strided CPU tensor")
+            if cost.dtype != unary_score.dtype:
+                raise TypeError("chunk cost and unary_score must share dtype")
+            if cost.shape != (stop - start, k, k):
+                raise ValueError("chunk cost must have shape [stop-start,K,K]")
+            if not torch.isfinite(cost).all():
+                raise ValueError("chunk cost must be all finite, even off support")
+            source, destination = src[start:stop], dst[start:stop]
+            for s, ids in enumerate(neighbor_ids.unbind(0)):
+                source_cost = cost.gather(
+                    2, ids[destination, None, None].expand(-1, k, 1)).squeeze(2)
+                destination_cost = cost.gather(
+                    1, ids[source, None, None].expand(-1, 1, k)).squeeze(1)
+                # Out-of-place additions retain repeated-index gradients and
+                # never mutate an input or an already-used view in the graph.
+                local[s] = local[s].index_add(0, source, source_cost)
+                local[s] = local[s].index_add(0, destination, destination_cost)
+            cursor = stop
+        if cursor != e:
+            raise ValueError("chunks do not completely cover edge_index")
+        accumulated = torch.stack(local, dim=0)  # [S,N,K]
+        logits = unary_score.unsqueeze(0) - accumulated
+        if not torch.isfinite(accumulated).all() or not torch.isfinite(logits).all():
+            raise FloatingPointError("conditional cost/logit overflow")
+        log_prob = F.log_softmax(logits.masked_fill(~mask[None], -torch.inf), dim=-1)
+        # Remove masked -inf BEFORE multiplication (not where(q*logp,...)).
+        safe_log_prob = log_prob.masked_fill(~mask[None], 0)
+        if not torch.isfinite(safe_log_prob).all():
+            raise FloatingPointError("conditional log probability overflow")
+        per_agent = -(soft_goal_target[None] * safe_log_prob).sum(dim=-1)
+        _, compact, counts = torch.unique(
+            scene_index, return_inverse=True, return_counts=True)
+        weights = counts[compact].to(unary_score.dtype).reciprocal() / counts.numel()
+        result = (per_agent * weights[None]).sum(dim=-1).mean()
+        if not torch.isfinite(result):
+            raise FloatingPointError("conditional loss overflow")
+        return result
+
+
 # Compatibility aliases for concise integration code.
 build_soft_goal_targets = build_soft_goal_target
 low_rank_mode_nll = low_rank_social_mode_loss
@@ -936,6 +1100,7 @@ pseudo_likelihood_goal_loss = pseudo_likelihood_loss
 
 
 __all__ = [
+    "expected_conditional_composite",
     "build_soft_goal_target",
     "build_soft_goal_targets",
     "low_rank_mode_log_likelihood",
