@@ -1,0 +1,176 @@
+{
+  "status": "CPU_MC_WIRING_RNG_CHECKPOINT_CERTIFIED_GPU_PENDING",
+  "review_date": "2026-10-05",
+  "source_commit": "dcf5fde1aa77f62a25a9209fd91e4f854a21510a",
+  "branch": "research/joint-dependency-v2-clean",
+  "scope": "CPU constructor-free raw-parameter wiring + fixed-input epoch-boundary toy resume only",
+  "tests": {
+    "latest_unique_passed": 166,
+    "new_wiring": 70,
+    "legacy_parser_resume": 4,
+    "pure_loss": 92,
+    "total_attempts_including_reruns": 247,
+    "passed_attempts": 221,
+    "failed_attempts": 26,
+    "runs": [
+      {
+        "file": "PURE_LOSS_RUN.json",
+        "cases": 92,
+        "passed": 92,
+        "failed": 0,
+        "seconds": 2.9049839639337733
+      },
+      {
+        "file": "CPU_RUN_1_TRUNCATED.txt",
+        "summary": "CPU_RUN_1_SUMMARY.json",
+        "cases": 59,
+        "passed": 33,
+        "failed": 26,
+        "seconds": 7.700313120032661
+      },
+      {
+        "file": "CPU_RUN_2.json",
+        "cases": 26,
+        "passed": 26,
+        "failed": 0,
+        "seconds": 3.1483035340206698
+      },
+      {
+        "file": "CPU_RUN_3.json",
+        "cases": 68,
+        "passed": 68,
+        "failed": 0,
+        "seconds": 7.0353104510577396
+      },
+      {
+        "file": "CPU_RUN_4.json",
+        "cases": 2,
+        "passed": 2,
+        "failed": 0,
+        "seconds": 1.6857852069661021
+      }
+    ],
+    "cpu_runner_seconds": 22.474696276010945,
+    "budget_seconds": 3600,
+    "numerics": {
+      "fp32": {
+        "atol": 0.000001,
+        "rtol": 0.00001
+      },
+      "fp64_pure_loss": {
+        "atol": 1e-10,
+        "rtol": 1e-8
+      },
+      "wiring_max_recorded_absolute_error": 8.009374141693115e-8,
+      "legacy_values_gradients_keys_coefficients": "exact pinned-source comparison"
+    }
+  },
+  "resume": {
+    "exact": true,
+    "continuous_updates": 9,
+    "prefix_updates": 3,
+    "child_updates": 6,
+    "independent_resume_processes": 1,
+    "child_counts": {
+      "production_loss_calls": 6,
+      "synthetic_encode_calls": 6,
+      "relation_chunks": 12,
+      "energy_factor_chunks": 12,
+      "energy_mixtures": 24,
+      "backward_calls": 6,
+      "toy_optimizer_updates": 6,
+      "draws": 6,
+      "sampled_rows": 120,
+      "checkpoint_save_calls": 0,
+      "checkpoint_load_calls": 1
+    },
+    "compared_fields": [
+      "step",
+      "ids",
+      "losses",
+      "total",
+      "coefficients",
+      "gradients",
+      "parameters",
+      "optimizer",
+      "scheduler",
+      "progress",
+      "rng_sha256",
+      "draws",
+      "rows",
+      "updates"
+    ],
+    "trace_sha256": "88d99c99a1ead16e6d2405672cfa239289564af4606e8beb9a1afaea08bab433"
+  },
+  "execution": {
+    "aggregate_counts_include_explicitly_reconstructed_first_run": true,
+    "source_of_counts": "CPU_RUN_1_SUMMARY derived + complete RUN2/3/4 parent counters + two six-update children; pure-loss API counts remain in PURE_LOSS_RUN",
+    "production_no_z_dispatch_fixture_calls": 286,
+    "production_mc_method_fixture_calls": 284,
+    "pinned_baseline_compiled_method_calls": 2,
+    "synthetic_encode_stub_calls": 285,
+    "backward_or_gradient_api_calls_wiring": 282,
+    "toy_successful_optimizer_updates": 279,
+    "objective_draw_calls": 307,
+    "sampled_agent_draws": 5732,
+    "independent_resume_children": 2,
+    "test_runner_processes": 5,
+    "synthetic_nn_module_forwards": 0,
+    "toy_serialization_delegated_calls": 153,
+    "injected_serialization_failures_not_in_delegated_counter": 2,
+    "toy_checkpoint_load_delegated_calls": 128,
+    "first_runner_false_positive_toy_load_rejections": 25,
+    "real_network_full_a_encoder_message_gru_relation_energy_sampler_diffusion_corrector_calls": 0,
+    "gpu_calls": 0,
+    "data_training_runs": 0,
+    "data_evaluation_runs": 0,
+    "real_bank_reads": 0,
+    "real_checkpoint_reads": 0,
+    "real_checkpoint_writes": 0,
+    "sdd_interventions": 0,
+    "skills_apps_changes": 0
+  },
+  "implementation": {
+    "new_objective_cpu_wiring": true,
+    "default_legacy_training_inference_semantics_changed": false,
+    "CUDA_AMP_certified": false,
+    "real_training_resume_certified": false,
+    "new_parameters": 0,
+    "new_buffers": 0,
+    "objective_state_in_model_state_dict": false,
+    "stage_a_accumulation": 1,
+    "network_dtype_boundary": "existing FP32 target/cost boundaries unchanged; FP64 pure loss and RNG validated, not a full FP64 neural-model contract",
+    "memory": "two complete post/prior chunk lists retain upstream autograd graphs; not chunk-bounded peak memory"
+  },
+  "metadata_matrix": {
+    "old_to_mean": "PASS",
+    "mc_to_same": "PASS exact subprocess + deferred restoration",
+    "mc_to_mean_train": "REJECT",
+    "old_mean_to_mc_same_stage": "REJECT including baseline_initialization=True",
+    "fresh_base_to_mc": "PASS reset optimizer/scheduler/progress/RNG",
+    "mc_weights_only_eval": "PASS no objective RNG restoration/draw",
+    "version_device_sampling_fingerprint": "REJECT",
+    "missing_corrupt_rng_negative_counters_progress": "REJECT",
+    "pending_request": "REJECT save and resume",
+    "best_numbered_resume": "REJECT",
+    "last_epoch_boundary": "PASS",
+    "invalid_load_state_pollution": "NONE observed in fixtures",
+    "atomic": "serialization/flush/file-fsync/replace preserve old; post-rename directory-fsync committed durability unknown"
+  },
+  "limitations": [
+    "First-run stdout was truncated by tool; original retained, affected ledger derived explicitly, not recovered raw counters.",
+    "Model constructor/real encode/networks/loaders/inference replaced or unexecuted; no real GPU output parity claim.",
+    "Checkpoint scope excludes data order/workers/augmentation/global RNG/CUDA nondeterminism; fixed input sequence only.",
+    "FP64 certification belongs to pure loss + owner; production-like wiring exercised existing FP32 boundaries.",
+    "No JADE/JFDE, pair causality, novelty, historical 29 IDs or observer-neutrality upgrade."
+  ],
+  "next_gate": "Separate authorization for same-device CUDA/AMP pure operators and minimal real-model smoke; clean provenance + preregistration/budget before efficacy training.",
+  "artifacts": {
+    "report": "REVIEW.md",
+    "mode_contract": "INPUT_AND_MODE_CONTRACT.md",
+    "rng_contract": "RNG_CHECKPOINT_CONTRACT.md",
+    "source_scope": "SOURCE_SCOPE.json",
+    "commands": "COMMANDS.md",
+    "hashes": "ARTIFACT_HASHES.json"
+  }
+}

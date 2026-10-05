@@ -12,6 +12,7 @@ sys.path.append('.')  # needed lo launch from .
 sys.path.append('..')  # needed lo launch from ./scripts
 
 from src.utils import str2bool
+from src.jdv2_objective_state import validate_mode
 
 
 GOAL_MODEL_ALIASES = {
@@ -183,6 +184,10 @@ def get_parser():
         help=('Explicitly pin the commit that built a reusable JDV2 cache. '
               'All data/checkpoint/graph fields remain strictly validated.'))
     parser.add_argument('--jdv2_stage_progress', default=0.0, type=float)
+    parser.add_argument('--jdv2_goal_objective', default='mean_energy',
+                        choices=['mean_energy', 'expected_conditional_mc'])
+    parser.add_argument('--jdv2_neighbor_draws', default=4, type=int)
+    parser.add_argument('--jdv2_neighbor_seed', default=None, type=int)
     parser.add_argument(
         '--jdv2_latent_objective',
         default='v2_marginal_responsibility',
@@ -611,6 +616,7 @@ def check_and_add_additional_args(args):
     args.jdv2_active = bool(
         args.use_scene_latent or args.use_dynamic_relation or
         args.use_joint_energy or args.use_dependency_corrector)
+    validate_mode(args)  # Before CUDA availability queries or model construction.
     if (args.run_name is not None and
             re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*', args.run_name) is None):
         raise ValueError(

@@ -1,0 +1,763 @@
+Warning: truncated output (original token count: 51440)
+Total output lines: 1338
+
+{
+  "status": "FAILED",
+  "exit_code": 1,
+  "wall_seconds": 7.700313120032661,
+  "selectors": [
+    "tests/test_jdv2_mc_wiring.py",
+    "tests/test_jdv2_resume_stopping_state.py",
+    "tests/test_joint_dependency_v2_integration.py::test_validation_seed_defaults_to_training_seed",
+    "tests/test_joint_dependency_v2_integration.py::test_cross_stage_load_resets_epoch_and_progress_while_same_stage_resumes"
+  ],
+  "events": [
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_legacy_actual_method_against_pinned_source",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.001937245950102806,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_legacy_actual_method_against_pinned_source",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.04380740795750171,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_legacy_actual_method_against_pinned_source",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003694508923217654,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-True]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007833460113033652,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-True]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030595941934734583,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-True]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00038185203447937965,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-False]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008219178998842835,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-False]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.014107810915447772,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[5-False]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003603929653763771,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[1-False]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007754520047456026,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[1-False]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.005761618027463555,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_actual_wiring_reference_and_draw_chunk_counts[1-False]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029365799855440855,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_rng_isolation_seed_snapshot_restore",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006164929363876581,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_rng_isolation_seed_snapshot_restore",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.004534387029707432,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_rng_isolation_seed_snapshot_restore",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00027637602761387825,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[negative]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006179099436849356,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[negative]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005190010415390134,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[negative]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000285835936665535,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mass]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006381099810823798,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mass]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000728473998606205,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mass]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003134310245513916,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[trainable]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006847870536148548,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[trainable]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004780150484293699,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[trainable]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002865890273824334,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mask]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006296680076047778,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mask]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0005132649093866348,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[mask]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002852079924196005,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[dtype]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006342190317809582,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[dtype]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.059574411949142814,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[dtype]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004223280120640993,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009291339665651321,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0006451149238273501,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000414749956689775,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[scene]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008963110158219934,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[scene]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0010292170336470008,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[scene]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00037199293728917837,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[edge]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008263969793915749,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[edge]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0007978799985721707,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_invalid_request_does_not_consume[edge]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00036925694439560175,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[device-cuda:0]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009391560452058911,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[device-cuda:0]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004080398939549923,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[device-cuda:0]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003857340198010206,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_enabled-True]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009509560186415911,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_enabled-True]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004013449652120471,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_enabled-True]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00038892205338925123,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_dtype-bf16]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009440780850127339,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_dtype-bf16]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0004001779016107321,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[amp_dtype-bf16]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00038714706897735596,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_draws-8]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009481270099058747,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_draws-8]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00039077200926840305,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_draws-8]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003852450754493475,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_goal_objective-unknown]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009440049761906266,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_goal_objective-unknown]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003900890005752444,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_goal_objective-unknown]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003898739814758301,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_trajectory]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009537760633975267,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_trajectory]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00039124907925724983,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_trajectory]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003840810386464,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_finetune]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009416920365765691,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_finetune]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00038907607086002827,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[training_stage-joint_finetune]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002968830522149801,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_latent_objective-v2_marginal_responsibility]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009172059362754226,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_latent_objective-v2_marginal_responsibility]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.00030005304142832756,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_latent_objective-v2_marginal_responsibility]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002942309947684407,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[goal_model_type-independent]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007250710623338819,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[goal_model_type-independent]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002982919104397297,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[goal_model_type-independent]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029486604034900665,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[dataset-sdd]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007789389928802848,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[dataset-sdd]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0003010430373251438,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[dataset-sdd]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002955499803647399,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[trajectory_coupling-multiway_v4]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007288539782166481,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[trajectory_coupling-multiway_v4]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.000301807071082294,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[trajectory_coupling-multiway_v4]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00029469293076545,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_seed--1]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000731204985640943,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_seed--1]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0002995090326294303,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_mode_gate_before_constructor[jdv2_neighbor_seed--1]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035046401899307966,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0005631269887089729,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.004456943948753178,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_parser_and_eval_reject_be0')\n\n    def test_parser_and_eval_reject_before_draw(tmp_path):\n        raw = parser.get_parser().parse_args([\n            '--dataset', 'eth5', '--device', 'cpu', '--goal_model_type', 'jdv2',\n            '--training_stage', 'joint_goal', '--use_scene_latent', 'False',\n            '--jdv2_latent_objective', 'strict_no_z', '--jdv2_goal_objective', MC])\n>       checked = parser.check_and_add_additional_args(raw)\n\ntests/test_jdv2_mc_wiring.py:206: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nargs = Namespace(dataset='eth5', test_set='sdd', run_name=None, skip_ts_window=1, down_factor=8, phase='train_test', load_che...producibility=True, seed=2025, validation_seed=2025, pretrain_path=None, goal_pretrain_checkpoint=None, use_cuda=False)\n\n    def check_and_add_additional_args(args):\n        \"\"\"\n        Add default paths, device and other additional args to parsed args\n        \"\"\"\n        args.goal_model_type = normalize_goal_model_type(args.goal_model_type)\n        if args.validation_seed is None:\n            args.validation_seed = args.seed\n        args.jdv2_active = bool(\n            args.use_scene_latent or args.use_dynamic_relation or\n            args.use_joint_energy or args.use_dependency_corrector)\n        validate_mode(args)  # Before CUDA availability queries or model construction.\n        if (args.run_name is not None and\n                re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*', args.run_name) is None):\n            raise ValueError(\n                'run_name must start with a letter/digit and contain only '\n                'letters, digits, underscore, hyphen, or dot')\n        integer_minimums = {\n            'skip_ts_window': (args.skip_ts_window, 1),\n            'down_factor': (args.down_factor, 1),\n            'batch_size': (args.batch_size, 1),\n            'num_workers': (args.num_workers, 0),\n            'num_epochs': (args.num_epochs, 1),\n            'validate_every': (args.validate_every, 1),\n            'start_validation': (args.start_validation, 0),\n            'early_stopping_patience': (args.early_stopping_patience, 0),\n            'num_test_runs': (args.num_test_runs, 1),\n            'validation_seed': (args.validation_seed, 0),\n            'ddpm_step': (args.ddpm_step, 1),\n            'ddim_step': (args.ddim_step, 1),\n            'trunk_stage_step': (args.trunk_stage_step, 0),\n            'adaptive_graph_hidden_dim': (args.adaptive_graph_hidden_dim, 1),\n            'adaptive_graph_top_k': (args.adaptive_graph_top_k, 0),\n            'baseline_unfreeze_epoch': (args.baseline_unfreeze_epoch, 1),\n            'continuous_refinement_steps': (\n                args.continuous_refinement_steps, 1),\n            'trajectory_alignment_hidden_dim': (\n                args.trajectory_alignment_hidden_dim, 1),\n            'trajectory_alignment_sinkhorn_iters': (\n                args.trajectory_alignment_sinkhorn_iters, 1),\n            'trajectory_alignment_steps': (args.trajectory_alignment_steps, 1),\n            'trajectory_alignment_top_k_edges': (\n                args.trajectory_alignment_top_k_edges, 0),\n            'trajectory_dim': (args.trajectory_dim, 1),\n            'sync_iterations': (args.sync_iterations, 1),\n            'sinkhorn_iterations': (args.sinkhorn_iterations, 1),\n            'sync_inference_top_k_edges': (\n                args.sync_inference_top_k_edges, 0),\n            'coupling_grad_accum_steps': (args.coupling_grad_accum_steps, 1),\n            'num_cached_seeds_per_window': (\n                args.num_cached_seeds_per_window, 1),\n            'max_agents_per_pack': (args.max_agents_per_pack, 1),\n            'max_edges_per_pack': (args.max_edges_per_pack, 0),\n            'max_scenes_per_pack': (args.max_scenes_per_pack, 1),\n            'jdv2_scene_modes': (args.jdv2_scene_modes, 1),\n            'jdv2_relation_modes': (args.jdv2_relation_modes, 1),\n            'jdv2_energy_rank': (args.jdv2_energy_rank, 1),\n            'jdv2_edge_chunk_size': (args.jdv2_edge_chunk_size, 1),\n        }\n        invalid_integers = [\n            name for name, (value, minimum) in integer_minimums.items()\n            if value < minimum]\n        if invalid_integers:\n            raise ValueError(\n                'Invalid integer range for: ' + ', '.join(invalid_integers))\n        if args.ddim_step > args.ddpm_step or \\\n                args.trunk_stage_step > args.ddpm_step:\n            raise ValueError(\n                'ddim_step and trunk_stage_step cannot exceed ddpm_step')\n        if args.e_dim < 2 or args.e_dim % 2:\n            raise ValueError('e_dim must be a positive even integer >= 2')\n        if (not math.isfinite(args.learning_rate) or args.learning_rate <= 0 or\n                not math.isfinite(args.clip) or args.clip < 0):\n            raise ValueError('learning_rate must be positive and clip non-negative')\n        if args.save_every is not None and args.save_every <= 0:\n            raise ValueError('save_every must be positive when specified')\n        needs_synchronized_scene = (\n            args.goal_model_type != 'independent' and not (\n                args.goal_model_type == 'joint_dependency_v2' and\n                not args.jdv2_active))\n        if needs_synchronized_scene and args.data_augmentation:\n            # Legacy pixel-space augmentation does not update a scene's metric\n            # homography. Using it for TTC/energy/metric losses would silently mix\n            # transformed pixels with the original world-coordinate calibration.\n            warnings.warn(\n                'Disabling legacy data augmentation for social goal models: '\n                'its pixel transform is not homography-aware.', UserWarning)\n            args.data_augmentation = False\n        if args.num_goal_candidates < 1:\n            raise ValueError('num_goal_candidates must be >= 1')\n        if args.num_samples < 1:\n            raise ValueError('num_samples must be >= 1')\n        if args.num_social_modes < 1 or args.num_relation_modes < 1:\n            raise ValueError('num_social_modes and num_relation_modes must be >= 1')\n        if (args.social_feature_dim < 1 or args.social_attention_layers < 0 or\n                args.goal_pair_rank < 1 or args.num_refinement_steps < 0):\n            raise ValueError('goal_pair_rank must be >= 1 and refinement steps >= 0')\n        if (not math.isfinite(args.graph_radius) or\n                not math.isfinite(args.ttc_threshold) or\n                args.graph_radius <= 0 or args.ttc_threshold <= 0):\n            raise ValueError('graph_radius and ttc_threshold must be positive')\n        positive_values = (\n            args.goal_soft_sigma, args.joint_sampling_temperature,\n            args.goal_candidate_temperature, args.joint_rank_target_temperature,\n            args.joint_rank_score_temperature,\n            args.continuous_refinement_max_delta,\n            args.trajectory_alignment_temperature,\n            args.trajectory_alignment_target_temperature,\n            args.sync_temperature,\n            args.coupling_joint_temperature,\n            args.coupling_pair_target_temperature,\n            args.coupling_pair_pred_temperature,\n            args.trajectory_dt)\n        if any(not math.isfinite(value) or value <= 0\n               for value in positive_values):\n            raise ValueError(\n                'goal sigma and candidate/sampling temperatures must be positive')\n        nonnegative = {\n            'energy_weight': args.energy_weight,\n            'lambda_goal': args.lambda_goal,\n            'lambda_mode': args.lambda_mode,\n            'lambda_PL': args.lambda_PL,\n            'lambda_joint_rank': args.lambda_joint_rank,\n            'lambda_diff': args.lambda_diff,\n            'lambda_JG': args.lambda_JG,\n            'lambda_relative': args.lambda_relative,\n            'lambda_relation_entropy': args.lambda_relation_entropy,\n            'lambda_relation_balance': args.lambda_relation_balance,\n            'lambda_mode_balance': args.lambda_mode_balance,\n            'lambda_graph_density': args.lambda_graph_density,\n            'lambda_continuous_refinement': (\n                args.lambda_continuous_refinement),\n            'lambda_refinement_delta': args.lambda_refinement_delta,\n            'trajectory_alignment_fde_weight': (\n                args.trajectory_alignment_fde_weight),\n            'lambda_trajectory_alignment': args.lambda_trajectory_alignment,\n            'lambda_trajectory_pair': args.lambda_trajectory_pair,\n            'lambda_alignment_no_harm': args.lambda_alignment_no_harm,\n            'lambda_alignment_entropy': args.lambda_alignment_entropy,\n            'lambda_alignment': args.lambda_alignment,\n            'lambda_pair_score': args.lambda_pair_score,\n            'lambda_pair_assignment': args.lambda_pair_assignment,\n            'lambda_no_harm': args.lambda_no_harm,\n            'lambda_perm_entropy': args.lambda_perm_entropy,\n            'lambda_relation_prior': args.lambda_relation_prior,\n            'lambda_gate_reg': args.lambda_gate_reg,\n            'coupling_fde_weight': args.coupling_fde_weight,\n            'coupling_rel_geom_weight': args.coupling_rel_geom_weight,\n            'coupling_rel_endpoint_weight': (\n                args.coupling_rel_endpoint_weight),\n            'coupling_no_harm_margin': args.coupling_no_harm_margin,\n        }\n        invalid_nonnegative = [\n            name for name, value in nonnegative.items()\n            if not math.isfinite(value) or value < 0]\n        if invalid_nonnegative:\n            raise ValueError(\n                'These weights must be non-negative: ' +\n                ', '.join(invalid_nonnegative))\n        if not 0.0 <= args.jdv2_stage_progress <= 1.0:\n            raise ValueError('jdv2_stage_progress must lie in [0,1]')\n        if args.goal_model_type == 'joint_dependency_v2':\n            if args.jdv2_cache_schema != 'jdv2-cache-v1':\n                raise ValueError('Unsupported jdv2_cache_schema')\n            if args.jdv2_latent_objective == 'strict_no_z':\n                if args.use_scene_latent:\n                    raise ValueError(\n                        'strict_no_z requires use_scene_latent=False')\n                if not args.use_dynamic_relation or not args.use_joint_energy:\n                    raise ValueError(\n                        'strict_no_z requires dynamic relation and joint energy')\n                if args.training_stage not in {'joint_goal', 'joint_trajectory'}:\n                    raise ValueError(\n                        'strict_no_z authorizes only frozen Stage-A joint_goal '\n                        'or Stage-B joint_trajectory')\n            if args.jdv2_refinement_policy in {\n                    'structured_gumbel_assignment',\n                    'exact_lexicographic_persistent_tie'}:\n                if args.jdv2_latent_objective != 'strict_no_z':\n                    raise ValueError('structured refinement requires strict_no_z')\n                if args.num_samples > args.num_goal_candidates:\n                    raise ValueError('structured refinement requires P<=K')\n                if args.num_refinement_steps != 2:\n                    raise ValueError(\n                        'structured refinement requires two refinement rounds')\n                if args.joint_sampling_mode != 'sample':\n                    raise ValueError(\n                        'structured refinement requires stochastic '\n                        'joint_sampling_mode=sample')\n            if (args.jdv2_cache_source_commit is not None and\n                    re.fullmatch(r'[0-9a-f]{40}',\n                                 args.jdv2_cache_source_commit) is None):\n                raise ValueError(\n                    'jdv2_cache_source_commit must be a full lowercase git SHA')\n            for name in (\n                    'stage_a_parent_checkpoint_sha256',\n                    'stage_a_freeze_manifest_sha256'):\n                value = getattr(args, name)\n                if value is not None and re.fullmatch(r'[0-9a-f]{64}', value) is None:\n                    raise ValueError(f'{name} must be a lowercase SHA256')\n            if (args.stage_a_freeze_source_commit is not None and\n                    re.fullmatch(r'[0-9a-f]{40}',\n                                 args.stage_a_freeze_source_commit) is None):\n                raise ValueError(\n                    'stage_a_freeze_source_commit must be a full lowercase git SHA')\n            if (args.stage_b_architecture_version is not None and\n                    args.stage_b_architecture_version not in {\n                        'jdv2-stage-b-v1', 'jdv2-stage-b-v2a'}):\n                raise ValueError('Unsupported stage_b_architecture_version')\n            if args.training_stage == 'joint_trajectory' and \\\n                    args.stage_b_architecture_version is not None:\n                if args.jdv2_latent_objective != 'strict_no_z':\n                    raise ValueError('Stage-B requires strict_no_z')\n                if args.jdv2_refinement_policy != \\\n                        'exact_lexicographic_persistent_tie':\n                    raise ValueError(\n                        'Stage-B requires the frozen exact Stage-A sampler')\n                expected_projection = (\n                    'component_zero_mean'\n                    if args.stage_b_architecture_version == 'jdv2-stage-b-v2a'\n                    else 'none')\n                if args.jdv2_residual_projection != expected_projection:\n                    raise ValueError(\n                        f'{args.stage_b_architecture_version} requires '\n                        f'jdv2_residual_projection={expected_projection}')\n            elif args.jdv2_residual_projection != 'none':\n                raise ValueError(\n                    'component residual projection is Stage-B-only')\n            if (args.phase == 'build-jdv2-cache' and\n                    args.training_stage not in {\n                        'joint_goal', 'joint_trajectory', 'joint_finetune'}):\n                args.training_stage = 'joint_goal'\n            frozen = {\n                'jdv2_scene_modes': (args.jdv2_scene_modes, 4),\n                'jdv2_relation_modes': (args.jdv2_relation_modes, 4),\n                'jdv2_energy_rank': (args.jdv2_energy_rank, 8),\n                'num_goal_candidates': (args.num_goal_candidates, 21),\n                'num_samples': (args.num_samples, 20),\n                'num_refinement_steps': (args.num_refinement_steps, 2),\n                'social_feature_dim': (args.social_feature_dim, 128),\n            }\n            invalid = [name for name, (value, expected) in frozen.items()\n                       if value != expected]\n            if invalid:\n                details = ', '.join(\n                    f'{name}={frozen[name][0]} (required {frozen[name][1]})'\n                    for name in invalid)\n                raise ValueError('Invalid frozen JDV2 dimensions: ' + details)\n            v2_stages = {'joint_goal', 'joint_trajectory', 'joint_finetune'}\n            if args.jdv2_active and args.training_stage not in v2_stages:\n                raise ValueError(\n                    'Active joint_dependency_v2 requires training_stage in '\n                    'joint_goal, joint_trajectory, joint_finetune')\n            if not args.jdv2_active and args.training_stage in v2_stages:\n                raise ValueError(\n                    'JDV2 training stages are invalid when all four modules are '\n                    'disabled; use legacy baseline semantics')\n            if args.phase == 'build-jdv2-cache' and not args.jdv2_active:\n                raise ValueError('build-jdv2-cache requires active JDV2 modules')\n            if args.adaptive_graph:\n                raise ValueError(\n                    'Canonical JDV2 uses the parameter-free sparse proposal graph')\n            if (args.training_stage == 'joint_trajectory' and\n                    not args.use_dependency_corrector):\n                raise ValueError(\n                    'joint_trajectory requires use_dependency_corrector=True')\n        elif args.training_stage in {\n                'joint_goal', 'joint_trajectory', 'joint_finetune'}:\n            raise ValueError(\n                'JDV2 training stages require goal_model_type=joint_dependency_v2')\n        if args.amp_enabled and args.amp_dtype == 'fp32':\n            raise ValueError('amp_enabled requires amp_dtype=fp16 or bf16')\n        if not args.amp_enabled and args.amp_dtype != 'fp32':\n            raise ValueError('amp_dtype requires amp_enabled=True')\n        positive_lr_scales = {\n            'baseline_lr_scale': args.baseline_lr_scale,\n            'structured_lr_scale': args.structured_lr_scale,\n        }\n        invalid_lr_scales = [\n            name for name, value in positive_lr_scales.items()\n            if not math.isfinite(value) or value <= 0]\n        if invalid_lr_scales:\n            raise ValueError(\n                'Learning-rate scales must be positive: ' +\n                ', '.join(invalid_lr_scales))\n        unit_interval_values = {\n            'adaptive_graph_gate_floor': args.adaptive_graph_gate_floor,\n            'adaptive_graph_target_density': (\n                args.adaptive_graph_target_density),\n        }\n        invalid_unit_interval = [\n            name for name, value in unit_interval_values.items()\n            if not math.isfinite(value) or value < 0 or value >= 1]\n        if invalid_unit_interval:\n            raise ValueError(\n                'Adaptive graph gate values must lie in [0, 1): ' +\n                ', '.join(invalid_unit_interval))\n        if args.continuous_refinement and args.goal_model_type == 'independent':\n            raise ValueError(\n                'continuous_refinement requires a social goal model')\n        if args.adaptive_graph and args.goal_model_type == 'independent':\n            raise ValueError('adaptive_graph requires a social goal model')\n        if args.trajectory_alignment and args.goal_model_type == 'independent':\n            raise ValueError(\n                'trajectory_alignment requires a social goal model')\n        # Preserve the old boolean CLI while making the coupling implementation\n        # explicit for all new configs.\n        if args.trajectory_coupling == 'reference_v3':\n            args.trajectory_alignment = True\n        elif args.trajectory_alignment and args.trajectory_coupling == 'none':\n            args.trajectory_coupling = 'reference_v3'\n        if args.training_stage == 'multiway_coupling':\n            if args.trajectory_coupling != 'multiway_v4':\n                raise ValueError(\n                    'training_stage=multiway_coupling requires '\n                    'trajectory_coupling=multiway_v4')\n            if args.synchronizer != 'multiway':\n                raise ValueError(\n                    'The formal V4 stage requires synchronizer=multiway; use '\n                    'the reference_v3 path for the anchor ablation.')\n            if args.continuous_refinement:\n                raise ValueError(\n                    'V4 must not move trajectory coordinates; keep '\n                    'continuous_refinement=False.')\n            if args.use_multi_scene_packing and not \\\n                    args.use_trajectory_bank_cache:\n                raise ValueError(\n                    'use_multi_scene_packing requires '\n                    'use_trajectory_bank_cache=True')\n            if args.use_multi_scene_packing and not args.scene_balanced_loss:\n                raise ValueError(\n                    'Formal multi-scene packing requires '\n                    'scene_balanced_loss=True')\n        elif args.trajectory_coupling == 'multiway_v4':\n            raise ValueError(\n                'trajectory_coupling=multiway_v4 requires '\n                'training_stage=multiway_coupling')\n        if args.training_stage == 'alignment' and not args.trajectory_alignment:\n            raise ValueError(\n                'training_stage=alignment requires trajectory_alignment=True')\n        if args.training_stage == 'alignment' and not any((\n                args.lambda_trajectory_alignment,\n                args.lambda_trajectory_pair,\n                args.lambda_alignment_no_harm,\n                args.lambda_alignment_entropy)):\n            raise ValueError(\n                'training_stage=alignment requires at least one alignment loss')\n        if (not 0 <= args.trajectory_alignment_keep_threshold <= 1 or\n                not math.isfinite(args.trajectory_alignment_keep_threshold)):\n            raise ValueError(\n                'trajectory_alignment_keep_threshold must lie in [0,1]')\n        if (not 0 <= args.keep_threshold <= 1 or\n                not math.isfinite(args.keep_threshold)):\n            raise ValueError('keep_threshold must lie in [0,1]')\n        if (not 0 < args.internal_validation_fraction < 1 or\n                not math.isfinite(args.internal_validation_fraction)):\n            raise ValueError('internal_validation_fraction must lie in (0,1)')\n        alignment_weights_enabled = any((\n            args.lambda_trajectory_alignment,\n            args.lambda_trajectory_pair,\n            args.lambda_alignment_no_harm,\n            args.lambda_alignment_entropy,\n        ))\n        if alignment_weights_enabled and not args.trajectory_alignment:\n            raise ValueError(\n                'Trajectory-alignment losses require trajectory_alignment=True')\n        if (args.lambda_continuous_refinement > 0 or\n                args.lambda_refinement_delta > 0) and \\\n                not args.continuous_refinement:\n            raise ValueError(\n                'Continuous-refinement losses require '\n                'continuous_refinement=True')\n        if args.lambda_graph_density > 0 and not args.adaptive_graph:\n            raise ValueError(\n                'lambda_graph_density > 0 requires adaptive_graph=True')\n        if (args.adaptive_graph and\n                args.adaptive_graph_target_density <\n                args.adaptive_graph_gate_floor):\n            raise ValueError(\n                'adaptive_graph_target_density cannot be below gate_floor')\n        if (args.lambda_joint_rank > 0 and\n                args.goal_model_type not in {'lowrank', 'joint'}):\n            raise ValueError(\n                'lambda_joint_rank > 0 requires lowrank or joint goal model')\n        if (args.collision_threshold_meter is not None and\n                (not math.isfinite(args.collision_threshold_meter) or\n                 args.collision_threshold_meter < 0)):\n            raise ValueError('collision_threshold_meter must be non-negative')\n        if (args.goal_recall_threshold_meter is not None and\n                (not math.isfinite(args.goal_recall_threshold_meter) or\n                 args.goal_recall_threshold_meter < 0)):\n            raise ValueError('goal_recall_threshold_meter must be non-negative')\n        if args.collision_interpolation_steps < 1:\n            raise ValueError('collision_interpolation_steps must be >= 1')\n    \n        if args.joint_goal_enabled is None:\n            args.joint_goal_enabled = args.goal_model_type in {\n                'lowrank', 'energy', 'joint'} or (\n                    args.goal_model_type == 'joint_dependency_v2' and\n                    args.jdv2_active)\n        if args.goal_model_type == 'independent' and args.joint_goal_enabled:\n            raise ValueError(\n                'joint_goal_enabled=True requires a non-independent goal model')\n        if (args.goal_model_type == 'independent' and\n                args.training_stage == 'joint'):\n            raise ValueError(\n                'training_stage=joint requires a social goal_model_type')\n        if (args.goal_model_type == 'independent' and\n                args.training_stage == 'alignment'):\n            raise ValueError(\n                'training_stage=alignment requires a social goal_model_type')\n        if (args.goal_model_type != 'independent' and\n                not (args.goal_model_type == 'joint_dependency_v2' and\n                     not args.jdv2_active) and\n                args.training_stage == 'baseline'):\n            raise ValueError(\n                'training_stage=baseline is reserved for goal_model_type='\n                'independent; use joint or finetune for social goal models')\n        if (args.goal_model_type == 'independent' and\n                args.best_metric in {'JADE', 'JFDE'}):\n            raise ValueError(\n                'JADE/JFDE require synchronized social scene-window batches')\n        if args.num_joint_samples is None:\n            args.num_joint_samples = args.num_samples\n        if args.num_joint_samples != args.num_samples:\n            raise ValueError(\n                'num_joint_samples must equal num_samples so each tree branch has '\n                'one coherent scene-level goal configuration')\n    \n        if args.model_selection_split == 'auto':\n            args.model_selection_split = (\n                'internal_train'\n                if args.training_stage == 'multiway_coupling'\n                else 'dataset_valid')\n        if (args.training_stage == 'multiway_coupling' and\n                args.model_selection_split != 'internal_train'):\n            raise ValueError(\n                'Formal V4 training selects checkpoints only on internal_train; '\n                'the held-out UNIV test scene is reserved for final evaluation.')\n    \n        if args.clean_split_protocol:\n            if args.model_selection_split != 'internal_train':\n                raise ValueError(\n                    'Clean protocol requires model_selection_split=internal_train')\n            if args.internal_validation_strategy != 'source_block':\n                raise ValueError(\n                    'Clean protocol requires internal_validation_strategy='\n                    'source_block')\n            if args.final_test_split != 'heldout_test':\n                raise ValueError(\n                    'Clean protocol requires final_test_split=heldout_test')\n            if not args.clean_split_manifest_path or not re.fullmatch(\n                    r'[0-9a-f]{64}', str(args.clean_split_manifest_hash or '')):\n                raise ValueError(\n                    'Clean protocol requires a manifest path and SHA256 hash')\n            if args.phase not in {'train', 'test'}:\n                raise ValueError(\n                    'Clean protocol supports only separate train or locked '\n                    'test phases')\n            if args.phase == 'train' and args.final_test_access != 'blocked':\n                raise ValueError(\n                    'Clean training requires final_test_access=blocked')\n            if args.phase == 'test':\n                if args.final_test_access != 'authorized':\n                    raise ValueError(\n                        'Clean final evaluation requires authorized test access')\n                if not args.final_test_lock_path:\n                    raise ValueError(\n                        'Clean final evaluation requires a lock artifact')\n                if args.load_checkpoint != 'best':\n                    raise ValueError(\n                        'Clean final evaluation requires load_checkpoint=best')\n                if args.clean_evaluation_target not in {'stage_a', 'stage_b'}:\n                    raise ValueError(\n                        'Clean final evaluation requires a locked target')\n        elif args.final_test_access != 'legacy':\n            raise ValueError(\n                'Non-clean runs must retain legacy final-test access semantics')\n    \n        # set current device\n        if args.device.startswith('cuda') and torch.cuda.is_available():\n            args.use_cuda = True\n        else:\n            args.device = 'cpu'\n            args.use_cuda = False\n        # dataset and test_set checks\n        if args.dataset == 'eth5':\n>           assert args.test_set in ['eth', 'hotel', 'univ', 'zara1', 'zara2']\nE           AssertionError\n\nsrc/parser.py:1095: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004047979600727558,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007853190181776881,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.1685797090176493,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac0')\nmutation = 'missing_state'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac0/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004591909237205982,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0008257509907707572,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.02396087790839374,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac1')\nmutation = 'format_version'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac1/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004121130332350731,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007823340129107237,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.0275455960072577,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac2')\nmutation = 'neighbor_draws'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac2/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00041610002517700195,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007540700025856495,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.023683183011598885,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac3')\nmutation = 'generator_device'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac3/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0007750680670142174,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009538310114294291,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.024017062038183212,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac4')\nmutation = 'sampling_semantics_version'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac4/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004194739740341902,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007533869938924909,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.024186604074202478,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac5')\nmutation = 'objective_semantic_fingerprint'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac5/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00041287404019385576,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000745063996873796,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.02652365097310394,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac6')\nmutation = 'generator_state'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac6/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00041148101445287466,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007559750229120255,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.023709620931185782,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac7')\nmutation = 'missing_rng'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac7/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004234530497342348,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007634620415046811,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.02391303505282849,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac8')\nmutation = 'draw_calls'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac8/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError"
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00040497700683772564,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007602740079164505,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "call",
+      "outcome": "failed",
+      "seconds": 0.02645966492127627,
+      "failure": "tmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac9')\nmutation = 'sampled_agent_draws'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_s…15440 tokens truncated…      raise ValueError(\n                        'structured refinement requires stochastic '\n                        'joint_sampling_mode=sample')\n            if (args.jdv2_cache_source_commit is not None and\n                    re.fullmatch(r'[0-9a-f]{40}',\n                                 args.jdv2_cache_source_commit) is None):\n                raise ValueError(\n                    'jdv2_cache_source_commit must be a full lowercase git SHA')\n            for name in (\n                    'stage_a_parent_checkpoint_sha256',\n                    'stage_a_freeze_manifest_sha256'):\n                value = getattr(args, name)\n                if value is not None and re.fullmatch(r'[0-9a-f]{64}', value) is None:\n                    raise ValueError(f'{name} must be a lowercase SHA256')\n            if (args.stage_a_freeze_source_commit is not None and\n                    re.fullmatch(r'[0-9a-f]{40}',\n                                 args.stage_a_freeze_source_commit) is None):\n                raise ValueError(\n                    'stage_a_freeze_source_commit must be a full lowercase git SHA')\n            if (args.stage_b_architecture_version is not None and\n                    args.stage_b_architecture_version not in {\n                        'jdv2-stage-b-v1', 'jdv2-stage-b-v2a'}):\n                raise ValueError('Unsupported stage_b_architecture_version')\n            if args.training_stage == 'joint_trajectory' and \\\n                    args.stage_b_architecture_version is not None:\n                if args.jdv2_latent_objective != 'strict_no_z':\n                    raise ValueError('Stage-B requires strict_no_z')\n                if args.jdv2_refinement_policy != \\\n                        'exact_lexicographic_persistent_tie':\n                    raise ValueError(\n                        'Stage-B requires the frozen exact Stage-A sampler')\n                expected_projection = (\n                    'component_zero_mean'\n                    if args.stage_b_architecture_version == 'jdv2-stage-b-v2a'\n                    else 'none')\n                if args.jdv2_residual_projection != expected_projection:\n                    raise ValueError(\n                        f'{args.stage_b_architecture_version} requires '\n                        f'jdv2_residual_projection={expected_projection}')\n            elif args.jdv2_residual_projection != 'none':\n                raise ValueError(\n                    'component residual projection is Stage-B-only')\n            if (args.phase == 'build-jdv2-cache' and\n                    args.training_stage not in {\n                        'joint_goal', 'joint_trajectory', 'joint_finetune'}):\n                args.training_stage = 'joint_goal'\n            frozen = {\n                'jdv2_scene_modes': (args.jdv2_scene_modes, 4),\n                'jdv2_relation_modes': (args.jdv2_relation_modes, 4),\n                'jdv2_energy_rank': (args.jdv2_energy_rank, 8),\n                'num_goal_candidates': (args.num_goal_candidates, 21),\n                'num_samples': (args.num_samples, 20),\n                'num_refinement_steps': (args.num_refinement_steps, 2),\n                'social_feature_dim': (args.social_feature_dim, 128),\n            }\n            invalid = [name for name, (value, expected) in frozen.items()\n                       if value != expected]\n            if invalid:\n                details = ', '.join(\n                    f'{name}={frozen[name][0]} (required {frozen[name][1]})'\n                    for name in invalid)\n                raise ValueError('Invalid frozen JDV2 dimensions: ' + details)\n            v2_stages = {'joint_goal', 'joint_trajectory', 'joint_finetune'}\n            if args.jdv2_active and args.training_stage not in v2_stages:\n                raise ValueError(\n                    'Active joint_dependency_v2 requires training_stage in '\n                    'joint_goal, joint_trajectory, joint_finetune')\n            if not args.jdv2_active and args.training_stage in v2_stages:\n                raise ValueError(\n                    'JDV2 training stages are invalid when all four modules are '\n                    'disabled; use legacy baseline semantics')\n            if args.phase == 'build-jdv2-cache' and not args.jdv2_active:\n                raise ValueError('build-jdv2-cache requires active JDV2 modules')\n            if args.adaptive_graph:\n                raise ValueError(\n                    'Canonical JDV2 uses the parameter-free sparse proposal graph')\n            if (args.training_stage == 'joint_trajectory' and\n                    not args.use_dependency_corrector):\n                raise ValueError(\n                    'joint_trajectory requires use_dependency_corrector=True')\n        elif args.training_stage in {\n                'joint_goal', 'joint_trajectory', 'joint_finetune'}:\n            raise ValueError(\n                'JDV2 training stages require goal_model_type=joint_dependency_v2')\n        if args.amp_enabled and args.amp_dtype == 'fp32':\n            raise ValueError('amp_enabled requires amp_dtype=fp16 or bf16')\n        if not args.amp_enabled and args.amp_dtype != 'fp32':\n            raise ValueError('amp_dtype requires amp_enabled=True')\n        positive_lr_scales = {\n            'baseline_lr_scale': args.baseline_lr_scale,\n            'structured_lr_scale': args.structured_lr_scale,\n        }\n        invalid_lr_scales = [\n            name for name, value in positive_lr_scales.items()\n            if not math.isfinite(value) or value <= 0]\n        if invalid_lr_scales:\n            raise ValueError(\n                'Learning-rate scales must be positive: ' +\n                ', '.join(invalid_lr_scales))\n        unit_interval_values = {\n            'adaptive_graph_gate_floor': args.adaptive_graph_gate_floor,\n            'adaptive_graph_target_density': (\n                args.adaptive_graph_target_density),\n        }\n        invalid_unit_interval = [\n            name for name, value in unit_interval_values.items()\n            if not math.isfinite(value) or value < 0 or value >= 1]\n        if invalid_unit_interval:\n            raise ValueError(\n                'Adaptive graph gate values must lie in [0, 1): ' +\n                ', '.join(invalid_unit_interval))\n        if args.continuous_refinement and args.goal_model_type == 'independent':\n            raise ValueError(\n                'continuous_refinement requires a social goal model')\n        if args.adaptive_graph and args.goal_model_type == 'independent':\n            raise ValueError('adaptive_graph requires a social goal model')\n        if args.trajectory_alignment and args.goal_model_type == 'independent':\n            raise ValueError(\n                'trajectory_alignment requires a social goal model')\n        # Preserve the old boolean CLI while making the coupling implementation\n        # explicit for all new configs.\n        if args.trajectory_coupling == 'reference_v3':\n            args.trajectory_alignment = True\n        elif args.trajectory_alignment and args.trajectory_coupling == 'none':\n            args.trajectory_coupling = 'reference_v3'\n        if args.training_stage == 'multiway_coupling':\n            if args.trajectory_coupling != 'multiway_v4':\n                raise ValueError(\n                    'training_stage=multiway_coupling requires '\n                    'trajectory_coupling=multiway_v4')\n            if args.synchronizer != 'multiway':\n                raise ValueError(\n                    'The formal V4 stage requires synchronizer=multiway; use '\n                    'the reference_v3 path for the anchor ablation.')\n            if args.continuous_refinement:\n                raise ValueError(\n                    'V4 must not move trajectory coordinates; keep '\n                    'continuous_refinement=False.')\n            if args.use_multi_scene_packing and not \\\n                    args.use_trajectory_bank_cache:\n                raise ValueError(\n                    'use_multi_scene_packing requires '\n                    'use_trajectory_bank_cache=True')\n            if args.use_multi_scene_packing and not args.scene_balanced_loss:\n                raise ValueError(\n                    'Formal multi-scene packing requires '\n                    'scene_balanced_loss=True')\n        elif args.trajectory_coupling == 'multiway_v4':\n            raise ValueError(\n                'trajectory_coupling=multiway_v4 requires '\n                'training_stage=multiway_coupling')\n        if args.training_stage == 'alignment' and not args.trajectory_alignment:\n            raise ValueError(\n                'training_stage=alignment requires trajectory_alignment=True')\n        if args.training_stage == 'alignment' and not any((\n                args.lambda_trajectory_alignment,\n                args.lambda_trajectory_pair,\n                args.lambda_alignment_no_harm,\n                args.lambda_alignment_entropy)):\n            raise ValueError(\n                'training_stage=alignment requires at least one alignment loss')\n        if (not 0 <= args.trajectory_alignment_keep_threshold <= 1 or\n                not math.isfinite(args.trajectory_alignment_keep_threshold)):\n            raise ValueError(\n                'trajectory_alignment_keep_threshold must lie in [0,1]')\n        if (not 0 <= args.keep_threshold <= 1 or\n                not math.isfinite(args.keep_threshold)):\n            raise ValueError('keep_threshold must lie in [0,1]')\n        if (not 0 < args.internal_validation_fraction < 1 or\n                not math.isfinite(args.internal_validation_fraction)):\n            raise ValueError('internal_validation_fraction must lie in (0,1)')\n        alignment_weights_enabled = any((\n            args.lambda_trajectory_alignment,\n            args.lambda_trajectory_pair,\n            args.lambda_alignment_no_harm,\n            args.lambda_alignment_entropy,\n        ))\n        if alignment_weights_enabled and not args.trajectory_alignment:\n            raise ValueError(\n                'Trajectory-alignment losses require trajectory_alignment=True')\n        if (args.lambda_continuous_refinement > 0 or\n                args.lambda_refinement_delta > 0) and \\\n                not args.continuous_refinement:\n            raise ValueError(\n                'Continuous-refinement losses require '\n                'continuous_refinement=True')\n        if args.lambda_graph_density > 0 and not args.adaptive_graph:\n            raise ValueError(\n                'lambda_graph_density > 0 requires adaptive_graph=True')\n        if (args.adaptive_graph and\n                args.adaptive_graph_target_density <\n                args.adaptive_graph_gate_floor):\n            raise ValueError(\n                'adaptive_graph_target_density cannot be below gate_floor')\n        if (args.lambda_joint_rank > 0 and\n                args.goal_model_type not in {'lowrank', 'joint'}):\n            raise ValueError(\n                'lambda_joint_rank > 0 requires lowrank or joint goal model')\n        if (args.collision_threshold_meter is not None and\n                (not math.isfinite(args.collision_threshold_meter) or\n                 args.collision_threshold_meter < 0)):\n            raise ValueError('collision_threshold_meter must be non-negative')\n        if (args.goal_recall_threshold_meter is not None and\n                (not math.isfinite(args.goal_recall_threshold_meter) or\n                 args.goal_recall_threshold_meter < 0)):\n            raise ValueError('goal_recall_threshold_meter must be non-negative')\n        if args.collision_interpolation_steps < 1:\n            raise ValueError('collision_interpolation_steps must be >= 1')\n    \n        if args.joint_goal_enabled is None:\n            args.joint_goal_enabled = args.goal_model_type in {\n                'lowrank', 'energy', 'joint'} or (\n                    args.goal_model_type == 'joint_dependency_v2' and\n                    args.jdv2_active)\n        if args.goal_model_type == 'independent' and args.joint_goal_enabled:\n            raise ValueError(\n                'joint_goal_enabled=True requires a non-independent goal model')\n        if (args.goal_model_type == 'independent' and\n                args.training_stage == 'joint'):\n            raise ValueError(\n                'training_stage=joint requires a social goal_model_type')\n        if (args.goal_model_type == 'independent' and\n                args.training_stage == 'alignment'):\n            raise ValueError(\n                'training_stage=alignment requires a social goal_model_type')\n        if (args.goal_model_type != 'independent' and\n                not (args.goal_model_type == 'joint_dependency_v2' and\n                     not args.jdv2_active) and\n                args.training_stage == 'baseline'):\n            raise ValueError(\n                'training_stage=baseline is reserved for goal_model_type='\n                'independent; use joint or finetune for social goal models')\n        if (args.goal_model_type == 'independent' and\n                args.best_metric in {'JADE', 'JFDE'}):\n            raise ValueError(\n                'JADE/JFDE require synchronized social scene-window batches')\n        if args.num_joint_samples is None:\n            args.num_joint_samples = args.num_samples\n        if args.num_joint_samples != args.num_samples:\n            raise ValueError(\n                'num_joint_samples must equal num_samples so each tree branch has '\n                'one coherent scene-level goal configuration')\n    \n        if args.model_selection_split == 'auto':\n            args.model_selection_split = (\n                'internal_train'\n                if args.training_stage == 'multiway_coupling'\n                else 'dataset_valid')\n        if (args.training_stage == 'multiway_coupling' and\n                args.model_selection_split != 'internal_train'):\n            raise ValueError(\n                'Formal V4 training selects checkpoints only on internal_train; '\n                'the held-out UNIV test scene is reserved for final evaluation.')\n    \n        if args.clean_split_protocol:\n            if args.model_selection_split != 'internal_train':\n                raise ValueError(\n                    'Clean protocol requires model_selection_split=internal_train')\n            if args.internal_validation_strategy != 'source_block':\n                raise ValueError(\n                    'Clean protocol requires internal_validation_strategy='\n                    'source_block')\n            if args.final_test_split != 'heldout_test':\n                raise ValueError(\n                    'Clean protocol requires final_test_split=heldout_test')\n            if not args.clean_split_manifest_path or not re.fullmatch(\n                    r'[0-9a-f]{64}', str(args.clean_split_manifest_hash or '')):\n                raise ValueError(\n                    'Clean protocol requires a manifest path and SHA256 hash')\n            if args.phase not in {'train', 'test'}:\n                raise ValueError(\n                    'Clean protocol supports only separate train or locked '\n                    'test phases')\n            if args.phase == 'train' and args.final_test_access != 'blocked':\n                raise ValueError(\n                    'Clean training requires final_test_access=blocked')\n            if args.phase == 'test':\n                if args.final_test_access != 'authorized':\n                    raise ValueError(\n                        'Clean final evaluation requires authorized test access')\n                if not args.final_test_lock_path:\n                    raise ValueError(\n                        'Clean final evaluation requires a lock artifact')\n                if args.load_checkpoint != 'best':\n                    raise ValueError(\n                        'Clean final evaluation requires load_checkpoint=best')\n                if args.clean_evaluation_target not in {'stage_a', 'stage_b'}:\n                    raise ValueError(\n                        'Clean final evaluation requires a locked target')\n        elif args.final_test_access != 'legacy':\n            raise ValueError(\n                'Non-clean runs must retain legacy final-test access semantics')\n    \n        # set current device\n        if args.device.startswith('cuda') and torch.cuda.is_available():\n            args.use_cuda = True\n        else:\n            args.device = 'cpu'\n            args.use_cuda = False\n        # dataset and test_set checks\n        if args.dataset == 'eth5':\n>           assert args.test_set in ['eth', 'hotel', 'univ', 'zara1', 'zara2']\nE           AssertionError\n\nsrc/parser.py:1095: AssertionError\n_____________ test_checkpoint_matrix_transactional[missing_state] ______________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac0')\nmutation = 'missing_state'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac0/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_____________ test_checkpoint_matrix_transactional[format_version] _____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac1')\nmutation = 'format_version'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac1/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_____________ test_checkpoint_matrix_transactional[neighbor_draws] _____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac2')\nmutation = 'neighbor_draws'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac2/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n____________ test_checkpoint_matrix_transactional[generator_device] ____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac3')\nmutation = 'generator_device'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac3/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_______ test_checkpoint_matrix_transactional[sampling_semantics_version] _______\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac4')\nmutation = 'sampling_semantics_version'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac4/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_____ test_checkpoint_matrix_transactional[objective_semantic_fingerprint] _____\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac5')\nmutation = 'objective_semantic_fingerprint'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac5/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n____________ test_checkpoint_matrix_transactional[generator_state] _____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac6')\nmutation = 'generator_state'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac6/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n______________ test_checkpoint_matrix_transactional[missing_rng] _______________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac7')\nmutation = 'missing_rng'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac7/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_______________ test_checkpoint_matrix_transactional[draw_calls] _______________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac8')\nmutation = 'draw_calls'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac8/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n__________ test_checkpoint_matrix_transactional[sampled_agent_draws] ___________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac9')\nmutation = 'sampled_agent_draws'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac9/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n______ test_checkpoint_matrix_transactional[successful_optimizer_updates] ______\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac10')\nmutation = 'successful_optimizer_updates'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac10/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_____________ test_checkpoint_matrix_transactional[stage_progress] _____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac11')\nmutation = 'stage_progress'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac11/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n____________ test_checkpoint_matrix_transactional[pending_backward] ____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac12')\nmutation = 'pending_backward'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac12/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n____________ test_checkpoint_matrix_transactional[checkpoint_role] _____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac13')\nmutation = 'checkpoint_role'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac13/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n______ test_checkpoint_matrix_transactional[stage_total_optimizer_steps] _______\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac14')\nmutation = 'stage_total_optimizer_steps'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac14/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_____________ test_checkpoint_matrix_transactional[torch_version] ______________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac15')\nmutation = 'torch_version'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac15/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n______________ test_checkpoint_matrix_transactional[top_progress] ______________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac16')\nmutation = 'top_progress'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac16/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n____________ test_checkpoint_matrix_transactional[scheduler_epoch] _____________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac17')\nmutation = 'scheduler_epoch'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac17/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_______________ test_checkpoint_matrix_transactional[optimizer] ________________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac18')\nmutation = 'optimizer'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac18/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_______________ test_checkpoint_matrix_transactional[scheduler] ________________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac19')\nmutation = 'scheduler'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac19/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n______________ test_checkpoint_matrix_transactional[architecture] ______________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac20')\nmutation = 'architecture'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac20/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_______________ test_checkpoint_matrix_transactional[provenance] _______________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac21')\nmutation = 'provenance'\n\n    @pytest.mark.parametrize('mutation', [\n        'missing_state', 'format_version', 'neighbor_draws', 'generator_device',\n        'sampling_semantics_version', 'objective_semantic_fingerprint',\n        'generator_state', 'missing_rng', 'draw_calls', 'sampled_agent_draws',\n        'successful_optimizer_updates', 'stage_progress', 'pending_backward',\n        'checkpoint_role', 'stage_total_optimizer_steps', 'torch_version',\n        'top_progress', 'scheduler_epoch', 'optimizer', 'scheduler', 'architecture', 'provenance'])\n    def test_checkpoint_matrix_transactional(tmp_path, mutation):\n        source = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(source, path)\n\ntests/test_jdv2_mc_wiring.py:232: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_checkpoint_matrix_transac21/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_________________ test_objective_roles_eval_and_legacy_matrix __________________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_objective_roles_eval_and_0')\n\n    def test_objective_roles_eval_and_legacy_matrix(tmp_path):\n        item = harness(tmp_path/'source')\n        path = tmp_path/'source'/'saved_models'/'last_model.pt'\n>       payload = checkpoint(item, path)\n\ntests/test_jdv2_mc_wiring.py:262: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ntests/test_jdv2_mc_wiring.py:219: in checkpoint\n    return torch.load(path, weights_only=False)\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_objective_roles_eval_and_0/source/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n_________________ test_atomic_failure_policy[directory_fsync] __________________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_atomic_failure_policy_dir0')\nmonkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7f18f4d83a30>\nfailure = 'directory_fsync'\n\n    @pytest.mark.parametrize('failure', ['serialize', 'file_fsync', 'replace', 'directory_fsync'])\n    def test_atomic_failure_policy(tmp_path, monkeypatch, failure):\n        path = tmp_path/'checkpoint.pt'\n        atomic_save({'version': 1}, path)\n        old = path.read_bytes()\n        def fail(*a, **kw): raise OSError('injected')\n        if failure == 'serialize': monkeypatch.setattr(torch, 'save', fail)\n        if failure == 'replace': monkeypatch.setattr(os, 'replace', fail)\n        if failure in ('file_fsync', 'directory_fsync'):\n            original = os.fsync\n            calls = [0]\n            def fsync(fd):\n                calls[0] += 1\n                if calls[0] == (1 if failure == 'file_fsync' else 2): fail()\n                return original(fd)\n            monkeypatch.setattr(os, 'fsync', fsync)\n        with pytest.raises(CheckpointDurabilityError if failure == 'directory_fsync' else OSError) as error:\n            atomic_save({'version': 2}, path)\n        if failure == 'directory_fsync':\n            assert error.value.committed\n>           assert torch.load(path, weights_only=False)['version'] == 2\n\ntests/test_jdv2_mc_wiring.py:331: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_atomic_failure_policy_dir0/checkpoint.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n___________ test_interrupted_resume_matches_uninterrupted_early_stop ___________\n\ntmp_path = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_interrupted_resume_matche0')\n\n    def test_interrupted_resume_matches_uninterrupted_early_stop(tmp_path):\n        selections = {\n            1: (0.50, 0.90), 2: (0.40, 0.80), 3: (0.41, 0.81),\n            4: (0.42, 0.82), 5: (0.43, 0.83), 6: (0.44, 0.84),\n        }\n        patience = 3\n    \n        control = _harness(tmp_path / \"control\")\n        control_stop = None\n        for epoch in selections:\n            if _step(control, epoch, selections[epoch], patience):\n                control_stop = epoch\n                break\n    \n        interrupted = _harness(tmp_path / \"interrupted\")\n        for epoch in range(1, 4):\n            assert not _step(interrupted, epoch, selections[epoch], patience)\n        interrupted._save_checkpoint(3, last_epoch=True)\n        checkpoint_path = (tmp_path / \"interrupted\" / \"saved_models\" /\n                           \"last_model.pt\")\n>       checkpoint = torch.load(checkpoint_path, map_location=\"cpu\",\n                                weights_only=False)\n\ntests/test_jdv2_resume_stopping_state.py:128: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:48: in load\n    check_path(path); COUNTS['toy_load'] += 1\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nvalue = PosixPath('/tmp/pytest-of-ee615/pytest-17/test_interrupted_resume_matche0/interrupted/saved_models/last_model.pt')\n\n    def check_path(value):\n        path = getattr(value, 'name', value)\n        if isinstance(path, int):  # fdopen from the actual atomic helper\n            return\n        if not str(Path(path).resolve()).startswith('/tmp/'):\n            COUNTS['real_artifact_attempts'] += 1\n>           raise AssertionError('Only temporary toy checkpoints authorized')\nE           AssertionError: Only temporary toy checkpoints authorized\n\ndocs/joint_dependency_v2/reviews/2026-10-05_dcf5fde_mc_wiring_rng_checkpoint/run_cpu_audit.py:40: AssertionError\n=============================== warnings summary ===============================\ntests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw\n  /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/src/parser.py:692: UserWarning: Disabling legacy data augmentation for social goal models: its pixel transform is not homography-aware.\n    warnings.warn(\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[successful_optimizer_updates]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_progress]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[pending_backward]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[checkpoint_role]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_total_optimizer_steps]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[torch_version]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[top_progress]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_epoch]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[architecture]\nFAILED tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[provenance]\nFAILED tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix\nFAILED tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]\nFAILED tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop\n26 failed, 33 passed, 1 warning in 7.48s\n"
+}

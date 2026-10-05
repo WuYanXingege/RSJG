@@ -2,6 +2,7 @@ import os
 import time
 import datetime
 import json
+import copy
 from contextlib import nullcontext
 import torch
 import numpy as np
@@ -17,6 +18,9 @@ from src.utils import (
     print_model_summary,
 )
 from src.models.model import GDTS   
+from src.jdv2_objective_state import (
+    MC, FIELD, ObjectiveRNG, objective_mode, validate_mode, atomic_save,
+)
 from src.models.goal_pretrain import goal_architecture_config
 from src.trajectory_bank_cache import (
     get_trajectory_bank_dataloader,
@@ -51,6 +55,7 @@ def _requested_data_splits(args):
 class trainer(object):
     def __init__(self, args):
         self.args = args
+        validate_mode(args)  # Must precede data loaders, device and network.
         # initialize data loaders
         self.data_loaders = dict()
         loader_factory = (get_trajectory_bank_dataloader
@@ -101,6 +106,8 @@ class trainer(object):
         self._collapse_signature_epochs = 0
         # initialize network
         self.net = GDTS(self.args, self.device).to(self.device)
+        if objective_mode(args) == MC and args.phase in {'train', 'train_test'}:
+            self._initialize_mc_objective()
         if (self.args.goal_pretrain_checkpoint and
                 self.args.phase in {'train', 'train_test'} and
                 self.args.load_checkpoint is None):
@@ -557,7 +564,82 @@ class trainer(object):
                     for key, value in self.best_metrics.items()},
                 'best_metrics_epochs': dict(self.best_metrics_epochs),
             })
+        if objective_mode(self.args) == MC:
+            role = ('resume_last' if last_epoch else
+                    'weights_best' if best_epoch else 'weights_numbered')
+            owner = self.jdv2_objective_rng
+            if (owner.successful_optimizer_updates !=
+                    self._stage_optimizer_steps_completed or
+                    self.args.jdv2_stage_progress !=
+                    owner.successful_optimizer_updates / self._mc_total_steps()):
+                raise RuntimeError('MC checkpoint progress mismatch')
+            if last_epoch and getattr(self, '_mc_scheduler_epoch', None) != epoch:
+                raise RuntimeError('MC resume save requires completed epoch scheduler')
+            payload[FIELD] = owner.snapshot(self._mc_total_steps(), role)
+            payload['mc_scheduler_epoch'] = getattr(self, '_mc_scheduler_epoch', 0)
+            if last_epoch:
+                if payload['optimizer_state_dict'] is None:
+                    raise RuntimeError('MC resume save requires optimizer state')
+                atomic_save(payload, saved_model_name)
+                return
         torch.save(payload, saved_model_name)
+
+    def _mc_total_steps(self):
+        return max(self.args.num_epochs * len(self.data_loaders['train']), 1)
+
+    def _initialize_mc_objective(self):
+        self.jdv2_objective_rng = ObjectiveRNG(self.args)
+        self.net.jdv2_objective_rng = self.jdv2_objective_rng
+        self._stage_optimizer_steps_completed = 0
+        self.args.jdv2_stage_progress = 0.0
+        self._mc_scheduler_epoch = 0
+
+    def _mc_optimizer_step(self, skip=False):
+        """CPU update only; skipped requests consume draws but not progress."""
+        owner = self.jdv2_objective_rng
+        if not owner.pending_backward:
+            raise RuntimeError('MC update without pending request')
+        if self.scaler.is_enabled():
+            raise RuntimeError('MC AMP certification pending')
+        parameters = list(self.net.parameters())
+        if any(p.device.type != 'cpu' for p in parameters):
+            raise RuntimeError('MC optimizer is CPU only')
+        if not skip:
+            gradients = [p.grad for p in parameters if p.grad is not None]
+            if not gradients:
+                raise RuntimeError('MC optimizer has no gradients')
+            if not all(torch.isfinite(g).all() for g in gradients):
+                raise FloatingPointError('Non-finite MC gradient; state consumed, stop')
+            torch.nn.utils.clip_grad_norm_(parameters, self.args.clip,
+                                           error_if_nonfinite=True)
+            self.optimizer.step()
+        owner.finish_update(successful=not skip)
+        self._stage_optimizer_steps_completed = owner.successful_optimizer_updates
+        self.args.jdv2_stage_progress = (
+            self._stage_optimizer_steps_completed / self._mc_total_steps())
+        self.optimizer.zero_grad()
+
+    def _mc_complete_epoch(self, epoch):
+        if self.jdv2_objective_rng.pending_backward:
+            raise RuntimeError('MC epoch has unfinished request')
+        self._mc_scheduler_epoch = epoch
+
+    def _restore_mc_training_state(self, checkpoint):
+        """Validate on temporary optimizer/scheduler/owner before committing."""
+        state = checkpoint[FIELD]
+        self.jdv2_objective_rng.validated_state(state, self._mc_total_steps())
+        probe_optimizer = copy.deepcopy(self.optimizer)
+        probe_optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        probe_scheduler = copy.deepcopy(self.scheduler)
+        if probe_scheduler is not None:
+            probe_scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+        if self.scheduler is not None:
+            self.scheduler.load_state_dict(checkpoint['scheduler_state_dict'])
+        self.jdv2_objective_rng.restore(state, self._mc_total_steps())
+        self._stage_optimizer_steps_completed = state['successful_optimizer_updates']
+        self.args.jdv2_stage_progress = state['stage_progress']
+        self._mc_scheduler_epoch = checkpoint['mc_scheduler_epoch']
 
     def _restore_stopping_state(self, checkpoint, same_stage):
         """Restore process-local stopping state for an exact stage resume.
@@ -638,9 +720,109 @@ class trainer(object):
                     self.best_metrics[key] = value
                     self.best_metrics_epochs[key] = epoch
 
-    def _load_state_file(self, saved_model_name, baseline_initialization=False):
-        """Load a checkpoint with explicit legacy-to-joint compatibility."""
+    def _load_state_file(self, saved_model_name, baseline_initialization=False,
+                         weights_only=False):
         checkpoint = torch.load(saved_model_name, map_location=self.device)
+        training = (not weights_only and
+                    getattr(self.args, 'phase', 'train') in {'train', 'train_test'})
+        mode = objective_mode(self.args)
+        # Evaluation is weights-only regardless of checkpoint objective.
+        if not training:
+            return self._load_state_file_legacy(
+                saved_model_name, baseline_initialization, checkpoint)
+        if FIELD in checkpoint and mode != MC:
+            raise ValueError('Cannot resume MC checkpoint under mean_energy')
+        if mode != MC:
+            return self._load_state_file_legacy(
+                saved_model_name, baseline_initialization, checkpoint)
+        source_stage = checkpoint.get('training_stage')
+        same_stage = source_stage == self.args.training_stage
+        if not same_stage:
+            # Only genuine legacy/base initialization, never broad same-stage bypass.
+            if not baseline_initialization or FIELD in checkpoint or any(
+                    key.startswith('jdv2_') for key in checkpoint.get('model_state_dict', {})):
+                raise ValueError('MC fresh initialization requires legacy/base weights')
+        else:
+            state = checkpoint.get(FIELD)
+            self.jdv2_objective_rng.validated_state(state, self._mc_total_steps())
+            if (checkpoint.get('stage_optimizer_steps_completed') !=
+                    state['successful_optimizer_updates'] or
+                    checkpoint.get('stage_progress') != state['stage_progress'] or
+                    checkpoint.get('mc_scheduler_epoch') != checkpoint.get('epoch') or
+                    type(checkpoint.get('epoch')) is not int or
+                    not 0 < checkpoint['epoch'] <= self.args.num_epochs or
+                    state['successful_optimizer_updates'] >
+                    checkpoint['epoch'] * len(self.data_loaders['train'])):
+                raise ValueError('MC checkpoint boundary/progress mismatch')
+            optimizer = (copy.deepcopy(self.optimizer) if hasattr(self, 'optimizer')
+                         else self._set_optimizer(self._optimizer_parameter_groups()))
+            scheduler = (copy.deepcopy(self.scheduler) if hasattr(self, 'scheduler')
+                         else self._set_scheduler(optimizer))
+            opt_state = checkpoint.get('optimizer_state_dict')
+            if not isinstance(opt_state, dict):
+                raise ValueError('MC checkpoint requires optimizer state')
+            optimizer.load_state_dict(opt_state)
+            if (self.args.optimizer in {'Adam', 'AdamW'} and
+                    state['successful_optimizer_updates'] and not optimizer.state):
+                raise ValueError('Missing MC optimizer moments')
+            for parameter, values in optimizer.state.items():
+                for name, value in values.items():
+                    if torch.is_tensor(value) and (
+                            not torch.isfinite(value).all() or
+                            (name != 'step' and value.shape != parameter.shape)):
+                        raise ValueError('Corrupt MC optimizer tensor')
+                    if name == 'step' and (
+                            value.numel() != 1 or float(value) < 0 or
+                            float(value) > state['successful_optimizer_updates'] or
+                            float(value) != int(float(value))):
+                        raise ValueError('Corrupt MC optimizer step counter')
+            sched_state = checkpoint.get('scheduler_state_dict')
+            if scheduler is None:
+                if sched_state is not None:
+                    raise ValueError('MC scheduler mismatch')
+            else:
+                if not isinstance(sched_state, dict) or (
+                        scheduler.state_dict().keys() != sched_state.keys()):
+                    raise ValueError('Corrupt MC scheduler state')
+                scheduler.load_state_dict(sched_state)
+                expected_epoch = checkpoint['epoch']
+                if (type(sched_state['last_epoch']) is not int or
+                        not 0 <= sched_state['last_epoch'] <= expected_epoch or
+                        (self.args.scheduler != 'ReduceLROnPlateau' and
+                         sched_state['last_epoch'] != expected_epoch)):
+                    raise ValueError('MC scheduler progress mismatch')
+                if [g['lr'] for g in optimizer.param_groups] != sched_state['_last_lr']:
+                    raise ValueError('MC scheduler/optimizer learning rates disagree')
+            for key in ('validations_without_improvement', 'collapse_signature_epochs'):
+                if type(checkpoint.get(key)) is not int or checkpoint[key] < 0:
+                    raise ValueError('Invalid MC stopping counter')
+        # Legacy loader performs architecture/provenance checks. Rollback protects
+        # its late checks too; no new restriction is imposed on legacy mode.
+        old_weights = copy.deepcopy(self.net.state_dict())
+        old_pending = getattr(self, '_pending_training_state', None)
+        old_initialization = getattr(self, 'goal_pretrain_initialization', None)
+        try:
+            epoch = self._load_state_file_legacy(
+                saved_model_name, baseline_initialization, checkpoint)
+        except Exception:
+            self.net.load_state_dict(old_weights, strict=True)
+            self._pending_training_state = old_pending
+            self.goal_pretrain_initialization = old_initialization
+            raise
+        if same_stage and hasattr(self, 'optimizer'):
+            self._restore_mc_training_state(checkpoint)
+        elif not same_stage:
+            self._initialize_mc_objective()
+            if hasattr(self, 'optimizer'):
+                self.optimizer = self._set_optimizer(self._optimizer_parameter_groups())
+                self.scheduler = self._set_scheduler(self.optimizer)
+        return epoch
+
+    def _load_state_file_legacy(self, saved_model_name, baseline_initialization=False,
+                                checkpoint=None):
+        """Load a checkpoint with explicit legacy-to-joint compatibility."""
+        if checkpoint is None:
+            checkpoint = torch.load(saved_model_name, map_location=self.device)
         state_dict = checkpoint.get('model_state_dict', checkpoint)
         # Only a legacy baseline used to initialize a larger structured model
         # is intentionally partial. Resuming/testing any current checkpoint
@@ -780,7 +962,7 @@ class trainer(object):
             self._pending_training_state = checkpoint
         return checkpoint.get('epoch', 0)
 
-    def _load_checkpoint(self, load_checkpoint):
+    def _load_checkpoint(self, load_checkpoint, weights_only=False):
         """
         Load a pre-trained model. Can then be used to test or resume training.
         """
@@ -800,7 +982,8 @@ class trainer(object):
             # Load model
             if os.path.isfile(saved_model_name):
                 print('Loading checkpoint ...')
-                model_epoch = self._load_state_file(saved_model_name)
+                model_epoch = self._load_state_file(
+                    saved_model_name, weights_only=weights_only)
                 print('Loaded checkpoint at epoch', model_epoch, '\n')
                 return model_epoch
             else:
@@ -882,7 +1065,7 @@ class trainer(object):
                 raise RuntimeError('clean final-test loader is unavailable')
         # some models do not need to be trained nor loaded
         if self.net.is_trainable:
-            best_epoch = self._load_checkpoint(load_checkpoint)
+            best_epoch = self._load_checkpoint(load_checkpoint, weights_only=True)
         else:
             best_epoch = load_checkpoint
         print('Testing ...')
@@ -1021,7 +1204,12 @@ class trainer(object):
             self._optimizer_parameter_groups())
         self.scheduler = self._set_scheduler(self.optimizer)
         self._stage_optimizer_steps_completed = 0
-        if self._pending_training_state is not None:
+        if (objective_mode(self.args) == MC and
+                (self._pending_training_state or {}).get(FIELD) is not None):
+            self._restore_mc_training_state(self._pending_training_state)
+            self._restore_best_state(self._pending_training_state)
+            self._restore_stopping_state(self._pending_training_state, same_stage=True)
+        elif self._pending_training_state is not None:
             checkpoint = self._pending_training_state
             same_stage = checkpoint.get('training_stage') == \
                 self.args.training_stage
@@ -1244,6 +1432,8 @@ class trainer(object):
 
             # The explicit last checkpoint is written only after the epoch's
             # optimizer and scheduler work has completed.
+            if objective_mode(self.args) == MC:
+                self._mc_complete_epoch(epoch)
             self._save_checkpoint(epoch, last_epoch=True)
 
             # save metrics to WandB
@@ -1311,6 +1501,11 @@ class trainer(object):
 
         def optimizer_step(pending, rescale_partial=False):
             if pending == 0:
+                return
+            if objective_mode(self.args) == MC:
+                if pending != 1 or accumulation_steps != 1:
+                    raise RuntimeError('MC requires accumulation=1')
+                self._mc_optimizer_step()
                 return
             if self.scaler.is_enabled():
                 self.scaler.unscale_(self.optimizer)
@@ -1435,6 +1630,8 @@ class trainer(object):
                 if pending_backward == accumulation_steps:
                     optimizer_step(pending_backward)
                     pending_backward = 0
+            elif objective_mode(self.args) == MC:
+                self._mc_optimizer_step(skip=True)
 
             del inputs, batch_id
             del seq_list, losses, loss
@@ -1659,7 +1856,8 @@ class trainer(object):
                     inputs, if_test=True)
             if (self.net.jdv2_active and
                     self.args.training_stage == 'joint_goal' and
-                    self.args.joint_diagnostics):
+                    self.args.joint_diagnostics and
+                    objective_mode(self.args) != MC):
                 # Validation predictions retain the deployed stochastic
                 # policy. This separate no-gradient teacher pass records the
                 # latent mixture health without changing sampled outputs.

@@ -1,0 +1,37 @@
+{
+  "status": "FAILED_RUNNER_FIXTURE_ERRORS",
+  "wall_seconds": 7.700313120032661,
+  "tests": {
+    "attempted": 59,
+    "passed": 33,
+    "failed": 26
+  },
+  "capture": "Original stdout exceeded tool return limit; retained verbatim truncated text, not a complete JSON. Counter block absent. Reconstruction below is explicitly derived, not recovered telemetry.",
+  "failures": {
+    "path_guard_false_positives_on_tmp_Path_objects": 25,
+    "parser_fixture_missing_eth_test_set": 1
+  },
+  "derived_counts": {
+    "parent_toy_optimizer_updates": 89,
+    "child_toy_optimizer_updates": 6,
+    "parent_objective_draws": 102,
+    "child_objective_draws": 6,
+    "parent_sampled_agent_draws": 1844,
+    "child_sampled_agent_draws": 120,
+    "parent_actual_no_z_dispatch_calls": 89,
+    "parent_actual_mc_method_calls": 88,
+    "parent_synthetic_encode_calls": 90,
+    "parent_backward_calls": 90,
+    "parent_torch_save_delegated_calls": 32,
+    "parent_torch_load_delegated_calls": 0,
+    "temporary_toy_loads_rejected_by_buggy_guard": 25,
+    "child_toy_load_calls": 1
+  },
+  "derivation": [
+    "22 matrix cases x3 updates + role source3 + continuous9 + prefix3 =81 parent fixture updates; old stopping fixture5+3=8; child6.",
+    "Fixture successful draws=3 reference +66 matrix +3 roles +3 failure/skip/NaN +12 resume =87; independent RNG isolation15 (unchanged fixed test, confirmed by RUN3 122-106-1)=102 parent.",
+    "Fixture sampled rows=44 reference +1320 matrix +60 roles +60 failure/skip/NaN +240 resume=1724; isolation15x8=120 =>1844.",
+    "No counter estimates presented as measured telemetry. Full current-run counters and exact-resume trace digest are in CPU_RUN_3/4."
+  ],
+  "real_artifact_reads": 0
+}

@@ -1,0 +1,588 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "wall_seconds": 3.1483035340206698,
+  "selectors": [
+    "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+    "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional",
+    "tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix",
+    "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]",
+    "tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop"
+  ],
+  "events": [
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009562940103933215,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.005320054013282061,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_parser_and_eval_reject_before_draw",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0002898279344663024,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006235480541363358,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.0572212568949908,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_state]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003704929258674383,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007137439679354429,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030977697926573455,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[format_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00034801196306943893,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006928039947524667,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.031937537947669625,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[neighbor_draws]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003594571026042104,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007127620046958327,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030377343064174056,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_device]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00034260202664881945,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007014090660959482,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03136074694339186,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampling_semantics_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003551199333742261,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007756840204820037,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030840066028758883,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[objective_semantic_fingerprint]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003495080163702369,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007512429729104042,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.6219914419343695,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[generator_state]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.002037805039435625,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.004082919913344085,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.06695398001465946,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[missing_rng]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004440690390765667,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007501449435949326,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03152387298177928,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[draw_calls]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00040525197982788086,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007881690980866551,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.031117503996938467,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[sampled_agent_draws]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003852100344374776,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[successful_optimizer_updates]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007371220272034407,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[successful_optimizer_updates]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030869383946992457,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[successful_optimizer_updates]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035919598303735256,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_progress]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007641479605808854,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_progress]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030366766965016723,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_progress]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035148696042597294,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[pending_backward]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007109899306669831,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[pending_backward]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030967583996243775,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[pending_backward]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035769701935350895,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[checkpoint_role]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000725677004083991,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[checkpoint_role]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030692480970174074,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[checkpoint_role]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.000341109000146389,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_total_optimizer_steps]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007095120381563902,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_total_optimizer_steps]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03076941706240177,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[stage_total_optimizer_steps]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00037004309706389904,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[torch_version]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007304130122065544,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[torch_version]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030438491026870906,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[torch_version]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00034912198316305876,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[top_progress]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000712566077709198,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[top_progress]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030596561962738633,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[top_progress]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00037117605097591877,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_epoch]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007635800866410136,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_epoch]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03080886695533991,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler_epoch]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00039539707358926535,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000731496955268085,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.028782635927200317,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[optimizer]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0004658009856939316,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009059809381142259,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03126375703141093,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[scheduler]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035171303898096085,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[architecture]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007799650775268674,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[architecture]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03154183703009039,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[architecture]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00045453698839992285,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[provenance]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0009032019879668951,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[provenance]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.03215350199025124,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_checkpoint_matrix_transactional[provenance]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035517499782145023,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007060869829729199,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.05694039992522448,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_objective_roles_eval_and_legacy_matrix",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00035483494866639376,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0007464729715138674,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.002786212950013578,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_atomic_failure_policy[directory_fsync]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.0003139600157737732,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0006129780085757375,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.006040198029950261,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_resume_stopping_state.py::test_interrupted_resume_matches_uninterrupted_early_stop",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00033177202567458153,
+      "failure": null
+    }
+  ],
+  "counts": {
+    "module_forward": 0,
+    "cuda_initialization": 0,
+    "toy_load": 56,
+    "toy_save": 52,
+    "objective_draw_attempts": 69,
+    "objective_draws": 69,
+    "sampled_agent_draws": 1380,
+    "actual_no_z_dispatch_calls": 70,
+    "actual_mc_method_calls": 70,
+    "adam_steps": 79,
+    "real_artifact_attempts": 0
+  },
+  "fixture_counts": {
+    "production_loss_calls": 70,
+    "synthetic_encode_calls": 69,
+    "relation_chunks": 138,
+    "energy_factor_chunks": 138,
+    "energy_mixtures": 276,
+    "backward_calls": 69,
+    "toy_optimizer_updates": 69,
+    "draws": 69,
+    "sampled_rows": 1380,
+    "checkpoint_save_calls": 26,
+    "checkpoint_load_calls": 30
+  },
+  "measurements": {},
+  "stdout": "..........................                                               [100%]\n26 passed in 2.90s\n"
+}

@@ -195,9 +195,14 @@ def jdv2_scene_timesteps(
     return scene_timestep[compact]
 
 
+from src.jdv2_objective_state import MC, objective_mode, validate_mode
+from src.joint_goal_loss import expected_conditional_composite
+
+
 class GDTS(torch.nn.Module):
     def __init__(self, args, device):
         super().__init__()
+        validate_mode(args, device)
         self.is_trainable = True
         self.args = args
         self.device = device
@@ -2756,6 +2761,8 @@ class GDTS(torch.nn.Module):
 
     def _jdv2_no_z_goal_losses(self, inputs):
         """Compute the strict no-z dual composite objective."""
+        if objective_mode(self.args) == MC:
+            return self._jdv2_mc_goal_losses(inputs)
         _, structured = self.encode(inputs, if_test=False, for_loss=True)
         target = build_soft_goal_target(
             structured['goal_candidates_world'], inputs['world_coord'][-1],
@@ -2865,6 +2872,163 @@ class GDTS(torch.nn.Module):
             unary, target, scene_index, local_post)
         pl_prior = jdv2_no_z_pseudo_likelihood_from_local(
             unary, target, scene_index, local_prior)
+        if relation_kl_parts:
+            relation_kl = torch.cat(relation_kl_parts).mean()
+        else:
+            relation_kl = unary.float().sum() * 0.0
+        losses = {
+            'jdv2_pl_post': pl_post,
+            'jdv2_pl_prior': pl_prior,
+            'jdv2_relation_kl': relation_kl,
+        }
+        coefficients = self.set_losses_coeffs()
+        self.last_joint_diagnostics.update({
+            'L_PL_post': float(pl_post.detach().cpu()),
+            'L_PL_prior': float(pl_prior.detach().cpu()),
+            'L_r': float(relation_kl.detach().cpu()),
+            'mean_KL_r': float(relation_kl.detach().cpu()),
+            'L_no_z': float(sum(
+                coefficients[name] * value for name, value in losses.items()
+            ).detach().cpu()),
+        })
+        if relation_usage_count:
+            relation_usage = relation_usage_sum / float(relation_usage_count)
+            self.last_joint_diagnostics['dynamic_relation_entropy'] = \
+                relation_entropy_sum / float(relation_usage_count)
+        else:
+            relation_usage = relation_usage_sum
+            self.last_joint_diagnostics['dynamic_relation_entropy'] = 0.0
+        for index, value in enumerate(relation_usage):
+            self.last_joint_diagnostics[
+                f'predicted_relation_usage_{index}'] = float(value.cpu())
+        if energy_count:
+            energy_mean = energy_sum / energy_count
+            energy_variance = max(
+                energy_square_sum / energy_count - energy_mean ** 2, 0.0)
+            self.last_joint_diagnostics.update({
+                'energy_mean': energy_mean,
+                'energy_std': energy_variance ** 0.5,
+                'energy_min': energy_min,
+                'energy_max': energy_max,
+            })
+        else:
+            self.last_joint_diagnostics.update({
+                'energy_mean': 0.0, 'energy_std': 0.0,
+                'energy_min': 0.0, 'energy_max': 0.0,
+            })
+        return losses
+
+    def _jdv2_mc_goal_losses(self, inputs):
+        """CPU experimental objective. One owner draw shared by both CE terms."""
+        validate_mode(self.args, self.device)
+        if not self.training:
+            raise RuntimeError("MC diagnostic loss in eval mode is unsupported")
+        if torch.is_autocast_enabled("cpu"):
+            raise ValueError("MC AMP certification pending")
+        _, structured = self.encode(inputs, if_test=False, for_loss=True)
+        target = build_soft_goal_target(
+            structured['goal_candidates_world'], inputs['world_coord'][-1],
+            sigma_goal=self.args.goal_soft_sigma,
+            candidate_mask=structured['candidate_mask'])
+        unary = structured['unary_score']
+        target = target.to(dtype=unary.dtype)  # fixed label; existing target FP32 boundary
+        scene_index = inputs['scene_index']
+        num_agents, num_candidates = unary.shape
+        edge_index = structured['edge_index']
+        neighbor_ids = self.jdv2_objective_rng.draw(
+            unary, target, scene_index, edge_index, structured['candidate_mask'])
+        prior_chunks, post_chunks = [], []
+        relation_kl_parts = []
+        relation_usage_sum = unary.new_zeros(
+            (self.args.jdv2_relation_modes,), dtype=torch.float32)
+        relation_entropy_sum = 0.0
+        relation_usage_count = 0
+        energy_sum = 0.0
+        energy_square_sum = 0.0
+        energy_count = 0
+        energy_min = float('inf')
+        energy_max = float('-inf')
+        chunk_size = self.args.jdv2_edge_chunk_size
+        for start in range(0, edge_index.shape[1], chunk_size):
+            stop = min(start + chunk_size, edge_index.shape[1])
+            chunk_edge = edge_index[:, start:stop]
+            chunk_feat = structured['edge_feat'][start:stop]
+            chunk_base = structured['base_relation_logits'][start:stop]
+            full_relation = self.jdv2_dynamic_relation.full_pair_relation(
+                chunk_base, structured['goal_candidates_world'],
+                inputs['obs_traj_world'][:, -1], chunk_edge,
+                mode_enabled=False)
+            if full_relation['log_prob'].ndim != 4:
+                raise RuntimeError(
+                    'Strict no-z relation must have shape [E,K,K,M]')
+            if not self.args.use_dynamic_relation:
+                base_log = F.log_softmax(chunk_base.float(), dim=-1)
+                prior_relation_log = base_log[:, None, None, :].expand(
+                    stop - start, num_candidates, num_candidates,
+                    self.args.jdv2_relation_modes)
+            else:
+                prior_relation_log = full_relation['log_prob']
+
+            if self.args.use_joint_energy:
+                factors = self.jdv2_joint_energy.factors(
+                    structured['agent_feat'],
+                    structured['goal_candidates_world'],
+                    inputs['obs_traj_world'][:, -1], chunk_edge, chunk_feat,
+                    mode_enabled=False)
+                if factors['left_factor'].ndim != 4:
+                    raise RuntimeError(
+                        'Strict no-z energy factors must be [E,M,K,R]')
+                relation_energy = self.jdv2_joint_energy.relation_energy(
+                    factors['left_factor'], factors['right_factor'])
+                prior_effective = self.jdv2_joint_energy.effective_energy(
+                    relation_energy, prior_relation_log)
+                if self.args.use_dynamic_relation:
+                    teacher_log = structured['relation_teacher']['log_prob'][
+                        start:stop]
+                    post_relation_log = teacher_log[:, None, None, :].expand_as(
+                        relation_energy)
+                else:
+                    post_relation_log = prior_relation_log
+                post_effective = self.jdv2_joint_energy.effective_energy(
+                    relation_energy, post_relation_log)
+            else:
+                prior_effective = unary.new_zeros(
+                    (stop - start, num_candidates, num_candidates),
+                    dtype=torch.float32)
+                post_effective = torch.zeros_like(prior_effective)
+
+            probability = full_relation['prob'].detach().float()
+            relation_usage_sum += probability.sum(dim=(0, 1, 2))
+            relation_usage_count += probability.numel() // \
+                max(self.args.jdv2_relation_modes, 1)
+            if probability.numel():
+                relation_entropy_sum += float((
+                    -(probability.clamp_min(1e-8) *
+                      probability.clamp_min(1e-8).log()).sum(-1)
+                ).sum().cpu())
+            detached_energy = prior_effective.detach().float()
+            if detached_energy.numel():
+                energy_sum += float(detached_energy.sum().cpu())
+                energy_square_sum += float(
+                    detached_energy.square().sum().cpu())
+                energy_count += detached_energy.numel()
+                energy_min = min(energy_min, float(detached_energy.min().cpu()))
+                energy_max = max(energy_max, float(detached_energy.max().cpu()))
+
+            prior_chunks.append((start, stop, prior_effective))
+            post_chunks.append((start, stop, post_effective))
+            if self.args.use_dynamic_relation:
+                relation_kl_parts.append(jdv2_no_z_relation_kl_per_edge(
+                    structured['relation_teacher']['log_prob'][start:stop],
+                    full_relation['log_prob'], target, chunk_edge))
+
+        # Both lists retain all upstream graphs until backward, not chunk-bounded memory.
+        pl_post = expected_conditional_composite(
+            unary, target, scene_index, edge_index, post_chunks, neighbor_ids,
+            structured['candidate_mask'])
+        pl_prior = expected_conditional_composite(
+            unary, target, scene_index, edge_index, prior_chunks, neighbor_ids,
+            structured['candidate_mask'])
         if relation_kl_parts:
             relation_kl = torch.cat(relation_kl_parts).mean()
         else:

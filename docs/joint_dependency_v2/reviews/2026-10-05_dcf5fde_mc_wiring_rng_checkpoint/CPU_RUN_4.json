@@ -1,0 +1,80 @@
+{
+  "status": "PASS",
+  "exit_code": 0,
+  "wall_seconds": 1.6857852069661021,
+  "selectors": [
+    "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update"
+  ],
+  "events": [
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[nan_cost]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.0010568260913714767,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[nan_cost]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.006275805993936956,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[nan_cost]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00030621408950537443,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[optimizer_error]",
+      "phase": "setup",
+      "outcome": "passed",
+      "seconds": 0.000665118102915585,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[optimizer_error]",
+      "phase": "call",
+      "outcome": "passed",
+      "seconds": 0.030028810957446694,
+      "failure": null
+    },
+    {
+      "nodeid": "tests/test_jdv2_mc_wiring.py::test_post_draw_failure_never_reseeds_or_counts_update[optimizer_error]",
+      "phase": "teardown",
+      "outcome": "passed",
+      "seconds": 0.00039366702549159527,
+      "failure": null
+    }
+  ],
+  "counts": {
+    "module_forward": 0,
+    "cuda_initialization": 0,
+    "toy_load": 0,
+    "toy_save": 0,
+    "objective_draw_attempts": 2,
+    "objective_draws": 2,
+    "sampled_agent_draws": 40,
+    "actual_no_z_dispatch_calls": 2,
+    "actual_mc_method_calls": 2,
+    "adam_steps": 0,
+    "real_artifact_attempts": 0
+  },
+  "fixture_counts": {
+    "production_loss_calls": 2,
+    "synthetic_encode_calls": 2,
+    "relation_chunks": 4,
+    "energy_factor_chunks": 4,
+    "energy_mixtures": 8,
+    "backward_calls": 1,
+    "toy_optimizer_updates": 0,
+    "draws": 2,
+    "sampled_rows": 40,
+    "checkpoint_save_calls": 2,
+    "checkpoint_load_calls": 0
+  },
+  "measurements": {},
+  "stdout": "..                                                                       [100%]\n2 passed in 1.46s\n"
+}
