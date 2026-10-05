@@ -1,0 +1,54 @@
+{
+  "H": 500,
+  "accumulation": 1,
+  "base_classification": "MISSING_QUALIFIED",
+  "base_path": null,
+  "base_sha256": null,
+  "beta_first": 0.0,
+  "beta_last": 0.07161308840413318,
+  "cache_manifest_sha256": null,
+  "cache_path": null,
+  "cache_producer_sha256": null,
+  "caps": {
+    "peak_reserved_bytes": 10737418240,
+    "per_arm_gpu_seconds": 900,
+    "total_gpu_seconds": 2700
+  },
+  "execution_authorized": false,
+  "initial_state_path": null,
+  "initial_state_sha256": null,
+  "loader_supported": false,
+  "native_epoch_updates": 3484,
+  "optimizer": {
+    "clip": 1.0,
+    "installed_defaults": {
+      "amsgrad": false,
+      "betas": [
+        0.9,
+        0.999
+      ],
+      "capturable": false,
+      "differentiable": false,
+      "eps": 1e-08,
+      "foreach": null,
+      "fused": null,
+      "maximize": false,
+      "weight_decay": 0
+    },
+    "learning_rate": 0.0001,
+    "name": "Adam"
+  },
+  "post_pilot_progress": 0.14351320321469574,
+  "progress": "before attempt t (1-based), completed=(t-1), progress=(t-1)/3484; stop on any skip/nonfinite/pending error",
+  "reference_num_epochs": 1,
+  "scheduler": "ExponentialLR gamma=0.995 at complete native epoch only; 0 scheduler steps in partial L1",
+  "seed": 3101,
+  "seeds_L2": [
+    3101,
+    3102,
+    3103
+  ],
+  "status": "TEMPLATE_BLOCKED",
+  "step_cap_supported": false,
+  "total_steps": 3484
+}

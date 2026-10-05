@@ -1,0 +1,355 @@
+{
+  "counter_scope": "this isolated audit process; preliminary shell source/JSON inspection is separately documented, no checkpoint/cache deserialization before this process",
+  "counts": {
+    "checkpoint_deserialization_attempts": 5,
+    "checkpoint_deserializations": 5,
+    "cuda_forbidden_attempts": 0,
+    "data_evaluation": 0,
+    "data_training": 0,
+    "deployment_cache_reads": 1,
+    "diffusion_calls": 0,
+    "file_hash_bytes": 198351497,
+    "file_hash_operations": 75,
+    "json_metadata_reads": 8,
+    "optimizer_updates": 0,
+    "outer_metric_computations": 0,
+    "production_code_changes": 0,
+    "protected_future_tensor_reads": 0,
+    "real_model_call_attempts": 0,
+    "real_model_construction_attempts": 0,
+    "sampler_calls": 0,
+    "source_batch_deserializations": 0,
+    "teacher_cache_reads": 1,
+    "text_reads": 16
+  },
+  "elapsed_seconds": 5.102343720034696,
+  "file_hashes": {
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../GDTS/output/eth/config.yaml": {
+      "bytes": 1655,
+      "sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../GDTS/output/eth/saved_models/best_model.pt": {
+      "bytes": 31402558,
+      "sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../GDTS/output/univ/config.yaml": {
+      "bytes": 1683,
+      "sha256": "07452f9693ea2f19c802be73b0c0a78ec8f1a881deabb7a5994cab9b41cc1c09"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../GDTS/output/univ/saved_models/best_model.pt": {
+      "bytes": 31402558,
+      "sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/configs/joint_dependency_v2/jdv2_stage_a_clean_eth.yaml": {
+      "bytes": 2793,
+      "sha256": "19ac11b5dbc8bc88fcdd0b86d8cc5af0985e93557c40eb4eb2e0dacb8b2d35b3"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/test/biwi_eth.txt": {
+      "bytes": 224263,
+      "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/train/biwi_hotel.txt": {
+      "bytes": 143799,
+      "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/train/crowds_zara01.txt": {
+      "bytes": 205711,
+      "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/train/crowds_zara02.txt": {
+      "bytes": 392227,
+      "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/train/crowds_zara03.txt": {
+      "bytes": 199834,
+      "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/train/students001.txt": {
+      "bytes": 879714,
+      "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/train/students003.txt": {
+      "bytes": 724279,
+      "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/train/uni_examples.txt": {
+      "bytes": 109307,
+      "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/eth/val/biwi_eth.txt": {
+      "bytes": 224263,
+      "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/test/biwi_hotel.txt": {
+      "bytes": 143799,
+      "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/train/biwi_eth.txt": {
+      "bytes": 224263,
+      "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/train/crowds_zara01.txt": {
+      "bytes": 205711,
+      "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/train/crowds_zara02.txt": {
+      "bytes": 392227,
+      "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/train/crowds_zara03.txt": {
+      "bytes": 199834,
+      "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/train/students001.txt": {
+      "bytes": 879714,
+      "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/train/students003.txt": {
+      "bytes": 724279,
+      "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/hotel/val/biwi_hotel.txt": {
+      "bytes": 143799,
+      "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/test/students001.txt": {
+      "bytes": 879714,
+      "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/test/students003.txt": {
+      "bytes": 724279,
+      "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/train/biwi_eth.txt": {
+      "bytes": 224263,
+      "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/train/biwi_hotel.txt": {
+      "bytes": 143799,
+      "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/train/crowds_zara01.txt": {
+      "bytes": 205711,
+      "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/train/crowds_zara02.txt": {
+      "bytes": 392227,
+      "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/train/crowds_zara03.txt": {
+      "bytes": 199834,
+      "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/train/uni_examples.txt": {
+      "bytes": 109307,
+      "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/val/students001.txt": {
+      "bytes": 879714,
+      "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/univ/val/students003.txt": {
+      "bytes": 724279,
+      "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/test/crowds_zara01.txt": {
+      "bytes": 205711,
+      "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/train/biwi_eth.txt": {
+      "bytes": 224263,
+      "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/train/biwi_hotel.txt": {
+      "bytes": 143799,
+      "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/train/crowds_zara02.txt": {
+      "bytes": 392227,
+      "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/train/crowds_zara03.txt": {
+      "bytes": 199834,
+      "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/train/students001.txt": {
+      "bytes": 879714,
+      "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/train/students003.txt": {
+      "bytes": 724279,
+      "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/train/uni_examples.txt": {
+      "bytes": 109307,
+      "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara1/val/crowds_zara01.txt": {
+      "bytes": 205711,
+      "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/test/crowds_zara02.txt": {
+      "bytes": 392227,
+      "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/train/biwi_eth.txt": {
+      "bytes": 224263,
+      "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/train/biwi_hotel.txt": {
+      "bytes": 143799,
+      "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/train/crowds_zara01.txt": {
+      "bytes": 205711,
+      "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/train/crowds_zara03.txt": {
+      "bytes": 199834,
+      "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/train/students001.txt": {
+      "bytes": 879714,
+      "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/train/students003.txt": {
+      "bytes": 724279,
+      "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/train/uni_examples.txt": {
+      "bytes": 109307,
+      "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/data/eth5/zara2/val/crowds_zara02.txt": {
+      "bytes": 392227,
+      "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/JDV2_CLEAN_SPLIT_REPRODUCTION_PLAN.md": {
+      "bytes": 5075,
+      "sha256": "1d64e510627dfeaeaab0e0d323e1de825f7e198f2707be3b0b5aef6fbd5474b6"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/JDV2_CLEAN_SPLIT_REPRODUCTION_PREFLIGHT.md": {
+      "bytes": 4955,
+      "sha256": "191fabb8a710c0e03d4b802e4aa6afef6ee5076a4c75e594e3cd8a8444233c61"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/JDV2_EVALUATION_SPLIT_AUDIT.md": {
+      "bytes": 5515,
+      "sha256": "67aa984f9e4ae5529359ac560acf7c647f14af32aa0978b4c1e2dedb928fb962"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/CURRENT_AND_PROPOSED_ARCHITECTURE.md": {
+      "bytes": 19477,
+      "sha256": "3095a3bec7df487a5c377d884b11eadf5761c7c2e2d218d8dfa639d99a57eb64"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/EXPERIMENT_PREREGISTRATION.md": {
+      "bytes": 12585,
+      "sha256": "a9709f97d13c2781e07106e53ed5739a3cf2235cfad5743795441bfee1df3338"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/IMPLEMENTATION_PSEUDOCODE.md": {
+      "bytes": 23030,
+      "sha256": "eeae714f2c1b8be8b10d6df97765723aa889923cb9f29e2268126a8ae52f22cc"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/REVIEW.md": {
+      "bytes": 11223,
+      "sha256": "145c02ea73a22725e8723b44d8b4b0429647bc20be553d3d0115306230d3b2e5"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/DEVICE_AMP_CONTRACT.md": {
+      "bytes": 4366,
+      "sha256": "f39fcdc1a431b63b398f1ff3cbe907e00b0422904fc53f6f0533ac206f311f4f"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/PREFLIGHT.json": {
+      "bytes": 26179,
+      "sha256": "d78986512fabb0819845d166af2e9f0f3e55de3d3b0a33edb13456a84721e068"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/RESULTS.json": {
+      "bytes": 59632,
+      "sha256": "ee070a602fcdc74bb4d8a7cb3a31dbf85f7a9b68f566768f71770de44f090ec8"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/REVIEW.md": {
+      "bytes": 7101,
+      "sha256": "a59ba06e7aa35161a9b77e13b43aaccc58815167078007903fc78d8a58dd8db5"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/SOURCE_SCOPE.json": {
+      "bytes": 7332,
+      "sha256": "7fdadb05741c5d1cdb874058386ebf95313f00c6ee3b99acc5f36af8d947b7ed"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/eth_full_stage_a/manifest.json": {
+      "bytes": 1206,
+      "sha256": "eadae55391b45224a3d7920e6128764db9a56298ffe70d723030ec00193786dd"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/eth_full_stage_a/train/000445.pt": {
+      "bytes": 8430,
+      "sha256": "b788a9cb23ea0698a667de4fb9d910f62167ac7c564411a1311893fb4cd8f649"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/eth_full_stage_a/train/000445.teacher.pt": {
+      "bytes": 2222,
+      "sha256": "f3577a71d9b088bbff5634bbffdda23a3c9120150b6b54a79242a2c2d91c4919"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/univ_full_stage_a/manifest.json": {
+      "bytes": 1207,
+      "sha256": "a4252f64a9733532fa1f443998532dc8e60974c960ba7e05018b16b01906b69f"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/clean_split_protocol/manifest.json": {
+      "bytes": 6085570,
+      "sha256": "c8136967954bac5477b422da5d7f5b05fa979856a1318c4b323836ffff9f57ad"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/clean_split_protocol/preflight_results.json": {
+      "bytes": 975,
+      "sha256": "df0e16b8405b33fd33aebaa04912d2d2729e321f43df3ee1eb453242c96fea8d"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_clean_eth_seed2035/config.yaml": {
+      "bytes": 2793,
+      "sha256": "19ac11b5dbc8bc88fcdd0b86d8cc5af0985e93557c40eb4eb2e0dacb8b2d35b3"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_clean_eth_seed2035/saved_models/best_model.pt": {
+      "bytes": 35595662,
+      "sha256": "95f32cc2ae636524001b0f97f19c7d1e64cfc436f6526e6072216ccd73303765"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_clean_eth_seed2035/saved_models/last_model.pt": {
+      "bytes": 35595662,
+      "sha256": "87ae976b99f44a2817acb58b82054d173c5784cb7dcaa5cc97190678c86d0650"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/config.yaml": {
+      "bytes": 5550,
+      "sha256": "f0ab29cf7a383d7b8a0c1a5acfb0dcb18b727e675d2d50ac917be157a0cc5cb4"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/saved_models/best_model.pt": {
+      "bytes": 35595022,
+      "sha256": "699336d49aaecbccfaac8b44f00c0df5a73b521548fc29d3da37d071148fd5bb"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_b_v2a/adoption_protocol/split_audit.json": {
+      "bytes": 5539533,
+      "sha256": "7fa942ef516b9805e8205345ae4679302891dce70e01671cc5ca08f5c80d1570"
+    },
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/src/parser.py": {
+      "bytes": 63592,
+      "sha256": "0317a91687f3def5fcd3bbcc8e93e71f1dad994edcf72b99b79d24201dfbb0ae"
+    }
+  },
+  "metadata_reads": [
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/clean_split_protocol/manifest.json",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/stage_b_v2a/adoption_protocol/split_audit.json",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../GDTS/output/eth/config.yaml",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/../GDTS/output/univ/config.yaml",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_no_z_full_seed2035/config.yaml",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_clean_eth_seed2035/config.yaml",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/runs/jdv2_stage_a_clean_eth_seed2035/config.yaml",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/eth_full_stage_a/manifest.json",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/cache/univ_full_stage_a/manifest.json",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/src/parser.py",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/configs/joint_dependency_v2/jdv2_stage_a_clean_eth.yaml",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/RESULTS.json",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/PREFLIGHT.json",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/SOURCE_SCOPE.json",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/REVIEW.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-05_c9dbfec_cuda_amp_loss_smoke/DEVICE_AMP_CONTRACT.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/REVIEW.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/CURRENT_AND_PROPOSED_ARCHITECTURE.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/EXPERIMENT_PREREGISTRATION.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/reviews/2026-10-04_79ea3fa_innovation_theory_architecture/IMPLEMENTATION_PSEUDOCODE.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/JDV2_EVALUATION_SPLIT_AUDIT.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/JDV2_CLEAN_SPLIT_REPRODUCTION_PLAN.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/docs/joint_dependency_v2/JDV2_CLEAN_SPLIT_REPRODUCTION_PREFLIGHT.md",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/eth/joint_dependency_v2/clean_split_protocol/preflight_results.json"
+  ],
+  "status": "AUDIT_COMPLETE"
+}

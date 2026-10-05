@@ -1,0 +1,14 @@
+{
+  "command": "CUDA_VISIBLE_DEVICES='' ../.conda/rsjg/bin/python -B -m pytest -q -p no:cacheprovider tests/test_jdv2_clean_objective_preflight.py",
+  "attempts": 28,
+  "passed": 28,
+  "failed": 0,
+  "runs": 1,
+  "pytest_seconds": 0.18,
+  "stdout": "............................ [100%]\\n28 passed in 0.18s",
+  "real_model_calls": 0,
+  "cuda_initializations": 0,
+  "checkpoint_loads": 0,
+  "cache_loads": 0,
+  "subprocesses": "one import-side-effect check; one --check-plan expected exit2"
+}

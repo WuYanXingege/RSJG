@@ -1,0 +1,27 @@
+{
+  "allowed_fields": [
+    "jdv2_goal_objective",
+    "jdv2_mc_backend",
+    "jdv2_neighbor_seed",
+    "run_name"
+  ],
+  "differences": {
+    "jdv2_goal_objective": {
+      "A0": "mean_energy",
+      "A1": "expected_conditional_mc"
+    },
+    "jdv2_mc_backend": {
+      "A0": "cpu_v1",
+      "A1": "cuda_fp32_bf16_v1"
+    },
+    "jdv2_neighbor_seed": {
+      "A0": null,
+      "A1": 8257597550193927250
+    },
+    "run_name": {
+      "A0": "p2_l1_a0_seed3101_BLOCKED",
+      "A1": "p2_l1_a1_seed3101_BLOCKED"
+    }
+  },
+  "passed": true
+}

@@ -1,0 +1,48 @@
+{
+  "CLEAN_PILOT_READINESS": "BLOCKED_BASE_PROTOCOL_VIOLATION",
+  "H": 500,
+  "audit_status": "AUDIT_COMPLETE",
+  "source_commit": "4f11f44c3a490c491eb310b4fa7529806c71c1ed",
+  "qualified_gdts_bases": 0,
+  "known_violating_gdts_bases": 2,
+  "known_violating_stage_a_derivatives": 3,
+  "merely_unverified_checkpoint_candidates": 0,
+  "inventory_scope": "Five explicitly selected checkpoint artifacts, not an exhaustive filesystem inventory",
+  "independent_recordings": "UNKNOWN; same-scene cross-file agent/frame identifier collisions require provenance",
+  "component_evidence": "BASE_PROVENANCE.json: five candidate states, all keys/shapes and frozen component equality; SUPPLEMENT_METADATA.json: positive training logs and source definitions",
+  "component_unknowns": ["upstream parent and exact historical SGD event trace", "semantic segmentation external training lineage", "cross-file recording/ID namespace"],
+  "cpu_tests": {"unique": 30, "attempts": 30, "passed": 30, "failed": 0, "runs": 2},
+  "execution_ledger": "EXECUTION.json; supplementary metadata-only reads in SUPPLEMENT_METADATA.json and CROSS_RECORDING_IDENTIFIERS.json; shell inspection reads not globally instrumented",
+  "protected_future_tensor_reads": 0,
+  "outer_metric_computations": 0,
+  "real_model_constructions": 0,
+  "real_model_calls": 0,
+  "cuda_initializations_enumerations_synchronizations": 0,
+  "optimizer_updates": 0,
+  "data_training_evaluation_sampler_diffusion": 0,
+  "sdd_skills_apps_interventions": 0,
+  "base_counts": {
+    "KNOWN_PROTOCOL_VIOLATION": 5
+  },
+  "historical_exposure": "HOTEL R1-R4 already read teacher/loss/backward; zero updates there does not mean untouched; earlier base/heads trained on HOTEL",
+  "new_initialization": "NOT_CREATED_AUTH_REQUIRED",
+  "no_execution": true,
+  "open": [
+    "efficacy",
+    "novelty",
+    "pair causality",
+    "full CUDA resume",
+    "GPU observer neutrality"
+  ],
+  "production_changes": 0,
+  "protocol_counts": {
+    "inner_valid": 320,
+    "outer": 445,
+    "train": 3484
+  },
+  "secondary_blocks": [
+    "BLOCKED_CLEAN_BASE_MISSING",
+    "BLOCKED_SPLIT_OR_CACHE_PROVENANCE",
+    "BLOCKED_PROTOCOL_LOADER_SUPPORT"
+  ]
+}

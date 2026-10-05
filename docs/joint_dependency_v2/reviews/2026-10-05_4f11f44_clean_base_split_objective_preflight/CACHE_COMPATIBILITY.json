@@ -1,0 +1,225 @@
+{
+  "existing_manifests": {
+    "eth": {
+      "K": 21,
+      "candidate_order": "generate_goal_candidates-v1",
+      "completed_splits": [
+        "test",
+        "train",
+        "valid"
+      ],
+      "contains_future_supervision": true,
+      "coordinate_units": {
+        "position": "world_m",
+        "velocity": "world_m_per_s"
+      },
+      "creation_time": "2026-09-17T09:56:22.859095+00:00",
+      "dataset_hash": "cfe8cabd980d32da8071b0be573967c413a5e486418ecfb950ce4fad8f8ef0c2",
+      "deterministic_seed": 2035,
+      "dt": 0.4,
+      "dtype": "float32",
+      "goal_checkpoint_hash": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+      "graph_config": {
+        "adaptive": false,
+        "radius": 6.0,
+        "ttc_threshold": 8.0,
+        "type": "radius_ttc"
+      },
+      "preprocess_config": {
+        "dataset": "eth5",
+        "down_factor": 8,
+        "obs_length": 8,
+        "pred_length": 12,
+        "skip_ts_window": 1,
+        "test_set": "eth"
+      },
+      "schema_version": "jdv2-cache-v1",
+      "source_commit": "4b75110a571e6fd200938ff951a3a218ca4eb1e8",
+      "split_hash": {
+        "test": "1e6957be09ffc7e2dc4230e1a13d1750f9019769f55d2d16538d6975348c11d8",
+        "train": "bbaf9d04b1dce61c7ddf6ac5b60cdf3121217f58753b16161bf3c9aabf82e64b",
+        "valid": "cdc91af22ef46355d7edf0e807e5bafb5344ed9f2080bcbd7388ce6d4e6c69d7"
+      }
+    },
+    "univ": {
+      "K": 21,
+      "candidate_order": "generate_goal_candidates-v1",
+      "completed_splits": [
+        "test",
+        "train",
+        "valid"
+      ],
+      "contains_future_supervision": true,
+      "coordinate_units": {
+        "position": "world_m",
+        "velocity": "world_m_per_s"
+      },
+      "creation_time": "2026-09-25T11:05:32.867039+00:00",
+      "dataset_hash": "8ae93ab50f597ada6888c1333f7418fa202906b83581720eec73288b50ef9d2d",
+      "deterministic_seed": 2035,
+      "dt": 0.4,
+      "dtype": "float32",
+      "goal_checkpoint_hash": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+      "graph_config": {
+        "adaptive": false,
+        "radius": 6.0,
+        "ttc_threshold": 8.0,
+        "type": "radius_ttc"
+      },
+      "preprocess_config": {
+        "dataset": "eth5",
+        "down_factor": 8,
+        "obs_length": 8,
+        "pred_length": 12,
+        "skip_ts_window": 1,
+        "test_set": "univ"
+      },
+      "schema_version": "jdv2-cache-v1",
+      "source_commit": "db47b913820371cca25876d08c624709830ae1e8",
+      "split_hash": {
+        "test": "3017ae304a0ded8f9d4f22d7f6a80e46926d884958929bea8016c9f9d7f58878",
+        "train": "1a282deb8b99a5c54c32814aa5350ea55f87eeac484bef2260168e1bddc713aa",
+        "valid": "5d992fd509bee8a1c611d77b81beb898f86b76d5b57d37d0348772b870b103ec"
+      }
+    }
+  },
+  "frozen_base_component_copy_exact": {
+    "canonical_a": {
+      "diffnet": true,
+      "goal_module": true,
+      "registrar": true
+    },
+    "p1_clean_a_best": {
+      "diffnet": true,
+      "goal_module": true,
+      "registrar": true
+    },
+    "p1_clean_a_last": {
+      "diffnet": true,
+      "goal_module": true,
+      "registrar": true
+    }
+  },
+  "necessary_patch": "build deployment from observation+map only on protected roles; teacher generation and loading ONLY logical train",
+  "new_candidate_cache": null,
+  "new_candidate_hash": null,
+  "old_builder_all_splits_teacher": true,
+  "old_builder_protected_future_access": true,
+  "p2_compatible": false,
+  "producer_hash_matches_existing_file": true,
+  "reason": "both producer bases trained on protected HOTEL/inner labels; no relabel/reuse for fresh P2 base",
+  "required_generation_counts": {
+    "deployment_unique_windows": 4249,
+    "protected_teacher_sidecars": 0,
+    "train_teacher_sidecars": 3484
+  },
+  "safe_train_record_inspection": {
+    "deployment": {
+      "future_keys": [],
+      "keys": [
+        "cache_id",
+        "candidate_log_prior",
+        "contains_future_supervision",
+        "edge_feat",
+        "edge_index",
+        "edge_weight",
+        "frame_ids",
+        "goal_candidates_map",
+        "goal_candidates_world",
+        "scene_index",
+        "scene_ptr"
+      ],
+      "learned_keys": [],
+      "logical_role": "train",
+      "path": "outputs/joint_dependency_v2/cache/eth_full_stage_a/train/000445.pt",
+      "sha256": "b788a9cb23ea0698a667de4fb9d910f62167ac7c564411a1311893fb4cd8f649",
+      "tensors": {
+        "candidate_log_prior": {
+          "dtype": "torch.float32",
+          "shape": [
+            6,
+            21
+          ]
+        },
+        "edge_feat": {
+          "dtype": "torch.float32",
+          "shape": [
+            15,
+            14
+          ]
+        },
+        "edge_index": {
+          "dtype": "torch.int64",
+          "shape": [
+            2,
+            15
+          ]
+        },
+        "edge_weight": {
+          "dtype": "torch.float32",
+          "shape": [
+            15
+          ]
+        },
+        "frame_ids": {
+          "dtype": "torch.int64",
+          "shape": [
+            20,
+            6
+          ]
+        },
+        "goal_candidates_map": {
+          "dtype": "torch.float32",
+          "shape": [
+            6,
+            21,
+            2
+          ]
+        },
+        "goal_candidates_world": {
+          "dtype": "torch.float32",
+          "shape": [
+            6,
+            21,
+            2
+          ]
+        },
+        "scene_index": {
+          "dtype": "torch.int64",
+          "shape": [
+            6
+          ]
+        },
+        "scene_ptr": {
+          "dtype": "torch.int64",
+          "shape": [
+            2
+          ]
+        }
+      }
+    },
+    "teacher": {
+      "future_keys": [
+        "future_pair_descriptor"
+      ],
+      "keys": [
+        "cache_id",
+        "contains_future_supervision",
+        "future_pair_descriptor"
+      ],
+      "learned_keys": [],
+      "logical_role": "train",
+      "path": "outputs/joint_dependency_v2/cache/eth_full_stage_a/train/000445.teacher.pt",
+      "sha256": "f3577a71d9b088bbff5634bbffdda23a3c9120150b6b54a79242a2c2d91c4919",
+      "tensors": {
+        "future_pair_descriptor": {
+          "dtype": "torch.float32",
+          "shape": [
+            15,
+            6
+          ]
+        }
+      }
+    }
+  }
+}
