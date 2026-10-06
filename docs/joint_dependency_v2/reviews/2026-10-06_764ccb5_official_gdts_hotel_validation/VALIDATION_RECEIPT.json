@@ -1,0 +1,84 @@
+{
+  "schema": "rsjg-official-gdts-hotel-validation-v1",
+  "status": "OFFICIAL_CODE_BASELINE_VALIDATED_PAPER_ADE_MATCH_FDE_NOT_MATCH",
+  "date": "2026-10-06",
+  "review_base_commit": "764ccb50fec3c90cb8a9f0b0ee1657f47d38986d",
+  "upstream_gdts_commit": "297d508558c10831983ea4b19c2b3e657459a449",
+  "fold": "hotel",
+  "training": {
+    "completed_epochs": 250,
+    "elapsed_seconds": 19820,
+    "train_batches": 591,
+    "valid_batches": 19,
+    "best_checkpoint_epoch": 110,
+    "checkpoint_state_tensor_count": 112,
+    "strict_checkpoint_load_passed": true,
+    "best_model_sha256": "5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b",
+    "config_train_test_sha256": "04374e8e4eb6177b8817c5bd6574a637b22580f415479c76bd2b0a420fed091d",
+    "log_curve_sha256": "a5c97124a16f8960e60808c661be78bd6b1d2d589be6f46cb3b48d44442bbb15",
+    "formal_log_sha256": "61380a6076a92070ffec0d6f8add2cc0308dc05050e26b90953a5113b0590725"
+  },
+  "automatic_five_run_test": {
+    "runs": [
+      {"run": 0, "ade20_m": 0.13462, "fde20_m": 0.19230},
+      {"run": 1, "ade20_m": 0.13374, "fde20_m": 0.19018},
+      {"run": 2, "ade20_m": 0.13259, "fde20_m": 0.18955},
+      {"run": 3, "ade20_m": 0.13443, "fde20_m": 0.19107},
+      {"run": 4, "ade20_m": 0.13386, "fde20_m": 0.19214}
+    ],
+    "program_reported_mean_ade20_m": 0.13385,
+    "program_reported_mean_fde20_m": 0.19105
+  },
+  "independent_validation": {
+    "test_only_entrypoint": true,
+    "optimizer_updates": 0,
+    "new_checkpoints_written": 0,
+    "elapsed_seconds": 153,
+    "strict_checkpoint_load_passed": true,
+    "loaded_checkpoint_epoch": 110,
+    "num_test_runs": 5,
+    "samples_per_run": 20,
+    "ttst": true,
+    "cache_rematerialized_by_official_entrypoint": true,
+    "materialized_cache_counts": {"train": 591, "valid": 19, "test": 0},
+    "actual_evaluation_mode": "valid",
+    "runs": [
+      {"run": 0, "ade20_m": 0.13496, "fde20_m": 0.18940},
+      {"run": 1, "ade20_m": 0.13489, "fde20_m": 0.19518},
+      {"run": 2, "ade20_m": 0.13447, "fde20_m": 0.19296},
+      {"run": 3, "ade20_m": 0.13292, "fde20_m": 0.19060},
+      {"run": 4, "ade20_m": 0.13248, "fde20_m": 0.18887}
+    ],
+    "program_reported_mean_ade20_m": 0.13394,
+    "program_reported_mean_fde20_m": 0.19140,
+    "recomputed_from_printed_runs_population_std_ade20_m": 0.00103882,
+    "recomputed_from_printed_runs_population_std_fde20_m": 0.00235639,
+    "formal_validation_log_sha256": "49d7d1bdaad6cef2f3560b044f20479e2b380ee5872f6a9025801bf9773d32e6",
+    "config_test_sha256": "55c179e40217efec659728c4d86f8dc642e864bdf5a474864ec38b68ed35725c"
+  },
+  "repeat_delta_independent_minus_automatic_m": {
+    "ade20": 0.00009,
+    "fde20": 0.00035
+  },
+  "paper_comparison": {
+    "source": "user-provided GDTS IROS PDF, Table I, page 5",
+    "reported_ade20_m": 0.13,
+    "reported_fde20_m": 0.18,
+    "independent_minus_reported_ade20_m": 0.00394,
+    "independent_minus_reported_fde20_m": 0.01140,
+    "two_decimal_rounding_match": {"ade20": true, "fde20": false},
+    "exact_paper_metric_reproduction": false
+  },
+  "provenance": {
+    "hotel_valid_test_raw_sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+    "valid_and_test_raw_bytes_identical": true,
+    "patched_data_loader_sha256": "c6c66e761455c126dda173d107033dd30e60d4777acafeb285bd671632376952",
+    "public_code_goal_pretrain_loaded": false
+  },
+  "decision": {
+    "eligible_as_local_official_code_hotel_baseline": true,
+    "eligible_as_shared_base_for_fair_a0_a1": true,
+    "eligible_as_exact_paper_metric_reproduction": false,
+    "eligible_as_leakage_controlled_heldout_test": false
+  }
+}

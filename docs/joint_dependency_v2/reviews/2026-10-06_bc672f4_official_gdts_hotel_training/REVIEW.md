@@ -1,5 +1,7 @@
 # GDTS 官方代码 HOTEL 折复现与启动验收
 
+> 完成更新（2026-10-06）：本训练已完成250轮，epoch110 best checkpoint 已通过独立5次K=20验证，结果为 ADE/FDE `0.13394/0.19140 m`。最终认证、哈希和论文数值边界见[完成与独立验证报告](../2026-10-06_764ccb5_official_gdts_hotel_validation/REVIEW.md)。下文 `RUNNING` 是启动时状态，作为历史记录保留。
+
 结论：固定上游 GDTS commit `297d508558c10831983ea4b19c2b3e657459a449` 的 HOTEL 折已完成独立数据预处理、真实 CUDA 更新和推理链路验收，并在发布合同 commit `0c8ebaa` 后后台启动；当前状态为 **OFFICIAL_GDTS_HOTEL_RUNNING**。本实验用于复现作者公开代码路径，不复用 grouped-UNIV 的 goal/joint checkpoint、cache 或选模结果。
 
 ## 协议身份
