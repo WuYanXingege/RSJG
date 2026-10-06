@@ -1,0 +1,63 @@
+{
+  "status": "PROTOCOL_CORRECTION_ACCEPTED",
+  "review_source_commit": "48ad36a129975e70dd73f306da1b4841cca4c9d4",
+  "scope": "read_only_protocol_review",
+  "official_reference": {
+    "paper": "arXiv:2311.14922v3",
+    "paper_date": "2025-03-03",
+    "repository": "https://github.com/Winderting/GDTS",
+    "repository_commit": "297d508558c10831983ea4b19c2b3e657459a449",
+    "eth_ucy_protocol": "leave_one_scene_out",
+    "observation_frames": 8,
+    "prediction_frames": 12,
+    "predictions": 20,
+    "joint_learning_rate": 0.001,
+    "joint_epochs": 250,
+    "validation_every_epochs": 10
+  },
+  "current_protocol": {
+    "id": "p2_grouped_univ_hotel_official_prior_v1",
+    "classification": "AUXILIARY_GROUPED_UNIV",
+    "test_set": "hotel",
+    "train_scenes": [
+      "eth",
+      "zara1",
+      "zara2"
+    ],
+    "window_counts": {
+      "train_eth": 139,
+      "train_zara1": 705,
+      "train_zara2": 1693,
+      "inner_univ": 1267,
+      "outer_hotel": 445
+    },
+    "inner_scene": "univ",
+    "joint_learning_rate": 0.0001,
+    "joint_epochs_max": 250,
+    "validation_every_epochs": 1,
+    "wall_seconds": 172800,
+    "public_benchmark_comparable": false
+  },
+  "running_job": {
+    "action": "CONTINUE_UNCHANGED",
+    "pid": 1115621,
+    "completed_epochs_observed": 1,
+    "successful_updates_observed_at_epoch_1": 175,
+    "epoch_1_inner_packs": 391,
+    "epoch_1_inner_denominator": 24955,
+    "epoch_1_inner_native_pixel_ADE_smoke": 37.9624001346115,
+    "performance_claim": false
+  },
+  "decisions": {
+    "current_run_is_main_benchmark": false,
+    "current_run_is_auxiliary": true,
+    "reuse_current_goal_for_standard_univ_test": false,
+    "reuse_current_joint_for_standard_five_fold": false,
+    "next_priority": "READ_ONLY_STANDARD_HOTEL_SPLIT_LOADER_METRIC_CERTIFICATION",
+    "new_training_started": false,
+    "current_training_stopped": false,
+    "cache_started": false,
+    "A0_started": false,
+    "A1_started": false
+  }
+}
