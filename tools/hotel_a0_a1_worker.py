@@ -26,6 +26,7 @@ def main() -> None:
         "--goal_model_type", "joint_dependency_v2",
         "--training_stage", "joint_goal",
         "--jdv2_latent_objective", "strict_no_z",
+        "--use_scene_latent", "false",
         "--run_name", args.run_name, "--phase", "train",
     ]
     identity = {
