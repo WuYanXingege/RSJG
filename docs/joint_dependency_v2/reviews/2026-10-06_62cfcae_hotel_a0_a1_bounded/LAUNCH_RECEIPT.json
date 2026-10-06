@@ -34,13 +34,14 @@
   },
   "archive": {
     "local_commit": "5bf5b60",
-    "github_push_status": "ARCHIVE_FAILED_MISSING_HTTPS_CREDENTIALS",
+    "github_push_status": "SUCCESS_VIA_SSH_AFTER_HTTPS_CREDENTIAL_FAILURE",
+    "remote_branch": "research/joint-dependency-v2-clean",
     "force_push_used": false,
     "training_affected": false
   },
   "limitations": [
     "RUNNING is not COMPLETED",
     "formal performance metrics are not yet available",
-    "GitHub push requires credentials external to the running queue"
+    "HTTPS credentials were unavailable; the authorized ordinary SSH push succeeded"
   ]
 }

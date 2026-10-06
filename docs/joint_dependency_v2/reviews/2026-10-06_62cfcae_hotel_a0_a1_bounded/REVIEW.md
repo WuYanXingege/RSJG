@@ -42,8 +42,9 @@ A0_3101 worker/GPU PID 1156051；PID、PPID、PGID、SID、`/proc` start ticks �
 cmdline 已回读一致。首臂已观察到超过 700 个正式更新并持续推进，详见
 `LAUNCH_RECEIPT.json`。当前状态是 RUNNING，不是 COMPLETED，也没有正式性能结论。
 
-启动前的普通 GitHub push 因本机缺少 HTTPS 用户凭据失败；本地归档 commit
-`5bf5b60` 完整保留，未强推，训练未受影响。凭据恢复后可普通推送当前分支。
+启动前的 HTTPS push 因本机缺少用户名凭据失败，随后使用已有 SSH key 的普通
+push 成功；远端 `research/joint-dependency-v2-clean` 已更新，未修改 remote、未强推，
+训练未受影响。
 
 ## 证据边界
 
