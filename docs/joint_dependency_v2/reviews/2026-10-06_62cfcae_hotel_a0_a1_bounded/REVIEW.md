@@ -1,7 +1,7 @@
 ---
 experiment: HOTEL bounded Stage-A A0/A1
 date: 2026-10-06
-status: READY_FOR_BOUNDED_HOTEL_A0_A1
+status: HOTEL_A0_A1_RUNNING
 parent_sha256: 5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b
 ---
 
@@ -36,6 +36,14 @@ override 绑定，未把工具修复伪装成 cache 重建。A0/A1 两步 smoke 
 100-update 实测为 A0 0.0679 s/update、A1 0.0467 s/update；完整 validation 为
 260.1 s。40 epoch 的训练+逐 epoch validation 投影约为 A0 5.52 h、A1 4.70 h，
 仍分别受 6 h hard limit 和总队列 48 h deadline 约束，投影不构成完成保证。
+
+正式队列于 2026-10-06 21:20:22（北京时间）启动。manager PID 1156024，首臂
+A0_3101 worker/GPU PID 1156051；PID、PPID、PGID、SID、`/proc` start ticks 和
+cmdline 已回读一致。首臂已观察到超过 700 个正式更新并持续推进，详见
+`LAUNCH_RECEIPT.json`。当前状态是 RUNNING，不是 COMPLETED，也没有正式性能结论。
+
+启动前的普通 GitHub push 因本机缺少 HTTPS 用户凭据失败；本地归档 commit
+`5bf5b60` 完整保留，未强推，训练未受影响。凭据恢复后可普通推送当前分支。
 
 ## 证据边界
 

@@ -1,0 +1,46 @@
+{
+  "status": "HOTEL_A0_A1_RUNNING",
+  "started_utc": "2026-10-06T13:20:22.181581+00:00",
+  "started_beijing": "2026-10-06T21:20:22.181581+08:00",
+  "deadline_utc": "2026-10-08T13:17:16+00:00",
+  "deadline_beijing": "2026-10-08T21:17:16+08:00",
+  "run_source_commit": "664ad0410f5cf3b44d3a6c1892c98e37aa936b9e",
+  "manifest_sha256": "530d210f744b1576c69fe1f13d23441c1cf8517e5242d9bdb22317adb4b4ec19",
+  "manager": {
+    "pid": 1156024,
+    "ppid": 1764,
+    "pgid": 1156024,
+    "sid": 1156024,
+    "proc_start_ticks": 70699256,
+    "cmdline_verified": true
+  },
+  "first_worker": {
+    "arm": "A0_3101",
+    "pid": 1156051,
+    "ppid": 1156024,
+    "pgid": 1156051,
+    "sid": 1156051,
+    "proc_start_ticks": 70699370,
+    "gpu_pid_verified": true,
+    "observed_gpu_memory_mib": 726,
+    "formal_updates_observed_at_receipt": ">=700",
+    "frozen_baseline_log_assertion": true,
+    "shared_initial_state_loaded": true
+  },
+  "paths": {
+    "queue_progress": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/hotel_a0_a1_5b6e4e4/formal_launch/QUEUE_PROGRESS.json",
+    "queue_log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/hotel_a0_a1_5b6e4e4/formal_launch/queue.log",
+    "first_worker_log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/hotel_a0_a1_5b6e4e4/formal_launch/logs/A0_3101.log"
+  },
+  "archive": {
+    "local_commit": "5bf5b60",
+    "github_push_status": "ARCHIVE_FAILED_MISSING_HTTPS_CREDENTIALS",
+    "force_push_used": false,
+    "training_affected": false
+  },
+  "limitations": [
+    "RUNNING is not COMPLETED",
+    "formal performance metrics are not yet available",
+    "GitHub push requires credentials external to the running queue"
+  ]
+}
