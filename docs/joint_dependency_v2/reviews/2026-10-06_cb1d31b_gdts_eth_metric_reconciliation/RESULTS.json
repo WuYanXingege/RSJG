@@ -1,0 +1,58 @@
+{
+  "schema": "rsjg-gdts-eth-metric-reconciliation-v1",
+  "status": "HISTORICAL_ETH_CHECKPOINT_REUSABLE_EVALUATION_NOT_PAPER_COMPARABLE",
+  "review_base_commit": "cb1d31bcc432726fb4fd9eb8d693418ddc42cdde",
+  "paper": {
+    "title": "GDTS: Goal-Guided Diffusion Model with Tree Sampling for Multi-Modal Pedestrian Trajectory Prediction",
+    "doi": "10.1109/IROS60139.2025.11246846",
+    "pdf_sha256": "5067c46a25df4c571665af5a88fc715a78ac9245d88d6635b9004fb1c88e1b84",
+    "evidence": "PDF page 5, Table I, GDTS (Ours), ETH columns",
+    "eth_ADE20_m": 0.31,
+    "eth_FDE20_m": 0.48
+  },
+  "historical_training": {
+    "config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+    "curve_sha256": "4c14f523f45692a1a999481c2fb52ed69f3efd837e65b737a7b03ce107c35081",
+    "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "cache_manifest_sha256": "e7744060eb45d3274c0f80f34e3cfdebebb281ee47bb48fc82d90cfe7864ac61",
+    "cache_counts": {
+      "train": 579,
+      "valid": 41,
+      "test": 41
+    },
+    "epochs_completed": 250,
+    "best_checkpoint_epoch": 90
+  },
+  "historical_jdv2_evaluation": {
+    "result_sha256": "3e51cb73a5d794998802ce7eacb529b99762a10535097157cee63c3eab0a6182",
+    "split": "valid",
+    "seeds": [2035, 2036, 2037, 2038, 2039],
+    "samples_per_agent": 20,
+    "loader_counts": {
+      "train": 4110,
+      "valid": 139,
+      "test": 139
+    },
+    "minADE_at_20_mean_m": 0.2863320182867186,
+    "minADE_at_20_population_std_m": 0.005157184285938462,
+    "minFDE_at_20_mean_m": 0.3944042917619378,
+    "minFDE_at_20_population_std_m": 0.008788562561358484,
+    "classification": "JDV2_139_WINDOW_INTERNAL_REFERENCE_NOT_PAPER_PROTOCOL_REPRODUCTION"
+  },
+  "directly_confirmed_mismatch": {
+    "native_valid_batches": 41,
+    "jdv2_valid_windows": 139,
+    "same_evaluation_population": false
+  },
+  "decision": {
+    "reuse_checkpoint_candidate": true,
+    "reuse_0_286_0_394_as_paper_baseline": false,
+    "retrain_now": false,
+    "next_step": "After the active HOTEL run releases the GPU, strict-load the historical ETH checkpoint in upstream 297d508 and reevaluate on the native 41-batch ETH test loader with five K=20 runs. Retrain only if certification fails."
+  },
+  "execution_scope": {
+    "gpu_evaluations": 0,
+    "training_updates": 0,
+    "active_hotel_training_modified": false
+  }
+}

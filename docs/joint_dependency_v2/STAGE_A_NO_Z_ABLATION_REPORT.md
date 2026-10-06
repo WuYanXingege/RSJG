@@ -1,5 +1,12 @@
 # RSJG Joint Dependency V2 — Strict No-z Stage-A Ablation Report
 
+> **2026-10-06 metric-scope correction.** The GDTS `0.286332/0.394404`
+> reference below was evaluated on the later JDV2 139-window loader, whereas
+> the historical native GDTS ETH cache has 41 valid/test batches and the paper
+> reports `0.31/0.48`. It remains a valid same-loader internal reference but is
+> not a paper-protocol metric reproduction. See
+> [the reconciliation audit](reviews/2026-10-06_cb1d31b_gdts_eth_metric_reconciliation/REVIEW.md).
+
 Date: 2026-09-20  
 Dataset/run: ETH, `jdv2_stage_a_no_z_full_seed2035`  
 Decision scope: whether the global categorical scene latent `z` is necessary in Stage A.  
