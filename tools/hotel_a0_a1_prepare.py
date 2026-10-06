@@ -7,6 +7,7 @@ import argparse
 import copy
 import json
 import os
+import re
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -205,6 +206,8 @@ def freeze_configs(args) -> None:
     archive = Path(args.archive_dir).resolve()
     archive.mkdir(parents=True, exist_ok=True)
     root = Path(args.repository).resolve()
+    if not re.fullmatch(r"[0-9a-f]{40}", args.run_source_commit):
+        raise RuntimeError("run_source_commit must be a full lowercase Git SHA")
     rows = []
     configs = {}
     for arm, seed in ORDER:
@@ -333,6 +336,7 @@ def freeze_configs(args) -> None:
         "status": "FROZEN_NOT_LAUNCHED", "deadline_utc": args.deadline_utc,
         "python": str(Path(args.python).resolve()),
         "source_dir": str(Path(args.source_dir).resolve()),
+        "run_source_commit": args.run_source_commit,
         "repository": str(root), "arms": rows,
         "training_order": [f"{arm}_{seed}" for arm, seed in ORDER],
         "evaluation_seeds": list(EVAL_SEEDS),
@@ -364,6 +368,7 @@ def main() -> None:
     freeze.add_argument("--archive-dir", required=True)
     freeze.add_argument("--repository", required=True)
     freeze.add_argument("--source-dir", required=True)
+    freeze.add_argument("--run-source-commit", required=True)
     freeze.add_argument("--python", required=True)
     freeze.add_argument("--parent", required=True)
     freeze.add_argument("--deadline-utc", required=True)

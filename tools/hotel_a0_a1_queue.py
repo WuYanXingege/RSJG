@@ -94,6 +94,19 @@ def main() -> int:
     args = parser.parse_args()
     manifest_path = Path(args.manifest).resolve()
     manifest = json.loads(manifest_path.read_text())
+    source_dir = Path(manifest["source_dir"]).resolve()
+    source_commit = subprocess.run(
+        ["git", "rev-parse", "HEAD"], cwd=source_dir, text=True,
+        capture_output=True, check=True).stdout.strip()
+    if source_commit != manifest["run_source_commit"]:
+        raise RuntimeError(
+            f"Execution source mismatch: {source_commit} != "
+            f"{manifest['run_source_commit']}")
+    if subprocess.run(
+            ["git", "status", "--porcelain", "--untracked-files=no"],
+            cwd=source_dir, text=True, capture_output=True,
+            check=True).stdout.strip():
+        raise RuntimeError("Execution worktree has tracked modifications")
     run_dir = manifest_path.parent
     lock = run_dir / "QUEUE.lock"
     descriptor = os.open(lock, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o644)
