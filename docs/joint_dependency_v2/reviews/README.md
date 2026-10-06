@@ -6,6 +6,7 @@
 
 | 日期 | 源码基点 | 审查 | 机器证据 | 结论 |
 |---|---|---|---|---|
+| 2026-10-06 | `6d04a8724d1b62eb7c5ff5a6120e78a306a4aaa0`（基点；训练源码 SHA 另录） | [官方语义先验 fresh joint 独立配置与验收](2026-10-06_6d04a87_official_prior_fresh_joint/REVIEW.md) · [启动合同](2026-10-06_6d04a87_official_prior_fresh_joint/COMMANDS_AND_BUDGET.md) | [RESULTS](2026-10-06_6d04a87_official_prior_fresh_joint/RESULTS.json) · [READINESS](2026-10-06_6d04a87_official_prior_fresh_joint/JOINT_READINESS.json) | JOINT_TRAINING_READY；epoch96 goal-only 父权重精确加载，history/diffusion seed3101 fresh；CUDA两步三模块梯度/更新、exact reload、完整inner 391/24955通过；只授权 fresh joint，cache/A0/A1等待 |
 | 2026-10-05 | `2fe1320bd775a10ba1e90a1a3452a9cf6aaf1b11` | [官方语义先验独立协议与 fresh goal 验收](2026-10-05_2c25c1f_official_prior_fresh_goal/REVIEW.md) · [启动合同](2026-10-05_2c25c1f_official_prior_fresh_goal/COMMANDS_AND_BUDGET.md) | [RESULTS](2026-10-05_2c25c1f_official_prior_fresh_goal/RESULTS.json) · [READINESS](2026-10-05_2c25c1f_official_prior_fresh_goal/READINESS_MATRIX.json) · [启动快照](2026-10-05_2c25c1f_official_prior_fresh_goal/LAUNCH_SNAPSHOT.json) | FRESH_GOAL_RUNNING；官方语义栅格作为冻结环境先验，分割器训练范围仍UNKNOWN；生产175/391 packs、完整inner24955、CPU/CUDA/reload/fresh初态通过；首个正式epoch完整保存，只运行fresh goal |
 
 新增状态（2026-10-03）：用户随后明确授权停止 SDD、保留桌面并完成 canonical A 导出与 CPU 审计，结果见新增 COMPLETE 条目；SDD 尚未恢复。以下旧 BLOCKED 报告和旧轮次的资源/授权说明保留为当时事实，不代表最新执行状态。

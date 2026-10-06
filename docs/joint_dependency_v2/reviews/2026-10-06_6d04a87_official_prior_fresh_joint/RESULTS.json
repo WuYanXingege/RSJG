@@ -1,0 +1,88 @@
+{
+  "status": "JOINT_TRAINING_READY",
+  "stage": "fresh_joint",
+  "protocol_id": "p2_grouped_univ_hotel_official_prior_v1",
+  "source_base_commit": "6d04a8724d1b62eb7c5ff5a6120e78a306a4aaa0",
+  "training_source_sha256": "0abbdaf455ce949b6f7220c2c7bc567d967ffc6746e447c38cbd1c2a2f8bd2df",
+  "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+  "manifest_hash": "eb9831f475915ba9c2e3c863f655d6583e93e5bc962d4f763a63f1b61b8ef873",
+  "config_sha256": "125569a09db7da6be362f25d5625e78514f9d8efae65d34b3946f87553296146",
+  "goal_parent": {
+    "selected_epoch": 96,
+    "sha256": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13",
+    "state_sha256": "c8edfe48b142985515bc457606c4eef9e8ef056cf0f98a9b4305e1f83d93bf21",
+    "loaded_scope": "goal_module_only",
+    "trainable_in_joint": true
+  },
+  "fresh_initialization": {
+    "seed": 3101,
+    "fresh_non_goal_state_sha256": "395d5344c4d2c0368382af93d0018a947b12b861ecd1a1047a227285652bd3de",
+    "combined_state_sha256": "042479866b6b5cc5869a0958c8d6c212bbab963f59329462b7e7aa19c7e8193d",
+    "optimizer_updates": 0
+  },
+  "objective": {
+    "diffusion_loss": 1,
+    "goal_BCE_loss": 20
+  },
+  "acceptance": {
+    "core_cpu_tests": {
+      "passed": 60,
+      "failed": 0
+    },
+    "cuda": {
+      "status": "PASS",
+      "updates": 2,
+      "all_steps_nonzero_gradient": [
+        "goal_module.",
+        "registrar.",
+        "diffnet."
+      ],
+      "all_steps_parameter_changed": [
+        "goal_module.",
+        "registrar.",
+        "diffnet."
+      ],
+      "peak_reserved_bytes": 1411383296
+    },
+    "reload": {
+      "state_exact": true,
+      "optimizer_exact": true,
+      "scheduler_exact": true,
+      "rng_exact": true,
+      "replay_max_abs": 0
+    },
+    "inner_selection": {
+      "status": "PASS",
+      "packs": 391,
+      "denominator": 24955,
+      "metric": "ADE_native_pixels_P20",
+      "smoke_only_value": 104.32385429270734,
+      "seconds": 998.9530117789982,
+      "optimizer_updates": 0,
+      "target_read_after_prediction": true,
+      "outer_access": false
+    },
+    "readiness_checks_passed": 9,
+    "readiness_checks_total": 9
+  },
+  "formal_authority": {
+    "precision": "fp32",
+    "batch_size": 64,
+    "optimizer": "Adam",
+    "learning_rate": 0.0001,
+    "clip": 1,
+    "scheduler": "ExponentialLR",
+    "scheduler_gamma": 0.99,
+    "epochs_max": 250,
+    "updates_max": 43750,
+    "wall_seconds": 172800,
+    "selection": "full_inner_native_pixel_ADE_P20_strict_earlier_tie",
+    "no_auto_cache": true,
+    "no_auto_A0": true,
+    "no_auto_A1": true
+  },
+  "formal_training_started": false,
+  "cache": "WAITING_FOR_QUALIFIED_BASE",
+  "A0": "WAITING_FOR_CACHE",
+  "A1": "WAITING_FOR_CACHE"
+}

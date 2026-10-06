@@ -1,0 +1,93 @@
+{
+  "checkpoint": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/official_prior_fresh_joint_6d04a87_20261006/JOINT_SMOKE/0abbdaf455ce/state.pt",
+    "sha256": "08f6d5f1a1c54d864f885c80b35cb5739bb96add95793165865739fc19ffbd39"
+  },
+  "checks": {
+    "coefficients": {
+      "diffusion_loss": 1,
+      "goal_BCE_loss": 20
+    },
+    "combined_initial_state_sha256": "042479866b6b5cc5869a0958c8d6c212bbab963f59329462b7e7aa19c7e8193d",
+    "fresh_non_goal_sha256": "395d5344c4d2c0368382af93d0018a947b12b861ecd1a1047a227285652bd3de",
+    "goal_loaded_exact": true,
+    "parent_selected_epoch": 96,
+    "parent_sha256": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13"
+  },
+  "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+  "gpu_memory_budget": 10737418240,
+  "manifest_hash": "eb9831f475915ba9c2e3c863f655d6583e93e5bc962d4f763a63f1b61b8ef873",
+  "peak_reserved": 1411383296,
+  "replay": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/official_prior_fresh_joint_6d04a87_20261006/JOINT_SMOKE/0abbdaf455ce/replay.pt",
+    "sha256": "c0dbe47b234d431d2d1b3dbf78c14ae14babc6b20303bdfc90bbb1341f1399ff"
+  },
+  "rows": [
+    {
+      "agents": 64,
+      "changed": {
+        "diffnet.": true,
+        "goal_module.": true,
+        "registrar.": true
+      },
+      "coefficients": {
+        "diffusion_loss": 1,
+        "goal_BCE_loss": 20
+      },
+      "components": {
+        "diffusion_loss": 0.9836865663528442,
+        "goal_BCE_loss": 0.002744546625763178
+      },
+      "grad_l1": {
+        "diffnet.": 209.01325155142695,
+        "goal_module.": 36.164967857534066,
+        "registrar.": 21.27368873357773
+      },
+      "grad_norm": 0.6143208146095276,
+      "loss": 1.0385775566101074,
+      "pack": 0
+    },
+    {
+      "agents": 64,
+      "changed": {
+        "diffnet.": true,
+        "goal_module.": true,
+        "registrar.": true
+      },
+      "coefficients": {
+        "diffusion_loss": 1,
+        "goal_BCE_loss": 20
+      },
+      "components": {
+        "diffusion_loss": 1.0003323554992676,
+        "goal_BCE_loss": 0.002704968675971031
+      },
+      "grad_l1": {
+        "diffnet.": 190.87263979483396,
+        "goal_module.": 32.988447504583746,
+        "registrar.": 21.93778657913208
+      },
+      "grad_norm": 0.6058453321456909,
+      "loss": 1.054431676864624,
+      "pack": 1
+    }
+  ],
+  "seconds": 2.49589461798314,
+  "source": {
+    "files": {
+      "src/losses.py": "6ee481c07d148ffb2ec8172dae94900599426a95a631f24b7bdd3a0a48e555c8",
+      "src/models/goal_pretrain.py": "250c9f2675fddb7fbb2da4ad50a8216667c7d82d11f5247f129089a395575661",
+      "src/models/model.py": "eb16c676dd4629aa45bd5f39b38b07a8d25638d3e77ab6f9f65dad7b3c853540",
+      "src/p2_data.py": "52a86ec51dd2386868e9eed0837450ddd8d86e75c2fa6df7b2607c237363e483",
+      "src/p2_grouped.py": "551bf7f06df52fea0b14c66a686a5d8be232daf51f3780bf68351be1a48853ba",
+      "src/p2_grouped_artifacts.py": "93ff3892cb6420ac1550a8b32a900a992f86a91077bbf88aefb9b064a3a0ae69",
+      "src/p2_grouped_training.py": "0abbdaf455ce949b6f7220c2c7bc567d967ffc6746e447c38cbd1c2a2f8bd2df",
+      "src/parser.py": "3274e93b737817e16f9217dbc77dde2cc89238f8e11cca16a683b5771a8883fd"
+    },
+    "head": "6d04a8724d1b62eb7c5ff5a6120e78a306a4aaa0",
+    "numpy": "1.26.4",
+    "torch": "2.8.0+cu128"
+  },
+  "status": "PASS",
+  "updates": 2
+}

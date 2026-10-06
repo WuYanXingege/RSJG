@@ -301,6 +301,26 @@ def goal_config_path(archive):
     current=Path(archive)/'FRESH_GOAL_CONFIG.yaml'
     return current if current.exists() else Path(archive)/'FRESH_GOAL_BLOCKED.yaml'
 
+def joint_config_path(archive):
+    return Path(archive)/'FRESH_JOINT_CONFIG.yaml'
+
+def initialized_model(args,reg,device):
+    """One production/preflight initialization path; joint loads goal only."""
+    from src.models.goal_pretrain import Goal_Pretrain
+    from src.models.model import GDTS
+    goal=args.p2_mode=='goal';seed_all(3101,device)
+    model=(Goal_Pretrain if goal else GDTS)(args,device,dataset=geometry_dataset(reg)).to(device)
+    non_goal=state_hash({k:v for k,v in model.state_dict().items() if not k.startswith('goal_module.')})
+    parent=None
+    if not goal:
+        parent=qualify_parent(reg.manifest['parents']['goal'],reg,'goal')
+        selected={k[len('goal_module.'):]:v for k,v in parent['model_state_dict'].items() if k.startswith('goal_module.')}
+        model.goal_module.load_state_dict(selected,strict=True)
+        if state_hash(model.goal_module.state_dict())!=state_hash(selected):raise RuntimeError('goal-only parent load identity')
+        if state_hash({k:v for k,v in model.state_dict().items() if not k.startswith('goal_module.')})!=non_goal:
+            raise RuntimeError('goal load touched fresh history/diffusion')
+    return model,state_hash(model.state_dict()),non_goal,parent
+
 def launch_guard(args,reg):
     mode=args.p2_mode
     if mode in ('goal','joint'):
@@ -354,18 +374,10 @@ def evaluate(model,reader,device,goal,deadline=None):
 
 def train(args,reg):
     """Only explicitly invoked formal path. Never used by preflight smoke."""
-    from src.models.goal_pretrain import Goal_Pretrain
-    from src.models.model import GDTS
     launch_guard(args,reg);goal=args.p2_mode=='goal';device=torch.device(args.device)
-    seed_all(3101,device);dest=formal_output(args);dest.mkdir(parents=True,exist_ok=False)
-    dataset=geometry_dataset(reg);model=(Goal_Pretrain if goal else GDTS)(args,device,dataset=dataset).to(device)
-    non_goal=state_hash({k:v for k,v in model.state_dict().items() if not k.startswith('goal_module.')})
-    if not goal:
-        parent=qualify_parent(reg.manifest['parents']['goal'],reg,'goal')
-        model.goal_module.load_state_dict({k[len('goal_module.'):]:v for k,v in parent['model_state_dict'].items() if k.startswith('goal_module.')},strict=True)
-    if not goal and state_hash({k:v for k,v in model.state_dict().items() if not k.startswith('goal_module.')})!=non_goal:raise RuntimeError('goal load touched fresh history/diffusion')
-    initial=state_hash(model.state_dict())
-    if goal and os.environ.get('RSJG_EXPECTED_FRESH_STATE_SHA256') not in (None,initial):raise RuntimeError('fresh initial differs from accepted preflight')
+    dest=formal_output(args);dest.mkdir(parents=True,exist_ok=False)
+    model,initial,non_goal,parent=initialized_model(args,reg,device)
+    if os.environ.get('RSJG_EXPECTED_FRESH_STATE_SHA256') not in (None,initial):raise RuntimeError('fresh initial differs from accepted preflight')
     atomic_tensor(dict(classification='FORMAL_INITIAL_UNUPDATED',state_sha256=initial,model_state_dict=model.state_dict(),optimizer_updates=0,seed=3101,
         goal_parent=None if goal else reg.manifest['parents']['goal'],fresh_non_goal_sha256=non_goal),dest/'initial.pt')
     print(json.dumps(dict(event='FRESH_INITIAL_SAVED',path=str(dest),state_sha256=initial,
@@ -374,11 +386,14 @@ def train(args,reg):
     tr=PackReader(reg,'train');va=PackReader(reg,'inner_valid');selector=Selector(patience=args.early_stopping_patience)
     p=dict(epoch_completed=0,cursor=0,attempts=0,successful=0,skipped=0,failed=0,agent_exposures=0,selection_history=[])
     start=time.monotonic();deadline=24*3600 if goal else 48*3600
+    stop=False;budget_stop=None
     for epoch in range(1,args.num_epochs+1):
         model.train()
         for i in range(len(tr)):
             # Cap BEFORE next pack read. A partial epoch never selects/schedules/saves.
-            if time.monotonic()-start>=deadline:raise RuntimeError('FORMAL_WALL_PARTIAL_EPOCH_NO_CHECKPOINT')
+            if time.monotonic()-start>=deadline:
+                budget_stop=dict(stage='train',epoch=epoch,next_pack=i,successful_updates=p['successful'],
+                    last_complete_epoch=p['epoch_completed']);break
             batch,ids,_,_=tr.training(i);prepared=model.prepare_inputs(batch,ids);x=prepared[0];seq=prepared[-1]
             p['attempts']+=1;opt.zero_grad(set_to_none=True)
             losses=model.get_loss(x,seq);coeff=model.set_losses_coeffs();loss=sum(v*coeff[k] for k,v in losses.items())
@@ -388,9 +403,16 @@ def train(args,reg):
             if i==0 or (i+1)%25==0:
                 print(json.dumps(dict(event='TRAIN_PROGRESS',epoch=epoch,pack=i+1,loss=float(loss.detach()),
                     successful_updates=p['successful'],agent_exposures=p['agent_exposures'],elapsed_seconds=time.monotonic()-start)),flush=True)
+        if budget_stop:break
         seed_snapshot=rng_snapshot(device);seed_all(args.validation_seed,device)
-        try:metric=evaluate(model,va,device,goal,start+deadline)
+        try:
+            metric=evaluate(model,va,device,goal,start+deadline)
+        except RuntimeError as error:
+            if str(error)!='FORMAL_WALL_PARTIAL_SELECTION_NO_CHECKPOINT':raise
+            budget_stop=dict(stage='selection',epoch=epoch,successful_updates=p['successful'],
+                last_complete_epoch=p['epoch_completed'])
         finally:restore_rng(seed_snapshot)
+        if budget_stop:break
         if metric.denominator!=24955:raise RuntimeError('incomplete inner metric denominator')
         good,stop=selector.update(metric.value(),epoch);sched.step();p['epoch_completed']=epoch;p['cursor']=0
         meta=dict(value=metric.value(),denominator=metric.denominator,epoch=epoch,tie='strict_earlier',is_best=good,
@@ -401,9 +423,16 @@ def train(args,reg):
         print(json.dumps(dict(event='EPOCH_COMPLETE',epoch=epoch,selection=meta,best_epoch=selector.epoch,
             successful_updates=p['successful'],elapsed_seconds=time.monotonic()-start)),flush=True)
         if stop:break
+    if p['epoch_completed']<1:
+        if budget_stop and budget_stop['stage']=='train':
+            raise RuntimeError('FORMAL_WALL_PARTIAL_EPOCH_NO_CHECKPOINT')
+        if budget_stop and budget_stop['stage']=='selection':
+            raise RuntimeError('FORMAL_WALL_PARTIAL_SELECTION_NO_CHECKPOINT')
+        raise RuntimeError('FORMAL_NO_COMPLETE_EPOCH')
     best_path=dest/('epoch_%03d.pt'%selector.epoch)
     atomic_json(sealed(dict(run_complete=True,complete_epochs=p['epoch_completed'],best_epoch=selector.epoch,
         best_value=selector.best,selected_path=str(best_path),selected_sha256=file_hash(best_path),
         config_hash=digest(vars(args)),data_binding=data_binding(reg),selection_history=p['selection_history'],
-        stop_reason='early_stop' if stop else 'epoch_cap',optimizer_attempts=p['attempts'],successful_updates=p['successful'])),dest/'run_complete.json')
+        stop_reason='wall_budget_partial_discarded' if budget_stop else ('early_stop' if stop else 'epoch_cap'),
+        discarded_partial=budget_stop,optimizer_attempts=p['attempts'],successful_updates=p['successful'])),dest/'run_complete.json')
     return dict(best_epoch=selector.epoch,best_value=selector.best)

@@ -1,0 +1,38 @@
+{
+  "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+  "formal_authority": {
+    "epochs_max": 250,
+    "no_auto_A0": true,
+    "no_auto_A1": true,
+    "no_auto_cache": true,
+    "precision": "fp32",
+    "seed": 3101,
+    "updates_max": 43750,
+    "wall_seconds": 172800
+  },
+  "formal_training_started": false,
+  "goal_archive": "docs/joint_dependency_v2/reviews/2026-10-05_2c25c1f_official_prior_fresh_goal",
+  "goal_parent": {
+    "artifact_role": "p2_goal",
+    "classification": "QUALIFIED",
+    "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+    "initial_state_sha256": "ff931446488399425f54ea689aaec0409c64319bd2a0ece74cf7366e65d7c8f0",
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/hotel/runs/grouped_fresh_goal_official_prior_seed3101_20261005_114637/epoch_096.pt",
+    "selected_epoch": 96,
+    "selection_metric": {
+      "denominator": 24955.0,
+      "epoch": 96,
+      "is_best": true,
+      "name": "valid_goal_BCE_agent_weighted",
+      "samples": 1,
+      "tie": "strict_earlier",
+      "value": 0.010095550683008865
+    },
+    "sha256": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13",
+    "state_sha256": "c8edfe48b142985515bc457606c4eef9e8ef056cf0f98a9b4305e1f83d93bf21"
+  },
+  "manifest_hash": "eb9831f475915ba9c2e3c863f655d6583e93e5bc962d4f763a63f1b61b8ef873",
+  "run_name": "grouped_fresh_joint_official_prior_seed3101_20261006_023912",
+  "stage": "fresh_joint",
+  "status": "REGISTERED_NOT_READY"
+}
