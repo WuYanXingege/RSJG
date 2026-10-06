@@ -26,12 +26,12 @@ def atomic_json(path: Path, value) -> None:
     os.replace(temporary, path)
 
 
-def run_arm(config_path: Path, runtime_root: Path) -> dict:
+def run_arm(config_path: Path, runtime_root: Path, steps: int = 2) -> dict:
     with config_path.open() as handle:
         fields = yaml.safe_load(handle)
     label = f'{fields["jdv2_goal_objective"]}_seed{fields["seed"]}'
     fields.update({
-        "phase": "train", "jdv2_step_cap": 2,
+        "phase": "train", "jdv2_step_cap": steps,
         "jdv2_arm_time_limit_seconds": 1800.0,
         "jdv2_queue_deadline_utc": None,
         "jdv2_full_resume_state": False,
@@ -63,9 +63,9 @@ def run_arm(config_path: Path, runtime_root: Path) -> dict:
     losses = owner._train_epoch(1)
     elapsed = time.monotonic() - started
     owner._assert_jdv2_frozen_contract()
-    if owner._optimizer_attempts != 2 or \
-            owner._stage_optimizer_steps_completed != 2:
-        raise RuntimeError("Two-update cap did not stop on the exact boundary")
+    if owner._optimizer_attempts != steps or \
+            owner._stage_optimizer_steps_completed != steps:
+        raise RuntimeError("Update cap did not stop on the exact boundary")
     if not getattr(owner, "_step_cap_reached", False):
         raise RuntimeError("Step cap was not observed before the next fetch")
     if not all(math.isfinite(float(value)) for value in losses.values()):
@@ -83,7 +83,7 @@ def run_arm(config_path: Path, runtime_root: Path) -> dict:
                 objective.successful_optimizer_updates,
             "pending_backward": objective.pending_backward,
         }
-        if mc["draw_calls"] != 2 or mc["pending_backward"]:
+        if mc["draw_calls"] != steps or mc["pending_backward"]:
             raise RuntimeError("MC owner lifecycle mismatch in smoke")
     return {
         "status": "PASS", "config": str(config_path), "label": label,
@@ -100,7 +100,7 @@ def run_arm(config_path: Path, runtime_root: Path) -> dict:
         "losses": {key: float(value) for key, value in losses.items()},
         "joint_diagnostics": diagnostics, "mc": mc,
         "elapsed_seconds": elapsed,
-        "seconds_per_update": elapsed / 2.0,
+        "seconds_per_update": elapsed / float(steps),
         "peak_cuda_allocated_bytes": int(torch.cuda.max_memory_allocated()),
         "peak_cuda_reserved_bytes": int(torch.cuda.max_memory_reserved()),
     }
@@ -112,12 +112,15 @@ def main() -> None:
     parser.add_argument("--a1-config", required=True)
     parser.add_argument("--runtime-root", required=True)
     parser.add_argument("--receipt", required=True)
+    parser.add_argument("--steps", default=2, type=int)
     args = parser.parse_args()
+    if args.steps < 2:
+        raise ValueError("At least two updates are required")
     if not torch.cuda.is_available() or not torch.cuda.is_bf16_supported():
         raise RuntimeError("CUDA BF16 is required for HOTEL A0/A1")
     runtime = Path(args.runtime_root).resolve()
-    a0 = run_arm(Path(args.a0_config), runtime / "A0")
-    a1 = run_arm(Path(args.a1_config), runtime / "A1")
+    a0 = run_arm(Path(args.a0_config), runtime / "A0", args.steps)
+    a1 = run_arm(Path(args.a1_config), runtime / "A1", args.steps)
     if a0["initial_state_hash"] != a1["initial_state_hash"]:
         raise RuntimeError("Paired A0/A1 model initial states differ")
     if a0["frozen_state_hash"] != a1["frozen_state_hash"]:
@@ -128,7 +131,8 @@ def main() -> None:
     atomic_json(Path(args.receipt), {
         "status": "PASS", "device": torch.cuda.get_device_name(0),
         "bf16_supported": True, "A0": a0, "A1": a1,
-        "scope": "independent initialized copies; two real updates per arm",
+        "scope": ("independent initialized copies; "
+                  f"{args.steps} real updates per arm"),
     })
 
 
