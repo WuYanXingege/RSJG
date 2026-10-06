@@ -1,0 +1,83 @@
+{
+  "schema": "rsjg-official-gdts-eth-reevaluation-v1",
+  "status": "OFFICIAL_EVALUATION_COMPLETE_PAPER_METRIC_NOT_REPRODUCED",
+  "review_base_commit": "fad9e5d74c5fd51135f8de77cef766d5299b2583",
+  "upstream_commit": "297d508558c10831983ea4b19c2b3e657459a449",
+  "compatibility": {
+    "scope": "Albumentations public replay API and OpenCV channel chunking only",
+    "patched_data_loader_sha256": "c6c66e761455c126dda173d107033dd30e60d4777acafeb285bd671632376952",
+    "model_loss_sampling_metrics_changed": false
+  },
+  "checkpoint": {
+    "path": "../GDTS/output/eth/saved_models/best_model.pt",
+    "sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "epoch": 90,
+    "strict_load_passed": true
+  },
+  "protocol": {
+    "dataset": "eth5",
+    "test_set": "eth",
+    "entrypoint": "official trainer.test(load_checkpoint='best')",
+    "actual_loader_mode": "valid",
+    "cache_counts": {
+      "train": 579,
+      "valid": 41,
+      "test": 41
+    },
+    "num_samples": 20,
+    "use_ttst": true,
+    "ddpm_steps": 100,
+    "ddim_steps": 20,
+    "trunk_step": 30,
+    "branch_step": 14,
+    "num_test_runs": 5,
+    "seed": 2025,
+    "precision": "FP32",
+    "device": "cuda:0"
+  },
+  "runs": [
+    {"run": 0, "ADE20_m": 0.34435, "FDE20_m": 0.49592},
+    {"run": 1, "ADE20_m": 0.34807, "FDE20_m": 0.49693},
+    {"run": 2, "ADE20_m": 0.34433, "FDE20_m": 0.49458},
+    {"run": 3, "ADE20_m": 0.34806, "FDE20_m": 0.49223},
+    {"run": 4, "ADE20_m": 0.34736, "FDE20_m": 0.49679}
+  ],
+  "official_printed_average": {
+    "ADE20_m": 0.34644,
+    "FDE20_m": 0.49529
+  },
+  "population_std_from_printed_runs": {
+    "ADE20_m": 0.00172903,
+    "FDE20_m": 0.00174380
+  },
+  "paper_reported": {
+    "source": "IROS 2025 PDF page 5 Table I",
+    "ADE20_m": 0.31,
+    "FDE20_m": 0.48
+  },
+  "delta_from_paper": {
+    "ADE20_m": 0.03644,
+    "ADE20_percent": 11.7548,
+    "FDE20_m": 0.01529,
+    "FDE20_percent": 3.1854
+  },
+  "artifacts": {
+    "config_test_sha256": "644e93aa424b44730bc1c00aeaa3ad218013e9e55f0ac96eeedce868a7731b43",
+    "log_path": "outputs/joint_dependency_v2/standard_gdts_eth_checkpoint_126acf_20261006/formal_evaluation/official_gdts_eth_eval.log",
+    "log_sha256": "e365cd2b03c71c5440f3ef208306a2ef1e528070ae289ac44a4f56782e7aa0da",
+    "elapsed_seconds": 439
+  },
+  "execution_scope": {
+    "optimizer_updates": 0,
+    "checkpoint_writes": 0,
+    "training_runs_started": 0,
+    "active_hotel_training_stopped_or_modified": false,
+    "hotel_epoch_observed_after_evaluation": 64
+  },
+  "decision": {
+    "historical_checkpoint_usable_for_internal_work": true,
+    "paper_metric_reproduced": false,
+    "eligible_as_final_certified_five_fold_local_baseline": false,
+    "next_step": "Keep HOTEL running. For an auditable local five-fold baseline, fresh-train ETH in the locked worktree; separately preregister paper-intended goal150-to-joint250 if required."
+  }
+}

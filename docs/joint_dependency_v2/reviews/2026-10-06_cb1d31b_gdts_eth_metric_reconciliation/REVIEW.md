@@ -1,5 +1,9 @@
 # GDTS ETH 论文指标与历史本地结果口径核对
 
+> **后续实测已完成。** 官方 `297d508` 工作树严格加载旧 checkpoint，并在原生
+> 41-batch loader 上得到五轮平均 `0.34644/0.49529 m`，未复现论文
+> `0.31/0.48`。见[官方原生窗口重评](../2026-10-06_fad9e5d_official_gdts_eth_reevaluation/REVIEW.md)。
+
 ## 结论
 
 状态：**HISTORICAL_ETH_CHECKPOINT_REUSABLE_EVALUATION_NOT_PAPER_COMPARABLE**。
