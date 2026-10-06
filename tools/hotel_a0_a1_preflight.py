@@ -13,6 +13,7 @@ import torch
 import yaml
 
 from src.jdv2_objective_state import MC
+from src.parser import check_and_add_additional_args
 from src.p2_checkpoint import state_hash
 from src.trainer import trainer
 from src.utils import set_seed
@@ -35,13 +36,16 @@ def run_arm(config_path: Path, runtime_root: Path) -> dict:
         "jdv2_queue_deadline_utc": None,
         "jdv2_full_resume_state": False,
         "jdv2_numbered_resume": False,
-        "run_name": f"smoke_{label}",
-        "save_dir": str(runtime_root / label),
-        "model_dir": str(runtime_root / label),
-        "config": str(runtime_root / label / "config.yaml"),
+        "run_name": f"hotel_smoke_{label}",
         "use_wandb": False,
     })
-    args = SimpleNamespace(**fields)
+    # Saved YAML deliberately records derived/transient fields as null.  The
+    # production entrypoint recomputes them before constructing the loader;
+    # the direct smoke harness must exercise that same derivation.
+    args = check_and_add_additional_args(SimpleNamespace(**fields))
+    args.save_dir = str(runtime_root / label)
+    args.model_dir = str(runtime_root / label)
+    args.config = str(runtime_root / label / "config.yaml")
     set_seed(args.seed, use_cuda=True)
     torch.cuda.empty_cache()
     torch.cuda.reset_peak_memory_stats(torch.device(args.device))

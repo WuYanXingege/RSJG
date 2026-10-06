@@ -148,7 +148,10 @@ def audit_cache(args) -> None:
     edges = {}
     edge_buckets = {"E=0": 0, "E>0": 0}
     for split in ("train", "valid", "test"):
-        files = sorted((root / split).glob("[0-9]*.pt"))
+        files = [
+            path for path in sorted((root / split).glob("[0-9]*.pt"))
+            if not path.name.endswith(".teacher.pt")
+        ]
         counts[split] = len(files)
         agents[split] = 0
         edges[split] = 0
@@ -193,6 +196,11 @@ def audit_cache(args) -> None:
 def freeze_configs(args) -> None:
     base = load_config(Path(args.base_config))
     summary = json.load(open(Path(args.initial_summary)))
+    cache_manifest = json.load(open(Path(args.cache_manifest)))
+    if stable_json_hash(cache_manifest) != summary["cache_manifest_hash"]:
+        raise RuntimeError("Initial state and cache manifest identity mismatch")
+    if cache_manifest.get("goal_checkpoint_hash") != PARENT_SHA256:
+        raise RuntimeError("Config cache is not bound to the HOTEL parent")
     initials = {item["seed"]: item for item in summary["initial_states"]}
     archive = Path(args.archive_dir).resolve()
     archive.mkdir(parents=True, exist_ok=True)
@@ -209,6 +217,7 @@ def freeze_configs(args) -> None:
             "run_name": run_name,
             "save_dir": str(model_dir), "model_dir": str(model_dir),
             "config": str(config_path), "phase": "train",
+            "device": "cuda:0",
             "seed": seed, "validation_seed": 2035,
             "num_epochs": 40, "save_every": 1,
             "start_validation": 1, "validate_every": 1,
@@ -227,6 +236,7 @@ def freeze_configs(args) -> None:
             "jdv2_mc_backend": "cuda_fp32_bf16_v1",
             "jdv2_neighbor_seed": seed + 100000,
             "jdv2_cache_seed": 2025,
+            "jdv2_cache_source_commit": cache_manifest["source_commit"],
             "jdv2_initial_state_path": initials[seed]["path"],
             "jdv2_initial_state_sha256": initials[seed]["file_sha256"],
             "jdv2_eval_regenerate_candidates": True,
@@ -321,6 +331,8 @@ def freeze_configs(args) -> None:
         "training_order": [f"{arm}_{seed}" for arm, seed in ORDER],
         "evaluation_seeds": list(EVAL_SEEDS),
         "parent_sha256": PARENT_SHA256,
+        "cache_manifest_hash": summary["cache_manifest_hash"],
+        "cache_source_commit": cache_manifest["source_commit"],
         "post_tasks": post_tasks,
     })
 
@@ -342,6 +354,7 @@ def main() -> None:
     freeze = sub.add_parser("freeze-configs")
     freeze.add_argument("--base-config", required=True)
     freeze.add_argument("--initial-summary", required=True)
+    freeze.add_argument("--cache-manifest", required=True)
     freeze.add_argument("--archive-dir", required=True)
     freeze.add_argument("--repository", required=True)
     freeze.add_argument("--source-dir", required=True)

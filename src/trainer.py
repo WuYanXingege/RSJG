@@ -110,6 +110,9 @@ class trainer(object):
         # zero fallback in _restore_stopping_state().
         self._validations_without_improvement = 0
         self._collapse_signature_epochs = 0
+        # Cumulative evidence of parameters that actually received gradients.
+        # This applies to both the legacy mean-energy and MC Stage-A owners.
+        self._gradient_parameter_names = set()
         # initialize network
         if self.p2_registry is not None and self.p2_registry.manifest.get('family') == 'p2_grouped_univ_hotel_v1':
             from src.p2_grouped_training import geometry_dataset
@@ -827,6 +830,13 @@ class trainer(object):
                 raise RuntimeError('MC optimizer has no gradients')
             if not all(torch.isfinite(g).all() for g in gradients):
                 raise FloatingPointError('Non-finite MC gradient; state consumed, stop')
+            if not hasattr(self, '_gradient_parameter_names'):
+                # Some low-level contract harnesses construct an owner with
+                # ``__new__`` to isolate the MC lifecycle from I/O.
+                self._gradient_parameter_names = set()
+            self._gradient_parameter_names.update(
+                name for name, parameter in self.net.named_parameters()
+                if parameter.grad is not None)
             torch.nn.utils.clip_grad_norm_(parameters, self.args.clip,
                                            error_if_nonfinite=True)
             self.optimizer.step()
@@ -835,7 +845,6 @@ class trainer(object):
         self.args.jdv2_stage_progress = (
             self._stage_optimizer_steps_completed / self._mc_total_steps())
         self.optimizer.zero_grad()
-        self._gradient_parameter_names = set()
 
     def _mc_complete_epoch(self, epoch):
         if self.jdv2_objective_rng.pending_backward:
