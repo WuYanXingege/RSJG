@@ -1,0 +1,39 @@
+{
+  "status": "FRESH_JOINT_RUNNING",
+  "captured_at": "2026-10-06T11:53:50+08:00",
+  "published_source_commit": "9c593013eba22f5523f4e335544937e5a308495d",
+  "remote_readback": {
+    "all_files_exact": true,
+    "file_count": 17,
+    "expected": 17
+  },
+  "pid": 1115621,
+  "session_id": 1115621,
+  "process_state": "Rsl",
+  "gpu_used_memory_mib": 2050,
+  "protocol_id": "p2_grouped_univ_hotel_official_prior_v1",
+  "data_binding": "c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff",
+  "run_name": "grouped_fresh_joint_official_prior_seed3101_20261006_023912",
+  "output_dir": "output/hotel/runs/grouped_fresh_joint_official_prior_seed3101_20261006_023912",
+  "log": "outputs/joint_dependency_v2/official_prior_fresh_joint_6d04a87_20261006/formal_launch/fresh_joint.log",
+  "initial_state_sha256": "042479866b6b5cc5869a0958c8d6c212bbab963f59329462b7e7aa19c7e8193d",
+  "initial_identity_matches_acceptance": true,
+  "observed_progress": {
+    "epoch": 1,
+    "train_packs": 175,
+    "train_packs_total": 175,
+    "successful_updates": 175,
+    "agent_exposures": 11122,
+    "inner_selection_started": true,
+    "epoch_complete_checkpoint_observed": false
+  },
+  "limits": {
+    "epochs_max": 250,
+    "updates_max": 43750,
+    "wall_seconds": 172800,
+    "gpu_memory_budget_bytes": 10737418240
+  },
+  "no_auto_cache": true,
+  "no_auto_A0": true,
+  "no_auto_A1": true
+}
