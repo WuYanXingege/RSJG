@@ -3,6 +3,7 @@ import time
 import datetime
 import json
 import copy
+import random
 from contextlib import nullcontext
 import torch
 import numpy as np
@@ -129,6 +130,10 @@ class trainer(object):
         if initialization_checkpoint:
             self._load_state_file(
                 initialization_checkpoint, baseline_initialization=True)
+        if self.net.jdv2_active and self.args.jdv2_initial_state_path:
+            self._load_jdv2_initial_state(self.args.jdv2_initial_state_path)
+        if self.net.jdv2_active:
+            self._capture_jdv2_frozen_contract()
         from src.p2_protocol import bounded, enabled
         if bounded(args):
             from src.p2_checkpoint import load_shared_initial
@@ -145,6 +150,132 @@ class trainer(object):
         self.best_metrics_epochs = {k: -1 for k in self.best_metrics.keys()}
         self._best_selection = (float('inf'), float('inf'))
         self._write_evaluation_protocol()
+
+    def _load_jdv2_initial_state(self, state_path):
+        """Load one authenticated zero-update model state for paired arms."""
+        from src.p2_checkpoint import state_hash
+        state_path = os.path.abspath(os.path.expanduser(state_path))
+        expected_sha = self.args.jdv2_initial_state_sha256
+        if expected_sha is None or sha256_file(state_path) != expected_sha:
+            raise RuntimeError('JDV2 shared initial-state SHA256 mismatch')
+        payload = torch.load(state_path, map_location='cpu', weights_only=True)
+        expected = {
+            'artifact_role': 'hotel_a0_a1_shared_initial',
+            'format_version': 1,
+            'seed': int(self.args.seed),
+            'optimizer_updates': 0,
+            'parent_checkpoint_sha256': self.args.jdv2_source_checkpoint_hash,
+            'cache_manifest_hash': self.args.jdv2_cache_manifest_hash,
+        }
+        mismatched = {
+            key: (payload.get(key), value)
+            for key, value in expected.items() if payload.get(key) != value}
+        if mismatched:
+            raise RuntimeError(
+                f'JDV2 shared initial-state metadata mismatch: {mismatched}')
+        model_state = payload.get('model_state_dict')
+        if not isinstance(model_state, dict) or not model_state:
+            raise RuntimeError('JDV2 shared initial-state has no model state')
+        if state_hash(model_state) != payload.get('state_sha256'):
+            raise RuntimeError('JDV2 shared initial-state tensor hash mismatch')
+        self.net.load_state_dict(model_state, strict=True)
+        if state_hash(self.net.state_dict()) != payload['state_sha256']:
+            raise RuntimeError('JDV2 shared initial-state readback mismatch')
+        self.jdv2_initial_state = {
+            'path': state_path,
+            'sha256': expected_sha,
+            'state_sha256': payload['state_sha256'],
+            'seed': int(self.args.seed),
+        }
+        print('Loaded paired JDV2 initial state: '
+              f'seed={self.args.seed}, state={payload["state_sha256"]}')
+
+    def _jdv2_frozen_state(self):
+        state = {}
+        for prefix, module in zip(
+                ('goal_module', 'registrar', 'diffnet'),
+                self.net._baseline_modules()):
+            state.update({
+                f'{prefix}.{name}': value
+                for name, value in module.state_dict().items()})
+        state.update({
+            f'jdv2_corrector.{name}': value
+            for name, value in self.net.jdv2_corrector.state_dict().items()})
+        return state
+
+    def _capture_jdv2_frozen_contract(self):
+        from src.p2_checkpoint import state_hash
+        self._jdv2_frozen_state_sha256 = state_hash(
+            self._jdv2_frozen_state())
+        output = self.net.jdv2_corrector.output[-1]
+        if (torch.count_nonzero(output.weight).item() != 0 or
+                torch.count_nonzero(output.bias).item() != 0):
+            raise RuntimeError('Stage-A corrector output layer is not exact zero')
+
+    def _assert_jdv2_frozen_contract(self):
+        if not self.net.jdv2_active:
+            return
+        from src.p2_checkpoint import state_hash
+        actual = state_hash(self._jdv2_frozen_state())
+        if actual != self._jdv2_frozen_state_sha256:
+            raise RuntimeError('Frozen GDTS/corrector tensor family changed')
+        frozen_modules = self.net._baseline_modules() + (
+            self.net.jdv2_corrector,)
+        if any(module.training for module in frozen_modules):
+            raise RuntimeError('Frozen GDTS/corrector module left eval mode')
+        if any(parameter.requires_grad or parameter.grad is not None
+               for module in frozen_modules
+               for parameter in module.parameters()):
+            raise RuntimeError('Frozen GDTS/corrector acquired gradient state')
+
+    def _runtime_rng_state(self):
+        loader = getattr(self, 'data_loaders', {}).get('train')
+        numpy_state = np.random.get_state()
+        generator = getattr(loader, 'generator', None)
+        return {
+            'python': random.getstate(),
+            'numpy': {
+                'bit_generator': numpy_state[0],
+                'keys': torch.from_numpy(numpy_state[1].copy()),
+                'position': int(numpy_state[2]),
+                'has_gauss': int(numpy_state[3]),
+                'cached_gaussian': float(numpy_state[4]),
+            },
+            'torch_cpu': torch.get_rng_state(),
+            'torch_cuda_all': (
+                torch.cuda.get_rng_state_all()
+                if torch.cuda.is_available() else None),
+            'train_loader_generator': (
+                generator.get_state() if generator is not None else None),
+        }
+
+    def _restore_runtime_rng_state(self, state):
+        if not isinstance(state, dict):
+            raise RuntimeError('Resume checkpoint has no complete RNG state')
+        required = {'python', 'numpy', 'torch_cpu', 'torch_cuda_all',
+                    'train_loader_generator'}
+        if set(state) != required:
+            raise RuntimeError('Resume checkpoint RNG fields are incomplete')
+        random.setstate(state['python'])
+        numpy_state = state['numpy']
+        if not isinstance(numpy_state, dict):
+            raise RuntimeError('Resume checkpoint NumPy RNG state is invalid')
+        np.random.set_state((
+            numpy_state['bit_generator'],
+            numpy_state['keys'].cpu().numpy(),
+            int(numpy_state['position']), int(numpy_state['has_gauss']),
+            float(numpy_state['cached_gaussian'])))
+        torch.set_rng_state(state['torch_cpu'])
+        if state['torch_cuda_all'] is not None:
+            if not torch.cuda.is_available():
+                raise RuntimeError('CUDA RNG state cannot be restored without CUDA')
+            torch.cuda.set_rng_state_all(state['torch_cuda_all'])
+        loader = getattr(self, 'data_loaders', {}).get('train')
+        generator = getattr(loader, 'generator', None)
+        if state['train_loader_generator'] is not None:
+            if generator is None:
+                raise RuntimeError('Checkpoint has loader RNG but loader does not')
+            generator.set_state(state['train_loader_generator'])
 
     def _configure_amp(self):
         """Configure the frozen FP16/BF16 policy without changing legacy."""
@@ -271,8 +402,7 @@ class trainer(object):
         primary_name = self.net.best_valid_metric()
         primary = float(valid_metrics['valid_' + primary_name])
         tie = float('inf')
-        if (self.net.jdv2_active and
-                self.args.training_stage == 'joint_trajectory'):
+        if self.net.jdv2_active and primary_name == 'JADE':
             tie = float(valid_metrics['valid_JFDE'])
         return primary, tie
 
@@ -409,6 +539,12 @@ class trainer(object):
                     'joint_diagnostics': record[
                         'validation_joint_diagnostics'],
                 }, sort_keys=True) + '\n')
+        reserved_limit = int(getattr(
+            self.args, 'jdv2_gpu_reserved_limit_bytes', 0))
+        if reserved_limit and peak_reserved > reserved_limit:
+            raise RuntimeError(
+                'JDV2 peak CUDA reserved-memory limit exceeded: '
+                f'{peak_reserved} > {reserved_limit}')
 
     def _write_evaluation_protocol(self):
         """Persist the exact model-selection/test separation used by a run."""
@@ -517,8 +653,18 @@ class trainer(object):
                 saved_models_path, 'last_model.pt')
         else:
             saved_model_name = os.path.join(saved_models_path, 'epoch_' +str(epoch).zfill(3) + '.pt')
+        numbered_resume = bool(getattr(
+            self.args, 'jdv2_numbered_resume', False))
+        checkpoint_role = (
+            'weights_best' if best_epoch else
+            'resume_last' if last_epoch else
+            'resume_numbered' if numbered_resume else 'weights_numbered')
+        resume_safe = bool(last_epoch or (
+            not best_epoch and numbered_resume))
         payload = {
             'epoch': epoch,
+            'checkpoint_role': checkpoint_role,
+            'resume_safe': resume_safe,
             'model_state_dict': self.net.state_dict(),
             'goal_pretrain_initialization': getattr(
                 self, 'goal_pretrain_initialization', None),
@@ -546,7 +692,25 @@ class trainer(object):
             'best_metrics_epochs': dict(self.best_metrics_epochs),
         }
         if self.net.jdv2_active:
+            full_resume = bool(getattr(
+                self.args, 'jdv2_full_resume_state', False))
             payload.update({
+                'runtime_rng_state': (
+                    self._runtime_rng_state()
+                    if resume_safe and full_resume else None),
+                'full_runtime_resume_contract': full_resume,
+                'optimizer_attempts': int(getattr(
+                    self, '_optimizer_attempts', 0)),
+                'skipped_optimizer_updates': int(getattr(
+                    self, '_skipped_optimizer_updates', 0)),
+                'failed_optimizer_updates': int(getattr(
+                    self, '_failed_optimizer_updates', 0)),
+                'planned_total_steps': (
+                    int(self._mc_total_steps()) if full_resume else None),
+                'frozen_state_sha256': getattr(
+                    self, '_jdv2_frozen_state_sha256', None),
+                'jdv2_initial_state': getattr(
+                    self, 'jdv2_initial_state', None),
                 'optimizer_state_dict': (
                     self.optimizer.state_dict()
                     if hasattr(self, 'optimizer') else None),
@@ -602,7 +766,9 @@ class trainer(object):
                 'best_metrics_epochs': dict(self.best_metrics_epochs),
             })
         if objective_mode(self.args) == MC:
-            role = ('resume_last' if last_epoch else
+            # The objective owner has a binary resume-vs-weights role. The
+            # outer checkpoint_role distinguishes numbered from moving last.
+            role = ('resume_last' if resume_safe else
                     'weights_best' if best_epoch else 'weights_numbered')
             owner = self.jdv2_objective_rng
             if (owner.successful_optimizer_updates !=
@@ -614,7 +780,7 @@ class trainer(object):
                 raise RuntimeError('MC resume save requires completed epoch scheduler')
             payload[FIELD] = owner.snapshot(self._mc_total_steps(), role)
             payload['mc_scheduler_epoch'] = getattr(self, '_mc_scheduler_epoch', 0)
-            if last_epoch:
+            if resume_safe:
                 if payload['optimizer_state_dict'] is None:
                     raise RuntimeError('MC resume save requires optimizer state')
                 atomic_save(payload, saved_model_name)
@@ -624,7 +790,10 @@ class trainer(object):
             from src.p2_checkpoint import save_base
             save_base(self,payload,saved_model_name,epoch)
         else:
-            torch.save(payload, saved_model_name)
+            if self.net.jdv2_active:
+                atomic_save(payload, saved_model_name)
+            else:
+                torch.save(payload, saved_model_name)
 
     def _mc_total_steps(self):
         from src.p2_protocol import bounded
@@ -666,6 +835,7 @@ class trainer(object):
         self.args.jdv2_stage_progress = (
             self._stage_optimizer_steps_completed / self._mc_total_steps())
         self.optimizer.zero_grad()
+        self._gradient_parameter_names = set()
 
     def _mc_complete_epoch(self, epoch):
         if self.jdv2_objective_rng.pending_backward:
@@ -777,6 +947,12 @@ class trainer(object):
             raise RuntimeError('bounded weights-only snapshot is not a resume checkpoint')
         training = (not weights_only and
                     getattr(self.args, 'phase', 'train') in {'train', 'train_test'})
+        if (training and checkpoint.get('training_stage') ==
+                self.args.training_stage and
+                checkpoint.get('checkpoint_role') is not None and
+                not checkpoint.get('resume_safe', False)):
+            raise ValueError(
+                'checkpoint_role is weights-only, not a safe training resume')
         if training and not baseline_initialization and checkpoint.get('p2_provenance') and checkpoint.get('resumable') is False:
             raise RuntimeError('P2 base artifact has no certified training resume scope')
         mode = objective_mode(self.args)
@@ -1142,20 +1318,29 @@ class trainer(object):
             CLEAN_TEST_SEEDS
             if getattr(self.args, 'clean_split_protocol', False)
             else None)
-        if clean_test_seeds is not None:
-            run_count = len(clean_test_seeds)
+        explicit_test_seeds = getattr(
+            self.args, 'jdv2_evaluation_seeds', None)
+        if clean_test_seeds is not None and explicit_test_seeds is not None:
+            raise RuntimeError(
+                'Clean locked test seeds cannot be overridden explicitly')
+        evaluation_seeds = clean_test_seeds or explicit_test_seeds
+        if evaluation_seeds is not None:
+            run_count = len(evaluation_seeds)
         for run_idx in range(run_count):
             print(f"\nTest run #{run_idx} ...")
             if self.args.use_trajectory_bank_cache:
                 self.data_loaders['test'].dataset.set_seed_index(run_idx)
             test_metrics = self._evaluate_epoch(
                 best_epoch, mode='test',
-                evaluation_seed=(clean_test_seeds[run_idx]
-                                 if clean_test_seeds is not None else None))
+                evaluation_seed=(evaluation_seeds[run_idx]
+                                 if evaluation_seeds is not None else None))
             run_results = dict(**test_metrics)
             # print losses and metrics for run i
             print(f'Test_set: {self.args.test_set},',
                   f'test_run_idx: {run_idx},',
+                  f'evaluation_seed=' + (
+                      str(evaluation_seeds[run_idx])
+                      if evaluation_seeds is not None else 'legacy'),
                   f'epoch: {load_checkpoint},',
                   ', '.join([f"{k}={v:.5f}" for k, v in run_results.items()]))
             total_results.append(run_results)
@@ -1173,7 +1358,8 @@ class trainer(object):
         if self.args.use_trajectory_bank_cache:
             print('Seed std: ' + ', '.join(
                 f'{key}={value:.5f}' for key, value in std_results.items()))
-        if self.args.trajectory_coupling == 'multiway_v4':
+        if (self.args.trajectory_coupling == 'multiway_v4' or
+                self.net.jdv2_active):
             result_path = os.path.join(self.args.model_dir,
                                        'final_test_results.json')
             with open(result_path, 'w') as handle:
@@ -1192,6 +1378,9 @@ class trainer(object):
                         for key, value in std_results.items()},
                     'cached_seed_protocol': (
                         'independent K per seed; mean/std across seeds'),
+                    'evaluation_seeds': (
+                        list(evaluation_seeds)
+                        if evaluation_seeds is not None else None),
                 }, handle, indent=2, sort_keys=True)
         return average_results
 
@@ -1263,11 +1452,15 @@ class trainer(object):
             self._optimizer_parameter_groups())
         self.scheduler = self._set_scheduler(self.optimizer)
         self._stage_optimizer_steps_completed = 0
+        self._optimizer_attempts = 0
+        self._skipped_optimizer_updates = 0
+        self._failed_optimizer_updates = 0
         if (objective_mode(self.args) == MC and
                 (self._pending_training_state or {}).get(FIELD) is not None):
             self._restore_mc_training_state(self._pending_training_state)
             self._restore_best_state(self._pending_training_state)
             self._restore_stopping_state(self._pending_training_state, same_stage=True)
+            self._restore_jdv2_runtime_state(self._pending_training_state)
         elif self._pending_training_state is not None:
             checkpoint = self._pending_training_state
             same_stage = checkpoint.get('training_stage') == \
@@ -1298,13 +1491,62 @@ class trainer(object):
                 self._stage_optimizer_steps_completed = int(saved_steps)
                 self._restore_best_state(checkpoint)
                 self._restore_stopping_state(checkpoint, same_stage=True)
+                self._restore_jdv2_runtime_state(checkpoint)
             else:
                 self.args.jdv2_stage_progress = 0.0
                 self._stage_optimizer_steps_completed = 0
                 self._restore_stopping_state(checkpoint, same_stage=False)
 
         # start training
+        self._arm_started_monotonic = time.monotonic()
         self._train_loop(start_epoch=start_epoch, end_epoch=self.args.num_epochs)
+
+    def _restore_jdv2_runtime_state(self, checkpoint):
+        if not self.net.jdv2_active:
+            return
+        if not checkpoint.get('full_runtime_resume_contract', False):
+            return
+        if checkpoint.get('frozen_state_sha256') != getattr(
+                self, '_jdv2_frozen_state_sha256', None):
+            raise RuntimeError('Resume checkpoint frozen-family hash mismatch')
+        if checkpoint.get('planned_total_steps') != self._mc_total_steps():
+            raise RuntimeError('Resume checkpoint planned-step mismatch')
+        self._optimizer_attempts = int(checkpoint.get(
+            'optimizer_attempts', 0))
+        self._skipped_optimizer_updates = int(checkpoint.get(
+            'skipped_optimizer_updates', 0))
+        self._failed_optimizer_updates = int(checkpoint.get(
+            'failed_optimizer_updates', 0))
+        self._restore_runtime_rng_state(checkpoint.get('runtime_rng_state'))
+
+    def _check_jdv2_runtime_budget(self):
+        """Fail before fetching a window or consuming its random inputs."""
+        if not self.net.jdv2_active:
+            return
+        arm_limit = float(getattr(
+            self.args, 'jdv2_arm_time_limit_seconds', 0.0))
+        if arm_limit > 0 and time.monotonic() - \
+                self._arm_started_monotonic >= arm_limit:
+            raise TimeoutError('JDV2 arm wall-clock budget reached')
+        raw_deadline = getattr(self.args, 'jdv2_queue_deadline_utc', None)
+        if raw_deadline:
+            deadline = datetime.datetime.fromisoformat(
+                str(raw_deadline).replace('Z', '+00:00'))
+            if deadline.tzinfo is None:
+                raise RuntimeError('JDV2 queue deadline must include timezone')
+            now = datetime.datetime.now(datetime.timezone.utc)
+            if now >= deadline.astimezone(datetime.timezone.utc):
+                raise TimeoutError('JDV2 queue wall-clock deadline reached')
+
+    def _budgeted_train_batches(self, loader):
+        iterator = iter(loader)
+        for _ in range(len(loader)):
+            self._check_jdv2_runtime_budget()
+            step_cap = int(getattr(self.args, 'jdv2_step_cap', 0))
+            if step_cap and self._optimizer_attempts >= step_cap:
+                self._step_cap_reached = True
+                return
+            yield next(iterator)
 
     def train_test(self):
         """
@@ -1389,10 +1631,6 @@ class trainer(object):
             stop_reason = None
             epoch_valid_metrics = {}
 
-            if epoch % self.args.save_every == 0:
-                self._save_checkpoint(epoch)  # save model
-                print(f"Saved checkpoint at epoch {epoch}")
-
             # validation
             if epoch >= self.args.start_validation and epoch % self.args.validate_every == 0:
                 valid_metrics = self._evaluate_epoch(epoch, mode='valid')
@@ -1472,6 +1710,8 @@ class trainer(object):
             self._write_jdv2_epoch_diagnostics(
                 epoch, train_losses, epoch_valid_metrics,
                 time.time() - start_time)
+            if self.net.jdv2_active:
+                self._assert_jdv2_frozen_contract()
 
             if (self.net.jdv2_active and
                     self.args.training_stage == 'joint_goal' and
@@ -1510,6 +1750,9 @@ class trainer(object):
             # optimizer and scheduler work has completed.
             if objective_mode(self.args) == MC:
                 self._mc_complete_epoch(epoch)
+            if epoch % self.args.save_every == 0:
+                self._save_checkpoint(epoch)
+                print(f"Saved resumable checkpoint at epoch {epoch}")
             self._save_checkpoint(epoch, last_epoch=True)
 
             # save metrics to WandB
@@ -1561,13 +1804,19 @@ class trainer(object):
             # V4 coupler itself in train mode.
             for module in self.net._baseline_modules():
                 module.eval()
+        if self.net.jdv2_active:
+            self._assert_jdv2_frozen_contract()
 
         # INIT LOSSES and METRICS
         losses_epoch = self.net.init_losses()
         losses_coeffs = self.net.set_losses_coeffs()
 
         # Progress bar
-        iterable = control.batches(self.data_loaders['train']) if control else self.data_loaders['train']
+        iterable = (control.batches(self.data_loaders['train']) if control
+                    else self._budgeted_train_batches(
+                        self.data_loaders['train'])
+                    if self.net.jdv2_active else
+                    self.data_loaders['train'])
         train_bar = tqdm(iterable, ascii=True, ncols=100,
                          desc=f'Epoch {epoch}. Train batches')
         num_train_batches = len(self.data_loaders['train'])
@@ -1587,6 +1836,8 @@ class trainer(object):
         def optimizer_step(pending, rescale_partial=False):
             if pending == 0:
                 return
+            if self.net.jdv2_active:
+                self._optimizer_attempts += 1
             if control:
                 control.counts['optimizer_attempts'] += 1
                 before_parameters=control.before_optimizer(self.net.parameters())
@@ -1612,6 +1863,8 @@ class trainer(object):
                         f'Non-finite gradient: module/parameter={name}, '
                         f'shape={tuple(parameter.grad.shape)}, '
                         f'dtype={parameter.grad.dtype}')
+                if parameter.grad is not None:
+                    self._gradient_parameter_names.add(name)
             torch.nn.utils.clip_grad_norm_(
                 self.net.parameters(), self.args.clip)
             if self.scaler.is_enabled():
@@ -1738,6 +1991,8 @@ class trainer(object):
                     optimizer_step(pending_backward)
                     pending_backward = 0
             elif objective_mode(self.args) == MC:
+                self._optimizer_attempts += 1
+                self._skipped_optimizer_updates += 1
                 if control:
                     control.counts['optimizer_attempts'] += 1
                 self._mc_optimizer_step(skip=True)
@@ -1758,6 +2013,7 @@ class trainer(object):
             self.args.jdv2_stage_progress = min(
                 self._stage_optimizer_steps_completed /
                 total_stage_optimizer_steps, 1.0)
+            self._assert_jdv2_frozen_contract()
 
         # update losses
         for loss_name in losses_epoch.keys():

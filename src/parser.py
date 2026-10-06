@@ -164,6 +164,10 @@ def get_parser():
                         type=str2bool, const=True, nargs='?')
     parser.add_argument('--jdv2_cache_root', default=None)
     parser.add_argument('--jdv2_cache_schema', default='jdv2-cache-v1')
+    parser.add_argument(
+        '--jdv2_cache_seed', default=None, type=int,
+        help=('Deterministic candidate-bank seed. When omitted the legacy '
+              'behavior binds the cache to --seed.'))
     parser.add_argument('--jdv2_source_checkpoint', default=None)
     parser.add_argument('--jdv2_cache_manifest_hash', default=None)
     parser.add_argument('--jdv2_source_checkpoint_hash', default=None)
@@ -186,6 +190,45 @@ def get_parser():
         '--jdv2_cache_source_commit', default=None,
         help=('Explicitly pin the commit that built a reusable JDV2 cache. '
               'All data/checkpoint/graph fields remain strictly validated.'))
+    parser.add_argument(
+        '--jdv2_initial_state_path', default=None,
+        help=('Optional authenticated, zero-update JDV2 model state shared '
+              'by paired objective arms.'))
+    parser.add_argument('--jdv2_initial_state_sha256', default=None)
+    parser.add_argument(
+        '--jdv2_eval_regenerate_candidates', default=False, type=str2bool,
+        const=True, nargs='?',
+        help=('Regenerate canonical evaluation candidates inside the '
+              'isolated evaluation RNG stream; training still uses cache.'))
+    parser.add_argument(
+        '--jdv2_evaluation_seeds', default=None, type=int, nargs='+',
+        help='Explicit independent inference seeds for test mode.')
+    parser.add_argument(
+        '--jdv2_gpu_reserved_limit_bytes', default=0, type=int,
+        help='Fail closed when peak CUDA reserved memory exceeds this limit.')
+    parser.add_argument(
+        '--jdv2_arm_time_limit_seconds', default=0.0, type=float,
+        help='Per-process wall-clock limit checked before loading each window.')
+    parser.add_argument(
+        '--jdv2_queue_deadline_utc', default=None,
+        help='Absolute ISO-8601 queue deadline checked before each window.')
+    parser.add_argument(
+        '--jdv2_numbered_resume', default=False, type=str2bool,
+        const=True, nargs='?',
+        help='Make completed-epoch numbered JDV2 checkpoints resumable.')
+    parser.add_argument(
+        '--jdv2_full_resume_state', default=False, type=str2bool,
+        const=True, nargs='?',
+        help=('Store and require global/data-loader RNG plus run counters in '
+              'JDV2 resume checkpoints.'))
+    parser.add_argument(
+        '--jdv2_step_cap', default=0, type=int,
+        help=('Preflight-only successful-update cap, checked before fetching '
+              'the next window; 0 disables it.'))
+    parser.add_argument(
+        '--jdv2_pair_cost_intervention', default='full',
+        choices=['full', 'off', 'physical', 'pure_interaction_off'],
+        help='Evaluation-only intervention at the deployed JDV2 pair-cost input.')
     parser.add_argument('--jdv2_stage_progress', default=0.0, type=float)
     parser.add_argument('--jdv2_goal_objective', default='mean_energy',
                         choices=['mean_energy', 'expected_conditional_mc'])
@@ -682,6 +725,12 @@ def check_and_add_additional_args(args):
         'jdv2_relation_modes': (args.jdv2_relation_modes, 1),
         'jdv2_energy_rank': (args.jdv2_energy_rank, 1),
         'jdv2_edge_chunk_size': (args.jdv2_edge_chunk_size, 1),
+        'jdv2_cache_seed': (
+            args.jdv2_cache_seed
+            if args.jdv2_cache_seed is not None else 0, 0),
+        'jdv2_gpu_reserved_limit_bytes': (
+            args.jdv2_gpu_reserved_limit_bytes, 0),
+        'jdv2_step_cap': (args.jdv2_step_cap, 0),
     }
     invalid_integers = [
         name for name, (value, minimum) in integer_minimums.items()
@@ -700,6 +749,16 @@ def check_and_add_additional_args(args):
         raise ValueError('learning_rate must be positive and clip non-negative')
     if args.save_every is not None and args.save_every <= 0:
         raise ValueError('save_every must be positive when specified')
+    if (not math.isfinite(args.jdv2_arm_time_limit_seconds) or
+            args.jdv2_arm_time_limit_seconds < 0):
+        raise ValueError('jdv2_arm_time_limit_seconds must be non-negative')
+    if (args.jdv2_evaluation_seeds is not None and
+            (not args.jdv2_evaluation_seeds or
+             any(seed < 0 for seed in args.jdv2_evaluation_seeds) or
+             len(set(args.jdv2_evaluation_seeds)) !=
+             len(args.jdv2_evaluation_seeds))):
+        raise ValueError(
+            'jdv2_evaluation_seeds must be distinct non-negative integers')
     needs_synchronized_scene = (
         args.goal_model_type != 'independent' and not (
             args.goal_model_type == 'joint_dependency_v2' and
@@ -786,6 +845,10 @@ def check_and_add_additional_args(args):
     if not 0.0 <= args.jdv2_stage_progress <= 1.0:
         raise ValueError('jdv2_stage_progress must lie in [0,1]')
     if args.goal_model_type == 'joint_dependency_v2':
+        if (args.jdv2_pair_cost_intervention != 'full' and
+                args.phase != 'test'):
+            raise ValueError(
+                'JDV2 pair-cost interventions are evaluation-only')
         if args.jdv2_cache_schema != 'jdv2-cache-v1':
             raise ValueError('Unsupported jdv2_cache_schema')
         if args.jdv2_latent_objective == 'strict_no_z':
@@ -820,7 +883,8 @@ def check_and_add_additional_args(args):
                 'jdv2_cache_source_commit must be a full lowercase git SHA')
         for name in (
                 'stage_a_parent_checkpoint_sha256',
-                'stage_a_freeze_manifest_sha256'):
+                'stage_a_freeze_manifest_sha256',
+                'jdv2_initial_state_sha256'):
             value = getattr(args, name)
             if value is not None and re.fullmatch(r'[0-9a-f]{64}', value) is None:
                 raise ValueError(f'{name} must be a lowercase SHA256')

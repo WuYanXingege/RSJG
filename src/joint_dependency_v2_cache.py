@@ -110,7 +110,9 @@ def build_manifest(
         "K": int(args.num_goal_candidates),
         "dtype": "float32",
         "candidate_order": "generate_goal_candidates-v1",
-        "deterministic_seed": int(args.seed),
+        "deterministic_seed": int(
+            args.seed if getattr(args, "jdv2_cache_seed", None) is None
+            else args.jdv2_cache_seed),
         "contains_future_supervision": True,
         "completed_splits": sorted(completed_splits or ()),
         "creation_time": datetime.now(timezone.utc).isoformat(),

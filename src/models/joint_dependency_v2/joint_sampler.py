@@ -366,6 +366,7 @@ class ParallelConditionalSampler(nn.Module):
         use_scene_latent: bool = True,
         use_dynamic_relation: bool = True,
         use_joint_energy: bool = True,
+        pair_cost_intervention: str = "full",
     ) -> Dict[str, torch.Tensor]:
         """Run mode allocation, unary initialization and two sync rounds."""
         if sampling_mode not in {"sample", "map"}:
@@ -374,6 +375,9 @@ class ParallelConditionalSampler(nn.Module):
                   else refinement_policy)
         if policy not in REFINEMENT_POLICIES:
             raise ValueError(f"unknown JDV2 refinement policy: {policy}")
+        if pair_cost_intervention not in {
+                "full", "off", "physical", "pure_interaction_off"}:
+            raise ValueError("unknown JDV2 pair-cost intervention")
         if policy in STRUCTURED_REFINEMENT_POLICIES:
             if not self.strict_no_z:
                 raise ValueError("structured refinement requires strict_no_z")
@@ -469,6 +473,47 @@ class ParallelConditionalSampler(nn.Module):
                     edge_feat, selected, edge_mode,
                     destination_relation["log_prob"], "destination",
                     mode_enabled=use_scene_latent)
+                if pair_cost_intervention == "off":
+                    source_energy = torch.zeros_like(source_energy)
+                    destination_energy = torch.zeros_like(destination_energy)
+                elif pair_cost_intervention == "physical":
+                    source_energy = self._physical_selected_cost(
+                        goal_candidates, last_position, edge_index,
+                        selected, "source")
+                    destination_energy = self._physical_selected_cost(
+                        goal_candidates, last_position, edge_index,
+                        selected, "destination")
+                elif pair_cost_intervention == "pure_interaction_off":
+                    grid = torch.arange(
+                        num_candidates, device=selected.device,
+                        dtype=torch.long)[None].expand(num_agents, -1)
+                    grid_source_relation = \
+                        dynamic_relation.selected_neighbor_relation(
+                            base_relation_logits, goal_candidates,
+                            last_position, edge_index, grid, None, "source",
+                            dynamic_enabled=use_dynamic_relation,
+                            mode_enabled=False)
+                    grid_destination_relation = \
+                        dynamic_relation.selected_neighbor_relation(
+                            base_relation_logits, goal_candidates,
+                            last_position, edge_index, grid, None,
+                            "destination",
+                            dynamic_enabled=use_dynamic_relation,
+                            mode_enabled=False)
+                    source_full = joint_energy.selected_effective_energy(
+                        agent_feat, goal_candidates, last_position,
+                        edge_index, edge_feat, grid, None,
+                        grid_source_relation["log_prob"], "source",
+                        mode_enabled=False)
+                    destination_full = joint_energy.selected_effective_energy(
+                        agent_feat, goal_candidates, last_position,
+                        edge_index, edge_feat, grid, None,
+                        grid_destination_relation["log_prob"], "destination",
+                        mode_enabled=False)
+                    source_energy = self._gather_additive_pair_cost(
+                        source_full, selected[dst])
+                    destination_energy = self._gather_additive_pair_cost(
+                        destination_full, selected[src])
                 accumulated = unary_score.new_zeros(
                     (num_agents, self.num_samples, num_candidates),
                     dtype=torch.float32)
@@ -505,6 +550,7 @@ class ParallelConditionalSampler(nn.Module):
             "goals": goals,
             "relation_prob": relation["prob"],
             "relation_embedding": relation["expected_embedding"],
+            "pair_cost_intervention": pair_cost_intervention,
         }
         if not self.strict_no_z:
             output.update({
@@ -513,6 +559,51 @@ class ParallelConditionalSampler(nn.Module):
                 "edge_scene_mode": edge_mode,
             })
         return output
+
+    @staticmethod
+    def _gather_additive_pair_cost(
+            full_cost: torch.Tensor,
+            selected_neighbor: torch.Tensor) -> torch.Tensor:
+        """Remove the uniform-reference two-way interaction term."""
+        mean = full_cost.float().mean(dim=(1, 2), keepdim=True)
+        row = full_cost.float().mean(dim=2, keepdim=True) - mean
+        column = full_cost.float().mean(dim=1, keepdim=True) - mean
+        additive = mean + row + column
+        index = selected_neighbor.long().unsqueeze(-1).expand(
+            -1, -1, full_cost.shape[-1])
+        return additive.gather(1, index)
+
+    @staticmethod
+    def _physical_selected_cost(
+            goal_candidates: torch.Tensor,
+            last_position: torch.Tensor,
+            edge_index: torch.Tensor,
+            selected: torch.Tensor,
+            conditioned_side: str) -> torch.Tensor:
+        """Fixed straight-path closest-approach cost, threshold 0.4 m."""
+        src, dst = edge_index.long()
+        if conditioned_side == "source":
+            self_index, neighbor_index = src, dst
+        elif conditioned_side == "destination":
+            self_index, neighbor_index = dst, src
+        else:
+            raise ValueError("conditioned_side must be source or destination")
+        candidates = goal_candidates[self_index].float()[:, None, :, :]
+        neighbor_ids = selected[neighbor_index].long().unsqueeze(-1).expand(
+            -1, -1, 2)
+        neighbor_goals = goal_candidates[neighbor_index].float().gather(
+            1, neighbor_ids)[:, :, None, :]
+        relative_start = (
+            last_position[self_index].float() -
+            last_position[neighbor_index].float())[:, None, None, :]
+        relative_end = candidates - neighbor_goals
+        relative_delta = relative_end - relative_start
+        denominator = relative_delta.square().sum(-1).clamp_min(1e-12)
+        closest_time = (-(relative_start * relative_delta).sum(-1) /
+                        denominator).clamp(0.0, 1.0)
+        closest = relative_start + closest_time[..., None] * relative_delta
+        distance = torch.linalg.vector_norm(closest, dim=-1)
+        return torch.relu(1.0 - distance / 0.4).square()
 
 
 __all__ = [

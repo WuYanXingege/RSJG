@@ -813,7 +813,10 @@ class GDTS(torch.nn.Module):
             raise RuntimeError(
                 'Active JDV2 requires its explicit frozen cache; run '
                 '--phase build-jdv2-cache')
-        if cache is None:
+        regenerate_eval_candidates = bool(
+            cache is not None and sample and not self.training and
+            getattr(self.args, 'jdv2_eval_regenerate_candidates', False))
+        if cache is None or regenerate_eval_candidates:
             goal_candidates_map, candidate_prob = generate_goal_candidates(
                 goal_prob_map, num_candidates=21, device=self.device,
                 use_ttst=self.args.use_ttst)
@@ -915,7 +918,9 @@ class GDTS(torch.nn.Module):
                 sampling_mode=self.args.joint_sampling_mode,
                 use_scene_latent=self.args.use_scene_latent,
                 use_dynamic_relation=self.args.use_dynamic_relation,
-                use_joint_energy=self.args.use_joint_energy)
+                use_joint_energy=self.args.use_joint_energy,
+                pair_cost_intervention=getattr(
+                    self.args, 'jdv2_pair_cost_intervention', 'full'))
 
         output = {
             'goal_candidates_map': goal_candidates_map,
