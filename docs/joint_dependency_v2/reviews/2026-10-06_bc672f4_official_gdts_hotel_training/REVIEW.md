@@ -1,6 +1,6 @@
 # GDTS 官方代码 HOTEL 折复现与启动验收
 
-结论：固定上游 GDTS commit `297d508558c10831983ea4b19c2b3e657459a449` 的 HOTEL 折已完成独立数据预处理、真实 CUDA 更新和推理链路验收，状态为 **OFFICIAL_GDTS_HOTEL_READY**。本实验用于复现作者公开代码路径，不复用 grouped-UNIV 的 goal/joint checkpoint、cache 或选模结果。
+结论：固定上游 GDTS commit `297d508558c10831983ea4b19c2b3e657459a449` 的 HOTEL 折已完成独立数据预处理、真实 CUDA 更新和推理链路验收，并在发布合同 commit `0c8ebaa` 后后台启动；当前状态为 **OFFICIAL_GDTS_HOTEL_RUNNING**。本实验用于复现作者公开代码路径，不复用 grouped-UNIV 的 goal/joint checkpoint、cache 或选模结果。
 
 ## 协议身份
 
@@ -46,4 +46,4 @@
 - 这条边界不妨碍逐字复现公开代码，但所有论文结论必须同时报告本地重训基线，并另设 leakage-controlled、公平共享的实验协议。
 - WandB 仅为日志，不影响模型；正式命令关闭 WandB，其他训练参数与官方 `train.sh` 对齐。
 
-后台启动命令与输出位置见 [COMMANDS_AND_BUDGET.md](COMMANDS_AND_BUDGET.md)。本轮只启动官方代码 HOTEL 基线，不自动启动其他四折、论文意图版或 JDV2 A0/A1。
+后台启动命令与输出位置见 [COMMANDS_AND_BUDGET.md](COMMANDS_AND_BUDGET.md)。启动快照见 [LAUNCH_SNAPSHOT.json](LAUNCH_SNAPSHOT.json)：PID/SID `1120101`，epoch 1 已完整运行 591 batches，用时2分47秒；快照时已进入 epoch 2。本轮只启动官方代码 HOTEL 基线，不自动启动其他四折、论文意图版或 JDV2 A0/A1。

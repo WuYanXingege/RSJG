@@ -1,5 +1,5 @@
 {
-  "status": "OFFICIAL_GDTS_HOTEL_READY",
+  "status": "OFFICIAL_GDTS_HOTEL_RUNNING",
   "review_source_commit": "bc672f468f0122bb8b5cd7caccce8e4b4d9eca63",
   "official_commit": "297d508558c10831983ea4b19c2b3e657459a449",
   "fold": "hotel",
@@ -51,6 +51,19 @@
     "pixel_and_world_metrics_finite": true,
     "peak_reserved_bytes": 2405433344
   },
-  "formal_training_started": false,
+  "formal_training_started": true,
+  "launch": {
+    "published_contract_commit": "0c8ebaa",
+    "pid": 1120101,
+    "session_id": 1120101,
+    "config_sha256": "04374e8e4eb6177b8817c5bd6574a637b22580f415479c76bd2b0a420fed091d",
+    "complete_epochs_observed": 1,
+    "epoch_1_batches": 591,
+    "epoch_1_seconds": 167,
+    "epoch_1_train_diffusion_loss": 0.26727,
+    "epoch_1_train_goal_BCE_loss": 0.34076,
+    "first_checkpoint_epoch": 10,
+    "first_checkpoint_observed": false
+  },
   "automatic_followups": false
 }

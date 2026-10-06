@@ -1,0 +1,33 @@
+{
+  "status": "OFFICIAL_GDTS_HOTEL_RUNNING",
+  "captured_at": "2026-10-06T13:36:52+08:00",
+  "published_contract_commit": "0c8ebaa",
+  "remote_readback": {
+    "all_files_exact": true,
+    "file_count": 11,
+    "expected": 11
+  },
+  "pid": 1120101,
+  "session_id": 1120101,
+  "process_state": "Rsl",
+  "gpu_used_memory_mib": 1860,
+  "official_commit": "297d508558c10831983ea4b19c2b3e657459a449",
+  "compatibility_patch_sha256": "b8a09ae42f0c1ce3136a4c0a6e40d33f437defff3b87e014fa1c2a8c6b51f5e1",
+  "config_train_test_sha256": "04374e8e4eb6177b8817c5bd6574a637b22580f415479c76bd2b0a420fed091d",
+  "launch_request_sha256": "4e09056dfe503260ffdf542fe0469647832bd609ed2fd2ff97754c7c76f729fd",
+  "observed_progress": {
+    "complete_epochs": 1,
+    "train_batches_per_epoch": 591,
+    "epoch_1_seconds": 167,
+    "epoch_1_train_diffusion_loss": 0.26727,
+    "epoch_1_train_goal_BCE_loss": 0.34076,
+    "current_epoch": 2,
+    "current_epoch_batches_observed": 76
+  },
+  "checkpoint_boundary": {
+    "save_every_epochs": 10,
+    "first_checkpoint_observed": false,
+    "strict_resume_supported": false
+  },
+  "automatic_followups": false
+}
