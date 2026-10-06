@@ -1,7 +1,7 @@
 ---
 experiment: HOTEL bounded Stage-A A0/A1
 date: 2026-10-06
-status: PREPARING
+status: READY_FOR_BOUNDED_HOTEL_A0_A1
 parent_sha256: 5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b
 ---
 
@@ -22,9 +22,20 @@ A0-3101、A1-3101、A1-3102、A0-3102、A0-3103、A1-3103。
 保存、12 GiB reserved-memory 门、6 小时单臂与 48 小时队列 deadline，以及在真实
 conditional pair score 入口执行的三项机制干预。
 
-当前状态只可在 `PREFLIGHT_RECEIPT.json` 全部通过后升级为
-`READY_FOR_BOUNDED_HOTEL_A0_A1`，随后由固定源码 worktree 后台启动。不得把
-PREPARING/READY 写成性能收益。
+当前已升级为 `READY_FOR_BOUNDED_HOTEL_A0_A1`。父权重、全量 cache、配对初态、
+双臂真实 CUDA 更新、100-update 吞吐、完整 445-window validation 和 A1 独立进程
+resume 均通过，机器摘要见 `READINESS_RECEIPT.json`。READY 只表示执行合同通过，
+不表示 A0/A1 已产生性能收益。
+
+正式运行源码固定为 `664ad0410f5cf3b44d3a6c1892c98e37aa936b9e`；候选 cache
+由 `5b6e4e4ee11b5a19884cf2bfb11eae700820dbe5` 生成，并通过显式完整 SHA
+override 绑定，未把工具修复伪装成 cache 重建。A0/A1 两步 smoke 的共享初态 hash
+为 `c9d2d621…`，冻结家族 hash 为 `df7af51e…`，两臂均有 63 个参数 tensor
+实际获得梯度，注册可训练参数为 331,845。
+
+100-update 实测为 A0 0.0679 s/update、A1 0.0467 s/update；完整 validation 为
+260.1 s。40 epoch 的训练+逐 epoch validation 投影约为 A0 5.52 h、A1 4.70 h，
+仍分别受 6 h hard limit 和总队列 48 h deadline 约束，投影不构成完成保证。
 
 ## 证据边界
 

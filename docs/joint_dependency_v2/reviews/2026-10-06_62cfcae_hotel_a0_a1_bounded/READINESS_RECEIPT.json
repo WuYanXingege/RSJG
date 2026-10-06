@@ -1,0 +1,74 @@
+{
+  "status": "READY_FOR_BOUNDED_HOTEL_A0_A1",
+  "run_source_commit": "664ad0410f5cf3b44d3a6c1892c98e37aa936b9e",
+  "cache_source_commit": "5b6e4e4ee11b5a19884cf2bfb11eae700820dbe5",
+  "parent": {
+    "epoch": 110,
+    "sha256": "5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b",
+    "state_tensor_count": 112,
+    "status": "PASS"
+  },
+  "cache": {
+    "manifest_hash": "b83bfba62da8becd9cd0d8513913af3862e437c7f8ed1e14f7feffb6653db432",
+    "record_counts": {"train": 3484, "valid": 445, "test": 445},
+    "agent_occurrences": {"train": 35456, "valid": 1197, "test": 1197},
+    "edge_occurrences": {"train": 258430, "valid": 1257, "test": 1257},
+    "edge_window_buckets": {"E=0": 697, "E>0": 3677},
+    "status": "PASS"
+  },
+  "paired_gpu_smoke": {
+    "updates_per_arm": 2,
+    "initial_state_hash": "c9d2d6211e807f6cc7f4c256289c8be6aaaa8032b73ea809829ca0f4c3bbd947",
+    "frozen_state_hash": "df7af51efe7a5fff1594463e2328a017c893b29518831baf05de26b789222887",
+    "registered_trainable_parameters": 331845,
+    "gradient_parameter_tensors": 63,
+    "A0_peak_reserved_bytes": 293601280,
+    "A1_peak_reserved_bytes": 306184192,
+    "A1_draw_calls": 2,
+    "A1_sampled_agent_draws": 176,
+    "status": "PASS"
+  },
+  "throughput": {
+    "updates_per_arm": 100,
+    "A0_seconds_per_update": 0.06791740659973584,
+    "A1_seconds_per_update": 0.04673745678039268,
+    "A0_projected_training_hours": 2.6291582732608854,
+    "A1_projected_training_hours": 1.8092588824765343,
+    "validation_windows": 445,
+    "validation_seconds": 260.10642789292615,
+    "validation_seconds_per_window": 0.5845088267256767,
+    "A0_projected_train_plus_40_validations_hours": 5.519229694293398,
+    "A1_projected_train_plus_40_validations_hours": 4.699330303508936,
+    "status": "PASS"
+  },
+  "separate_process_resume": {
+    "checkpoint_role": "resume_last",
+    "resume_safe": true,
+    "checkpoint_epoch": 1,
+    "before": {"optimizer_attempts": 2, "successful_updates": 2, "draw_calls": 2, "sampled_agent_draws": 176},
+    "after_one_additional_update": {"optimizer_attempts": 3, "successful_updates": 3, "draw_calls": 3, "sampled_agent_draws": 276},
+    "immediate_runtime_rng_and_loader_state_exact": true,
+    "cuda_replay_bitwise_equality_claimed": false,
+    "status": "PASS"
+  },
+  "queue": {
+    "training_order": ["A0_3101", "A1_3101", "A1_3102", "A0_3102", "A0_3103", "A1_3103"],
+    "evaluation_seeds": [2035, 2036, 2037, 2038, 2039],
+    "deadline_utc": "2026-10-08T13:17:16+00:00",
+    "deadline_beijing": "2026-10-08T21:17:16+08:00",
+    "manifest_sha256": "530d210f744b1576c69fe1f13d23441c1cf8517e5242d9bdb22317adb4b4ec19"
+  },
+  "local_evidence_sha256": {
+    "cache_audit": "433ffa6c0fc7fe6a16a8b4f6ef2cdf484de73907be24b16fb8f780edec5a2b7f",
+    "paired_gpu_smoke": "f368a8b5048b01d618331ed564eb3419c869c1abe03b0525c7e384b60f074439",
+    "throughput_gpu": "2eb5aa037d0d74ba09a5231d14107260f158fa5fbc3b7013f5a00cc4da98e51b",
+    "validation_throughput": "6f50ed649521c2c547579c47015b5a364fb5b0286bd89c6f77033ce0ce7b17d7",
+    "resume_consume": "476b3308355949bd6a88603f4ebe8a70a35285cc965d37cd40720ab08e1614b1"
+  },
+  "limitations": [
+    "HOTEL official validation and test raw files are byte-identical",
+    "three Stage-A heads share one selected GDTS parent",
+    "throughput is a bounded projection, not a completion guarantee",
+    "this readiness receipt contains no performance-benefit claim"
+  ]
+}
