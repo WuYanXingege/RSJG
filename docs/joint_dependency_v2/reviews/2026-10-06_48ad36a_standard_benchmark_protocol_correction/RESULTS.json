@@ -39,10 +39,12 @@
     "public_benchmark_comparable": false
   },
   "running_job": {
-    "action": "CONTINUE_UNCHANGED",
+    "action": "STOPPED_FOR_STANDARD_HOTEL",
     "pid": 1115621,
-    "completed_epochs_observed": 1,
-    "successful_updates_observed_at_epoch_1": 175,
+    "completed_epochs_observed": 4,
+    "successful_updates_in_complete_epochs": 700,
+    "discarded_partial_epoch": 5,
+    "discarded_partial_updates": 100,
     "epoch_1_inner_packs": 391,
     "epoch_1_inner_denominator": 24955,
     "epoch_1_inner_native_pixel_ADE_smoke": 37.9624001346115,
@@ -55,7 +57,7 @@
     "reuse_current_joint_for_standard_five_fold": false,
     "next_priority": "READ_ONLY_STANDARD_HOTEL_SPLIT_LOADER_METRIC_CERTIFICATION",
     "new_training_started": false,
-    "current_training_stopped": false,
+    "current_training_stopped": true,
     "cache_started": false,
     "A0_started": false,
     "A1_started": false

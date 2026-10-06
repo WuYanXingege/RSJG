@@ -1,6 +1,6 @@
 # 官方语义先验 fresh joint 独立配置与验收
 
-结论：fresh joint 已达到 **JOINT_TRAINING_READY**，并在发布 commit `9c593013eba22f5523f4e335544937e5a308495d` 上后台启动，当前状态为 **FRESH_JOINT_RUNNING**。父权重严格绑定 fresh goal 的 selected epoch 96；仅加载 `goal_module`，history/registrar 与 diffusion 按 seed 3101 全新初始化。CUDA 两次真实更新、完整状态回读和 production full-inner 选模均通过。启动器只运行 fresh joint，不自动进入 cache、A0 或 A1。
+结论：fresh joint 已达到 **JOINT_TRAINING_READY**，并在发布 commit `9c593013eba22f5523f4e335544937e5a308495d` 上后台启动。随后因主实验恢复标准 HOTEL 协议而在完整 epoch 4 后停止；当前状态为 **FRESH_JOINT_STOPPED_AFTER_EPOCH4**。父权重严格绑定 fresh goal 的 selected epoch 96；仅加载 `goal_module`，history/registrar 与 diffusion 按 seed 3101 全新初始化。CUDA 两次真实更新、完整状态回读和 production full-inner 选模均通过。cache、A0、A1 未启动。
 
 本轮沿用官方语义先验协议 `p2_grouped_univ_hotel_official_prior_v1`。它接受并冻结 GDTS/Goal-SAR 作者分发的语义栅格作为环境输入，但不把未知的分割器训练范围重新表述为 strict-clean 来源认证。data binding 为 `c17a6f031f0ffb1d94011f85bb8981aaef518b96863fbd80a51159a9d9361bff`。
 

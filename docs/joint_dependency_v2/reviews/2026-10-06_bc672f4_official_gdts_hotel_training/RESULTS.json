@@ -1,0 +1,56 @@
+{
+  "status": "OFFICIAL_GDTS_HOTEL_READY",
+  "review_source_commit": "bc672f468f0122bb8b5cd7caccce8e4b4d9eca63",
+  "official_commit": "297d508558c10831983ea4b19c2b3e657459a449",
+  "fold": "hotel",
+  "protocol": "literal_official_code_reproduction",
+  "configuration": {
+    "seed": 2025,
+    "precision": "fp32",
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "optimizer": "Adam",
+    "clip": 1,
+    "scheduler": "ExponentialLR",
+    "scheduler_gamma": 0.995,
+    "epochs": 250,
+    "validate_every": 10,
+    "save_every": 10,
+    "observation_frames": 8,
+    "prediction_frames": 12,
+    "samples": 20,
+    "data_augmentation": true,
+    "goal_pretrain_loaded": false,
+    "wandb": false
+  },
+  "data": {
+    "train_files": 6,
+    "train_batches": 591,
+    "valid_files": 1,
+    "valid_batches": 19,
+    "test_files": 1,
+    "validation_and_test_bytes_identical": true,
+    "validation_test_sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf",
+    "cache_size_gib_approx": 19
+  },
+  "compatibility": {
+    "base_source_unchanged_except_data_loader": true,
+    "patch_diff_sha256": "b8a09ae42f0c1ce3136a4c0a6e40d33f437defff3b87e014fa1c2a8c6b51f5e1",
+    "patched_data_loader_sha256": "c6c66e761455c126dda173d107033dd30e60d4777acafeb285bd671632376952",
+    "algorithm_change": false,
+    "albumentations_public_namespace": true,
+    "replay_chunk_channels": 256
+  },
+  "acceptance": {
+    "cuda_update": "PASS",
+    "updates": 1,
+    "all_parameter_families_nonzero_gradient": true,
+    "all_parameter_families_changed": true,
+    "validation_inference": "PASS",
+    "ttst_tree_sampling_samples": 20,
+    "pixel_and_world_metrics_finite": true,
+    "peak_reserved_bytes": 2405433344
+  },
+  "formal_training_started": false,
+  "automatic_followups": false
+}

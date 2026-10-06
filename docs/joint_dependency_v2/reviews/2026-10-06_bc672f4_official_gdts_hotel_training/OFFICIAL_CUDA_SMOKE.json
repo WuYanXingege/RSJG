@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "official_commit": "297d508558c10831983ea4b19c2b3e657459a449",
+  "code_sha256": {
+    "main.py": "a82919313036d0a0caa55b005f03ec3def820a5c895072055047ab39724e0aef",
+    "train.sh": "24d34631ec8152ba1a9ab34800ae02341cd66c46d51af4fe06aa931aa2672b5a",
+    "src/parser.py": "41e426ad1e8f2e49d9225f7ecbfd83d0357225749612216456a56c7e68b9ac7a",
+    "src/trainer.py": "b8643fc91f11ec39499ca58b6ed53d83489f40e191c87c03376ed2c59ac0bbad",
+    "src/data_pre_process.py": "8f27ced2aeff3ff3475320eb54df4489a582d468b29829da96188c3aa52b200d",
+    "src/data_loader.py": "c6c66e761455c126dda173d107033dd30e60d4777acafeb285bd671632376952",
+    "src/models/model.py": "6f671a4b38db5c9e92dcf55425dbf89b6ebe0f517a158645234d45a317f8af48"
+  },
+  "cache": {
+    "train_batches": 591,
+    "valid_batches": 19
+  },
+  "configuration": {
+    "seed": 2025,
+    "batch_size": 64,
+    "learning_rate": 0.001,
+    "precision": "fp32",
+    "data_augmentation": true,
+    "updates": 1
+  },
+  "batch_agents": 64,
+  "loss": 14.709468841552734,
+  "components": {
+    "diffusion_loss": 0.997319221496582,
+    "goal_BCE_loss": 0.6856074929237366
+  },
+  "coefficients": {
+    "diffusion_loss": 1,
+    "goal_BCE_loss": 20
+  },
+  "gradient_l1": {
+    "goal_module.": 65.15449591699235,
+    "registrar.": 22.326049387454987,
+    "diffnet.": 200.95478264754638
+  },
+  "gradient_norm": 3.0872602462768555,
+  "changed": {
+    "goal_module.": true,
+    "registrar.": true,
+    "diffnet.": true
+  },
+  "validation_smoke": {
+    "batches": 1,
+    "samples": 20,
+    "metrics": {
+      "ADE": {"count": 64, "mean": 140.35386711359024},
+      "FDE": {"count": 64, "mean": 253.28435373306274},
+      "ADE_world": {"count": 64, "mean": 2.72344936337322},
+      "FDE_world": {"count": 64, "mean": 4.8470653630793095}
+    }
+  },
+  "peak_reserved_bytes": 2405433344
+}

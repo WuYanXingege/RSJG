@@ -83,7 +83,7 @@
   },
   "formal_training_started": true,
   "launch": {
-    "status": "FRESH_JOINT_RUNNING",
+    "status": "FRESH_JOINT_STOPPED_AFTER_EPOCH4",
     "published_source_commit": "9c593013eba22f5523f4e335544937e5a308495d",
     "pid": 1115621,
     "session_id": 1115621,
@@ -91,7 +91,11 @@
     "observed_successful_updates": 175,
     "observed_agent_exposures": 11122,
     "first_inner_selection_running": true,
-    "first_epoch_checkpoint_observed": false
+    "first_epoch_checkpoint_observed": true,
+    "complete_epochs_preserved": 4,
+    "complete_epoch_updates": 700,
+    "partial_epoch_discarded": 5,
+    "partial_epoch_updates_observed": 100
   },
   "cache": "WAITING_FOR_QUALIFIED_BASE",
   "A0": "WAITING_FOR_CACHE",
