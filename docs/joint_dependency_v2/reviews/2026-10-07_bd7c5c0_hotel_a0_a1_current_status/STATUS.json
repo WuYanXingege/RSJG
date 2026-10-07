@@ -1,0 +1,44 @@
+{
+  "snapshot_local": "2026-10-07T20:19:23+08:00",
+  "status": "PARTIAL_QUEUE_RUNNING_FINAL_ARM",
+  "review_head_before_archive": "bd7c5c035056669b6e6e9f10e09fb92abd337ad7",
+  "execution_source_commit": "664ad0410f5cf3b44d3a6c1892c98e37aa936b9e",
+  "queue": {
+    "completed_count": 5,
+    "total_count": 6,
+    "completed_arms": [
+      "A0_3101",
+      "A1_3101",
+      "A1_3102",
+      "A0_3102",
+      "A0_3103"
+    ],
+    "current_arm": "A1_3103",
+    "current_progress": "epoch_6_saved_epoch_7_running",
+    "log_growth_probe_bytes": {
+      "before": 3557407,
+      "after_2_seconds": 3557710
+    }
+  },
+  "comparison_assessment": {
+    "a0_vs_a1": "FAIR_STRICTLY_PAIRED_BY_TRAIN_SEED",
+    "e_joint_baseline_vs_a0_a1": "FAIR_METHOD_LEVEL_PENDING_FINAL_RECEIPTS",
+    "e_official_or_paper_vs_a0_a1": "NOT_STRICTLY_COMPARABLE",
+    "network_design_conclusion": "INSUFFICIENT_FINAL_EVIDENCE"
+  },
+  "pending": [
+    "A1_3103_completion_receipt",
+    "E_joint_baseline",
+    "A0_A1_formal_five_inference_seed_evaluations",
+    "paired_effects_and_uncertainty",
+    "mechanism_interventions",
+    "final_window_sample_seed_checkpoint_hash_validation"
+  ],
+  "mutations": {
+    "model": false,
+    "config": false,
+    "training_process": false,
+    "new_gpu_task": false,
+    "documentation_only": true
+  }
+}
