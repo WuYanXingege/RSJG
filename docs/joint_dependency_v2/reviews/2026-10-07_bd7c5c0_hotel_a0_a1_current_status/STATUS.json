@@ -26,12 +26,23 @@
     "e_official_or_paper_vs_a0_a1": "NOT_STRICTLY_COMPARABLE",
     "network_design_conclusion": "INSUFFICIENT_FINAL_EVIDENCE"
   },
+  "mechanism_manifest_check": {
+    "status": "MATCHES_PREREGISTRATION",
+    "manifest_sha256": "530d210f744b1576c69fe1f13d23441c1cf8517e5242d9bdb22317adb4b4ec19",
+    "registered": [
+      "off",
+      "physical",
+      "pure_interaction_off"
+    ],
+    "documentation_erratum": "objective-off and edge-permutation were incorrect labels in the initial report",
+    "execution_error_found": false
+  },
   "pending": [
     "A1_3103_completion_receipt",
     "E_joint_baseline",
     "A0_A1_formal_five_inference_seed_evaluations",
     "paired_effects_and_uncertainty",
-    "mechanism_interventions",
+    "pair_off_physical_and_pure_interaction_off_interventions",
     "final_window_sample_seed_checkpoint_hash_validation"
   ],
   "mutations": {

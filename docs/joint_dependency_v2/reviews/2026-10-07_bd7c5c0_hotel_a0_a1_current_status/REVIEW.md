@@ -8,6 +8,12 @@
 
 状态：`PARTIAL_QUEUE_RUNNING_FINAL_ARM`
 
+> 2026-10-07 勘误：本报告初版第 5 节曾把待执行机制干预误写为
+> `objective-off、edge-permutation`。冻结队列 manifest、生成脚本与 sampler
+> 源码的实际合同一致，三项是 pair-cost `off`、`physical` 和
+> `pure_interaction_off`。这是文案错误，不是队列接线或执行错误；核验记录见
+> [QUEUE_MANIFEST_CHECK.json](QUEUE_MANIFEST_CHECK.json)。
+
 ## 1. 结论
 
 目前不能得出“设计无意义”或“网络有问题”的结论。已经能够确认的是：
@@ -77,7 +83,8 @@ Stage-A 只在既有 K21 候选上进行联合选择，不能创造候选集合�
 2. 冻结父模型的 `E_joint` baseline；
 3. A0/A1 三对训练种子 × 五推理种子的正式测试；
 4. 预注册的 paired effects 与不确定性汇总；
-5. objective-off、edge-permutation 等机制干预；
+5. 预注册的三项机制干预：pair-cost `off`（pair-off）、`physical`，以及
+   `pure_interaction_off`（保留可加行/列项的 interaction-off）；
 6. 完整窗口数、样本数、seed 列表和 checkpoint SHA 的最终收据验收。
 
 在这些证据生成前，阶段性 validation 数字不得写成“优于 baseline”，也不得把当前结果解释为网络失败。
@@ -89,5 +96,6 @@ Stage-A 只在既有 K21 候选上进行联合选择，不能创造候选集合�
 - [官方协议 manifest](../2026-10-06_62cfcae_hotel_a0_a1_bounded/OFFICIAL_PROTOCOL_MANIFEST.json)
 - [阶段性 CPU 审查](../2026-10-07_3eead0c_hotel_a0_a1_final_cpu_diagnostics/REVIEW.md)
 - [机器可读状态](STATUS.json)
+- [队列机制任务核验与勘误](QUEUE_MANIFEST_CHECK.json)
 
 本轮仅归档和上传状态，没有修改模型、配置或训练过程，也没有启动新的 GPU 任务。

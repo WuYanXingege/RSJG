@@ -1,0 +1,46 @@
+{
+  "checked_local": "2026-10-07",
+  "status": "DOCUMENTATION_ERRATUM_EXECUTION_WIRING_MATCHES_PREREGISTRATION",
+  "frozen_queue_manifest": {
+    "path": "outputs/joint_dependency_v2/hotel_a0_a1_5b6e4e4/formal_launch/QUEUE_MANIFEST.json",
+    "sha256": "530d210f744b1576c69fe1f13d23441c1cf8517e5242d9bdb22317adb4b4ec19",
+    "schema": "hotel-a0-a1-queue-v1",
+    "run_source_commit": "664ad0410f5cf3b44d3a6c1892c98e37aa936b9e"
+  },
+  "registered_interventions": [
+    {
+      "task_name": "mechanism_off",
+      "cli_value": "off",
+      "report_label": "pair-off",
+      "semantics": "source and destination pair energies are set to exact zero"
+    },
+    {
+      "task_name": "mechanism_physical",
+      "cli_value": "physical",
+      "report_label": "physical",
+      "semantics": "learned pair energy is replaced by the fixed straight-path closest-approach cost"
+    },
+    {
+      "task_name": "mechanism_pure_interaction_off",
+      "cli_value": "pure_interaction_off",
+      "report_label": "interaction-off",
+      "semantics": "the irreducible two-way interaction is removed while additive row and column terms are retained"
+    }
+  ],
+  "not_registered": [
+    "objective-off",
+    "edge-permutation"
+  ],
+  "evidence": {
+    "preregistration": "docs/joint_dependency_v2/reviews/2026-10-06_62cfcae_hotel_a0_a1_bounded/EXPERIMENT_PREREGISTRATION.md",
+    "manifest_generator": "tools/hotel_a0_a1_prepare.py:318-331",
+    "queue_consumer": "tools/hotel_a0_a1_queue.py:201-278",
+    "sampler_dispatch": "src/models/joint_dependency_v2/joint_sampler.py:378-504"
+  },
+  "assessment": {
+    "documentation_inconsistency": true,
+    "queue_manifest_error": false,
+    "execution_wiring_error": false,
+    "training_or_queue_modified": false
+  }
+}
