@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rsjg-ebjd"
+version = "0.1.0"
+description = "Independent Endpoint-Bridge Joint Diffusion implementation"
+requires-python = ">=3.10"
+dependencies = [
+  "torch>=2.1",
+  "PyYAML>=6.0",
+  "numpy>=1.24",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=7.4"]
+
+[tool.setuptools]
+packages = ["ebjd", "ebjd.vendor"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

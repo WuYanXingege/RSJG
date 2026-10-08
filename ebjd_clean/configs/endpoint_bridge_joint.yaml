@@ -1,0 +1,127 @@
+seed: 3101
+
+paths:
+  train_npz: ebjd_clean/data/train_scenes.npz
+  validation_npz: ebjd_clean/data/validation_scenes.npz
+  test_npz: ebjd_clean/data/test_scenes.npz
+  output_dir: ebjd_clean/outputs/endpoint_bridge_joint_seed3101
+  accepted_fold_matched_gdts_unet: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/hotel/runs/grouped_fresh_goal_official_prior_seed3101_20261005_114637/epoch_096.pt
+  accepted_fold_matched_gdts_unet_sha256: f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13
+
+data:
+  obs_length: 8
+  pred_length: 12
+  dt_seconds: 0.4
+  coordinates: metres
+  complete_horizon_required: true
+  scene_agent_padding: true
+  do_not_truncate_scene_agents: true
+
+map_encoder:
+  semantic_channels: 6
+  history_heatmap_channels: 8
+  crop_width_m: 32.0
+  crop_pixels: 256
+  enc_channels: [14, 32, 32, 64, 64, 64]
+  dec_channels: [64, 64, 64, 32, 32]
+  future_heatmap_channels: 12
+  heatmap_sigma_m: 0.5
+  memory_grid: [8, 8]
+  trainable: true
+
+history_encoder:
+  input_dim: 6
+  hidden_dim: 128
+  social_blocks: 2
+  social_heads: 4
+  social_ff_dim: 512
+  observed_geometry_dim: 10
+  observed_bias_bound: 2.0
+  dropout: 0.0
+
+representation:
+  type: invertible_endpoint_brownian_bridge
+  goal_tokens: 1
+  bridge_tokens: 11
+  goal_scale_m: 1.0
+  bridge_scale_m: 1.0
+  train_fold_rms_scaling: true
+  goal_rms_floor_m: 0.5
+  bridge_rms_floor_m: 0.1
+  literal_endpoint_concatenation: true
+
+denoiser:
+  hidden_dim: 128
+  heads: 4
+  ff_dim: 512
+  coarse_blocks: 3
+  refinement_blocks: 3
+  sublayers: [temporal_attention, social_attention, context_cross_attention, ffn]
+  memory_tokens_per_agent: 72
+  cross_world_attention: false
+  target_parameterization: v
+  geometry_gate: alpha_squared
+  clean_future_detach: false
+
+diffusion:
+  schedule: cosine_vp_alpha_cos_sigma_sin
+  exact_terminal_snr_zero: true
+  training_noise_bins: 100
+  shared_time_within_scene: true
+  sampler: ddim
+  ddim_eta: 0.0
+
+objectives:
+  goal_v_weight: 1.0
+  bridge_v_weight: 1.0
+  coarse_v_weight: 0.25
+  relative_motion_weight: 0.05
+  map_bce_weight: 0.10
+  relative_velocity_factor: 0.5
+  rollout_joint_ade_weight: 1.0
+  rollout_joint_fde_weight: 0.5
+  rollout_marginal_ade_weight: 1.0
+  rollout_marginal_fde_weight: 0.5
+
+training:
+  epochs: 100
+  batch_scenes: 4
+  gradient_accumulation: 4
+  new_module_lr: 0.0001
+  unet_lr: 0.00001
+  lr_warmup_epochs: 5
+  lr_final_fraction: 0.01
+  optimizer: adamw_actual_step_projection
+  optimizer_betas: [0.9, 0.999]
+  optimizer_eps: 0.00000001
+  weight_decay: 0.0001
+  total_gradient_clip_norm: 5.0
+  rollout_start_epoch: 21
+  rollout_ramp_end_epoch: 40
+  rollout_weight_start: 0.01
+  rollout_weight_end: 0.20
+  rollout_every_optimizer_updates: 4
+  rollout_frequency_loss_compensation: 4.0
+  rollout_worlds: 4
+  rollout_steps: 20
+  rollout_detach_between_steps: false
+  softmin_temperature_start_m: 0.10
+  softmin_temperature_end_m: 0.05
+  protected_losses: [soft_marginal_ade, soft_marginal_fde]
+  activation_checkpointing: true
+  checkpoint_use_reentrant: false
+  mixed_precision: bf16_with_fp32_geometry_loss_optimizer
+  ema: false
+  train_all_modules: true
+
+evaluation:
+  worlds: 20
+  steps: 20
+  inference_seeds: [2035, 2036, 2037, 2038, 2039]
+  minimum_training_seeds: 3
+  metrics: [minADE, minFDE, JADE, JFDE]
+  per_agent_reordering: false
+  final_test_used_for_checkpoint_selection: false
+
+ablations:
+  available: [future_social_off, noisy_geometry, cartesian_velocity, geometry_loss_off, rollout_loss_off, actual_step_constraint_off]
