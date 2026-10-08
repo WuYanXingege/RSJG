@@ -1,0 +1,114 @@
+{
+  "baseline_binding": {
+    "comparator_checkpoint_sha256": "5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b",
+    "comparator_result_sha256": "df9aa35cd26296558c864a2bcda792a8411bbc83a530376c45d3429a768eae6c",
+    "ebjd_goal_unet_initialization_sha256": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13",
+    "evaluation_seed": 2035,
+    "minADE_m": 0.1352196876519829,
+    "minFDE_m": 0.19338157261354552,
+    "steps": 20,
+    "validation_agents": 1197,
+    "validation_manifest_sha256": "90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d",
+    "validation_scenes": 445,
+    "worlds": 20
+  },
+  "code": {
+    "branch": "research/ebjd-clean-v1",
+    "corrected_implementation_commit": "b8605264d18250577da8b89ec506e732235d5aa4",
+    "review_baseline_commit": "01faa633162a2b73794a40184e8d64e4d44964bc",
+    "scope": "ebjd_clean_only"
+  },
+  "dataset": {
+    "dataset_receipt_sha256": "ed3fe7365328b698d717275471bb087e6674a1bfa5bd7d077549d7d4cee21e80",
+    "mirrored_validation_test": true,
+    "overlap_counts": {
+      "train_test": 0,
+      "train_validation": 0,
+      "validation_test": 445
+    },
+    "splits": {
+      "test": {
+        "agents": 1197,
+        "manifest_sha256": "84c95cb431caf7214d1b85e8e7dbfeaf48c9fe301b1cda7f3201c3e8cf199c78",
+        "max_N": 8,
+        "scenes": 445
+      },
+      "train": {
+        "agents": 37702,
+        "manifest_sha256": "f4ebb40ad8a20f851880b87c953affaa5c612ae80a3041d46dcc51fd6b91b7e8",
+        "max_N": 57,
+        "scenes": 4249
+      },
+      "validation": {
+        "agents": 1197,
+        "manifest_sha256": "90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d",
+        "max_N": 8,
+        "scenes": 445
+      }
+    }
+  },
+  "evidence": {
+    "bf16_fp32_boundary": {
+      "literal_endpoint_exact": true,
+      "output_dtype": "torch.float32",
+      "passed": true,
+      "sha256": "b2f4eb450ddc0c98b3d2f399d817c4ba864e4862b115c72a94630d291c11fdff",
+      "trajectory_max_abs_vs_fp32": 0.0
+    },
+    "cuda_inference_max_N57": {
+      "elapsed_seconds": 4.2410575380781665,
+      "output_shape": [1, 20, 57, 12, 2],
+      "passed": true,
+      "peak_allocated_bytes": 990078464,
+      "sha256": "07a0c328341c008462788c34156f6fdd578435c6fa419cc3d4d72b674e172f5d"
+    },
+    "cuda_normal_update_max_N57": {
+      "changed_parameter_tensors": 281,
+      "elapsed_seconds": 1.790979063953273,
+      "parameter_change_l2": 0.03273037826568603,
+      "passed": true,
+      "peak_allocated_bytes": 2107094528,
+      "sha256": "932a68be5d26c23384a1cc7af5bbf9027ec4e32cd4e7edc0245a0f9af9e001c8"
+    },
+    "cuda_rollout_update_max_N57": {
+      "applied_dot_marginal_ade": 0.0003890501753643683,
+      "applied_dot_marginal_fde": 0.0008343762801430863,
+      "changed_parameter_tensors": 281,
+      "elapsed_seconds": 10.089167739031836,
+      "parameter_change_l2": 0.03288780891441787,
+      "passed": true,
+      "peak_allocated_bytes": 3524430848,
+      "sha256": "d0e08f17a9b60731f584f0c00bad05d74a214150ad00b63dfb4a33454320833a"
+    },
+    "export_parity": {
+      "compared_agents": 1197,
+      "compared_points": 23940,
+      "grouped_scenes": 445,
+      "map_control_agreement": "10773/10773",
+      "maximum_world_absolute_error_m": 4.577636740776825e-7,
+      "passed": true,
+      "sha256": "2105a4df39aa67d73599e9bdfbc43d33a76c7e5c8534cb8665af130cda453818"
+    },
+    "train_loader": {
+      "agents_read": 37702,
+      "max_N": 57,
+      "maximum_observed_rss_increase_bytes": 654155776,
+      "passed": true,
+      "process_peak_rss_bytes": 1314811904,
+      "scenes_read": 4249,
+      "sha256": "96678fb7d2fb31ca1d9925ef81bf2a27c70631f49ed5c1ec34355517d4ada8c6"
+    }
+  },
+  "formal_training": {
+    "completed": false,
+    "improvement_claimed": false,
+    "status": "NOT_RUN"
+  },
+  "schema": "ebjd-correction-validation-summary-v1",
+  "tests": {
+    "compileall": "PASS",
+    "cpu_cli_run_id": "correction_cpu_smoke_20261008",
+    "pytest": "20 passed"
+  },
+  "validation_test_boundary": "mirrored_official_package_internal_only"
+}
