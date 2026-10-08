@@ -38,6 +38,12 @@ def main() -> None:
     loader_args = SimpleNamespace(**fields)
     loader_args.phase = "test"
     loader_args.shuffle_test_batches = False
+    # Resolved Stage-A YAML stores ``jdv2_active: null`` because the primary
+    # CLI enables it from goal_model_type.  This standalone evaluator does not
+    # pass through that parser normalization.  The baseline model below must
+    # remain independent, but its evaluator must consume the same synchronized
+    # scene-window cache as A0/A1 rather than the legacy ``data_batches`` cache.
+    loader_args.jdv2_active = True
     loader = get_dataloader(loader_args, set_name="test")
 
     model_fields = dict(fields)
