@@ -1,0 +1,46 @@
+{
+  "snapshot_local": "2026-10-08T09:28:53+08:00",
+  "status": "TRAINING_COMPLETED_POSTFIX_EVALUATION_RUNNING",
+  "failure": {
+    "task": "E_joint_baseline",
+    "returncode": 1,
+    "cause": "standalone evaluator interpreted raw jdv2_active=null as false and selected missing legacy data_batches/test_batches",
+    "failed_progress_sha256": "9f98461552c4e799d441ac417cd4e29a9793b5976aba65dfe113555e5d073331",
+    "failed_receipt_sha256": "ee044ee102a817483a32d621495f668cc64f761f3bd752e9525c73ba8a5d3036"
+  },
+  "source": {
+    "original_commit": "664ad0410f5cf3b44d3a6c1892c98e37aa936b9e",
+    "postfix_commit": "e50bd64f256dfb38e8457dc5fd048da0fcf129d2",
+    "baseline_evaluator_sha256": "d847f041673c0d3366c6abd073746be253f58e2375ab9697b56866723fdeb37f",
+    "post_resume_tool_sha256": "da6c4396292359585f5aa5b735da382c3f9923697b4202a31f5e9766fea373b9"
+  },
+  "frozen_manifest_sha256": "530d210f744b1576c69fe1f13d23441c1cf8517e5242d9bdb22317adb4b4ec19",
+  "preflight": {
+    "status": "POSTFIX_PREFLIGHT_PASS",
+    "completed_training_arms": 6,
+    "expected_training_arms": 6,
+    "training_restarted": false,
+    "post_tasks_only": true,
+    "resolved_test_cache": "data_batches_jdv2_v2/test_batches",
+    "synchronized_test_windows": 445
+  },
+  "launch": {
+    "started_utc": "2026-10-08T01:27:33.147418+00:00",
+    "manager_pid": 1192288,
+    "current_task": "E_joint_baseline",
+    "worker_pid": 1192316,
+    "worker_gpu_memory_mib": 504,
+    "gpu_utilization_percent_at_snapshot": 22,
+    "deadline_utc": "2026-10-08T13:17:16+00:00",
+    "new_failure_observed": false
+  },
+  "contracts_unchanged": [
+    "selected_checkpoints",
+    "evaluation_seeds_2035_2039",
+    "P20",
+    "synchronized_windows",
+    "metrics_and_aggregation",
+    "post_task_order",
+    "mechanism_off_physical_pure_interaction_off"
+  ]
+}
