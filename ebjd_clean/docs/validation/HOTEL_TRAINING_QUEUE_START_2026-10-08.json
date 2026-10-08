@@ -1,0 +1,85 @@
+{
+  "baseline_binding": {
+    "checkpoint_sha256": "5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b",
+    "initialization_sha256": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13",
+    "minADE_threshold_m": 0.1352196876519829,
+    "minFDE_threshold_m": 0.19338157261354552,
+    "result_sha256": "df9aa35cd26296558c864a2bcda792a8411bbc83a530376c45d3429a768eae6c",
+    "selection_seed": 2035,
+    "validation_manifest_sha256": "90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d"
+  },
+  "data": {
+    "agents": 37702,
+    "max_N": 57,
+    "original_receipt_sha256": "ed3fe7365328b698d717275471bb087e6674a1bfa5bd7d077549d7d4cee21e80",
+    "original_train_manifest_sha256": "f4ebb40ad8a20f851880b87c953affaa5c612ae80a3041d46dcc51fd6b91b7e8",
+    "reshard_receipt_sha256": "cae88c8b53d3df5053570b75b93147e76d842176f8b1e4cc9ce6373049398ef8",
+    "scenes": 4249,
+    "train_manifest_sha256": "2a5f1909d928e5277d426ba04e3488940e34a5f71fad9da6331e5e673ec1966c",
+    "transformation": "lossless_one_complete_scene_per_npz",
+    "values_verified_exact": true
+  },
+  "execution": {
+    "active_pid": 1208393,
+    "device": "physical_cuda_0_NVIDIA_GeForce_RTX_5070_Ti",
+    "queue_id": "hotel_main_e7a1948_reshard1_20261008_170006",
+    "queue_manifest_sha256": "f96f064761abe3102994a5a8d7c2785df99ff83bf43d9b380304d22bc12c2eef",
+    "source_commit": "e7a1948e63f3f39cfc2f09243a97235928dabd09",
+    "supervisor_pid": 1208390
+  },
+  "first_update": {
+    "cuda_peak_allocated_bytes": 4927405056,
+    "cuda_peak_reserved_bytes": 8260681728,
+    "effective_scenes": 16,
+    "epoch": 1,
+    "loss": 1.9630726277828217,
+    "microbatch_padded_N": [5, 6, 33, 8],
+    "microbatch_valid_agents": [14, 18, 42, 22],
+    "receipt_sha256": "1f8a8baa00462363c9013b5f5c87442100dfd8e539a10a452816df428f274344",
+    "rollout_update": false,
+    "update_elapsed_seconds": 2.5706738609587774,
+    "update_index": 1
+  },
+  "initial_failed_queue": {
+    "exit_code": 143,
+    "optimizer_updates": 0,
+    "queue_id": "hotel_main_e7a1948_20261008_164457",
+    "reason": "random_multi_scene_npz_repeated_decompression_during_scale_fitting",
+    "retained": true
+  },
+  "queue": [
+    {
+      "config_hash": "8974a66034bdedbf46c868fd87cab1b79222f4fd64627ef9d12099aa9e5ee3fd",
+      "order": 1,
+      "run_id": "hotel_main_seed3101_e7a1948_reshard1_20261008",
+      "seed": 3101,
+      "status": "RUNNING"
+    },
+    {
+      "config_hash": "0b2faeb3e3b30775dea99643287426dc7ad5a91afc471eb8bd6423f4b8709a8a",
+      "order": 2,
+      "run_id": "hotel_main_seed3102_e7a1948_reshard1_20261008",
+      "seed": 3102,
+      "status": "QUEUED"
+    },
+    {
+      "config_hash": "8cc545f20e0103a9512614d080e4958e959bb773d5d94176b37ccefe682e2a75",
+      "order": 3,
+      "run_id": "hotel_main_seed3103_e7a1948_reshard1_20261008",
+      "seed": 3103,
+      "status": "QUEUED"
+    }
+  ],
+  "schema": "ebjd-hotel-training-queue-start-v1",
+  "snapshot": {
+    "latest_epoch": 1,
+    "latest_update": 29,
+    "max_observed_padding_N": 51,
+    "max_peak_allocated_bytes": 7850637312,
+    "max_peak_reserved_bytes": 15128854528,
+    "rollout_updates": 0,
+    "timestamp": "2026-10-08T17:04:34+08:00"
+  },
+  "status": "RUNNING",
+  "validation_test_identity": "mirrored_official_package_internal_only"
+}
