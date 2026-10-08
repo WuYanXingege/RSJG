@@ -1,12 +1,22 @@
 seed: 3101
 
+experiment:
+  fold: hotel
+  source_commit: null
+  implementation_base: 01faa633162a2b73794a40184e8d64e4d44964bc
+
 paths:
-  train_npz: ebjd_clean/data/train_scenes.npz
-  validation_npz: ebjd_clean/data/validation_scenes.npz
-  test_npz: ebjd_clean/data/test_scenes.npz
-  output_dir: ebjd_clean/outputs/endpoint_bridge_joint_seed3101
+  train_manifest: data/hotel_official/train/train_manifest.json
+  validation_manifest: data/hotel_official/validation/validation_manifest.json
+  test_manifest: data/hotel_official/test/test_manifest.json
+  output_root: outputs
   accepted_fold_matched_gdts_unet: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/hotel/runs/grouped_fresh_goal_official_prior_seed3101_20261005_114637/epoch_096.pt
   accepted_fold_matched_gdts_unet_sha256: f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13
+  initialization_role: trainable_goal_unet_only
+  matched_gdts_validation_checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS_official_297d508_HOTEL/output/hotel/saved_models/best_model.pt
+  matched_gdts_validation_checkpoint_sha256: 5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b
+  matched_gdts_validation_result: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/hotel_a0_a1_5b6e4e4/formal_launch/results/E_joint_baseline.json
+  matched_gdts_validation_result_sha256: df9aa35cd26296558c864a2bcda792a8411bbc83a530376c45d3429a768eae6c
 
 data:
   obs_length: 8
@@ -27,6 +37,7 @@ map_encoder:
   future_heatmap_channels: 12
   heatmap_sigma_m: 0.5
   memory_grid: [8, 8]
+  agent_chunk: 8
   trainable: true
 
 history_encoder:
@@ -82,6 +93,9 @@ objectives:
   rollout_joint_fde_weight: 0.5
   rollout_marginal_ade_weight: 1.0
   rollout_marginal_fde_weight: 0.5
+  supervision_edge_radius_m: 6.0
+  supervision_edge_cv_cpa_radius_m: 2.0
+  supervision_edge_cv_horizon_s: 4.8
 
 training:
   epochs: 100
@@ -96,6 +110,8 @@ training:
   optimizer_eps: 0.00000001
   weight_decay: 0.0001
   total_gradient_clip_norm: 5.0
+  exclude_bias_and_layernorm_from_decay: true
+  gradient_constraint_uses_unclipped_marginal_gradients: true
   rollout_start_epoch: 21
   rollout_ramp_end_epoch: 40
   rollout_weight_start: 0.01
@@ -117,11 +133,31 @@ training:
 evaluation:
   worlds: 20
   steps: 20
+  selection_seed: 2035
   inference_seeds: [2035, 2036, 2037, 2038, 2039]
   minimum_training_seeds: 3
   metrics: [minADE, minFDE, JADE, JFDE]
   per_agent_reordering: false
   final_test_used_for_checkpoint_selection: false
+  validation_test_identity: mirrored_official_package_internal_only
+  marginal_tolerance: 0.0
+  matched_gdts_validation:
+    status: bound_to_manifest
+    minADE: 0.1352196876519829
+    minFDE: 0.19338157261354552
+    source: E_joint_official_GDTS_epoch110_seed2035_synchronized_scene_manifest
+    reference_limitation: comparator_full_checkpoint_differs_from_goal_only_ebjd_initialization
+    manifest_sha256: 90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d
+    checkpoint_sha256: 5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b
+    ebjd_initialization_sha256: f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13
+    fold: hotel
+    unit: m
+    worlds: 20
+    steps: 20
+    evaluation_seed: 2035
+    scene_count: 445
+    agent_occurrence_count: 1197
+    result_sha256: df9aa35cd26296558c864a2bcda792a8411bbc83a530376c45d3429a768eae6c
 
 ablations:
   available: [future_social_off, noisy_geometry, cartesian_velocity, geometry_loss_off, rollout_loss_off, actual_step_constraint_off]

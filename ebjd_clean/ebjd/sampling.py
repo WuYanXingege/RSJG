@@ -32,15 +32,16 @@ def differentiable_sample(
                 latent, time, use_reentrant=False)
         else:
             velocity = model.denoiser(latent, time, context)[0]
-        alpha, sigma = cosine_vp(time)
-        next_alpha, next_sigma = cosine_vp(next_time)
-        alpha = alpha.to(latent).view(batch, 1, 1, 1, 1)
-        sigma = sigma.to(latent).view(batch, 1, 1, 1, 1)
-        next_alpha = next_alpha.to(latent).view(batch, 1, 1, 1, 1)
-        next_sigma = next_sigma.to(latent).view(batch, 1, 1, 1, 1)
-        clean = alpha * latent - sigma * velocity.float()
-        noise = sigma * latent + alpha * velocity.float()
-        latent = next_alpha * clean + next_sigma * noise
+        with torch.autocast(device_type=latent.device.type, enabled=False):
+            alpha, sigma = cosine_vp(time)
+            next_alpha, next_sigma = cosine_vp(next_time)
+            alpha = alpha.to(latent).float().view(batch, 1, 1, 1, 1)
+            sigma = sigma.to(latent).float().view(batch, 1, 1, 1, 1)
+            next_alpha = next_alpha.to(latent).float().view(batch, 1, 1, 1, 1)
+            next_sigma = next_sigma.to(latent).float().view(batch, 1, 1, 1, 1)
+            clean = alpha * latent.float() - sigma * velocity.float()
+            noise = sigma * latent.float() + alpha * velocity.float()
+            latent = next_alpha * clean + next_sigma * noise
     trajectory, goal = model.representation.decode(latent, context.baseline)
     return trajectory, goal, latent
 

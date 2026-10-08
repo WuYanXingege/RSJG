@@ -16,6 +16,7 @@ class EBJDModel(nn.Module):
         goal_scale: float = 1.0,
         bridge_scale: float = 1.0,
         crop_width_m: float = 32.0,
+        map_agent_chunk: int = 8,
         representation: str = "endpoint_bridge",
         future_social: bool = True,
         clean_geometry: bool = True,
@@ -27,7 +28,8 @@ class EBJDModel(nn.Module):
             self.representation = CartesianVelocityRepresentation(goal_scale)
         else:
             raise ValueError(f"unknown representation: {representation}")
-        self.encoder = HistoryMapEncoder(goal_scale, crop_width_m)
+        self.encoder = HistoryMapEncoder(
+            goal_scale, crop_width_m, map_agent_chunk=map_agent_chunk)
         self.denoiser = JointEndpointBridgeDenoiser(
             self.representation, future_social=future_social, clean_geometry=clean_geometry)
 

@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torch.utils.checkpoint import checkpoint
 
 from .layers import PreNormSocialBlock, sinusoidal_embedding
 from .representation import cv_baseline
@@ -36,32 +37,34 @@ def pairwise_observed_geometry(
     observed: torch.Tensor, mean_velocity: torch.Tensor, goal_scale: torch.Tensor
 ) -> torch.Tensor:
     """Return ordered pair features [B,N,N,10], using only history."""
-    position = observed[..., -1, :]
-    rel_p = position[:, :, None] - position[:, None, :]
-    rel_v = mean_velocity[:, :, None] - mean_velocity[:, None, :]
-    distance = _safe_norm(rel_p)
-    rel_speed2 = rel_v.square().sum(-1)
-    closing = -(rel_p * rel_v).sum(-1) / distance
-    cpa_t = (-(rel_p * rel_v).sum(-1) / rel_speed2.clamp_min(1e-6)).clamp(0, 4.8)
-    cpa_p = rel_p + cpa_t[..., None] * rel_v
-    cpa_d = _safe_norm(cpa_p)
-    vi = mean_velocity[:, :, None].expand_as(rel_p)
-    vj = mean_velocity[:, None, :].expand_as(rel_p)
-    ni, nj = _safe_norm(vi), _safe_norm(vj)
-    direction_valid = ((ni > 1e-3) & (nj > 1e-3)).float()
-    cosine = (vi * vj).sum(-1) / (ni * nj).clamp_min(1e-6)
-    cosine = cosine * direction_valid
-    scale = goal_scale.float().clamp_min(0.5)
-    return torch.cat((
-        rel_p / scale,
-        rel_v,
-        (distance / scale)[..., None],
-        closing[..., None],
-        (cpa_t / 4.8)[..., None],
-        (cpa_d / scale)[..., None],
-        cosine[..., None],
-        direction_valid[..., None],
-    ), dim=-1).clamp(-10, 10)
+    with torch.autocast(device_type=observed.device.type, enabled=False):
+        observed, mean_velocity = observed.float(), mean_velocity.float()
+        position = observed[..., -1, :]
+        rel_p = position[:, :, None] - position[:, None, :]
+        rel_v = mean_velocity[:, :, None] - mean_velocity[:, None, :]
+        distance = _safe_norm(rel_p)
+        rel_speed2 = rel_v.square().sum(-1)
+        closing = -(rel_p * rel_v).sum(-1) / distance
+        cpa_t = (-(rel_p * rel_v).sum(-1) / rel_speed2.clamp_min(1e-6)).clamp(0, 4.8)
+        cpa_p = rel_p + cpa_t[..., None] * rel_v
+        cpa_d = _safe_norm(cpa_p)
+        vi = mean_velocity[:, :, None].expand_as(rel_p)
+        vj = mean_velocity[:, None, :].expand_as(rel_p)
+        ni, nj = _safe_norm(vi), _safe_norm(vj)
+        direction_valid = ((ni > 1e-3) & (nj > 1e-3)).float()
+        cosine = (vi * vj).sum(-1) / (ni * nj).clamp_min(1e-6)
+        cosine = cosine * direction_valid
+        scale = goal_scale.float().clamp_min(0.5)
+        return torch.cat((
+            rel_p / scale,
+            rel_v,
+            (distance / scale)[..., None],
+            closing[..., None],
+            (cpa_t / 4.8)[..., None],
+            (cpa_d / scale)[..., None],
+            cosine[..., None],
+            direction_valid[..., None],
+        ), dim=-1).clamp(-10, 10)
 
 
 class HistoryMapEncoder(nn.Module):
@@ -71,10 +74,15 @@ class HistoryMapEncoder(nn.Module):
         crop_width_m: float = 32.0,
         map_input_channels: int = 14,
         dim: int = 128,
+        map_agent_chunk: int = 8,
     ) -> None:
         super().__init__()
         self.crop_width_m = float(crop_width_m)
         self.register_buffer("goal_scale", torch.tensor(float(goal_scale)))
+        if map_agent_chunk <= 0:
+            raise ValueError("map_agent_chunk must be positive")
+        self.map_agent_chunk = int(map_agent_chunk)
+        self.activation_checkpointing = True
         self.map_unet = TrainableMapUNet(map_input_channels)
         self.history_stem = nn.Sequential(
             nn.Linear(6, dim), nn.LayerNorm(dim), nn.SiLU())
@@ -149,7 +157,18 @@ class HistoryMapEncoder(nn.Module):
 
         map_input = self._map_input(observed, semantic_maps)
         height, width = map_input.shape[-2:]
-        f32, logits = self.map_unet(map_input.reshape(batch * agents, 14, height, width))
+        flat_map = map_input.reshape(batch * agents, 14, height, width)
+        features, logits_parts = [], []
+        for offset in range(0, len(flat_map), self.map_agent_chunk):
+            part = flat_map[offset:offset + self.map_agent_chunk]
+            if self.activation_checkpointing and self.training and torch.is_grad_enabled():
+                f32_part, logits_part = checkpoint(
+                    self.map_unet, part, use_reentrant=False)
+            else:
+                f32_part, logits_part = self.map_unet(part)
+            features.append(f32_part)
+            logits_parts.append(logits_part)
+        f32, logits = torch.cat(features), torch.cat(logits_parts)
         pooled = F.adaptive_avg_pool2d(f32, (8, 8))
         pooled = pooled.flatten(2).transpose(1, 2).reshape(batch, agents, 64, 32)
         axis = torch.linspace(-1, 1, 8, device=observed.device)

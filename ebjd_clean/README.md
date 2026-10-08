@@ -1,77 +1,107 @@
 # Endpoint–Bridge Joint Diffusion (EBJD)
 
-This directory is a standalone implementation of the frozen EBJD-clean-v1
-design. It does not import the legacy Stage-A/JDV2 trainer, sampler, model or
-metrics. All trainable components are active from epoch 1.
+This directory is the isolated EBJD-clean-v1 implementation. Runtime training
+and evaluation do not import the legacy GDTS/JDV2 model, trainer, sampler or
+metrics. External GDTS artefacts are read only as explicitly hashed data,
+initialization and comparator inputs.
 
-## Environment
+All commands below run from `ebjd_clean/`.
 
-From the repository/worktree root:
+## Environment and tests
 
 ```bash
 python -m venv .venv
 . .venv/bin/activate
-python -m pip install -e 'ebjd_clean[test]'
-pytest ebjd_clean/tests
+python -m pip install -e '.[test]'
+PYTHONPATH=. pytest -q
 ```
 
-The accepted HOTEL U-Net source is bound by absolute path and SHA256 in
-`configs/endpoint_bridge_joint.yaml`. Change both fields together for another
-fold, and retain the source receipt. Loading aborts on a hash mismatch.
+The HOTEL config distinguishes two external roles:
 
-## Input contract
+- goal-only epoch 96 initializes EBJD's trainable U-Net;
+- official GDTS epoch 110 and its synchronized P20 result define the validation
+  marginal thresholds.
 
-Each NPZ split contains `observed`, `future`, `semantic_maps`, and optionally
-`scene_ids`. Dense or NumPy object arrays are accepted. One entry is a complete
-synchronized scene:
+All files are bound by SHA256. Formal startup recomputes the validation
+manifest, comparator checkpoint and comparator result hashes and refuses any
+mismatch. These two checkpoints are not claimed to be the same parent.
 
-- `observed`: `[N,8,2]` metres;
-- `future`: `[N,12,2]` metres;
-- `semantic_maps`: `[N,6,H,W]` semantic crops or `[N,14,H,W]` complete map input;
-- no scene agent may be truncated. The collator pads agents and supplies a mask.
+## Scene export and data contract
 
-The current config paths are explicit placeholders for the fold-exported NPZ
-files. This implementation does not silently reinterpret legacy pickle batches.
+Create the complete synchronized HOTEL-fold scene manifests directly from the
+read-only ETH/UCY text, homography and semantic-map files:
 
-## Run
+```bash
+PYTHONPATH=. python -m ebjd.export_ethucy \
+  --source-root ../GDTS_official_297d508_HOTEL/data/eth5 \
+  --fold hotel --output-root data/hotel_official --shard-scenes 16
+```
+
+Each NPZ shard contains complete scenes, never independent-agent fragments:
+
+- `observed [N,8,2]` and `future [N,12,2]` in metres;
+- `semantic_maps [N,6,256,256]`, categorical one-hot uint8;
+- scene/source/window identity, 20 source frames/timestamps and all agent IDs.
+
+The 32 m crop is centred only on the final observed position. The loader checks
+shard hashes, metadata, shapes, finite values and synchronized identity. It
+loads one shard at a time and pads agents only in the collator; no agent is
+truncated.
+
+Reproduce the source parity and load-resource audits with:
+
+```bash
+PYTHONPATH=. python scripts/audit_export_parity.py \
+  --manifest data/hotel_official/validation/validation_manifest.json \
+  --legacy-batches ../GDTS_official_297d508_HOTEL/output/hotel/data_batches/valid_batches \
+  --grouped-batches ../RSJG_JDV2_clean/outputs/joint_dependency_v2/hotel_a0_a1_5b6e4e4/cache/source_batches/eth5/hotel/data_batches_jdv2_v2/valid_batches \
+  --homography ../GDTS_official_297d508_HOTEL/data/eth5/hotel/H.txt \
+  --semantic-map ../GDTS_official_297d508_HOTEL/data/eth5/hotel/pred_mask.png \
+  --source-scene hotel --output outputs/audits/hotel_official_export_parity.json
+
+PYTHONPATH=. python scripts/audit_manifest_resources.py \
+  --manifest data/hotel_official/train/train_manifest.json \
+  --output outputs/audits/hotel_official_train_load_resources.json
+```
+
+## Training and evaluation
 
 Synthetic wiring smoke (not a benchmark):
 
 ```bash
-python -m ebjd.train \
-  --config ebjd_clean/configs/endpoint_bridge_joint.yaml \
-  --device cpu --smoke
+PYTHONPATH=. python -m ebjd.train \
+  --config configs/endpoint_bridge_joint.yaml --device cpu --smoke
 ```
 
-Formal training after binding the three fold NPZ files:
+Formal HOTEL training after verifying the receipt and GPU availability:
 
 ```bash
-python -m ebjd.train \
-  --config ebjd_clean/configs/endpoint_bridge_joint.yaml \
-  --device cuda
+PYTHONPATH=. python -m ebjd.train \
+  --config configs/endpoint_bridge_joint.yaml \
+  --device cuda --run-id hotel_seed3101_main
 ```
 
-Evaluation never selects a checkpoint on the test split:
+Runs are isolated as `outputs/<fold>/<seed>/<ablation>/<run_id>/`. Existing
+directories are refused; only explicit `--resume CHECKPOINT` resumes an epoch
+boundary, with run identity, selection history and RNG state restored.
+
+Evaluation never selects a checkpoint on test:
 
 ```bash
-python -m ebjd.evaluate \
-  --config ebjd_clean/configs/endpoint_bridge_joint.yaml \
-  --checkpoint ebjd_clean/outputs/endpoint_bridge_joint_seed3101/best.pt \
+PYTHONPATH=. python -m ebjd.evaluate \
+  --config configs/endpoint_bridge_joint.yaml \
+  --checkpoint outputs/hotel/3101/none/hotel_seed3101_main/best.pt \
   --split test --device cuda \
-  --output ebjd_clean/outputs/endpoint_bridge_joint_seed3101/test.json
+  --output outputs/hotel/3101/none/hotel_seed3101_main/test.json
 ```
+
+The packaged HOTEL validation and test manifests are mirrors. Their results are
+internal development evidence, not an independent final test. A publishable
+final claim still requires a genuinely independent standard-protocol test.
 
 Choose one preregistered ablation with `--ablation`: `future_social_off`,
 `noisy_geometry`, `cartesian_velocity`, `geometry_loss_off`,
 `rollout_loss_off`, or `actual_step_constraint_off`.
 
-Profile the exact differentiable sampler without reading a dataset:
-
-```bash
-python ebjd_clean/scripts/profile_runtime.py \
-  --device cuda --pixels 256 --agents 2 --worlds 4 --steps 20 --backward
-```
-
-Outputs are written only below `ebjd_clean/outputs/` and ignored by Git. See
-`docs/DESIGN.md` for the full frozen specification and
-`docs/IMPLEMENTATION_RECEIPT.md` for verified scope and limitations.
+See `docs/DESIGN.md`, `docs/IMPLEMENTATION_RECEIPT.md` and
+`docs/CORRECTION_RECEIPT_2026-10-08.md` for the frozen design and evidence.

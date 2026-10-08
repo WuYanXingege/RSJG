@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import argparse
 import json
-from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
@@ -12,8 +11,8 @@ import torch
 from torch.utils.data import DataLoader
 
 from .config import build_model, load_config
-from .data import NPZSceneDataset, collate_scenes
-from .metrics import hard_metrics
+from .data import SceneManifestDataset, collate_scenes
+from .metrics import MetricAccumulator
 from .sampling import predict
 
 
@@ -27,10 +26,10 @@ def main() -> None:
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     config = load_config(args.config)
-    path = config.get("paths", {}).get(f"{args.split}_npz")
+    path = config.get("paths", {}).get(f"{args.split}_manifest")
     if not path:
-        raise ValueError(f"paths.{args.split}_npz is required")
-    loader = DataLoader(NPZSceneDataset(path), batch_size=1, shuffle=False,
+        raise ValueError(f"paths.{args.split}_manifest is required")
+    loader = DataLoader(SceneManifestDataset(path), batch_size=1, shuffle=False,
                         collate_fn=collate_scenes, num_workers=0)
     device = torch.device(args.device)
     model = build_model(config, args.ablation).to(device)
@@ -43,21 +42,25 @@ def main() -> None:
     with torch.no_grad():
         for seed in evaluation.get("inference_seeds", [2035, 2036, 2037, 2038, 2039]):
             generator = torch.Generator(device=device).manual_seed(int(seed))
-            scene_metrics = []
+            accumulator = MetricAccumulator()
             for batch in loader:
                 batch = batch.to(device)
                 prediction, _ = predict(
                     model, batch.observed, batch.semantic_maps, batch.valid,
                     worlds, steps, generator)
-                scene_metrics.append(asdict(hard_metrics(prediction, batch.future, batch.valid)))
-            means = {name: float(np.mean([item[name] for item in scene_metrics]))
-                     for name in scene_metrics[0]}
-            results.append({"seed": int(seed), "metrics": means, "scenes": len(scene_metrics)})
+                accumulator.update(prediction, batch.future, batch.valid)
+            means = accumulator.as_dict()
+            results.append({"seed": int(seed), "metrics": means})
     summary = {
         "checkpoint": str(Path(args.checkpoint).resolve()), "split": args.split,
+        "validation_test_identity": evaluation["validation_test_identity"],
+        "independent_test": False,
         "worlds": worlds, "steps": steps, "per_seed": results,
         "mean": {name: float(np.mean([x["metrics"][name] for x in results]))
-                 for name in results[0]["metrics"]},
+                 for name in (
+                     "minADE", "minFDE", "JADE", "JFDE",
+                     "scene_weighted_minADE", "scene_weighted_minFDE",
+                     "coordination_gap_ADE", "coordination_gap_FDE")},
     }
     output = Path(args.output)
     output.parent.mkdir(parents=True, exist_ok=True)

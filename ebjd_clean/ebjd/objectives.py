@@ -18,34 +18,41 @@ def _masked_mean(value: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
 
 
 def diffusion_loss(
-    final: torch.Tensor, coarse: torch.Tensor, target: torch.Tensor, valid: torch.Tensor
+    final: torch.Tensor, coarse: torch.Tensor, target: torch.Tensor,
+    valid: torch.Tensor, coarse_weight: float = 0.25,
 ) -> torch.Tensor:
     def split_loss(prediction: torch.Tensor) -> torch.Tensor:
         goal = _masked_mean((prediction[..., 11, :] - target[..., 11, :]).square(), valid[:, None])
         bridge = _masked_mean((prediction[..., :11, :] - target[..., :11, :]).square(), valid[:, None])
         return goal + bridge
-    return split_loss(final) + 0.25 * split_loss(coarse)
+    return split_loss(final) + float(coarse_weight) * split_loss(coarse)
 
 
-def supervision_edges(context: EBJDContext) -> torch.Tensor:
+def supervision_edges(
+    context: EBJDContext, radius_m: float = 6.0,
+    cpa_radius_m: float = 2.0, cpa_horizon_s: float = 4.8,
+) -> torch.Tensor:
     position = context.observed[..., -1, :]
     rel_p = position[:, :, None] - position[:, None, :]
     rel_v = context.mean_velocity[:, :, None] - context.mean_velocity[:, None, :]
     distance = torch.linalg.vector_norm(rel_p, dim=-1)
-    cpa_t = (-(rel_p * rel_v).sum(-1) / rel_v.square().sum(-1).clamp_min(1e-6)).clamp(0, 4.8)
+    cpa_t = (-(rel_p * rel_v).sum(-1) / rel_v.square().sum(-1).clamp_min(1e-6)).clamp(0, cpa_horizon_s)
     cpa_distance = torch.linalg.vector_norm(rel_p + cpa_t[..., None] * rel_v, dim=-1)
     valid_pair = context.valid[:, :, None] & context.valid[:, None, :]
     eye = torch.eye(position.shape[1], device=position.device, dtype=torch.bool)[None]
-    return valid_pair & ~eye & ((distance <= 6) | (cpa_distance <= 2))
+    return valid_pair & ~eye & (
+        (distance <= radius_m) | (cpa_distance <= cpa_radius_m))
 
 
 def relative_motion_loss(
-    prediction: torch.Tensor, target: torch.Tensor, context: EBJDContext
+    prediction: torch.Tensor, target: torch.Tensor, context: EBJDContext,
+    radius_m: float = 6.0, cpa_radius_m: float = 2.0,
+    cpa_horizon_s: float = 4.8,
 ) -> torch.Tensor:
-    """Per-scene relative position/velocity smooth-L1, zero for no edges."""
+    """Return [B] relative position/velocity losses; no-edge scenes are zero."""
     if prediction.ndim == 5:
         prediction = prediction.mean(1)
-    edges = supervision_edges(context)
+    edges = supervision_edges(context, radius_m, cpa_radius_m, cpa_horizon_s)
     pred_velocity = torch.empty_like(prediction)
     true_velocity = torch.empty_like(target)
     pred_velocity[..., 0, :] = (
@@ -68,7 +75,19 @@ def relative_motion_loss(
             scene_values.append((pos[index][edges[index]] + 0.5 * vel[index][edges[index]]).mean())
         else:
             scene_values.append(prediction[index].sum() * 0)
-    return torch.stack(scene_values).mean()
+    return torch.stack(scene_values)
+
+
+def gated_geometry_mean(
+    per_scene_loss: torch.Tensor, alpha: torch.Tensor,
+) -> torch.Tensor:
+    """Apply the diffusion alpha-squared gate independently to each scene."""
+    if per_scene_loss.ndim != 1:
+        raise ValueError("per_scene_loss must be [B]")
+    alpha = alpha.reshape(alpha.shape[0], -1)
+    if alpha.shape[0] != per_scene_loss.shape[0] or alpha.shape[1] != 1:
+        raise ValueError("alpha must contain exactly one scalar per scene")
+    return (alpha[:, 0].float().square() * per_scene_loss.float()).mean()
 
 
 def future_heatmap_targets(target: torch.Tensor, context: EBJDContext, sigma_m: float = 0.5) -> torch.Tensor:
@@ -86,8 +105,10 @@ def future_heatmap_targets(target: torch.Tensor, context: EBJDContext, sigma_m: 
     return heatmap * center_in_crop
 
 
-def map_loss(target: torch.Tensor, context: EBJDContext) -> torch.Tensor:
-    heatmap = future_heatmap_targets(target.float(), context)
+def map_loss(
+    target: torch.Tensor, context: EBJDContext, sigma_m: float = 0.5,
+) -> torch.Tensor:
+    heatmap = future_heatmap_targets(target.float(), context, sigma_m)
     raw = F.binary_cross_entropy_with_logits(
         context.map_logits.float(), heatmap, reduction="none")
     return _masked_mean(raw, context.valid)

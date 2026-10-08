@@ -1,6 +1,9 @@
 import torch
 
-from ebjd.metrics import hard_metrics, packed_metric_adapter, scene_soft_metrics
+from ebjd.metrics import (
+    MetricAccumulator, _softmin, hard_metrics, packed_metric_adapter,
+    scene_soft_metrics,
+)
 
 
 def test_metrics_match_hand_calculation_and_preserve_worlds():
@@ -20,3 +23,36 @@ def test_metrics_match_hand_calculation_and_preserve_worlds():
     packed = packed_metric_adapter(prediction, target, valid)
     assert packed[0][0].shape == (2, 20, 2, 2)
     assert packed[0][1].shape == (20, 2, 2)
+
+
+def test_agent_weighting_scene_weighting_and_partition_invariance():
+    target = torch.zeros(2, 3, 12, 2)
+    prediction = torch.zeros(2, 1, 3, 12, 2)
+    prediction[0, 0, 0, :, 0] = 1
+    valid = torch.tensor([[True, False, False], [True, True, True]])
+
+    together = MetricAccumulator()
+    together.update(prediction, target, valid)
+    summary = together.summary()
+    assert summary.minADE == 0.25
+    assert summary.scene_weighted_minADE == 0.5
+    assert summary.JADE == 0.5
+    assert summary.coordination_gap_ADE == 0.0
+    assert summary.agent_count == 4 and summary.scene_count == 2
+
+    partitioned = MetricAccumulator()
+    partitioned.update(prediction[:1], target[:1], valid[:1])
+    partitioned.update(prediction[1:], target[1:], valid[1:])
+    assert partitioned.as_dict() == together.as_dict()
+
+    padded_prediction = torch.nn.functional.pad(prediction, (0, 0, 0, 0, 0, 2))
+    padded_target = torch.nn.functional.pad(target, (0, 0, 0, 0, 0, 2))
+    padded_valid = torch.nn.functional.pad(valid, (0, 2))
+    padded = MetricAccumulator()
+    padded.update(padded_prediction, padded_target, padded_valid)
+    assert padded.as_dict() == together.as_dict()
+
+
+def test_normalized_softmin_zero_is_zero():
+    values = torch.zeros(2, 4)
+    torch.testing.assert_close(_softmin(values, 0.05, 1), torch.zeros(2), atol=1e-7, rtol=0)

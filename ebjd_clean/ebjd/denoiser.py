@@ -83,38 +83,40 @@ def future_pair_geometry(
     dt: float = 0.4,
 ) -> torch.Tensor:
     """Compute ordered pair geometry [B,P,T,N,N,12] from predicted clean paths."""
-    velocity = torch.empty_like(trajectories)
-    if last_observed is None:
-        velocity[..., 0, :] = (trajectories[..., 1, :] - trajectories[..., 0, :]) / dt
-    else:
-        velocity[..., 0, :] = (
-            trajectories[..., 0, :] - last_observed[:, None, :, :]) / dt
-    velocity[..., 1:, :] = (trajectories[..., 1:, :] - trajectories[..., :-1, :]) / dt
-    y = trajectories.permute(0, 1, 3, 2, 4)
-    v = velocity.permute(0, 1, 3, 2, 4)
-    rel_p = y[..., :, None, :] - y[..., None, :, :]
-    rel_v = v[..., :, None, :] - v[..., None, :, :]
-    distance = _norm(rel_p)
-    closing = -(rel_p * rel_v).sum(-1) / distance
-    goal_rel = goals[..., :, None, :] - goals[..., None, :, :]
-    goal_distance = _norm(goal_rel)
-    rel_speed2 = rel_v.square().sum(-1)
-    cpa_t = (-(rel_p * rel_v).sum(-1) / rel_speed2.clamp_min(1e-6)).clamp(0, 4.8)
-    cpa_d = _norm(rel_p + cpa_t[..., None] * rel_v)
-    time_ratio = torch.linspace(
-        1 / 12, 1, 12, device=y.device, dtype=y.dtype).view(1, 1, 12, 1, 1, 1)
-    scale = goal_scale.float().clamp_min(0.5)
-    return torch.cat((
-        rel_p / scale,
-        rel_v,
-        (distance / scale)[..., None],
-        closing[..., None],
-        (goal_rel[:, :, None].expand_as(rel_p) / scale),
-        (goal_distance[:, :, None].expand_as(distance) / scale)[..., None],
-        time_ratio.expand(*distance.shape, 1),
-        (cpa_t / 4.8)[..., None],
-        (cpa_d / scale)[..., None],
-    ), dim=-1).clamp(-10, 10)
+    with torch.autocast(device_type=trajectories.device.type, enabled=False):
+        trajectories, goals = trajectories.float(), goals.float()
+        velocity = torch.empty_like(trajectories)
+        if last_observed is None:
+            velocity[..., 0, :] = (trajectories[..., 1, :] - trajectories[..., 0, :]) / dt
+        else:
+            velocity[..., 0, :] = (
+                trajectories[..., 0, :] - last_observed.float()[:, None, :, :]) / dt
+        velocity[..., 1:, :] = (trajectories[..., 1:, :] - trajectories[..., :-1, :]) / dt
+        y = trajectories.permute(0, 1, 3, 2, 4)
+        v = velocity.permute(0, 1, 3, 2, 4)
+        rel_p = y[..., :, None, :] - y[..., None, :, :]
+        rel_v = v[..., :, None, :] - v[..., None, :, :]
+        distance = _norm(rel_p)
+        closing = -(rel_p * rel_v).sum(-1) / distance
+        goal_rel = goals[..., :, None, :] - goals[..., None, :, :]
+        goal_distance = _norm(goal_rel)
+        rel_speed2 = rel_v.square().sum(-1)
+        cpa_t = (-(rel_p * rel_v).sum(-1) / rel_speed2.clamp_min(1e-6)).clamp(0, 4.8)
+        cpa_d = _norm(rel_p + cpa_t[..., None] * rel_v)
+        time_ratio = torch.linspace(
+            1 / 12, 1, 12, device=y.device, dtype=torch.float32).view(1, 1, 12, 1, 1, 1)
+        scale = goal_scale.float().clamp_min(0.5)
+        return torch.cat((
+            rel_p / scale,
+            rel_v,
+            (distance / scale)[..., None],
+            closing[..., None],
+            (goal_rel[:, :, None].expand_as(rel_p) / scale),
+            (goal_distance[:, :, None].expand_as(distance) / scale)[..., None],
+            time_ratio.expand(*distance.shape, 1),
+            (cpa_t / 4.8)[..., None],
+            (cpa_d / scale)[..., None],
+        ), dim=-1).clamp(-10, 10)
 
 
 class JointEndpointBridgeDenoiser(nn.Module):
@@ -134,7 +136,8 @@ class JointEndpointBridgeDenoiser(nn.Module):
         self.state_stem = nn.Sequential(nn.Linear(2, dim), nn.LayerNorm(dim))
         self.time_mlp = nn.Sequential(nn.Linear(dim, 256), nn.SiLU(), nn.Linear(256, dim))
         self.token_type = nn.Parameter(torch.zeros(2, dim))
-        self.future_time = nn.Parameter(sinusoidal_embedding(torch.arange(12).float(), dim))
+        self.register_buffer(
+            "future_time", sinusoidal_embedding(torch.arange(12).float(), dim))
         self.blocks = nn.ModuleList([FactorizedFutureBlock(dim, 4, 512) for _ in range(6)])
         self.pre_bridge_head = self._head(dim)
         self.pre_goal_head = self._head(dim)
@@ -160,35 +163,38 @@ class JointEndpointBridgeDenoiser(nn.Module):
         return torch.cat((bridge, goal.unsqueeze(-2)), dim=-2)
 
     def _sample_map(self, context: EBJDContext, trajectory: torch.Tensor) -> torch.Tensor:
-        batch, worlds, agents, times = trajectory.shape[:4]
-        relative = trajectory - context.map_center[:, None, :, None, :]
-        grid = relative / (context.crop_width_m / 2)
-        grid_bn = grid.permute(0, 2, 1, 3, 4).reshape(batch * agents, worlds * times, 1, 2)
-        sampled = F.grid_sample(
-            context.map_features.float().reshape(
-                batch * agents, 32, *context.map_features.shape[-2:]),
-            grid_bn.float(), mode="bilinear", padding_mode="zeros", align_corners=True)
-        sampled = sampled.squeeze(-1).reshape(batch, agents, 32, worlds, times)
-        sampled = sampled.permute(0, 3, 1, 4, 2)
-        in_crop = (grid.abs() <= 1).all(-1, keepdim=True).float()
-        return torch.cat((sampled * in_crop, in_crop), dim=-1)
+        with torch.autocast(device_type=trajectory.device.type, enabled=False):
+            batch, worlds, agents, times = trajectory.shape[:4]
+            relative = trajectory.float() - context.map_center.float()[:, None, :, None, :]
+            grid = relative / (context.crop_width_m / 2)
+            grid_bn = grid.permute(0, 2, 1, 3, 4).reshape(batch * agents, worlds * times, 1, 2)
+            sampled = F.grid_sample(
+                context.map_features.float().reshape(
+                    batch * agents, 32, *context.map_features.shape[-2:]),
+                grid_bn, mode="bilinear", padding_mode="zeros", align_corners=True)
+            sampled = sampled.squeeze(-1).reshape(batch, agents, 32, worlds, times)
+            sampled = sampled.permute(0, 3, 1, 4, 2)
+            in_crop = (grid.abs() <= 1).all(-1, keepdim=True).float()
+            return torch.cat((sampled * in_crop, in_crop), dim=-1)
 
     def _clean_features(
         self, trajectory: torch.Tensor, goal: torch.Tensor, context: EBJDContext
     ) -> torch.Tensor:
-        baseline = context.baseline[:, None]
-        velocity = torch.empty_like(trajectory)
-        velocity[..., 0, :] = (
-            trajectory[..., 0, :] - context.observed[:, None, :, -1, :]) / 0.4
-        velocity[..., 1:, :] = (trajectory[..., 1:, :] - trajectory[..., :-1, :]) / 0.4
-        position = (trajectory - baseline) / self.representation.goal_scale.float().clamp_min(0.5)
-        velocity_delta = velocity - context.mean_velocity[:, None, :, None, :]
-        goal_delta = (goal - baseline[..., -1, :]) / self.representation.goal_scale.float().clamp_min(0.5)
-        return torch.cat((
-            position,
-            velocity_delta,
-            goal_delta.unsqueeze(-2).expand(*position.shape[:-1], 2),
-        ), dim=-1)
+        with torch.autocast(device_type=trajectory.device.type, enabled=False):
+            trajectory, goal = trajectory.float(), goal.float()
+            baseline = context.baseline.float()[:, None]
+            velocity = torch.empty_like(trajectory)
+            velocity[..., 0, :] = (
+                trajectory[..., 0, :] - context.observed.float()[:, None, :, -1, :]) / 0.4
+            velocity[..., 1:, :] = (trajectory[..., 1:, :] - trajectory[..., :-1, :]) / 0.4
+            position = (trajectory - baseline) / self.representation.goal_scale.float().clamp_min(0.5)
+            velocity_delta = velocity - context.mean_velocity.float()[:, None, :, None, :]
+            goal_delta = (goal - baseline[..., -1, :]) / self.representation.goal_scale.float().clamp_min(0.5)
+            return torch.cat((
+                position,
+                velocity_delta,
+                goal_delta.unsqueeze(-2).expand(*position.shape[:-1], 2),
+            ), dim=-1)
 
     def forward(
         self, latent: torch.Tensor, time: torch.Tensor | float, context: EBJDContext
@@ -230,7 +236,8 @@ class JointEndpointBridgeDenoiser(nn.Module):
             self.pre_bridge_head(hidden[..., :11, :]),
             self.pre_goal_head(hidden[..., 11, :]),
         )
-        clean_latent = alpha * latent.float() - sigma * pre.float()
+        with torch.autocast(device_type=latent.device.type, enabled=False):
+            clean_latent = alpha.float() * latent.float() - sigma.float() * pre.float()
         trajectory, goal = self.representation.decode(clean_latent, context.baseline)
         gate = alpha.square()
         hidden = hidden + gate * (

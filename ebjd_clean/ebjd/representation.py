@@ -79,28 +79,30 @@ class EndpointBridgeRepresentation(nn.Module):
     def _encode_unscaled(
         self, targets: torch.Tensor, baseline: torch.Tensor
     ) -> torch.Tensor:
-        goal_delta = targets[..., -1, :] - baseline[..., -1, :]
-        residual = (
-            targets[..., :11, :] - baseline[..., :11, :]
-            - self.a.to(targets).view(*([1] * (targets.ndim - 2)), 11, 1)
-            * goal_delta.unsqueeze(-2)
-        )
-        flat = residual.movedim(-2, 0).reshape(11, -1)
-        whitened = torch.linalg.solve_triangular(
-            self.bridge_cholesky.to(flat), flat, upper=False)
-        whitened = whitened.reshape(
-            11, *residual.movedim(-2, 0).shape[1:]).movedim(0, -2)
-        return torch.cat((whitened, goal_delta.unsqueeze(-2)), dim=-2)
+        with torch.autocast(device_type=targets.device.type, enabled=False):
+            goal_delta = targets[..., -1, :] - baseline[..., -1, :]
+            residual = (
+                targets[..., :11, :] - baseline[..., :11, :]
+                - self.a.to(targets).view(*([1] * (targets.ndim - 2)), 11, 1)
+                * goal_delta.unsqueeze(-2)
+            )
+            flat = residual.movedim(-2, 0).reshape(11, -1)
+            whitened = torch.linalg.solve_triangular(
+                self.bridge_cholesky.to(flat), flat, upper=False)
+            whitened = whitened.reshape(
+                11, *residual.movedim(-2, 0).shape[1:]).movedim(0, -2)
+            return torch.cat((whitened, goal_delta.unsqueeze(-2)), dim=-2)
 
     def encode_target(
         self, targets: torch.Tensor, baseline: torch.Tensor
     ) -> torch.Tensor:
         if targets.shape != baseline.shape or targets.shape[-2:] != (12, 2):
             raise ValueError("targets and baseline must have shape [...,12,2]")
-        unscaled = self._encode_unscaled(targets.float(), baseline.float())
-        bridge = unscaled[..., :11, :] / self.bridge_scale
-        goal = unscaled[..., 11:, :] / self.goal_scale
-        return torch.cat((bridge, goal), dim=-2)
+        with torch.autocast(device_type=targets.device.type, enabled=False):
+            unscaled = self._encode_unscaled(targets.float(), baseline.float())
+            bridge = unscaled[..., :11, :] / self.bridge_scale.float()
+            goal = unscaled[..., 11:, :] / self.goal_scale.float()
+            return torch.cat((bridge, goal), dim=-2)
 
     def decode(
         self, latent: torch.Tensor, baseline: torch.Tensor
@@ -108,22 +110,23 @@ class EndpointBridgeRepresentation(nn.Module):
         """Decode ``[...,N,12,2]`` latent with baseline ``[B,N,12,2]``."""
         if latent.shape[-2:] != (12, 2) or baseline.shape[-2:] != (12, 2):
             raise ValueError("latent and baseline must end in [12,2]")
-        baseline = baseline.float()
-        while baseline.ndim < latent.ndim:
-            baseline = baseline.unsqueeze(1)
-        bridge_z = latent.float()[..., :11, :]
-        goal_z = latent.float()[..., 11, :]
-        goal_delta = self.goal_scale.float() * goal_z
-        goal = baseline[..., -1, :] + goal_delta
-        flat = bridge_z.movedim(-2, 0).reshape(11, -1)
-        residual = torch.matmul(
-            self.bridge_cholesky.float(), flat).reshape(
-                11, *bridge_z.movedim(-2, 0).shape[1:]).movedim(0, -2)
-        residual = self.bridge_scale.float() * residual
-        a = self.a.float().view(*([1] * (latent.ndim - 2)), 11, 1)
-        first = baseline[..., :11, :] + a * goal_delta.unsqueeze(-2) + residual
-        trajectory = torch.cat((first, goal.unsqueeze(-2)), dim=-2)
-        return trajectory, goal
+        with torch.autocast(device_type=latent.device.type, enabled=False):
+            baseline = baseline.float()
+            while baseline.ndim < latent.ndim:
+                baseline = baseline.unsqueeze(1)
+            bridge_z = latent.float()[..., :11, :]
+            goal_z = latent.float()[..., 11, :]
+            goal_delta = self.goal_scale.float() * goal_z
+            goal = baseline[..., -1, :] + goal_delta
+            flat = bridge_z.movedim(-2, 0).reshape(11, -1)
+            residual = torch.matmul(
+                self.bridge_cholesky.float(), flat).reshape(
+                    11, *bridge_z.movedim(-2, 0).shape[1:]).movedim(0, -2)
+            residual = self.bridge_scale.float() * residual
+            a = self.a.float().view(*([1] * (latent.ndim - 2)), 11, 1)
+            first = baseline[..., :11, :] + a * goal_delta.unsqueeze(-2) + residual
+            trajectory = torch.cat((first, goal.unsqueeze(-2)), dim=-2)
+            return trajectory, goal
 
 
 class CartesianVelocityRepresentation(nn.Module):
@@ -139,23 +142,26 @@ class CartesianVelocityRepresentation(nn.Module):
         return self.scale
 
     def encode_target(self, targets: torch.Tensor, baseline: torch.Tensor) -> torch.Tensor:
-        base_step = baseline[..., 1:2, :] - baseline[..., :1, :]
-        x0 = baseline[..., :1, :] - base_step
-        previous = torch.cat((x0, targets[..., :-1, :]), dim=-2)
-        velocities = (targets - previous) / self.dt
-        baseline_previous = torch.cat((x0, baseline[..., :-1, :]), dim=-2)
-        baseline_velocity = (baseline - baseline_previous) / self.dt
-        return (velocities - baseline_velocity) / self.scale
+        with torch.autocast(device_type=targets.device.type, enabled=False):
+            targets, baseline = targets.float(), baseline.float()
+            base_step = baseline[..., 1:2, :] - baseline[..., :1, :]
+            x0 = baseline[..., :1, :] - base_step
+            previous = torch.cat((x0, targets[..., :-1, :]), dim=-2)
+            velocities = (targets - previous) / self.dt
+            baseline_previous = torch.cat((x0, baseline[..., :-1, :]), dim=-2)
+            baseline_velocity = (baseline - baseline_previous) / self.dt
+            return (velocities - baseline_velocity) / self.scale.float()
 
     def decode(self, latent: torch.Tensor, baseline: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-        baseline = baseline.float()
-        while baseline.ndim < latent.ndim:
-            baseline = baseline.unsqueeze(1)
-        base_velocity = torch.cat((
-            baseline[..., 1:2, :] - baseline[..., :1, :],
-            baseline[..., 1:, :] - baseline[..., :-1, :],
-        ), dim=-2) / self.dt
-        velocity = base_velocity + self.scale.float() * latent.float()
-        start = baseline[..., :1, :] - self.dt * base_velocity[..., :1, :]
-        trajectory = start + self.dt * velocity.cumsum(dim=-2)
-        return trajectory, trajectory[..., -1, :]
+        with torch.autocast(device_type=latent.device.type, enabled=False):
+            baseline = baseline.float()
+            while baseline.ndim < latent.ndim:
+                baseline = baseline.unsqueeze(1)
+            base_velocity = torch.cat((
+                baseline[..., 1:2, :] - baseline[..., :1, :],
+                baseline[..., 1:, :] - baseline[..., :-1, :],
+            ), dim=-2) / self.dt
+            velocity = base_velocity + self.scale.float() * latent.float()
+            start = baseline[..., :1, :] - self.dt * base_velocity[..., :1, :]
+            trajectory = start + self.dt * velocity.cumsum(dim=-2)
+            return trajectory, trajectory[..., -1, :]
