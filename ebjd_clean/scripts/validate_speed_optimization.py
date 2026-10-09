@@ -587,7 +587,10 @@ def profile_update(
     trainer = prepare_measured_trainer(payload, device, strategy, do_rollout, 17771)
     with profile(
         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
-        record_shapes=True, profile_memory=True, with_stack=True,
+        # This is intentionally lightweight: shape/stack/memory retention is
+        # excluded because the full differentiable rollout emits enough events
+        # to distort memory use and make key aggregation itself expensive.
+        record_shapes=False, profile_memory=False, with_stack=False,
     ) as profiler:
         measured = measured_update(
             trainer, batches, int(payload["epoch"]) + 1)
@@ -624,7 +627,7 @@ def profile_update(
         "markers": marker_rows,
         "checkpoint_related_events": checkpoint_rows,
         "top_cuda_events": rows[:50],
-        "warning": "profile memory/latency is diagnostic only and is excluded from formal peak/timing acceptance",
+        "warning": "lightweight profile latency is diagnostic only and is excluded from formal peak/timing acceptance; shape/stack/memory retention is disabled",
         "passed": measured["finite"],
     }
 
