@@ -1,0 +1,90 @@
+{
+  "schema": "ebjd-oom-recovery-validation-summary-v1",
+  "status": "GPU_VALIDATION_PASSED_MIGRATION_PENDING",
+  "date": "2026-10-09",
+  "branch": "research/ebjd-clean-v1",
+  "execution_code_commit": "709d2d93b9cb701e5a496642e7c3539e4f992f9d",
+  "source_checkpoint": {
+    "sha256": "9a7a312b44aca95976f727c854b6a9fbd83891dc5cb212733355acffdee133d3",
+    "schema": "ebjd-checkpoint-v2",
+    "epoch_boundary_only": true,
+    "epoch": 21,
+    "update_index": 5586,
+    "tensor_count": 901,
+    "element_count": 10840097,
+    "nonfinite_count": 0
+  },
+  "failure": {
+    "old_queue_status": "FAILED",
+    "exit_code": 1,
+    "failed_at": "2026-10-08T21:47:36.806244+08:00",
+    "attempted_allocation_gib": 1.78,
+    "operator_boundary": "autograd backward; FP32 map-feature cast/grid_sample backward or recomputation not uniquely distinguished",
+    "old_queue_state_sha256": "784defdb80df39c5b77dbcfee7eaf797fc3df8995b2c9584c695937880329ace",
+    "old_log_sha256": "17680a8f1ba2bbf0235e7c2eaafe884841b4d02986365d4f4c383850cb7a1fcd"
+  },
+  "tests": {
+    "passed": 26,
+    "failed": 0
+  },
+  "numeric": {
+    "bf16": {
+      "passed": true,
+      "artifact_sha256": "09f2437f0ff23471ec718c702e68cf79e7793c2bde1ed1fca0e74d1cebb52441",
+      "agent_counts": [1, 2, 5, 3],
+      "rollout_on_total_gradient_relative": 0.006994648388290449,
+      "rollout_on_marginal_ade_gradient_relative": 0.007608734779828621,
+      "rollout_on_marginal_fde_gradient_relative": 0.007160221686073121,
+      "rollout_on_projected_decrement_relative": 0.01844696031590775,
+      "rollout_on_projected_decrement_direction_cosine": 0.9998298414672033,
+      "cuda_rng_exact": true
+    },
+    "fp32_localization": {
+      "passed": true,
+      "artifact_sha256": "e32b267439ca87696a9606cc17f8edc34656d05961e4fbee6f5df7c593606bfb",
+      "agent_counts": [1, 2, 5, 3],
+      "rollout_on_total_gradient_relative": 0.00012406036564565872,
+      "rollout_on_candidate_relative": 0.00006540020924451671,
+      "rollout_on_projected_decrement_relative": 0.00006549706081061998
+    },
+    "initial_strict_failure_retained": {
+      "passed": false,
+      "artifact_sha256": "6fa7894cd88bf330acfba19547f1120027c93e3f7423e6c2ff2bde518479e7fe"
+    }
+  },
+  "stress": {
+    "passed": true,
+    "artifact_sha256": "14142ec5bcccafde72eef245614fdf36cbde450e22b7872339d81eac9675b88a",
+    "dense_b4x4": {
+      "padded_n": 57,
+      "peak_allocated_bytes": 3591031808,
+      "peak_reserved_bytes": 4305453056,
+      "reserved_capacity_margin_bytes": 12312248320,
+      "elapsed_seconds": 99.29194311401807
+    },
+    "reconstructed_failure_group": {
+      "padded_n": [30, 57, 8, 15],
+      "peak_allocated_bytes": 3591031808,
+      "peak_reserved_bytes": 4263510016,
+      "reserved_capacity_margin_bytes": 12354191360,
+      "elapsed_seconds": 94.71980721806176
+    },
+    "n57_p20x20_inference_finite": true
+  },
+  "continuous_48": {
+    "passed": true,
+    "artifact_sha256": "7162b538d60048cfea0c3798f668bc30b9ab42d910d93787520aecef3a104ff2",
+    "updates": 48,
+    "rollout_updates": 12,
+    "exact_failure_group_seen_at_ordinal_47": true,
+    "maximum_peak_allocated_bytes": 3591031808,
+    "maximum_peak_reserved_bytes": 4292870144,
+    "minimum_reserved_capacity_margin_bytes": 12324831232,
+    "maximum_elapsed_seconds": 97.76286855898798,
+    "ordinal_47_elapsed_seconds": 96.14069957099855,
+    "all_finite": true
+  },
+  "migration_preflight": null,
+  "formal_queue": null,
+  "evidence_boundary": "resource recovery only; no method-effectiveness or external-benchmark claim"
+}
