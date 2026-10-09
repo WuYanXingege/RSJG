@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from copy import deepcopy
 from pathlib import Path
 
 import torch
@@ -78,6 +79,7 @@ ALLOWED_KEYS = {
         "rollout_detach_between_steps", "softmin_temperature_start_m",
         "softmin_temperature_end_m", "protected_losses", "activation_checkpointing",
         "checkpoint_use_reentrant", "mixed_precision", "ema", "train_all_modules",
+        "scene_forward_chunk",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -86,6 +88,16 @@ ALLOWED_KEYS = {
         "validation_test_identity", "marginal_tolerance", "matched_gdts_validation",
     },
     "ablations": {"available"},
+}
+
+# Added execution-only settings must remain optional so archived v2 configs and
+# their historical config hashes continue to validate unchanged.
+OPTIONAL_KEYS = {"training": {"scene_forward_chunk"}}
+
+SEMANTIC_CONFIG_EXCLUSIONS = {
+    ("experiment", "source_commit"),
+    ("paths", "output_root"),
+    ("training", "scene_forward_chunk"),
 }
 
 
@@ -101,6 +113,38 @@ def load_config(path: str | Path) -> dict:
 def config_hash(config: dict) -> str:
     canonical = json.dumps(config, sort_keys=True, separators=(",", ":"))
     return hashlib.sha256(canonical.encode()).hexdigest()
+
+
+def semantic_config(config: dict) -> dict:
+    """Remove explicitly execution-only fields for controlled checkpoint migration."""
+    payload = deepcopy(config)
+    for section, key in SEMANTIC_CONFIG_EXCLUSIONS:
+        payload.get(section, {}).pop(key, None)
+    return payload
+
+
+def semantic_config_hash(config: dict) -> str:
+    return config_hash(semantic_config(config))
+
+
+def config_differences(left: dict, right: dict) -> dict[str, dict]:
+    """Return leaf differences with a sentinel for missing optional fields."""
+    missing = object()
+    differences: dict[str, dict] = {}
+
+    def walk(a, b, prefix: tuple[str, ...]) -> None:
+        if isinstance(a, dict) and isinstance(b, dict):
+            for key in sorted(set(a) | set(b)):
+                walk(a.get(key, missing), b.get(key, missing), (*prefix, key))
+            return
+        if a is missing or b is missing or a != b:
+            differences[".".join(prefix)] = {
+                "old": "<MISSING>" if a is missing else a,
+                "new": "<MISSING>" if b is missing else b,
+            }
+
+    walk(left, right, ())
+    return differences
 
 
 def _require(config: dict, section: str, key: str, expected) -> None:
@@ -122,7 +166,9 @@ def validate_supported_config(config: dict) -> None:
         value = config.get(section)
         if not isinstance(value, dict):
             raise ValueError(f"configuration section {section} must be a mapping")
-        unknown, missing = set(value) - allowed, allowed - set(value)
+        optional = OPTIONAL_KEYS.get(section, set())
+        unknown = set(value) - allowed
+        missing = (allowed - optional) - set(value)
         if unknown or missing:
             raise ValueError(
                 f"configuration fields in {section} differ: unknown={sorted(unknown)}, "
@@ -200,6 +246,11 @@ def validate_supported_config(config: dict) -> None:
         raise ValueError(f"unsupported training.mixed_precision={precision!r}")
     if int(config["map_encoder"].get("crop_pixels", 0)) != 256:
         raise ValueError("formal EBJD config requires 256x256 map crops")
+    if "scene_forward_chunk" in config["training"]:
+        chunk = config["training"]["scene_forward_chunk"]
+        if isinstance(chunk, bool) or int(chunk) != chunk or int(chunk) != 1:
+            raise ValueError(
+                "training.scene_forward_chunk currently supports only the OOM-safe value 1")
     if config["paths"].get("initialization_role") != "trainable_goal_unet_only":
         raise ValueError("paths.initialization_role must be trainable_goal_unet_only")
     baseline = config["evaluation"].get("matched_gdts_validation")
@@ -329,4 +380,5 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
         use_actual_step_constraint=ablation != "actual_step_constraint_off",
         activation_checkpointing=bool(training["activation_checkpointing"]),
         precision=str(training["mixed_precision"]),
+        scene_forward_chunk=int(training.get("scene_forward_chunk", 0)),
     )

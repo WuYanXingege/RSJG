@@ -33,6 +33,19 @@ class SceneBatch:
             self.agent_ids, self.frame_ids, self.timestamps,
             self.source_sequences, self.metadata)
 
+    def slice_scenes(self, start: int, stop: int) -> "SceneBatch":
+        """Slice only the scene dimension while retaining the original N padding."""
+        batch = int(self.observed.shape[0])
+        if not (0 <= start < stop <= batch):
+            raise IndexError(
+                f"scene slice [{start}:{stop}] is outside batch size {batch}")
+        return SceneBatch(
+            self.observed[start:stop], self.future[start:stop],
+            self.semantic_maps[start:stop], self.valid[start:stop],
+            list(self.scene_ids[start:stop]), list(self.agent_ids[start:stop]),
+            list(self.frame_ids[start:stop]), list(self.timestamps[start:stop]),
+            list(self.source_sequences[start:stop]), self.metadata)
+
 
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()

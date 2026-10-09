@@ -101,6 +101,7 @@ training:
   epochs: 100
   batch_scenes: 4
   gradient_accumulation: 4
+  scene_forward_chunk: 1
   new_module_lr: 0.0001
   unet_lr: 0.00001
   lr_warmup_epochs: 5

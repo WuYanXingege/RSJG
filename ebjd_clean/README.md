@@ -85,6 +85,30 @@ Runs are isolated as `outputs/<fold>/<seed>/<ablation>/<run_id>/`. Existing
 directories are refused; only explicit `--resume CHECKPOINT` resumes an epoch
 boundary, with run identity, selection history and RNG state restored.
 
+Formal 16 GiB runs set `training.scene_forward_chunk: 1`.  The logical
+`batch_scenes: 4` and `gradient_accumulation: 4` remain unchanged: time/noise is
+drawn once in the original padded B4 layout, while one complete scene graph is
+moved to CUDA and differentiated at a time.  Agent-reduced diffusion/map losses
+retain `n_s/A` weights; geometry/rollout/protected risks retain `1/B` weights;
+AdamW clipping, proposal and projection still occur exactly once per update.
+
+When an execution-only repair changes the source/config identity, migration is
+explicit and hash-bound rather than weakening ordinary resume checks:
+
+```bash
+PYTHONPATH=. python -m ebjd.train \
+  --config /absolute/path/to/recovery.yaml \
+  --device cuda --run-id unique_recovery_run \
+  --resume-from /absolute/path/to/origin/last.pt \
+  --resume-from-sha256 EXPECTED_SHA256
+```
+
+Only `experiment.source_commit`, `paths.output_root`, and
+`training.scene_forward_chunk` may differ.  The new directory records
+`MIGRATION_RECEIPT.json`, an inherited selection record, and a migrated
+epoch-boundary `last.pt` before the first update.  Subsequent restarts use the
+ordinary strict `--resume` path.
+
 Evaluation never selects a checkpoint on test:
 
 ```bash

@@ -61,39 +61,49 @@ def project_two_halfspaces(
     tolerance: float = 1e-10,
 ) -> tuple[TensorList, ProjectionStats]:
     """Euclidean projection in FP64 onto g_A.d>=0 and g_F.d>=0."""
+    # The constraints are intentionally solved in FP64.  Keeping only the dot
+    # products in FP64 while casting normalized rows and Lagrange multipliers
+    # back to FP32 can reject a tangent solution and spuriously select the
+    # always-feasible zero fallback.
+    original_dtypes = [value.dtype for value in candidate]
+    candidate64 = [value.double() for value in candidate]
     rows = []
     for gradient in (gradient_a, gradient_f):
-        norm = list_norm(gradient)
+        gradient64 = [value.double() for value in gradient]
+        norm = list_norm(gradient64)
         if float(norm) > 1e-14:
-            rows.append([value / norm.to(value) for value in gradient])
-    candidate_norm = float(list_norm(candidate))
+            rows.append([value / norm for value in gradient64])
+    candidate_norm = float(list_norm(candidate64))
     if not rows:
         return candidate, ProjectionStats(0, candidate_norm, candidate_norm, 0, False)
     feasible: list[tuple[TensorList, int, bool]] = []
     for active_count in range(len(rows) + 1):
         for active_indices in itertools.combinations(range(len(rows)), active_count):
             if not active_indices:
-                proposal = [x.clone() for x in candidate]
+                proposal = [x.clone() for x in candidate64]
             else:
                 active = [rows[index] for index in active_indices]
                 gram = torch.stack([
                     torch.stack([list_dot(a, b) for b in active]) for a in active])
-                rhs = -torch.stack([list_dot(row, candidate) for row in active])
+                rhs = -torch.stack([list_dot(row, candidate64) for row in active])
                 multipliers = torch.linalg.pinv(gram) @ rhs
                 if (multipliers < -tolerance).any():
                     continue
-                proposal = _combine(candidate, active, multipliers)
+                proposal = _combine(candidate64, active, multipliers)
             if all(float(list_dot(row, proposal)) >= -tolerance for row in rows):
                 feasible.append((proposal, active_count, False))
-    zero = [torch.zeros_like(value) for value in candidate]
+    zero = [torch.zeros_like(value) for value in candidate64]
     feasible.append((zero, len(rows), True))
     selected, active, fallback = min(
         feasible, key=lambda item: float(list_dot(
-            [a - b for a, b in zip(item[0], candidate, strict=True)],
-            [a - b for a, b in zip(item[0], candidate, strict=True)])))
+            [a - b for a, b in zip(item[0], candidate64, strict=True)],
+            [a - b for a, b in zip(item[0], candidate64, strict=True)])))
     projected_norm = float(list_norm(selected))
-    change = list_norm([a - b for a, b in zip(selected, candidate, strict=True)])
-    return selected, ProjectionStats(
+    change = list_norm([a - b for a, b in zip(selected, candidate64, strict=True)])
+    cast_selected = [
+        value.to(dtype=dtype)
+        for value, dtype in zip(selected, original_dtypes, strict=True)]
+    return cast_selected, ProjectionStats(
         active, candidate_norm, projected_norm,
         float(change) / max(candidate_norm, 1e-12), fallback)
 
@@ -158,11 +168,31 @@ class ActualStepAdamW:
             states.append({
                 key: value.detach().cpu() if torch.is_tensor(value) else value
                 for key, value in state.items()})
-        return {"states": states, "lr": self.lr, "unet_lr": self.unet_lr}
+        return {
+            "states": states,
+            "parameter_names": [name for name, _ in self.named_parameters],
+            "lr": self.lr,
+            "unet_lr": self.unet_lr,
+        }
 
     def load_state_dict(self, payload: dict) -> None:
+        if "lr" not in payload or "unet_lr" not in payload:
+            raise ValueError("optimizer checkpoint is missing learning rates")
+        learning_rate = float(payload["lr"])
+        unet_learning_rate = float(payload["unet_lr"])
+        if not torch.isfinite(torch.tensor([learning_rate, unet_learning_rate])).all():
+            raise ValueError("optimizer checkpoint learning rates must be finite")
+        expected_names = [name for name, _ in self.named_parameters]
+        saved_names = payload.get("parameter_names")
+        if saved_names is not None and list(saved_names) != expected_names:
+            raise ValueError("optimizer parameter names/order differ from checkpoint")
+        states = payload.get("states")
+        if not isinstance(states, list) or len(states) != len(self.parameters):
+            raise ValueError("optimizer state count differs from parameter count")
         self.state.clear()
-        for parameter, state in zip(self.parameters, payload["states"], strict=True):
+        for parameter, state in zip(self.parameters, states, strict=True):
             self.state[id(parameter)] = {
                 key: value.to(parameter.device) if torch.is_tensor(value) else value
                 for key, value in state.items()}
+        self.lr = learning_rate
+        self.unet_lr = unet_learning_rate
