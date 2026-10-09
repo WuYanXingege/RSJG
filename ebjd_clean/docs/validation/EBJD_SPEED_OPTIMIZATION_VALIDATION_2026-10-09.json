@@ -1,0 +1,140 @@
+{
+  "schema": "ebjd-speed-optimization-validation-summary-v1",
+  "status": "VALIDATED_AND_FORMAL_QUEUE_RUNNING",
+  "date": "2026-10-09",
+  "execution_code_commit": "9ecde66aa86f7a577fa29bd94b0168ae735a1f16",
+  "strategy": {
+    "name": "compact_grouped_v1",
+    "scene_compaction": true,
+    "physical_group_max_scenes": 4,
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "rollout_block_checkpointing": false,
+    "ddim_step_checkpointing": true,
+    "base_block_checkpointing": true,
+    "unet_checkpointing": true
+  },
+  "tests": {
+    "passed": 32,
+    "failed": 0,
+    "parameter_count": 3612764,
+    "state_dict_order_preserved": true,
+    "nonprefix_mask_compaction_tested": true,
+    "tail_k3_tested": true
+  },
+  "source_checkpoint": {
+    "sha256": "9a7a312b44aca95976f727c854b6a9fbd83891dc5cb212733355acffdee133d3",
+    "epoch": 21,
+    "update_index": 5586,
+    "epoch_boundary_only": true
+  },
+  "work_reduction_failure_group": {
+    "valid_agents": 157,
+    "reference_agent_slots": 440,
+    "optimized_agent_slots": 174,
+    "optimized_agent_slot_fraction": 0.39545454545454545,
+    "reference_n_squared_slots": 17752,
+    "optimized_n_squared_slots": 4826,
+    "optimized_n_squared_slot_fraction": 0.27185669220369535
+  },
+  "numeric": {
+    "fp32": {
+      "passed": true,
+      "artifact_sha256": "388308b57e7db0772a5d93758680079afb353f918032db6a75ab6a68cc99a597",
+      "rollout_on_total_gradient_relative": 0.00012791821567357704,
+      "rollout_on_candidate_relative": 0.000065942691697595,
+      "rollout_on_projected_decrement_relative": 0.00006603784042125493,
+      "rollout_trajectory_relative": 2.806371210102391e-7,
+      "cuda_rng_exact": true,
+      "reference_repeat_passed": true
+    },
+    "configured_bf16": {
+      "passed": true,
+      "artifact_sha256": "e623471698413ba17137cfd448cb656c77ac963300ff0268bf944242a7bb2060",
+      "rollout_on_total_gradient_relative": 0.007209641971318904,
+      "rollout_on_candidate_relative": 0.019088967867858533,
+      "rollout_on_projected_decrement_relative": 0.019112983801826827,
+      "rollout_trajectory_relative": 0.0,
+      "cuda_rng_exact": true,
+      "reference_repeat_passed": true
+    },
+    "initial_gate_bug_retained_sha256": "a8b06b0ae81de89f16c456294e6b59bbeef7f4f963fd7adb17f65b9eb311b53e"
+  },
+  "profile": {
+    "single_agent_full_rollout": {
+      "reference_ddim_step_checkpoint_markers": 20,
+      "candidate_ddim_step_checkpoint_markers": 20,
+      "reference_denoiser_block_checkpoint_markers": 486,
+      "candidate_denoiser_block_checkpoint_markers": 6,
+      "reference_elapsed_seconds": 14.160710479016416,
+      "candidate_elapsed_seconds": 8.388328687055036,
+      "reference_artifact_sha256": "8839eed839779a49912910291581b611e8e71e9bf268d3c0925cd6dd2acfebc8",
+      "candidate_artifact_sha256": "0043f66953df2fe141b72be1e5800bb3944d44f8f766879ea772640ed1645173"
+    },
+    "small_normal_sha256": "e683a656414ee5ac924d63134cb8bf5ffbb349a96d14fc17fa80187b0f4c7064",
+    "mixed_normal_sha256": "5016dd02213cf483e80de2212d5c10bc9883056213c8ddcfb76c148639abd8a3",
+    "n57_normal_sha256": "ff990cca10148802afceb167cb4549ddb2f495c2e3aa25f410c7fbbc0b091594",
+    "mixed_rollout_attempt_accepted": false,
+    "mixed_rollout_abort_reason": "profiler event table reached approximately 84% host memory; no result used"
+  },
+  "paired_benchmark": {
+    "passed": true,
+    "artifact_sha256": "6b44618890c9403d5a7221229cbc4e6d66f357cc96d538f47cb657489c611fe9",
+    "reference_normal_seconds": 3.3597350710770115,
+    "reference_rollout_seconds": 90.17832040798385,
+    "reference_weighted_seconds": 25.06438140530372,
+    "final_normal_seconds": 1.7542926779715344,
+    "final_rollout_seconds": 38.31839704094455,
+    "final_weighted_seconds": 10.895318768714787,
+    "final_speedup": 2.3004725182777115,
+    "single_factor_repeats": 1
+  },
+  "continuous_48": {
+    "passed": true,
+    "artifact_sha256": "9877ce3774a04eadcf39991c94cdbd0204663111c384e4d774232d2741675b80",
+    "updates": 48,
+    "rollout_updates": 12,
+    "normal_p50_seconds": 1.935032796987798,
+    "normal_p90_seconds": 2.223018327029422,
+    "rollout_p50_seconds": 44.58425494498806,
+    "rollout_p90_seconds": 52.53218747803476,
+    "actual_frequency_mean_update_seconds": 12.992480677959975,
+    "maximum_peak_allocated_bytes": 5689860608,
+    "maximum_peak_reserved_bytes": 6180306944,
+    "minimum_conservative_driver_free_bytes": 9191030784,
+    "failure_group_rollout_seconds": 39.62573130999226,
+    "dense_n57_rollout_seconds": 72.56826159998309,
+    "tail_k3_passed": true,
+    "all_finite": true
+  },
+  "migration": {
+    "passed": true,
+    "origin_epoch": 21,
+    "origin_update_index": 5586,
+    "discarded_old_epoch22_updates_by_user_decision": 102,
+    "migrated_checkpoint_sha256": "c9d994a0a4c49ac09527290d182d8144248db0c3fd514ae6d282af33cf358ea3",
+    "migration_receipt_sha256": "f2d86987f7a44bbaa9ab9af22182518cba8425726727376bc343c1470be4009f",
+    "first_restore_exact": true,
+    "secondary_restore_exact": true,
+    "selector_candidate_count": 21,
+    "least_violation_epoch": 14
+  },
+  "formal_queue": {
+    "queue_id": "hotel_main_speed_9ecde66_20261009_115417",
+    "started_at": "2026-10-09T11:56:44+08:00",
+    "status_at_archive": "RUNNING",
+    "manifest_sha256": "30a1d292d0d233983c12d409543d42823ca6a72a15faa91f41b2ed3aedf68463",
+    "supervisor_pid": 1263005,
+    "seed3101_pid": 1263016,
+    "seed3101_status": "RUNNING",
+    "seed3102_status": "QUEUED",
+    "seed3103_status": "QUEUED",
+    "first_normal_update_seconds": 3.2825966119999066,
+    "first_rollout_update_index": 5589,
+    "first_rollout_update_seconds": 45.27384522801731,
+    "first_rollout_peak_allocated_bytes": 5074056704,
+    "first_rollout_peak_reserved_bytes": 5563744256,
+    "first_update_receipt_sha256": "84f81a20ea396a8fa30b54102ca8fe0a90ea0c10aa4cd97bbc248dd5bd4c22e2"
+  },
+  "evidence_boundary": "execution equivalence, resource safety and throughput only; no method-effectiveness or external-benchmark claim"
+}
