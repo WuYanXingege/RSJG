@@ -79,7 +79,9 @@ ALLOWED_KEYS = {
         "rollout_detach_between_steps", "softmin_temperature_start_m",
         "softmin_temperature_end_m", "protected_losses", "activation_checkpointing",
         "checkpoint_use_reentrant", "mixed_precision", "ema", "train_all_modules",
-        "scene_forward_chunk",
+        "scene_forward_chunk", "execution_strategy", "scene_compaction",
+        "physical_group_max_scenes", "physical_group_max_agent_slots",
+        "physical_group_max_padding_ratio", "rollout_block_checkpointing",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -92,12 +94,22 @@ ALLOWED_KEYS = {
 
 # Added execution-only settings must remain optional so archived v2 configs and
 # their historical config hashes continue to validate unchanged.
-OPTIONAL_KEYS = {"training": {"scene_forward_chunk"}}
+OPTIONAL_KEYS = {"training": {
+    "scene_forward_chunk", "execution_strategy", "scene_compaction",
+    "physical_group_max_scenes", "physical_group_max_agent_slots",
+    "physical_group_max_padding_ratio", "rollout_block_checkpointing",
+}}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
     ("experiment", "source_commit"),
     ("paths", "output_root"),
     ("training", "scene_forward_chunk"),
+    ("training", "execution_strategy"),
+    ("training", "scene_compaction"),
+    ("training", "physical_group_max_scenes"),
+    ("training", "physical_group_max_agent_slots"),
+    ("training", "physical_group_max_padding_ratio"),
+    ("training", "rollout_block_checkpointing"),
 }
 
 
@@ -251,6 +263,37 @@ def validate_supported_config(config: dict) -> None:
         if isinstance(chunk, bool) or int(chunk) != chunk or int(chunk) != 1:
             raise ValueError(
                 "training.scene_forward_chunk currently supports only the OOM-safe value 1")
+    training = config["training"]
+    strategy = training.get("execution_strategy", "legacy_or_oom_safe_v1")
+    if strategy not in {"legacy_or_oom_safe_v1", "compact_grouped_v1"}:
+        raise ValueError(f"unsupported training.execution_strategy={strategy!r}")
+    for key in ("scene_compaction", "rollout_block_checkpointing"):
+        if key in training and not isinstance(training[key], bool):
+            raise ValueError(f"training.{key} must be boolean")
+    for key in ("physical_group_max_scenes", "physical_group_max_agent_slots"):
+        if key in training:
+            value = training[key]
+            if isinstance(value, bool) or int(value) != value or int(value) < 1:
+                raise ValueError(f"training.{key} must be a positive integer")
+    if "physical_group_max_padding_ratio" in training:
+        ratio = training["physical_group_max_padding_ratio"]
+        if isinstance(ratio, bool) or float(ratio) < 1.0:
+            raise ValueError(
+                "training.physical_group_max_padding_ratio must be at least one")
+    if strategy == "compact_grouped_v1":
+        required_execution = {
+            "scene_forward_chunk", "scene_compaction",
+            "physical_group_max_scenes", "physical_group_max_agent_slots",
+            "physical_group_max_padding_ratio", "rollout_block_checkpointing",
+        }
+        missing_execution = required_execution - set(training)
+        if missing_execution:
+            raise ValueError(
+                "compact_grouped_v1 execution settings are incomplete: "
+                f"missing={sorted(missing_execution)}")
+        if training["scene_forward_chunk"] != 1 or training["scene_compaction"] is not True:
+            raise ValueError(
+                "compact_grouped_v1 requires scene_forward_chunk=1 and scene_compaction=true")
     if config["paths"].get("initialization_role") != "trainable_goal_unet_only":
         raise ValueError("paths.initialization_role must be trainable_goal_unet_only")
     baseline = config["evaluation"].get("matched_gdts_validation")
@@ -381,4 +424,13 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
         activation_checkpointing=bool(training["activation_checkpointing"]),
         precision=str(training["mixed_precision"]),
         scene_forward_chunk=int(training.get("scene_forward_chunk", 0)),
+        scene_compaction=bool(training.get("scene_compaction", False)),
+        physical_group_max_scenes=int(
+            training.get("physical_group_max_scenes", 1)),
+        physical_group_max_agent_slots=int(
+            training.get("physical_group_max_agent_slots", 0)),
+        physical_group_max_padding_ratio=float(
+            training.get("physical_group_max_padding_ratio", 1.0)),
+        rollout_block_checkpointing=bool(
+            training.get("rollout_block_checkpointing", True)),
     )

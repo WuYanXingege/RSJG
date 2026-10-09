@@ -13,6 +13,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from torch.profiler import record_function
 from torch.utils.data import DataLoader
 
 from .config import (
@@ -25,6 +26,38 @@ from .representation import EndpointBridgeRepresentation, cv_baseline
 from .sampling import predict
 from .selection import ConstrainedSelector
 from .trainer import EBJDTrainer
+
+
+CERTIFIED_EXECUTION_MIGRATIONS = {
+    "compact_grouped_v1": {
+        "scene_forward_chunk": 1,
+        "scene_compaction": True,
+        "physical_group_max_scenes": 4,
+        "physical_group_max_agent_slots": 96,
+        "physical_group_max_padding_ratio": 1.5,
+        "rollout_block_checkpointing": False,
+    },
+}
+
+
+def validate_execution_migration_settings(config: dict) -> dict:
+    """Accept only explicit, versioned execution-only migration profiles."""
+    training = config["training"]
+    strategy = training.get("execution_strategy", "legacy_or_oom_safe_v1")
+    if strategy == "legacy_or_oom_safe_v1":
+        if int(training.get("scene_forward_chunk", 0)) != 1:
+            raise ValueError(
+                "legacy OOM recovery migration requires scene_forward_chunk=1")
+        return {"strategy": strategy, "scene_forward_chunk": 1}
+    expected = CERTIFIED_EXECUTION_MIGRATIONS.get(strategy)
+    if expected is None:
+        raise ValueError(f"execution strategy is not migration-certified: {strategy!r}")
+    actual = {name: training.get(name) for name in expected}
+    if actual != expected:
+        raise ValueError(
+            f"execution strategy {strategy!r} requires exact settings "
+            f"{expected}, got {actual}")
+    return {"strategy": strategy, **actual}
 
 
 def parse_args() -> argparse.Namespace:
@@ -185,8 +218,20 @@ def _identity(config: dict, ablation: str, run_id: str, smoke: bool) -> dict:
         "fold": config["experiment"]["fold"],
         "seed": int(config["seed"]), "ablation": ablation, "run_id": run_id,
         "execution": {
+            "strategy": str(config["training"].get(
+                "execution_strategy", "legacy_or_oom_safe_v1")),
             "scene_forward_chunk": int(
                 config["training"].get("scene_forward_chunk", 0)),
+            "scene_compaction": bool(
+                config["training"].get("scene_compaction", False)),
+            "physical_group_max_scenes": int(
+                config["training"].get("physical_group_max_scenes", 1)),
+            "physical_group_max_agent_slots": int(
+                config["training"].get("physical_group_max_agent_slots", 0)),
+            "physical_group_max_padding_ratio": float(
+                config["training"].get("physical_group_max_padding_ratio", 1.0)),
+            "rollout_block_checkpointing": bool(
+                config["training"].get("rollout_block_checkpointing", True)),
             "cpu_scene_staging": bool(
                 config["training"].get("scene_forward_chunk", 0)),
             "pytorch_cuda_alloc_conf": os.environ.get(
@@ -301,8 +346,7 @@ def validate_migration_payload(
     disallowed = sorted(set(differences) - allowed_paths)
     if disallowed:
         raise ValueError(f"resume-from has disallowed config changes: {disallowed}")
-    if int(config["training"].get("scene_forward_chunk", 0)) != 1:
-        raise ValueError("OOM recovery migration requires scene_forward_chunk=1")
+    migration_profile = validate_execution_migration_settings(config)
     identity_fields = (
         "implementation_base", "fold", "seed", "data", "initialization",
         "validation_comparator",
@@ -341,6 +385,7 @@ def validate_migration_payload(
         "semantic_config_hash": new_semantic_hash,
         "checked_semantic_diff": differences,
         "runtime_settings": execution_identity["execution"],
+        "validated_execution_migration_profile": migration_profile,
         "allowed_changes": sorted(allowed_paths),
         "data_binding_checks": execution_identity["data"],
         "baseline_binding_checks": execution_identity["validation_comparator"],
@@ -510,21 +555,31 @@ def main() -> None:
     for epoch in range(start_epoch, options.epochs + 1):
         model.train()
         pending = []
-        for batch in train_loader:
-            augmented = augment_batch(batch, loader_generator)
-            pending.append(
-                augmented if options.scene_forward_chunk else augmented.to(device))
+        train_iterator = iter(train_loader)
+        while True:
+            try:
+                with record_function("ebjd.cpu_data_loader"):
+                    batch = next(train_iterator)
+            except StopIteration:
+                break
+            with record_function("ebjd.cpu_augmentation"):
+                augmented = augment_batch(batch, loader_generator)
+            with record_function("ebjd.h2d_staging"):
+                pending.append(
+                    augmented if options.scene_forward_chunk else augmented.to(device))
             if len(pending) == options.accumulation:
                 record = trainer.train_step(pending, epoch)
                 record.update({"epoch": epoch, "update": trainer.update_index})
-                with log_path.open("a", encoding="utf-8") as handle:
-                    handle.write(json.dumps(record, sort_keys=True) + "\n")
+                with record_function("ebjd.jsonl_logging"):
+                    with log_path.open("a", encoding="utf-8") as handle:
+                        handle.write(json.dumps(record, sort_keys=True) + "\n")
                 pending = []
         if pending:
             record = trainer.train_step(pending, epoch)
             record.update({"epoch": epoch, "update": trainer.update_index})
-            with log_path.open("a", encoding="utf-8") as handle:
-                handle.write(json.dumps(record, sort_keys=True) + "\n")
+            with record_function("ebjd.jsonl_logging"):
+                with log_path.open("a", encoding="utf-8") as handle:
+                    handle.write(json.dumps(record, sort_keys=True) + "\n")
         evaluation = config["evaluation"]
         worlds = 2 if args.smoke else int(evaluation["worlds"])
         steps = 2 if args.smoke else int(evaluation["steps"])

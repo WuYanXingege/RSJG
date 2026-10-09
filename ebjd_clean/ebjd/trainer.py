@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from torch.profiler import record_function
 
 from .data import SceneBatch
 from .model import EBJDModel
@@ -64,6 +65,13 @@ class TrainerOptions:
     # runs set this explicitly to one; it is an execution setting, not a change
     # to batch_scenes or gradient accumulation.
     scene_forward_chunk: int = 0
+    # Execution-only speed controls.  Defaults reproduce the certified OOM
+    # recovery path exactly; the optimized path opts into them explicitly.
+    scene_compaction: bool = False
+    physical_group_max_scenes: int = 1
+    physical_group_max_agent_slots: int = 0
+    physical_group_max_padding_ratio: float = 1.0
+    rollout_block_checkpointing: bool = True
 
 
 @dataclass(frozen=True)
@@ -79,6 +87,37 @@ class BatchRandomDraws:
             self.time[start:stop], self.diffusion_noise[start:stop],
             None if self.rollout_initial is None else self.rollout_initial[start:stop])
 
+    def compact_scenes(
+        self, valid: torch.Tensor, start: int, stop: int,
+    ) -> "BatchRandomDraws":
+        """Pack already-drawn tensors using the logical batch's valid mask."""
+        batch = int(valid.shape[0])
+        if not (valid.ndim == 2 and 0 <= start < stop <= batch):
+            raise ValueError("invalid logical valid mask or scene range")
+        positions = [
+            valid[index].nonzero(as_tuple=False).flatten()
+            for index in range(start, stop)
+        ]
+        if any(int(index.numel()) == 0 for index in positions):
+            raise ValueError("each compacted scene must contain a valid agent")
+        maximum = max(int(index.numel()) for index in positions)
+
+        def pack(source: torch.Tensor) -> torch.Tensor:
+            # Agent is dimension two for both [B,1,N,T,2] diffusion draws and
+            # [B,P,N,T,2] rollout draws.
+            packed = source.new_zeros(
+                (stop - start, source.shape[1], maximum, *source.shape[3:]))
+            for local, (scene, index) in enumerate(zip(
+                range(start, stop), positions, strict=True,
+            )):
+                packed[local, :, :index.numel()] = source[scene].index_select(
+                    1, index.to(source.device))
+            return packed
+
+        return BatchRandomDraws(
+            self.time[start:stop], pack(self.diffusion_noise),
+            None if self.rollout_initial is None else pack(self.rollout_initial))
+
 
 def logical_scene_weights(valid: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     """Return n_s/A and 1/B weights for one legacy logical microbatch."""
@@ -88,6 +127,45 @@ def logical_scene_weights(valid: torch.Tensor) -> tuple[torch.Tensor, torch.Tens
     if (counts <= 0).any():
         raise ValueError("each logical scene must contain at least one valid agent")
     return counts / counts.sum(), torch.full_like(counts, 1.0 / len(counts))
+
+
+def contiguous_scene_groups(
+    valid: torch.Tensor,
+    max_scenes: int,
+    max_agent_slots: int,
+    max_padding_ratio: float,
+) -> list[tuple[int, int]]:
+    """Greedily form deterministic contiguous physical groups.
+
+    A candidate group is accepted only if its locally re-padded ``B*N`` slots
+    and padding ratio remain within the configured bounds.  A dense scene that
+    cannot pair with its neighbour therefore falls back to a one-scene group;
+    no OOM retry or data-dependent reordering is used.
+    """
+    if valid.ndim != 2 or valid.shape[0] == 0:
+        raise ValueError("valid must be a non-empty [B,Npad] tensor")
+    if max_scenes < 1 or max_agent_slots < 0 or max_padding_ratio < 1.0:
+        raise ValueError("invalid physical grouping limits")
+    counts = [int(value) for value in valid.sum(dim=1).tolist()]
+    if any(value <= 0 for value in counts):
+        raise ValueError("each logical scene must contain at least one valid agent")
+    groups: list[tuple[int, int]] = []
+    start = 0
+    while start < len(counts):
+        best_stop = start + 1
+        candidate_stop = start + 2
+        while candidate_stop <= len(counts) and candidate_stop - start <= max_scenes:
+            candidate = counts[start:candidate_stop]
+            slots = len(candidate) * max(candidate)
+            ratio = slots / sum(candidate)
+            if max_agent_slots and slots > max_agent_slots:
+                break
+            if ratio <= max_padding_ratio:
+                best_stop = candidate_stop
+            candidate_stop += 1
+        groups.append((start, best_stop))
+        start = best_stop
+    return groups
 
 
 class EBJDTrainer:
@@ -190,65 +268,67 @@ class EBJDTrainer:
         if batch.observed.device != self.device:
             raise ValueError("physical SceneBatch must be on the model device")
         autocast_device = "cuda" if batch.observed.is_cuda else "cpu"
-        with torch.autocast(
-            device_type=autocast_device, dtype=torch.bfloat16,
-            enabled=self.use_bf16):
-            context = self.model.encode_context(
-                batch.observed, batch.semantic_maps, batch.valid)
-        latent_clean = self.model.representation.encode_target(
-            batch.future.detach(), context.baseline)[:, None]
-        if draws is None:
-            time = torch.randint(
-                1, self.options.noise_bins + 1, (batch.observed.shape[0],),
-                device=batch.observed.device).float() / self.options.noise_bins
-            noise = torch.randn_like(latent_clean, dtype=torch.float32)
-        else:
-            expected_noise = (
-                batch.observed.shape[0], 1, batch.observed.shape[1], 12, 2)
-            if tuple(draws.time.shape) != (batch.observed.shape[0],):
-                raise ValueError("prepared time draw does not match physical scene batch")
-            if tuple(draws.diffusion_noise.shape) != expected_noise:
-                raise ValueError("prepared diffusion noise does not match physical scene batch")
-            time = draws.time
-            noise = draws.diffusion_noise
-        with torch.autocast(device_type=autocast_device, enabled=False):
-            alpha, sigma = cosine_vp(time)
-            alpha = alpha.to(latent_clean).float().view(-1, 1, 1, 1, 1)
-            sigma = sigma.to(latent_clean).float().view(-1, 1, 1, 1, 1)
-            latent_noisy = alpha * latent_clean.float() + sigma * noise
-            velocity_target = alpha * noise - sigma * latent_clean.float()
-        with torch.autocast(
-            device_type=autocast_device, dtype=torch.bfloat16,
-            enabled=self.use_bf16):
-            final, coarse, coarse_trajectory, _ = self.model.denoiser(
-                latent_noisy, time, context)
-        with torch.autocast(device_type=autocast_device, enabled=False):
-            final_clean = alpha * latent_noisy.float() - sigma * final.float()
-            final_trajectory, _ = self.model.representation.decode(
-                final_clean, context.baseline)
-            loss_diff = diffusion_loss(
-                final, coarse, velocity_target, batch.valid,
-                coarse_weight=self.options.coarse_v_weight)
-            loss_geo = loss_diff.new_zeros(())
-            if self.options.use_geometry_loss:
-                per_scene_geo = 0.5 * (
-                    relative_motion_loss(
-                        coarse_trajectory, batch.future, context,
-                        self.options.supervision_edge_radius_m,
-                        self.options.supervision_edge_cpa_radius_m,
-                        self.options.supervision_edge_cpa_horizon_s)
-                    + relative_motion_loss(
-                        final_trajectory, batch.future, context,
-                        self.options.supervision_edge_radius_m,
-                        self.options.supervision_edge_cpa_radius_m,
-                        self.options.supervision_edge_cpa_horizon_s))
-                loss_geo = gated_geometry_mean(per_scene_geo, alpha)
-            loss_map = map_loss(
-                batch.future, context, self.options.heatmap_sigma_m)
-            total = (
-                float(agent_weight) * (
-                    loss_diff + self.options.map_weight * loss_map)
-                + float(scene_weight) * self.options.geometry_weight * loss_geo)
+        with record_function("ebjd.context_encoder"):
+            with torch.autocast(
+                device_type=autocast_device, dtype=torch.bfloat16,
+                enabled=self.use_bf16):
+                context = self.model.encode_context(
+                    batch.observed, batch.semantic_maps, batch.valid)
+        with record_function("ebjd.base_diffusion_and_losses"):
+            latent_clean = self.model.representation.encode_target(
+                batch.future.detach(), context.baseline)[:, None]
+            if draws is None:
+                time = torch.randint(
+                    1, self.options.noise_bins + 1, (batch.observed.shape[0],),
+                    device=batch.observed.device).float() / self.options.noise_bins
+                noise = torch.randn_like(latent_clean, dtype=torch.float32)
+            else:
+                expected_noise = (
+                    batch.observed.shape[0], 1, batch.observed.shape[1], 12, 2)
+                if tuple(draws.time.shape) != (batch.observed.shape[0],):
+                    raise ValueError("prepared time draw does not match physical scene batch")
+                if tuple(draws.diffusion_noise.shape) != expected_noise:
+                    raise ValueError("prepared diffusion noise does not match physical scene batch")
+                time = draws.time
+                noise = draws.diffusion_noise
+            with torch.autocast(device_type=autocast_device, enabled=False):
+                alpha, sigma = cosine_vp(time)
+                alpha = alpha.to(latent_clean).float().view(-1, 1, 1, 1, 1)
+                sigma = sigma.to(latent_clean).float().view(-1, 1, 1, 1, 1)
+                latent_noisy = alpha * latent_clean.float() + sigma * noise
+                velocity_target = alpha * noise - sigma * latent_clean.float()
+            with torch.autocast(
+                device_type=autocast_device, dtype=torch.bfloat16,
+                enabled=self.use_bf16):
+                final, coarse, coarse_trajectory, _ = self.model.denoiser(
+                    latent_noisy, time, context)
+            with torch.autocast(device_type=autocast_device, enabled=False):
+                final_clean = alpha * latent_noisy.float() - sigma * final.float()
+                final_trajectory, _ = self.model.representation.decode(
+                    final_clean, context.baseline)
+                loss_diff = diffusion_loss(
+                    final, coarse, velocity_target, batch.valid,
+                    coarse_weight=self.options.coarse_v_weight)
+                loss_geo = loss_diff.new_zeros(())
+                if self.options.use_geometry_loss:
+                    per_scene_geo = 0.5 * (
+                        relative_motion_loss(
+                            coarse_trajectory, batch.future, context,
+                            self.options.supervision_edge_radius_m,
+                            self.options.supervision_edge_cpa_radius_m,
+                            self.options.supervision_edge_cpa_horizon_s)
+                        + relative_motion_loss(
+                            final_trajectory, batch.future, context,
+                            self.options.supervision_edge_radius_m,
+                            self.options.supervision_edge_cpa_radius_m,
+                            self.options.supervision_edge_cpa_horizon_s))
+                    loss_geo = gated_geometry_mean(per_scene_geo, alpha)
+                loss_map = map_loss(
+                    batch.future, context, self.options.heatmap_sigma_m)
+                total = (
+                    float(agent_weight) * (
+                        loss_diff + self.options.map_weight * loss_map)
+                    + float(scene_weight) * self.options.geometry_weight * loss_geo)
         marginal_a = total.new_zeros(())
         marginal_f = total.new_zeros(())
         loss_roll = total.new_zeros(())
@@ -264,28 +344,33 @@ class EBJDTrainer:
                     batch.observed.shape[1], 12, 2)
                 if initial is None or tuple(initial.shape) != expected_initial:
                     raise ValueError("prepared rollout noise does not match physical scene batch")
-            with torch.autocast(
-                device_type=autocast_device, dtype=torch.bfloat16,
-                enabled=self.use_bf16):
-                free, goals, _ = differentiable_sample(
-                    self.model, context, initial, self.options.rollout_steps,
-                    checkpoint_steps=self.options.activation_checkpointing)
-            loss_roll, values = rollout_loss(
-                free, goals, batch.future, batch.valid, self._temperature(epoch))
+            with record_function("ebjd.rollout_forward"):
+                with torch.autocast(
+                    device_type=autocast_device, dtype=torch.bfloat16,
+                    enabled=self.use_bf16):
+                    free, goals, _ = differentiable_sample(
+                        self.model, context, initial, self.options.rollout_steps,
+                        checkpoint_steps=self.options.activation_checkpointing,
+                        checkpoint_blocks=self.options.rollout_block_checkpointing)
+                loss_roll, values = rollout_loss(
+                    free, goals, batch.future, batch.valid, self._temperature(epoch))
             marginal_a, marginal_f, _, _ = values
             total = total + (
                 float(scene_weight) * self.options.rollout_compensation
                 * self._rollout_weight(epoch) * loss_roll)
-            grad_a = gradients(
-                float(scene_weight) * marginal_a, self.parameters,
-                retain_graph=True)
-            grad_f = gradients(
-                float(scene_weight) * marginal_f, self.parameters,
-                retain_graph=True)
+            with record_function("ebjd.grad_marginal_ade"):
+                grad_a = gradients(
+                    float(scene_weight) * marginal_a, self.parameters,
+                    retain_graph=True)
+            with record_function("ebjd.grad_marginal_fde"):
+                grad_f = gradients(
+                    float(scene_weight) * marginal_f, self.parameters,
+                    retain_graph=True)
         else:
             grad_a = zeros_for(self.parameters)
             grad_f = zeros_for(self.parameters)
-        total_gradient = gradients(total, self.parameters)
+        with record_function("ebjd.grad_total"):
+            total_gradient = gradients(total, self.parameters)
         logs = {
             "loss": float(total.detach()), "diffusion": float(loss_diff.detach()),
             "geometry": float(loss_geo.detach()), "map": float(loss_map.detach()),
@@ -305,13 +390,23 @@ class EBJDTrainer:
     def _scene_chunked_batch_gradients(
         self, logical_batch: SceneBatch, epoch: int, do_rollout: bool,
     ) -> tuple[list[torch.Tensor], list[torch.Tensor], list[torch.Tensor], dict[str, float]]:
-        """Evaluate one legacy logical batch with one scene graph alive at a time."""
+        """Evaluate one logical batch as bounded contiguous physical groups."""
         if self.options.scene_forward_chunk != 1:
             raise ValueError(
-                "the memory-safe implementation currently requires scene_forward_chunk=1")
+                "the memory-safe implementation requires scene_forward_chunk=1")
         batch_size = int(logical_batch.observed.shape[0])
         agent_weights, scene_weights = logical_scene_weights(logical_batch.valid)
         draws = self._prepare_batch_draws(logical_batch, do_rollout)
+        if self.options.scene_compaction:
+            groups = contiguous_scene_groups(
+                logical_batch.valid,
+                self.options.physical_group_max_scenes,
+                self.options.physical_group_max_agent_slots,
+                self.options.physical_group_max_padding_ratio)
+        else:
+            if self.options.physical_group_max_scenes != 1:
+                raise ValueError("physical grouping requires scene_compaction=true")
+            groups = [(index, index + 1) for index in range(batch_size)]
         total_grad = zeros_for(self.parameters)
         grad_a = zeros_for(self.parameters)
         grad_f = zeros_for(self.parameters)
@@ -322,18 +417,29 @@ class EBJDTrainer:
         }
         minimum_time = float("inf")
         maximum_time = -float("inf")
-        for scene_index in range(batch_size):
-            agent_weight = float(agent_weights[scene_index])
-            scene_weight = float(scene_weights[scene_index])
-            physical_batch = logical_batch.slice_scenes(
-                scene_index, scene_index + 1).to(self.device)
-            physical_draws = draws.slice_scenes(scene_index, scene_index + 1)
+        maximum_group_scenes = 0
+        maximum_group_slots = 0
+        for start, stop in groups:
+            agent_weight = float(agent_weights[start:stop].sum())
+            scene_weight = float(scene_weights[start:stop].sum())
+            if self.options.scene_compaction:
+                physical_batch = logical_batch.compact_scenes(start, stop).to(self.device)
+                physical_draws = draws.compact_scenes(
+                    logical_batch.valid, start, stop)
+            else:
+                physical_batch = logical_batch.slice_scenes(start, stop).to(self.device)
+                physical_draws = draws.slice_scenes(start, stop)
+            maximum_group_scenes = max(maximum_group_scenes, stop - start)
+            maximum_group_slots = max(
+                maximum_group_slots,
+                int(physical_batch.valid.numel()))
             gradients_total, gradients_a, gradients_f, logs = self._batch_gradients(
                 physical_batch, epoch, do_rollout, physical_draws,
                 agent_weight=agent_weight, scene_weight=scene_weight)
-            self._add_gradients_(total_grad, gradients_total)
-            self._add_gradients_(grad_a, gradients_a)
-            self._add_gradients_(grad_f, gradients_f)
+            with record_function("ebjd.gradient_accumulation"):
+                self._add_gradients_(total_grad, gradients_total)
+                self._add_gradients_(grad_a, gradients_a)
+                self._add_gradients_(grad_f, gradients_f)
             aggregate["loss"] += logs["loss"]
             aggregate["diffusion"] += agent_weight * logs["diffusion"]
             aggregate["map"] += agent_weight * logs["map"]
@@ -349,6 +455,9 @@ class EBJDTrainer:
                 gradients_a, gradients_f, logs)
         aggregate["minimum_time"] = minimum_time
         aggregate["maximum_time"] = maximum_time
+        aggregate["physical_group_count"] = float(len(groups))
+        aggregate["maximum_physical_group_scenes"] = float(maximum_group_scenes)
+        aggregate["maximum_physical_agent_slots"] = float(maximum_group_slots)
         return total_grad, grad_a, grad_f, aggregate
 
     def train_step(self, microbatches: list[SceneBatch], epoch: int) -> dict[str, float]:
@@ -378,19 +487,22 @@ class EBJDTrainer:
             for name, value in logs.items():
                 aggregate[name] = aggregate.get(name, 0) + scale * value
             del gradients_total, gradients_a, gradients_f, logs
-        candidate, pending = self.optimizer.propose(
-            clip_global_norm(total_grad, self.options.gradient_clip_norm))
+        with record_function("ebjd.adamw_proposal"):
+            candidate, pending = self.optimizer.propose(
+                clip_global_norm(total_grad, self.options.gradient_clip_norm))
         candidate_dot_a = float(list_dot(grad_a, candidate)) if do_rollout else 0.0
         candidate_dot_f = float(list_dot(grad_f, candidate)) if do_rollout else 0.0
         stats = ProjectionStats(0, float(list_norm(candidate)), float(list_norm(candidate)), 0, False)
         decrement = candidate
         if do_rollout and self.options.use_actual_step_constraint:
-            decrement, stats = project_two_halfspaces(candidate, grad_a, grad_f)
+            with record_function("ebjd.fp64_qp_projection"):
+                decrement, stats = project_two_halfspaces(candidate, grad_a, grad_f)
         applied_dot_a = float(list_dot(grad_a, decrement)) if do_rollout else 0.0
         applied_dot_f = float(list_dot(grad_f, decrement)) if do_rollout else 0.0
         parameter_norm_before = float(torch.sqrt(sum(
             parameter.detach().double().square().sum() for parameter in self.parameters)))
-        self.optimizer.apply(decrement, pending)
+        with record_function("ebjd.optimizer_apply"):
+            self.optimizer.apply(decrement, pending)
         parameter_norm_after = float(torch.sqrt(sum(
             parameter.detach().double().square().sum() for parameter in self.parameters)))
         self.update_index += 1
@@ -409,6 +521,11 @@ class EBJDTrainer:
             "learning_rate": self.optimizer.lr,
             "unet_learning_rate": self.optimizer.unet_lr,
             "scene_forward_chunk": float(self.options.scene_forward_chunk),
+            "scene_compaction": float(self.options.scene_compaction),
+            "physical_group_max_scenes": float(
+                self.options.physical_group_max_scenes),
+            "rollout_block_checkpointing": float(
+                self.options.rollout_block_checkpointing),
         })
         return aggregate
 

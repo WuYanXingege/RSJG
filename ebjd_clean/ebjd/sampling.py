@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import torch
+from torch.profiler import record_function
 from torch.utils.checkpoint import checkpoint
 
 from .encoders import EBJDContext
@@ -16,6 +17,7 @@ def differentiable_sample(
     initial_noise: torch.Tensor,
     steps: int = 20,
     checkpoint_steps: bool = False,
+    checkpoint_blocks: bool | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Return trajectory, literal goal and final latent without detaching steps."""
     if steps <= 0:
@@ -27,11 +29,18 @@ def differentiable_sample(
             (batch,), index / steps, device=latent.device, dtype=torch.float32)
         next_time = torch.full_like(time, (index - 1) / steps)
         if checkpoint_steps and torch.is_grad_enabled():
-            velocity = checkpoint(
-                lambda z, t: model.denoiser(z, t, context)[0],
-                latent, time, use_reentrant=False)
+            # Capture an immutable per-call policy.  In rollout training the
+            # outer DDIM-step checkpoint is sufficient; nesting six block
+            # checkpoints inside each recomputation only adds overhead.
+            block_policy = checkpoint_blocks
+            with record_function("ebjd.ddim_step_checkpoint"):
+                velocity = checkpoint(
+                    lambda z, t, policy=block_policy: model.denoiser(
+                        z, t, context, checkpoint_blocks=policy)[0],
+                    latent, time, use_reentrant=False)
         else:
-            velocity = model.denoiser(latent, time, context)[0]
+            velocity = model.denoiser(
+                latent, time, context, checkpoint_blocks=checkpoint_blocks)[0]
         with torch.autocast(device_type=latent.device.type, enabled=False):
             alpha, sigma = cosine_vp(time)
             next_alpha, next_sigma = cosine_vp(next_time)

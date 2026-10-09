@@ -5,6 +5,7 @@ from __future__ import annotations
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torch.profiler import record_function
 from torch.utils.checkpoint import checkpoint
 
 from .encoders import EBJDContext
@@ -197,7 +198,11 @@ class JointEndpointBridgeDenoiser(nn.Module):
             ), dim=-1)
 
     def forward(
-        self, latent: torch.Tensor, time: torch.Tensor | float, context: EBJDContext
+        self,
+        latent: torch.Tensor,
+        time: torch.Tensor | float,
+        context: EBJDContext,
+        checkpoint_blocks: bool | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         if latent.ndim != 5 or latent.shape[-2:] != (12, 2):
             raise ValueError("latent must have shape [B,P,N,12,2]")
@@ -207,6 +212,9 @@ class JointEndpointBridgeDenoiser(nn.Module):
             time = time.expand(batch)
         if time.shape != (batch,):
             raise ValueError("time must be scalar or [B]")
+        use_block_checkpoints = (
+            self.activation_checkpointing
+            if checkpoint_blocks is None else bool(checkpoint_blocks))
         alpha, sigma = cosine_vp(time)
         alpha = alpha.to(latent.device).view(batch, 1, 1, 1, 1)
         sigma = sigma.to(latent.device).view(batch, 1, 1, 1, 1)
@@ -222,12 +230,13 @@ class JointEndpointBridgeDenoiser(nn.Module):
         observed = context.observed_bias[:, None, None].expand(
             batch, worlds, 12, 4, agents, agents)
         for block in self.blocks[:3]:
-            if self.activation_checkpointing and self.training and torch.is_grad_enabled():
-                hidden = checkpoint(
-                    lambda value, module=block: module(
-                        value, context.memory, context.social_h, time_embedding,
-                        observed, context.valid, social_enabled=self.future_social),
-                    hidden, use_reentrant=False)
+            if use_block_checkpoints and self.training and torch.is_grad_enabled():
+                with record_function("ebjd.denoiser_block_checkpoint"):
+                    hidden = checkpoint(
+                        lambda value, module=block: module(
+                            value, context.memory, context.social_h, time_embedding,
+                            observed, context.valid, social_enabled=self.future_social),
+                        hidden, use_reentrant=False)
             else:
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
@@ -252,12 +261,13 @@ class JointEndpointBridgeDenoiser(nn.Module):
         future = future.permute(0, 1, 2, 5, 3, 4).contiguous()
         combined = observed + gate.view(batch, 1, 1, 1, 1, 1) * future
         for block in self.blocks[3:]:
-            if self.activation_checkpointing and self.training and torch.is_grad_enabled():
-                hidden = checkpoint(
-                    lambda value, module=block: module(
-                        value, context.memory, context.social_h, time_embedding,
-                        combined, context.valid, social_enabled=self.future_social),
-                    hidden, use_reentrant=False)
+            if use_block_checkpoints and self.training and torch.is_grad_enabled():
+                with record_function("ebjd.denoiser_block_checkpoint"):
+                    hidden = checkpoint(
+                        lambda value, module=block: module(
+                            value, context.memory, context.social_h, time_embedding,
+                            combined, context.valid, social_enabled=self.future_social),
+                        hidden, use_reentrant=False)
             else:
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,

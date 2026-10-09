@@ -46,6 +46,54 @@ class SceneBatch:
             list(self.frame_ids[start:stop]), list(self.timestamps[start:stop]),
             list(self.source_sequences[start:stop]), self.metadata)
 
+    def compact_scenes(self, start: int, stop: int) -> "SceneBatch":
+        """Pack valid agents of contiguous scenes without changing their order.
+
+        The caller must draw randomness in the original logical ``[B,Npad]``
+        layout before invoking this method.  This operation only removes invalid
+        padding and then re-pads the selected scenes to their local maximum.
+        It intentionally supports non-prefix validity masks so that compaction
+        does not rely on an undocumented collate invariant.
+        """
+        batch = int(self.observed.shape[0])
+        if not (0 <= start < stop <= batch):
+            raise IndexError(
+                f"scene slice [{start}:{stop}] is outside batch size {batch}")
+        positions = [
+            self.valid[index].nonzero(as_tuple=False).flatten()
+            for index in range(start, stop)
+        ]
+        if any(int(index.numel()) == 0 for index in positions):
+            raise ValueError("each compacted scene must contain a valid agent")
+        maximum = max(int(index.numel()) for index in positions)
+        group = stop - start
+
+        def pack(source: torch.Tensor) -> torch.Tensor:
+            packed = source.new_zeros((group, maximum, *source.shape[2:]))
+            for local, (scene, index) in enumerate(zip(
+                range(start, stop), positions, strict=True,
+            )):
+                packed[local, :index.numel()] = source[scene].index_select(
+                    0, index.to(source.device))
+            return packed
+
+        valid = torch.zeros(
+            group, maximum, dtype=torch.bool, device=self.valid.device)
+        for local, index in enumerate(positions):
+            valid[local, :index.numel()] = True
+        agent_ids = []
+        for scene, index in zip(range(start, stop), positions, strict=True):
+            identities = list(self.agent_ids[scene])
+            if len(identities) != int(index.numel()):
+                raise ValueError(
+                    "agent identity count does not match the valid-mask count")
+            agent_ids.append(identities)
+        return SceneBatch(
+            pack(self.observed), pack(self.future), pack(self.semantic_maps), valid,
+            list(self.scene_ids[start:stop]), agent_ids,
+            list(self.frame_ids[start:stop]), list(self.timestamps[start:stop]),
+            list(self.source_sequences[start:stop]), self.metadata)
+
 
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
