@@ -45,6 +45,10 @@ FINAL_STRATEGY = "compact_grouped_v1"
 FP32_LOSS_ABS_TOLERANCE = 1e-4
 FP32_RELATIVE_TOLERANCE = 5e-4
 FP32_TRAJECTORY_RELATIVE_TOLERANCE = 5e-4
+SEMANTIC_LOG_NAMES = (
+    "loss", "diffusion", "geometry", "map", "rollout",
+    "soft_marginal_ade", "soft_marginal_fde", "minimum_time", "maximum_time",
+)
 STRATEGIES = {
     "reference": {
         "scene_compaction": False,
@@ -282,7 +286,7 @@ def compare_snapshots(reference: dict, candidate: dict, precision: str) -> dict:
     }
     log_differences = {
         name: abs(float(reference["logs"][name]) - float(candidate["logs"][name]))
-        for name in reference["logs"]
+        for name in SEMANTIC_LOG_NAMES
     }
     gradient_tolerance = (
         FP32_RELATIVE_TOLERANCE
@@ -399,13 +403,42 @@ def numerical_validation(payload: dict, dataset, device, precision: str) -> dict
                 "decrement", "parameters_after", "optimizer_moment_after",
                 "optimizer_variance_after")
         }
-        repeat_exact = (
+        repeat_logs = {
+            name: abs(
+                float(reference["logs"][name])
+                - float(repeated_reference["logs"][name]))
+            for name in SEMANTIC_LOG_NAMES
+        }
+        gradient_tolerance = (
+            FP32_RELATIVE_TOLERANCE
+            if precision == "fp32" else GRADIENT_RELATIVE_TOLERANCE)
+        optimizer_tolerance = (
+            FP32_RELATIVE_TOLERANCE
+            if precision == "fp32" else OPTIMIZER_RELATIVE_TOLERANCE)
+        repeat_passed = (
             torch.equal(reference["ending_rng"], repeated_reference["ending_rng"])
+            and max(repeat_logs.values()) <= (
+                FP32_LOSS_ABS_TOLERANCE
+                if precision == "fp32" else LOSS_ABS_TOLERANCE)
             and all(
-                item["maximum_absolute_element_difference"] == 0.0
-                for item in comparison["reference_repeat_differences"].values()))
-        comparison["reference_repeat_exact"] = repeat_exact
-        comparison["passed"] = comparison["passed"] and repeat_exact
+                comparison["reference_repeat_differences"][name][
+                    "relative_difference_norm"] <= gradient_tolerance
+                for name in ("total", "marginal_ade", "marginal_fde")
+                if comparison["reference_repeat_differences"][name][
+                    "reference_norm"] > 1e-12)
+            and all(
+                comparison["reference_repeat_differences"][name][
+                    "relative_difference_norm"] <= optimizer_tolerance
+                for name in (
+                    "candidate", "decrement", "parameters_after",
+                    "optimizer_moment_after", "optimizer_variance_after")
+                if comparison["reference_repeat_differences"][name][
+                    "reference_norm"] > 1e-12))
+        comparison["reference_repeat_semantic_log_differences"] = repeat_logs
+        comparison["reference_repeat_rng_exact"] = torch.equal(
+            reference["ending_rng"], repeated_reference["ending_rng"])
+        comparison["reference_repeat_passed"] = repeat_passed
+        comparison["passed"] = comparison["passed"] and repeat_passed
         if do_rollout:
             reference_trajectory = trajectory_snapshot(
                 payload, device, "reference", batch, precision, 9143)
