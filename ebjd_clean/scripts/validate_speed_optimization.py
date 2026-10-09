@@ -195,11 +195,14 @@ def gradient_snapshot(
         "decrement": cpu_tensors(decrement),
         "parameters_after": cpu_tensors(trainer.parameters),
         "optimizer_moment_after": cpu_tensors([
-            state["moment"] for state in trainer.optimizer.states]),
+            trainer.optimizer.state[id(parameter)]["moment"]
+            for parameter in trainer.parameters]),
         "optimizer_variance_after": cpu_tensors([
-            state["variance"] for state in trainer.optimizer.states]),
+            trainer.optimizer.state[id(parameter)]["variance"]
+            for parameter in trainer.parameters]),
         "optimizer_steps_after": [
-            int(state["step"]) for state in trainer.optimizer.states],
+            int(trainer.optimizer.state[id(parameter)]["step"])
+            for parameter in trainer.parameters],
         "category_gradient_norms": category,
         "projection_dots": projection_dots,
         "projection_active": 0 if projection is None else projection.active_constraints,
