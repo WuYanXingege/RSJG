@@ -96,6 +96,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--benchmark-repeats", type=int, default=1)
     parser.add_argument("--profile-strategy", choices=tuple(STRATEGIES),
                         default=FINAL_STRATEGY)
+    parser.add_argument(
+        "--profile-workload", choices=("small", "mixed", "n57"),
+        default="mixed")
     parser.add_argument("--profile-rollout", action="store_true")
     parser.add_argument("--trace", default=None)
     parser.add_argument("--continuous-updates", type=int, default=48)
@@ -535,8 +538,16 @@ def benchmark(payload: dict, dataset, device, repeats: int) -> dict:
     return result
 
 
-def profile_update(payload, dataset, device, strategy, do_rollout, trace_path):
-    batches = failure_batches(dataset)
+def profile_update(
+    payload, dataset, device, strategy, workload, do_rollout, trace_path,
+):
+    if workload == "small":
+        _, selected = small_unequal_batch(dataset)
+    elif workload == "mixed":
+        selected = failure_batches(dataset)[0]
+    else:
+        selected = collate_scenes([dataset[3302]])
+    batches = [selected]
     trainer = prepare_measured_trainer(payload, device, strategy, do_rollout, 17771)
     with profile(
         activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA],
@@ -569,6 +580,9 @@ def profile_update(payload, dataset, device, strategy, do_rollout, trace_path):
     release(trainer)
     return {
         "strategy": strategy, "settings": STRATEGIES[strategy],
+        "workload": workload,
+        "agent_counts": selected.valid.sum(1).tolist(),
+        "logical_microbatches": 1,
         "rollout": do_rollout, "measured": measured,
         "trace_path": str(Path(trace_path).resolve()) if trace_path else None,
         "markers": marker_rows,
@@ -738,7 +752,7 @@ def main() -> None:
         elif mode == "profile":
             output[mode] = profile_update(
                 payload, dataset, device, args.profile_strategy,
-                args.profile_rollout, args.trace)
+                args.profile_workload, args.profile_rollout, args.trace)
         else:
             output[mode] = continuous_validation(
                 payload, dataset, manifest_path, device,
