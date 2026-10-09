@@ -1,0 +1,134 @@
+{
+  "schema": "ebjd-hotel-training-status-snapshot-v1",
+  "status": "RUNNING_STABLE_JOINT_IMPROVED_MARGINAL_GATE_NOT_MET",
+  "snapshot_at": "2026-10-09T19:17:36+08:00",
+  "execution_code_commit": "9ecde66aa86f7a577fa29bd94b0168ae735a1f16",
+  "queue": {
+    "queue_id": "hotel_main_speed_9ecde66_20261009_115417",
+    "queue_status": "RUNNING",
+    "supervisor_pid": 1263005,
+    "seed3101": {
+      "status": "RUNNING",
+      "pid": 1263016,
+      "run_id": "hotel_main_seed3101_9ecde66_speed_20261009"
+    },
+    "seed3102": "QUEUED",
+    "seed3103": "QUEUED"
+  },
+  "progress": {
+    "completed_epoch": 28,
+    "current_epoch": 29,
+    "epochs_target": 100,
+    "current_epoch_updates": 188,
+    "updates_per_full_epoch": 266,
+    "current_epoch_fraction": 0.706766917293233,
+    "latest_update": 7636,
+    "canonical_log_records": 2050,
+    "update_sequence_first": 5587,
+    "update_sequence_last": 7636,
+    "update_sequence_continuous": true
+  },
+  "origin": {
+    "epoch": 21,
+    "update_index": 5586,
+    "checkpoint_sha256": "9a7a312b44aca95976f727c854b6a9fbd83891dc5cb212733355acffdee133d3"
+  },
+  "latest_checkpoint": {
+    "epoch": 28,
+    "update_index": 7448,
+    "sha256": "dbc03db7990d7553021a235ae6eb9681dbd35bddde35dce3860f4383c86ca65b"
+  },
+  "validation": {
+    "epoch": 28,
+    "selection_seed": 2035,
+    "scene_count": 445,
+    "worlds": 20,
+    "steps": 20,
+    "baseline": {
+      "minADE": 0.1352196876519829,
+      "minFDE": 0.19338157261354552,
+      "JADE": 0.21118598435953093,
+      "JFDE": 0.35985399696222514
+    },
+    "ebjd": {
+      "minADE": 0.1432237681022821,
+      "minFDE": 0.2104956536867353,
+      "JADE": 0.18210799258903423,
+      "JFDE": 0.30345904525170586
+    },
+    "absolute_delta_ebjd_minus_baseline": {
+      "minADE": 0.008004080450299211,
+      "minFDE": 0.01711408107318979,
+      "JADE": -0.02907799177049669,
+      "JFDE": -0.05639495171051928
+    },
+    "relative_delta_ebjd_minus_baseline": {
+      "minADE": 0.059193158846065685,
+      "minFDE": 0.08849902729558745,
+      "JADE": -0.13768902258680782,
+      "JFDE": -0.15671620208914672
+    },
+    "joint_score": 0.33383751521488714,
+    "total_marginal_violation": 0.025118161523489002,
+    "least_violation_epoch": 28,
+    "best_eligible": null,
+    "simultaneous_improvement": false
+  },
+  "training_health": {
+    "all_recorded_values_finite": true,
+    "normal_update_p50_seconds": 1.8466133844922297,
+    "normal_update_p90_seconds": 2.2025266920682043,
+    "rollout_update_p50_seconds": 42.40093139256351,
+    "rollout_update_p90_seconds": 51.24285281903576,
+    "maximum_cuda_allocated_bytes": 6059829760,
+    "maximum_cuda_reserved_bytes": 6557794304,
+    "rollout_updates": 512,
+    "projection_active_updates": 79,
+    "minimum_applied_dot_marginal_ade": -1.1621375068268902e-11,
+    "minimum_applied_dot_marginal_fde": -2.2802973016521064e-11,
+    "mean_soft_marginal_ade": 0.4432493851768413,
+    "mean_soft_marginal_fde": 0.836333384804675,
+    "mean_rollout_loss": 1.8934136932048204,
+    "recent_epochs": {
+      "27": {
+        "updates": 266,
+        "mean_loss": 1.5448121718418089,
+        "mean_diffusion": 1.4120328119595087,
+        "mean_rollout_loss": 1.859410238876216
+      },
+      "28": {
+        "updates": 266,
+        "mean_loss": 1.591441252635147,
+        "mean_diffusion": 1.4407687848731372,
+        "mean_rollout_loss": 1.876859871360163
+      },
+      "29_partial": {
+        "updates": 188,
+        "mean_loss": 1.5732868644225821,
+        "mean_diffusion": 1.4064189933883746,
+        "mean_rollout_loss": 1.8360504541803706
+      }
+    }
+  },
+  "integrity_event": {
+    "occurred_at": "2026-10-09T12:02:10+08:00",
+    "cause": "host PID namespace was not visible from the default sandbox, causing a short-lived duplicate launch",
+    "duplicate_supervisor_terminated": true,
+    "duplicate_child_terminated": true,
+    "duplicate_reached_epoch_boundary": false,
+    "duplicate_wrote_checkpoint": false,
+    "canonical_process_interrupted": false,
+    "canonical_log_repaired_and_continuous": true,
+    "duplicate_mixed_log_sha256": "a2d3c79f65d6a2bd154193462d7f6aac158308c2cb20558d6c1dad7f4a10c410",
+    "duplicate_first_update_receipt_sha256": "52580b1220f3c3bc4686ddacb5d5a16c9f09e8376466f3aaedf1e032c427550a",
+    "effect_boundary": "approximately 44 seconds of GPU contention may affect a few wall-time observations; no shared model/RNG state and no formal parameter-path change"
+  },
+  "bindings": {
+    "selection_status_sha256": "3a0bef898542bc319e05cc7d66e8cb3f5f6a344529d1c0c1c36ffda9fda125e8",
+    "run_identity_sha256": "5c6306f3b876b750391a0727cd8c791827c0e5abb147b7db9ce50232c9977594",
+    "resolved_config_sha256": "a3800984c4876bec69caa62a587ab2db609d2dce1c7670995ddee0ecb6440278",
+    "queue_manifest_sha256": "30a1d292d0d233983c12d409543d42823ca6a72a15faa91f41b2ed3aedf68463",
+    "first_formal_update_receipt_sha256": "84f81a20ea396a8fa30b54102ca8fe0a90ea0c10aa4cd97bbc248dd5bd4c22e2"
+  },
+  "evidence_boundary": "internal development validation with mirrored official-package validation/test identity; not a final independent test, three-seed aggregate, or standard five-fold external benchmark result"
+}
