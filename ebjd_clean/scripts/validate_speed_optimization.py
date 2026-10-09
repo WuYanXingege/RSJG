@@ -101,7 +101,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--profile-strategy", choices=tuple(STRATEGIES),
                         default=FINAL_STRATEGY)
     parser.add_argument(
-        "--profile-workload", choices=("small", "mixed", "n57"),
+        "--profile-workload", choices=("single", "small", "mixed", "n57"),
         default="mixed")
     parser.add_argument("--profile-rollout", action="store_true")
     parser.add_argument("--trace", default=None)
@@ -577,7 +577,12 @@ def benchmark(payload: dict, dataset, device, repeats: int) -> dict:
 def profile_update(
     payload, dataset, device, strategy, workload, do_rollout, trace_path,
 ):
-    if workload == "small":
+    if workload == "single":
+        single = next(
+            dataset[index] for index in range(len(dataset))
+            if int(dataset[index]["observed"].shape[0]) == 1)
+        selected = collate_scenes([single])
+    elif workload == "small":
         _, selected = small_unequal_batch(dataset)
     elif workload == "mixed":
         selected = failure_batches(dataset)[0]
