@@ -1,6 +1,6 @@
 {
   "schema": "ebjd-oom-recovery-validation-summary-v1",
-  "status": "GPU_VALIDATION_PASSED_MIGRATION_PENDING",
+  "status": "RECOVERY_VALIDATED_READY_TO_LAUNCH",
   "date": "2026-10-09",
   "branch": "research/ebjd-clean-v1",
   "execution_code_commit": "709d2d93b9cb701e5a496642e7c3539e4f992f9d",
@@ -84,7 +84,31 @@
     "ordinal_47_elapsed_seconds": 96.14069957099855,
     "all_finite": true
   },
-  "migration_preflight": null,
+  "migration_preflight": {
+    "passed": true,
+    "execution_source_commit": "6d0605a64ca15dfef9de7db3326bbdd2e2179f74",
+    "migration_receipt_sha256": "defa68e2a43ee7f9a05503a64a1154c8d21945b635457b13ad8c4c023a6c2858",
+    "migrated_checkpoint_sha256": "57feb769e0503f6380037a14c38aa2b0b12e0cc854c47fbb9907f38be79480c9",
+    "selection_status_sha256": "bfbd70bb2ffb2607c9153ccfa48ff6e4937760a2e46469184b7e9d6c757ff4a3",
+    "origin_epoch": 21,
+    "resume_start_epoch": 22,
+    "origin_update_index": 5586,
+    "first_restore_exact": {
+      "model": true,
+      "optimizer": true,
+      "rng": true,
+      "update_index": true
+    },
+    "secondary_restore_exact": {
+      "model": true,
+      "optimizer": true,
+      "rng": true,
+      "update_index": true
+    },
+    "selector_candidate_count": 21,
+    "best_eligible": null,
+    "least_violation_epoch": 14
+  },
   "formal_queue": null,
   "evidence_boundary": "resource recovery only; no method-effectiveness or external-benchmark claim"
 }

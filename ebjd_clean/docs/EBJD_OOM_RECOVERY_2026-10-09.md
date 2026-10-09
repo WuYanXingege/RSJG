@@ -99,8 +99,15 @@ The final CUDA comparison uses scenes with 1, 2, 5 and 3 valid agents.
   ordinal 47. Maximum allocated/reserved memory was 3,591,031,808 /
   4,292,870,144 bytes, the minimum capacity margin was 12,324,831,232 bytes,
   and every recorded scalar, parameter and optimizer tensor remained finite.
-- Migration and the formal queue start are separate post-validation actions;
-  they are not inferred from the diagnostic copy.
+- A GPU migration-only preflight then restored model, optimizer, update index,
+  Python/NumPy/CPU/CUDA/loader RNG exactly, saved an epoch-21 checkpoint under
+  the new execution identity, and restored that checkpoint a second time with
+  every exact-state check passing. It preserved all 21 selector candidates,
+  `best_eligible=null` and the epoch-14 least-violation pointer. The preflight
+  migration receipt SHA256 is
+  `defa68e2a43ee7f9a05503a64a1154c8d21945b635457b13ad8c4c023a6c2858`.
+- The formal queue start is a separate post-validation action; it is not
+  inferred from the diagnostic copy or migration-only preflight.
 
 Large validation artifacts remain under ignored
 `outputs/oom_recovery_validation_20261008/`. Their hashes are listed in the
