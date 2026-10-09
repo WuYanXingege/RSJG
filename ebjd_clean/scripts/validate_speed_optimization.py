@@ -280,6 +280,23 @@ def compare_snapshots(reference: dict, candidate: dict, precision: str) -> dict:
     optimizer_names = (
         "candidate", "decrement", "parameters_after",
         "optimizer_moment_after", "optimizer_variance_after")
+    category = candidate["category_gradient_norms"]
+    rollout_enabled = float(candidate["logs"]["rollout"]) != 0.0
+    required_connections = {
+        "base_total_to_trainable_unet": category["total"]["map_unet"],
+        "base_total_to_denoiser": category["total"]["denoiser"],
+        "base_total_to_future_geometry": category["total"]["future_geometry"],
+    }
+    if rollout_enabled:
+        required_connections.update({
+            "rollout_ade_to_trainable_unet": category["marginal_ade"]["map_unet"],
+            "rollout_fde_to_trainable_unet": category["marginal_fde"]["map_unet"],
+            "rollout_ade_to_future_geometry": category[
+                "marginal_ade"]["future_geometry"],
+            "rollout_fde_to_map_sampling": category[
+                "marginal_fde"]["map_sampling_injection"],
+        })
+    connections_present = all(value > 0.0 for value in required_connections.values())
     passed = (
         max(log_differences.values()) <= (2e-5 if precision == "fp32" else LOSS_ABS_TOLERANCE)
         and all(
@@ -297,6 +314,7 @@ def compare_snapshots(reference: dict, candidate: dict, precision: str) -> dict:
         and min(candidate["projection_dots"].values()) >= -PROJECTION_TOLERANCE
         and reference["optimizer_steps_after"] == candidate["optimizer_steps_after"]
         and torch.equal(reference["ending_rng"], candidate["ending_rng"])
+        and connections_present
     )
     return {
         "passed": passed,
@@ -304,6 +322,8 @@ def compare_snapshots(reference: dict, candidate: dict, precision: str) -> dict:
         "tensor_differences": comparisons,
         "candidate_projection_dots": candidate["projection_dots"],
         "category_gradient_norms": candidate["category_gradient_norms"],
+        "required_gradient_connections": required_connections,
+        "required_gradient_connections_present": connections_present,
         "cuda_rng_exact": torch.equal(
             reference["ending_rng"], candidate["ending_rng"]),
         "reference_resources": {
