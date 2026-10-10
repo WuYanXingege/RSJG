@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import multiprocessing as mp
 import pickle
 from pathlib import Path
 
@@ -17,26 +18,56 @@ from PIL import Image
 from ebjd.export_ethucy import pixel_to_world, sha256, world_to_pixel
 
 
-def load_legacy_fragments(directory: Path) -> dict[tuple[int, int], dict]:
-    fragments: dict[tuple[int, int], dict] = {}
-    for path in sorted(directory.glob("*.pkl")):
-        with path.open("rb") as handle:
-            data, identity = pickle.load(handle)  # noqa: S301 - trusted local artefact
-        coordinates = np.asarray(data["abs_pixel_coord"], dtype=np.float64)
-        semantic = np.asarray(data["tensor_image"])
-        for index, (agent, start) in enumerate(zip(
-            identity["agent_ids"], identity["starting_frames"], strict=True
-        )):
-            key = (int(agent), int(start))
-            if key in fragments:
-                raise ValueError(f"duplicate legacy trajectory identity: {key}")
-            fragments[key] = {
-                "pixel": coordinates[:, index], "semantic": semantic,
-                "source": str(path.resolve()),
-            }
+def source_sequence(identity: dict, path: Path) -> str:
+    """Return the source sequence needed to disambiguate multi-sequence folds."""
+    source = identity.get("data_file_path")
+    if not source:
+        raise ValueError(f"legacy identity lacks data_file_path: {path}")
+    return Path(source).stem
+
+
+def _legacy_fragment_payload(path_value: str) -> tuple[list[tuple], np.ndarray]:
+    """Load one legacy batch in a recyclable worker process."""
+    path = Path(path_value)
+    with path.open("rb") as handle:
+        data, identity = pickle.load(handle)  # noqa: S301 - trusted local artefact
+    coordinates = np.asarray(data["abs_pixel_coord"], dtype=np.float64)
+    semantic = np.asarray(data["tensor_image"])
+    sequence = source_sequence(identity, path)
+    records = []
+    for index, (agent, start) in enumerate(zip(
+        identity["agent_ids"], identity["starting_frames"], strict=True
+    )):
+        records.append((
+            sequence, int(agent), int(start), coordinates[:, index].copy(),
+            str(path.resolve()),
+        ))
+    return records, semantic
+
+
+def load_legacy_fragments(
+    directory: Path,
+) -> tuple[dict[tuple[str, int, int], dict], np.ndarray]:
+    fragments: dict[tuple[str, int, int], dict] = {}
+    paths = [str(path) for path in sorted(directory.glob("*.pkl"))]
+    semantic = None
+    context = mp.get_context("spawn")
+    with context.Pool(processes=1, maxtasksperchild=64) as pool:
+        for records, batch_semantic in pool.imap(
+            _legacy_fragment_payload, paths, chunksize=1,
+        ):
+            if semantic is None:
+                semantic = batch_semantic
+            for sequence, agent, start, coordinates, source in records:
+                key = (sequence, int(agent), int(start))
+                if key in fragments:
+                    raise ValueError(f"duplicate legacy trajectory identity: {key}")
+                fragments[key] = {"pixel": coordinates, "source": source}
     if not fragments:
         raise ValueError(f"no legacy pickle batches found below {directory}")
-    return fragments
+    if semantic is None:
+        raise AssertionError("legacy semantic map was not loaded")
+    return fragments, semantic
 
 
 def iter_manifest_scenes(manifest_path: Path):
@@ -54,31 +85,47 @@ def iter_manifest_scenes(manifest_path: Path):
                     "agent_ids": [int(value) for value in payload["agent_ids"][index]],
                     "frame_ids": np.asarray(payload["frame_ids"][index], dtype=np.int64),
                     "window_key": str(payload["window_keys"][index]),
+                    "source_sequence": str(payload["source_sequences"][index]),
                     "scene_id": str(payload["scene_ids"][index]),
                 }
 
 
+def _grouped_scene_payload(args: tuple[str, np.ndarray, str]) -> tuple[tuple, dict]:
+    """Load one grouped scene in a recyclable worker process."""
+    path_value, homography, source_scene = args
+    path = Path(path_value)
+    with path.open("rb") as handle:
+        data, identity = pickle.load(handle)  # noqa: S301 - trusted local artefact
+    frames = tuple(int(value) for value in identity["frame_ids"])
+    original_agents = tuple(int(value) for value in identity["agent_ids"])
+    order = np.argsort(np.asarray(original_agents), kind="stable")
+    agents = tuple(original_agents[index] for index in order)
+    sequence = source_sequence(identity, path)
+    if not identity.get("synchronized_window") or len(frames) != 20:
+        raise ValueError(f"not a synchronized 20-frame grouped batch: {path}")
+    key = (sequence, frames, agents)
+    pixel = np.asarray(data["abs_pixel_coord"], dtype=np.float64).transpose(1, 0, 2)
+    pixel = pixel[order]
+    return key, {
+        "world": pixel_to_world(
+            pixel.reshape(-1, 2), homography, source_scene).reshape(pixel.shape),
+        "source": str(path.resolve()),
+    }
+
+
 def load_grouped_scenes(directory: Path, homography: np.ndarray, source_scene: str) -> dict:
     grouped = {}
-    for path in sorted(directory.glob("*.pkl")):
-        with path.open("rb") as handle:
-            data, identity = pickle.load(handle)  # noqa: S301 - trusted local artefact
-        frames = tuple(int(value) for value in identity["frame_ids"])
-        original_agents = tuple(int(value) for value in identity["agent_ids"])
-        order = np.argsort(np.asarray(original_agents), kind="stable")
-        agents = tuple(original_agents[index] for index in order)
-        if not identity.get("synchronized_window") or len(frames) != 20:
-            raise ValueError(f"not a synchronized 20-frame grouped batch: {path}")
-        key = (frames, agents)
-        if key in grouped:
-            raise ValueError(f"duplicate grouped scene identity: {key}")
-        pixel = np.asarray(data["abs_pixel_coord"], dtype=np.float64).transpose(1, 0, 2)
-        pixel = pixel[order]
-        grouped[key] = {
-            "world": pixel_to_world(
-                pixel.reshape(-1, 2), homography, source_scene).reshape(pixel.shape),
-            "source": str(path.resolve()),
-        }
+    arguments = [
+        (str(path), homography, source_scene)
+        for path in sorted(directory.glob("*.pkl"))]
+    context = mp.get_context("spawn")
+    with context.Pool(processes=1, maxtasksperchild=64) as pool:
+        for key, record in pool.imap(
+            _grouped_scene_payload, arguments, chunksize=1,
+        ):
+            if key in grouped:
+                raise ValueError(f"duplicate grouped scene identity: {key}")
+            grouped[key] = record
     if not grouped:
         raise ValueError(f"no grouped pickle batches found below {directory}")
     return grouped
@@ -128,8 +175,7 @@ def main() -> None:
     semantic_path = Path(args.semantic_map).resolve()
     homography = np.loadtxt(homography_path, dtype=np.float64)
     labels = np.asarray(Image.open(semantic_path), dtype=np.uint8)
-    fragments = load_legacy_fragments(legacy_dir)
-    legacy_semantic = next(iter(fragments.values()))["semantic"]
+    fragments, legacy_semantic = load_legacy_fragments(legacy_dir)
     legacy_classes = legacy_semantic.argmax(0)
     source_at_legacy_grid = labels[
         :legacy_classes.shape[0] * 8:8, :legacy_classes.shape[1] * 8:8]
@@ -138,12 +184,11 @@ def main() -> None:
     compared_agents = compared_points = missing = semantic_ok = semantic_total = oob = 0
     maximum_pixel_error = maximum_world_error = 0.0
     examples = []
-    manifest_scenes = list(iter_manifest_scenes(manifest_path))
-    for scene in manifest_scenes:
+    for scene in iter_manifest_scenes(manifest_path):
         world = np.concatenate((scene["observed"], scene["future"]), axis=1)
         start = int(scene["frame_ids"][0])
         for agent_index, agent in enumerate(scene["agent_ids"]):
-            legacy = fragments.get((agent, start))
+            legacy = fragments.get((scene["source_sequence"], agent, start))
             if legacy is None:
                 missing += 1
                 continue
@@ -197,9 +242,10 @@ def main() -> None:
         grouped_dir = Path(args.grouped_batches).resolve()
         grouped = load_grouped_scenes(grouped_dir, homography, args.source_scene)
         exported = {}
-        for scene in manifest_scenes:
+        for scene in iter_manifest_scenes(manifest_path):
             order = np.argsort(np.asarray(scene["agent_ids"]), kind="stable")
             key = (
+                scene["source_sequence"],
                 tuple(scene["frame_ids"]),
                 tuple(scene["agent_ids"][index] for index in order),
             )
