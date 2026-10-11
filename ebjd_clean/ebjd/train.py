@@ -232,6 +232,13 @@ def _identity(config: dict, ablation: str, run_id: str, smoke: bool) -> dict:
                 config["training"].get("physical_group_max_padding_ratio", 1.0)),
             "rollout_block_checkpointing": bool(
                 config["training"].get("rollout_block_checkpointing", True)),
+            "cache_fp32_map_features": bool(
+                config["training"].get("cache_fp32_map_features", False)),
+            "rollout_uncheckpointed_max_agent_slots": int(
+                config["training"].get(
+                    "rollout_uncheckpointed_max_agent_slots", 0)),
+            "batched_protected_vjp": bool(
+                config["training"].get("batched_protected_vjp", False)),
             "cpu_scene_staging": bool(
                 config["training"].get("scene_forward_chunk", 0)),
             "pytorch_cuda_alloc_conf": os.environ.get(

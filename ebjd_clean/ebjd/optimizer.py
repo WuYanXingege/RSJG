@@ -24,6 +24,36 @@ def gradients(
     return [torch.zeros_like(p) if g is None else g for p, g in zip(parameters, raw, strict=True)]
 
 
+def batched_gradients(
+    losses: list[torch.Tensor], parameters: list[nn.Parameter]
+) -> list[TensorList]:
+    """Evaluate independent loss VJPs through PyTorch's batched-VJP path.
+
+    This preserves one gradient row per scalar loss; it is not a gradient of
+    the sum.  The leading VJP dimension is split before returning so callers
+    keep the same zero-for-unused semantics as :func:`gradients`.
+    """
+    if not losses:
+        raise ValueError("batched_gradients requires at least one scalar loss")
+    if any(loss.ndim != 0 for loss in losses):
+        raise ValueError("batched_gradients losses must be scalars")
+    stacked = torch.stack(losses)
+    basis = torch.eye(
+        len(losses), device=stacked.device, dtype=stacked.dtype)
+    raw = torch.autograd.grad(
+        stacked, parameters, grad_outputs=basis, is_grads_batched=True,
+        allow_unused=True)
+    rows = [[] for _ in losses]
+    for parameter, value in zip(parameters, raw, strict=True):
+        if value is None:
+            for row in rows:
+                row.append(torch.zeros_like(parameter))
+        else:
+            for index, row in enumerate(rows):
+                row.append(value[index])
+    return rows
+
+
 def list_dot(left: TensorList, right: TensorList) -> torch.Tensor:
     return sum((a.double() * b.double()).sum() for a, b in zip(left, right, strict=True))
 

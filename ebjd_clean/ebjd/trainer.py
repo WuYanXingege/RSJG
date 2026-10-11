@@ -5,7 +5,7 @@ from __future__ import annotations
 import math
 import os
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 
 import numpy as np
@@ -19,8 +19,8 @@ from .objectives import (
     rollout_loss,
 )
 from .optimizer import (
-    ActualStepAdamW, ProjectionStats, clip_global_norm, gradients, list_dot,
-    list_norm, project_two_halfspaces, zeros_for,
+    ActualStepAdamW, ProjectionStats, batched_gradients, clip_global_norm,
+    gradients, list_dot, list_norm, project_two_halfspaces, zeros_for,
 )
 from .representation import cosine_vp
 from .sampling import differentiable_sample
@@ -72,6 +72,12 @@ class TrainerOptions:
     physical_group_max_agent_slots: int = 0
     physical_group_max_padding_ratio: float = 1.0
     rollout_block_checkpointing: bool = True
+    # All three settings below are execution-only and default off.  The FP32
+    # cache is graph-local; the uncheckpoint threshold is measured in padded
+    # physical agent slots and zero means every DDIM step remains checkpointed.
+    cache_fp32_map_features: bool = False
+    rollout_uncheckpointed_max_agent_slots: int = 0
+    batched_protected_vjp: bool = False
 
 
 @dataclass(frozen=True)
@@ -274,6 +280,13 @@ class EBJDTrainer:
                 enabled=self.use_bf16):
                 context = self.model.encode_context(
                     batch.observed, batch.semantic_maps, batch.valid)
+        if self.options.cache_fp32_map_features:
+            # Keep the cast connected to the trainable map U-Net.  ``context``
+            # and the cached tensor die with this physical graph, so no stale
+            # autograd graph can cross an optimizer update.
+            with record_function("ebjd.map_features_fp32_cache"):
+                context = replace(
+                    context, map_features_fp32=context.map_features.float())
         with record_function("ebjd.base_diffusion_and_losses"):
             latent_clean = self.model.representation.encode_target(
                 batch.future.detach(), context.baseline)[:, None]
@@ -332,6 +345,7 @@ class EBJDTrainer:
         marginal_a = total.new_zeros(())
         marginal_f = total.new_zeros(())
         loss_roll = total.new_zeros(())
+        checkpoint_steps = False
         if do_rollout:
             if draws is None:
                 initial = torch.randn(
@@ -345,12 +359,19 @@ class EBJDTrainer:
                 if initial is None or tuple(initial.shape) != expected_initial:
                     raise ValueError("prepared rollout noise does not match physical scene batch")
             with record_function("ebjd.rollout_forward"):
+                physical_agent_slots = int(
+                    batch.observed.shape[0] * batch.observed.shape[1])
+                threshold = int(
+                    self.options.rollout_uncheckpointed_max_agent_slots)
+                checkpoint_steps = (
+                    self.options.activation_checkpointing
+                    and not (threshold > 0 and physical_agent_slots <= threshold))
                 with torch.autocast(
                     device_type=autocast_device, dtype=torch.bfloat16,
                     enabled=self.use_bf16):
                     free, goals, _ = differentiable_sample(
                         self.model, context, initial, self.options.rollout_steps,
-                        checkpoint_steps=self.options.activation_checkpointing,
+                        checkpoint_steps=checkpoint_steps,
                         checkpoint_blocks=self.options.rollout_block_checkpointing)
                 loss_roll, values = rollout_loss(
                     free, goals, batch.future, batch.valid, self._temperature(epoch))
@@ -358,19 +379,27 @@ class EBJDTrainer:
             total = total + (
                 float(scene_weight) * self.options.rollout_compensation
                 * self._rollout_weight(epoch) * loss_roll)
-            with record_function("ebjd.grad_marginal_ade"):
-                grad_a = gradients(
-                    float(scene_weight) * marginal_a, self.parameters,
-                    retain_graph=True)
-            with record_function("ebjd.grad_marginal_fde"):
-                grad_f = gradients(
-                    float(scene_weight) * marginal_f, self.parameters,
-                    retain_graph=True)
+            if self.options.batched_protected_vjp:
+                with record_function("ebjd.grad_batched_vjp"):
+                    grad_a, grad_f, total_gradient = batched_gradients(
+                        [float(scene_weight) * marginal_a,
+                         float(scene_weight) * marginal_f, total],
+                        self.parameters)
+            else:
+                with record_function("ebjd.grad_marginal_ade"):
+                    grad_a = gradients(
+                        float(scene_weight) * marginal_a, self.parameters,
+                        retain_graph=True)
+                with record_function("ebjd.grad_marginal_fde"):
+                    grad_f = gradients(
+                        float(scene_weight) * marginal_f, self.parameters,
+                        retain_graph=True)
         else:
             grad_a = zeros_for(self.parameters)
             grad_f = zeros_for(self.parameters)
-        with record_function("ebjd.grad_total"):
-            total_gradient = gradients(total, self.parameters)
+        if not (do_rollout and self.options.batched_protected_vjp):
+            with record_function("ebjd.grad_total"):
+                total_gradient = gradients(total, self.parameters)
         logs = {
             "loss": float(total.detach()), "diffusion": float(loss_diff.detach()),
             "geometry": float(loss_geo.detach()), "map": float(loss_map.detach()),
@@ -378,6 +407,8 @@ class EBJDTrainer:
             "soft_marginal_ade": float(marginal_a.detach()),
             "soft_marginal_fde": float(marginal_f.detach()),
             "minimum_time": float(time.min()), "maximum_time": float(time.max()),
+            "rollout_step_checkpointing": float(
+                do_rollout and checkpoint_steps),
         }
         return total_gradient, grad_a, grad_f, logs
 

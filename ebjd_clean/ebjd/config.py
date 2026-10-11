@@ -82,6 +82,8 @@ ALLOWED_KEYS = {
         "scene_forward_chunk", "execution_strategy", "scene_compaction",
         "physical_group_max_scenes", "physical_group_max_agent_slots",
         "physical_group_max_padding_ratio", "rollout_block_checkpointing",
+        "cache_fp32_map_features",
+        "rollout_uncheckpointed_max_agent_slots", "batched_protected_vjp",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -98,6 +100,8 @@ OPTIONAL_KEYS = {"training": {
     "scene_forward_chunk", "execution_strategy", "scene_compaction",
     "physical_group_max_scenes", "physical_group_max_agent_slots",
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
+    "cache_fp32_map_features",
+    "rollout_uncheckpointed_max_agent_slots", "batched_protected_vjp",
 }}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
@@ -110,6 +114,9 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "physical_group_max_agent_slots"),
     ("training", "physical_group_max_padding_ratio"),
     ("training", "rollout_block_checkpointing"),
+    ("training", "cache_fp32_map_features"),
+    ("training", "rollout_uncheckpointed_max_agent_slots"),
+    ("training", "batched_protected_vjp"),
 }
 
 
@@ -267,7 +274,10 @@ def validate_supported_config(config: dict) -> None:
     strategy = training.get("execution_strategy", "legacy_or_oom_safe_v1")
     if strategy not in {"legacy_or_oom_safe_v1", "compact_grouped_v1"}:
         raise ValueError(f"unsupported training.execution_strategy={strategy!r}")
-    for key in ("scene_compaction", "rollout_block_checkpointing"):
+    for key in (
+        "scene_compaction", "rollout_block_checkpointing",
+        "cache_fp32_map_features", "batched_protected_vjp",
+    ):
         if key in training and not isinstance(training[key], bool):
             raise ValueError(f"training.{key} must be boolean")
     for key in ("physical_group_max_scenes", "physical_group_max_agent_slots"):
@@ -280,6 +290,12 @@ def validate_supported_config(config: dict) -> None:
         if isinstance(ratio, bool) or float(ratio) < 1.0:
             raise ValueError(
                 "training.physical_group_max_padding_ratio must be at least one")
+    if "rollout_uncheckpointed_max_agent_slots" in training:
+        value = training["rollout_uncheckpointed_max_agent_slots"]
+        if isinstance(value, bool) or int(value) != value or int(value) < 0:
+            raise ValueError(
+                "training.rollout_uncheckpointed_max_agent_slots must be a "
+                "non-negative integer")
     if strategy == "compact_grouped_v1":
         required_execution = {
             "scene_forward_chunk", "scene_compaction",
@@ -433,4 +449,10 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
             training.get("physical_group_max_padding_ratio", 1.0)),
         rollout_block_checkpointing=bool(
             training.get("rollout_block_checkpointing", True)),
+        cache_fp32_map_features=bool(
+            training.get("cache_fp32_map_features", False)),
+        rollout_uncheckpointed_max_agent_slots=int(
+            training.get("rollout_uncheckpointed_max_agent_slots", 0)),
+        batched_protected_vjp=bool(
+            training.get("batched_protected_vjp", False)),
     )
