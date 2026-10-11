@@ -16,7 +16,6 @@ import math
 import os
 import statistics
 import time
-from dataclasses import replace
 from pathlib import Path
 
 import torch
@@ -250,9 +249,6 @@ def trajectory_snapshot(
         with torch.autocast("cuda", dtype=torch.bfloat16, enabled=autocast_enabled):
             context = trainer.model.encode_context(
                 physical.observed, physical.semantic_maps, physical.valid)
-            if settings.get("cache_fp32_map_features", False):
-                context = replace(
-                    context, map_features_fp32=context.map_features.float())
             free, _, _ = differentiable_sample(
                 trainer.model, context, physical_draws.rollout_initial,
                 trainer.options.rollout_steps,

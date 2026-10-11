@@ -15,7 +15,6 @@ import math
 import os
 import statistics
 import subprocess
-import types
 from pathlib import Path
 
 import torch
@@ -32,15 +31,10 @@ REFERENCE = {
     "physical_group_max_agent_slots": 96,
     "physical_group_max_padding_ratio": 1.5,
     "rollout_block_checkpointing": False,
-    "cache_fp32_map_features": False,
     "rollout_uncheckpointed_max_agent_slots": 0,
-    "batched_protected_vjp": False,
 }
 
 CANDIDATES = {
-    "map_cache": {
-        "cache_fp32_map_features": True,
-    },
     "uncheckpoint_slots8": {
         "rollout_uncheckpointed_max_agent_slots": 8,
     },
@@ -52,21 +46,6 @@ CANDIDATES = {
     },
     "uncheckpoint_slots32": {
         "rollout_uncheckpointed_max_agent_slots": 32,
-    },
-    "map_cache_uncheckpoint_slots16": {
-        "cache_fp32_map_features": True,
-        "rollout_uncheckpointed_max_agent_slots": 16,
-    },
-    "map_cache_uncheckpoint_slots24": {
-        "cache_fp32_map_features": True,
-        "rollout_uncheckpointed_max_agent_slots": 24,
-    },
-    "map_cache_uncheckpoint_slots32": {
-        "cache_fp32_map_features": True,
-        "rollout_uncheckpointed_max_agent_slots": 32,
-    },
-    "batched_vjp": {
-        "batched_protected_vjp": True,
     },
 }
 
@@ -83,8 +62,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--output", required=True)
     parser.add_argument("--candidate", choices=tuple(CANDIDATES), required=True)
     parser.add_argument(
-        "--mode", choices=(
-            "count", "numeric", "benchmark", "profile", "continuous"),
+        "--mode", choices=("numeric", "benchmark", "profile", "continuous"),
         required=True)
     parser.add_argument("--numeric-precision", choices=("fp32", "configured"),
                         default="configured")
@@ -161,60 +139,6 @@ def paired_benchmark(payload, dataset, device, candidate, normal_repeats, rollou
     return result
 
 
-def count_map_cast_opportunities(payload, dataset, device, candidate):
-    """Count map samples/recomputations without retaining profiler events."""
-    _, batch = base.small_unequal_batch(dataset)
-    result = {"workload_agent_counts": batch.valid.sum(1).tolist(), "strategies": {}}
-    for strategy in ("reference", candidate):
-        trainer = base.prepare_measured_trainer(
-            payload, device, strategy, True, 23117)
-        counters = {
-            "encode_context_calls": 0,
-            "sample_map_calls": 0,
-            "encoded_map_feature_dtypes": [],
-        }
-        original_encode = trainer.model.encode_context
-        original_sample = trainer.model.denoiser._sample_map
-
-        def counted_encode(_model, *args, **kwargs):
-            context = original_encode(*args, **kwargs)
-            counters["encode_context_calls"] += 1
-            counters["encoded_map_feature_dtypes"].append(
-                str(context.map_features.dtype))
-            return context
-
-        def counted_sample(_denoiser, *args, **kwargs):
-            counters["sample_map_calls"] += 1
-            return original_sample(*args, **kwargs)
-
-        trainer.model.encode_context = types.MethodType(
-            counted_encode, trainer.model)
-        trainer.model.denoiser._sample_map = types.MethodType(
-            counted_sample, trainer.model.denoiser)
-        measured = base.measured_update(
-            trainer, [batch], int(payload["epoch"]) + 1)
-        uses_cache = bool(base.STRATEGIES[strategy]["cache_fp32_map_features"])
-        counters.update({
-            "cache_enabled": uses_cache,
-            "actual_graph_local_fp32_conversions": (
-                counters["encode_context_calls"] if uses_cache
-                else counters["sample_map_calls"]),
-            "avoided_repeated_conversions": (
-                counters["sample_map_calls"] - counters["encode_context_calls"]
-                if uses_cache else 0),
-            "measured_update": measured,
-        })
-        result["strategies"][strategy] = counters
-        base.release(trainer)
-    result["passed"] = (
-        result["strategies"]["reference"]["sample_map_calls"]
-        == result["strategies"][candidate]["sample_map_calls"]
-        and result["strategies"][candidate]["avoided_repeated_conversions"] > 0
-        and result["strategies"]["reference"]["measured_update"]["finite"]
-        and result["strategies"][candidate]["measured_update"]["finite"])
-    return result
-
-
 def main() -> None:
     args = parse_args()
     if not torch.cuda.is_available():
@@ -255,10 +179,7 @@ def main() -> None:
                 "PYTORCH_CUDA_ALLOC_CONF", "")},
         "mode": args.mode,
     }
-    if args.mode == "count":
-        result = count_map_cast_opportunities(
-            payload, dataset, device, args.candidate)
-    elif args.mode == "numeric":
+    if args.mode == "numeric":
         precision = (
             "fp32" if args.numeric_precision == "fp32"
             else payload["resolved_config"]["training"]["mixed_precision"])

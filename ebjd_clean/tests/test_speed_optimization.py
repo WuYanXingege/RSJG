@@ -9,6 +9,7 @@ from ebjd.optimizer import list_norm
 from ebjd.train import validate_execution_migration_settings
 from ebjd.trainer import (
     BatchRandomDraws, EBJDTrainer, TrainerOptions, contiguous_scene_groups,
+    rollout_step_checkpoint_policy,
 )
 
 
@@ -131,6 +132,36 @@ def test_speed_runtime_config_is_semantic_hash_neutral_and_migration_exact():
         assert "requires exact settings" in str(error)
     else:
         raise AssertionError("an uncertified migration budget was accepted")
+
+    small_group = copy.deepcopy(optimized)
+    small_group["training"].update({
+        "execution_strategy": "small_group_uncheckpoint_v1",
+        "rollout_uncheckpointed_max_agent_slots": 32,
+    })
+    validate_supported_config(small_group)
+    assert semantic_config_hash(small_group) == semantic_config_hash(archived)
+    profile = validate_execution_migration_settings(small_group)
+    assert profile["strategy"] == "small_group_uncheckpoint_v1"
+    assert profile["rollout_uncheckpointed_max_agent_slots"] == 32
+
+    wrong_threshold = copy.deepcopy(small_group)
+    wrong_threshold["training"]["rollout_uncheckpointed_max_agent_slots"] = 33
+    try:
+        validate_supported_config(wrong_threshold)
+    except ValueError as error:
+        assert "requires rollout_uncheckpointed_max_agent_slots=32" in str(error)
+    else:
+        raise AssertionError("an uncertified rollout threshold was accepted")
+
+
+def test_small_group_rollout_checkpoint_policy_has_dense_fallback():
+    assert rollout_step_checkpoint_policy(True, 1, 32) is False
+    assert rollout_step_checkpoint_policy(True, 32, 32) is False
+    assert rollout_step_checkpoint_policy(True, 33, 32) is True
+    assert rollout_step_checkpoint_policy(True, 57, 32) is True
+    assert rollout_step_checkpoint_policy(True, 96, 32) is True
+    assert rollout_step_checkpoint_policy(True, 32, 0) is True
+    assert rollout_step_checkpoint_policy(False, 96, 32) is False
 
 
 def test_architecture_identity_and_rollout_off_path_are_preserved():

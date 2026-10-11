@@ -82,8 +82,7 @@ ALLOWED_KEYS = {
         "scene_forward_chunk", "execution_strategy", "scene_compaction",
         "physical_group_max_scenes", "physical_group_max_agent_slots",
         "physical_group_max_padding_ratio", "rollout_block_checkpointing",
-        "cache_fp32_map_features",
-        "rollout_uncheckpointed_max_agent_slots", "batched_protected_vjp",
+        "rollout_uncheckpointed_max_agent_slots",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -100,8 +99,7 @@ OPTIONAL_KEYS = {"training": {
     "scene_forward_chunk", "execution_strategy", "scene_compaction",
     "physical_group_max_scenes", "physical_group_max_agent_slots",
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
-    "cache_fp32_map_features",
-    "rollout_uncheckpointed_max_agent_slots", "batched_protected_vjp",
+    "rollout_uncheckpointed_max_agent_slots",
 }}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
@@ -114,9 +112,7 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "physical_group_max_agent_slots"),
     ("training", "physical_group_max_padding_ratio"),
     ("training", "rollout_block_checkpointing"),
-    ("training", "cache_fp32_map_features"),
     ("training", "rollout_uncheckpointed_max_agent_slots"),
-    ("training", "batched_protected_vjp"),
 }
 
 
@@ -272,11 +268,13 @@ def validate_supported_config(config: dict) -> None:
                 "training.scene_forward_chunk currently supports only the OOM-safe value 1")
     training = config["training"]
     strategy = training.get("execution_strategy", "legacy_or_oom_safe_v1")
-    if strategy not in {"legacy_or_oom_safe_v1", "compact_grouped_v1"}:
+    if strategy not in {
+        "legacy_or_oom_safe_v1", "compact_grouped_v1",
+        "small_group_uncheckpoint_v1",
+    }:
         raise ValueError(f"unsupported training.execution_strategy={strategy!r}")
     for key in (
         "scene_compaction", "rollout_block_checkpointing",
-        "cache_fp32_map_features", "batched_protected_vjp",
     ):
         if key in training and not isinstance(training[key], bool):
             raise ValueError(f"training.{key} must be boolean")
@@ -296,7 +294,7 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(
                 "training.rollout_uncheckpointed_max_agent_slots must be a "
                 "non-negative integer")
-    if strategy == "compact_grouped_v1":
+    if strategy in {"compact_grouped_v1", "small_group_uncheckpoint_v1"}:
         required_execution = {
             "scene_forward_chunk", "scene_compaction",
             "physical_group_max_scenes", "physical_group_max_agent_slots",
@@ -310,6 +308,11 @@ def validate_supported_config(config: dict) -> None:
         if training["scene_forward_chunk"] != 1 or training["scene_compaction"] is not True:
             raise ValueError(
                 "compact_grouped_v1 requires scene_forward_chunk=1 and scene_compaction=true")
+    if strategy == "small_group_uncheckpoint_v1":
+        if training.get("rollout_uncheckpointed_max_agent_slots") != 32:
+            raise ValueError(
+                "small_group_uncheckpoint_v1 requires "
+                "rollout_uncheckpointed_max_agent_slots=32")
     if config["paths"].get("initialization_role") != "trainable_goal_unet_only":
         raise ValueError("paths.initialization_role must be trainable_goal_unet_only")
     baseline = config["evaluation"].get("matched_gdts_validation")
@@ -449,10 +452,6 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
             training.get("physical_group_max_padding_ratio", 1.0)),
         rollout_block_checkpointing=bool(
             training.get("rollout_block_checkpointing", True)),
-        cache_fp32_map_features=bool(
-            training.get("cache_fp32_map_features", False)),
         rollout_uncheckpointed_max_agent_slots=int(
             training.get("rollout_uncheckpointed_max_agent_slots", 0)),
-        batched_protected_vjp=bool(
-            training.get("batched_protected_vjp", False)),
     )

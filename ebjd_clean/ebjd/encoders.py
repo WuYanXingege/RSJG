@@ -27,11 +27,6 @@ class EBJDContext:
     valid: torch.Tensor
     observed: torch.Tensor
     crop_width_m: float
-    # Execution-only, graph-local cache.  When present this is the same
-    # differentiable map tensor converted to FP32 once for all grid samples in
-    # the current physical graph.  It must never be detached or retained
-    # across optimizer updates.
-    map_features_fp32: torch.Tensor | None = None
 
 
 def _safe_norm(x: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:

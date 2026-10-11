@@ -6,7 +6,6 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 from torch.profiler import record_function
-from torch.profiler import record_function
 from torch.utils.checkpoint import checkpoint
 
 from .encoders import EBJDContext
@@ -170,14 +169,9 @@ class JointEndpointBridgeDenoiser(nn.Module):
             relative = trajectory.float() - context.map_center.float()[:, None, :, None, :]
             grid = relative / (context.crop_width_m / 2)
             grid_bn = grid.permute(0, 2, 1, 3, 4).reshape(batch * agents, worlds * times, 1, 2)
-            if context.map_features_fp32 is not None:
-                map_features = context.map_features_fp32
-            else:
-                with record_function("ebjd.map_features_fp32_cast"):
-                    map_features = context.map_features.float()
             sampled = F.grid_sample(
-                map_features.reshape(
-                    batch * agents, 32, *map_features.shape[-2:]),
+                context.map_features.float().reshape(
+                    batch * agents, 32, *context.map_features.shape[-2:]),
                 grid_bn, mode="bilinear", padding_mode="zeros", align_corners=True)
             sampled = sampled.squeeze(-1).reshape(batch, agents, 32, worlds, times)
             sampled = sampled.permute(0, 3, 1, 4, 2)
