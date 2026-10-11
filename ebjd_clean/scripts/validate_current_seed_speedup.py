@@ -59,6 +59,10 @@ CANDIDATES = {
         "cache_fp32_map_features": True,
         "rollout_uncheckpointed_max_agent_slots": 24,
     },
+    "map_cache_uncheckpoint_slots32": {
+        "cache_fp32_map_features": True,
+        "rollout_uncheckpointed_max_agent_slots": 32,
+    },
     "batched_vjp": {
         "batched_protected_vjp": True,
     },

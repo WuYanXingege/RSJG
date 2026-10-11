@@ -450,6 +450,7 @@ class EBJDTrainer:
         maximum_time = -float("inf")
         maximum_group_scenes = 0
         maximum_group_slots = 0
+        checkpointed_rollout_groups = 0
         for start, stop in groups:
             agent_weight = float(agent_weights[start:stop].sum())
             scene_weight = float(scene_weights[start:stop].sum())
@@ -481,6 +482,8 @@ class EBJDTrainer:
                 aggregate[name] += scene_weight * logs[name]
             minimum_time = min(minimum_time, logs["minimum_time"])
             maximum_time = max(maximum_time, logs["maximum_time"])
+            checkpointed_rollout_groups += int(
+                logs["rollout_step_checkpointing"])
             del (
                 physical_batch, physical_draws, gradients_total,
                 gradients_a, gradients_f, logs)
@@ -489,6 +492,8 @@ class EBJDTrainer:
         aggregate["physical_group_count"] = float(len(groups))
         aggregate["maximum_physical_group_scenes"] = float(maximum_group_scenes)
         aggregate["maximum_physical_agent_slots"] = float(maximum_group_slots)
+        aggregate["rollout_step_checkpointed_group_fraction"] = (
+            float(checkpointed_rollout_groups) / len(groups) if do_rollout else 0.0)
         return total_grad, grad_a, grad_f, aggregate
 
     def train_step(self, microbatches: list[SceneBatch], epoch: int) -> dict[str, float]:
