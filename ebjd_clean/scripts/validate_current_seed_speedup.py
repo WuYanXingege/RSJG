@@ -14,6 +14,7 @@ import json
 import math
 import os
 import statistics
+import subprocess
 from pathlib import Path
 
 import torch
@@ -184,6 +185,12 @@ def main() -> None:
         "torch_version": torch.__version__,
         "cuda_version": torch.version.cuda,
         "device_name": torch.cuda.get_device_name(device),
+        "source_commit": subprocess.run(
+            ["git", "rev-parse", "HEAD"], check=True, capture_output=True,
+            text=True).stdout.strip(),
+        "working_tree_dirty": bool(subprocess.run(
+            ["git", "status", "--porcelain", "--", "ebjd_clean"],
+            check=True, capture_output=True, text=True).stdout.strip()),
         "parameter_count": sum(
             parameter.numel() for parameter in build_model(
                 payload["resolved_config"]).parameters()),
