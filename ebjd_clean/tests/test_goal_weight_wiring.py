@@ -1,5 +1,6 @@
 import copy
 import importlib.util
+import json
 import math
 from pathlib import Path
 
@@ -38,6 +39,17 @@ def test_materialized_yaml_preserves_scientific_float_types(tmp_path):
     assert restored == payload
     assert isinstance(restored["unet_lr"], float)
     assert isinstance(restored["optimizer_eps"], float)
+
+
+def test_resolved_json_uses_json_numeric_semantics(tmp_path):
+    source = load_config(ROOT / "configs" / "endpoint_bridge_joint.yaml")
+    path = tmp_path / "RESOLVED_CONFIG.json"
+    path.write_text(json.dumps(source), encoding="utf-8")
+    restored = load_config(path)
+    assert restored == source
+    assert isinstance(restored["training"]["unet_lr"], float)
+    assert isinstance(restored["training"]["optimizer_eps"], float)
+    assert semantic_config_hash(restored) == semantic_config_hash(source)
 
 
 def _masked_mean(value, valid):

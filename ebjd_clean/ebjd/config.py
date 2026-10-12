@@ -118,8 +118,16 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
 
 
 def load_config(path: str | Path) -> dict:
-    with Path(path).open(encoding="utf-8") as handle:
-        payload = yaml.safe_load(handle)
+    source = Path(path)
+    with source.open(encoding="utf-8") as handle:
+        # JSON scientific notation such as ``1e-05`` is valid JSON but is
+        # resolved as a string by PyYAML's YAML 1.1-style implicit resolver.
+        # RESOLVED_CONFIG.json must therefore use the format's own parser.
+        payload = (
+            json.load(handle)
+            if source.suffix.lower() == ".json"
+            else yaml.safe_load(handle)
+        )
     if not isinstance(payload, dict):
         raise ValueError("configuration root must be a mapping")
     validate_supported_config(payload)
