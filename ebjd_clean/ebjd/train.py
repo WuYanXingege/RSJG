@@ -80,9 +80,21 @@ def parse_args() -> argparse.Namespace:
     resumes.add_argument(
         "--resume-from",
         help="controlled migration from a bound checkpoint under a prior execution identity")
+    resumes.add_argument(
+        "--objective-fork-from",
+        help="new experiment identity restored exactly from a bound checkpoint")
     parser.add_argument(
         "--resume-from-sha256",
         help="mandatory expected SHA256 for --resume-from")
+    parser.add_argument(
+        "--objective-fork-from-sha256",
+        help="mandatory expected SHA256 for --objective-fork-from")
+    parser.add_argument(
+        "--objective-fork-contract", choices=("goal_v_weight_2",),
+        help="strictly allow one preregistered semantic change")
+    parser.add_argument(
+        "--max-epochs-this-run", type=int,
+        help="execution bound; preserve the original epoch-indexed LR schedule")
     parser.add_argument(
         "--migration-only", action="store_true",
         help="validate --resume-from, write and reload the migrated boundary, then exit")
@@ -406,6 +418,88 @@ def validate_migration_payload(
     }
 
 
+def validate_objective_fork_payload(
+    payload: dict,
+    checkpoint: Path,
+    expected_sha256: str,
+    config: dict,
+    execution_identity: dict,
+    ablation: str,
+    contract: str,
+) -> dict:
+    """Allow exactly one preregistered objective change with full-state restore."""
+    actual_sha256 = file_sha256(checkpoint)
+    if actual_sha256 != expected_sha256:
+        raise ValueError(
+            f"objective fork SHA256 mismatch: expected {expected_sha256}, got {actual_sha256}")
+    if payload.get("schema") != "ebjd-checkpoint-v2" or \
+            payload.get("epoch_boundary_only") is not True:
+        raise ValueError("objective fork requires an epoch-boundary ebjd-checkpoint-v2")
+    origin_config = payload.get("resolved_config")
+    origin_identity = payload.get("run_identity")
+    selection, rng = payload.get("selection_state"), payload.get("rng")
+    required_rng = {"python", "numpy", "torch_cpu", "torch_cuda", "loader_generator"}
+    if not isinstance(origin_config, dict) or not isinstance(origin_identity, dict):
+        raise ValueError("objective fork checkpoint lacks config or run identity")
+    if config_hash(origin_config) != origin_identity.get("config_hash"):
+        raise ValueError("objective fork origin config hash is inconsistent")
+    if not isinstance(selection, dict) or not isinstance(rng, dict) or \
+            set(rng) != required_rng or rng.get("loader_generator") is None:
+        raise ValueError("objective fork requires complete selection and RNG state")
+    audit = _tensor_audit({
+        "model": payload.get("model"), "optimizer": payload.get("optimizer")})
+    if audit["nonfinite_count"]:
+        raise ValueError("objective fork model/optimizer state is nonfinite")
+    contracts = {
+        "goal_v_weight_2": {
+            "objectives.goal_v_weight": {"old": 1.0, "new": 2.0},
+        },
+    }
+    if contract not in contracts:
+        raise ValueError(f"unsupported objective fork contract: {contract!r}")
+    differences = config_differences(origin_config, config)
+    allowed = {
+        "experiment.source_commit", "paths.output_root",
+        *contracts[contract],
+    }
+    if set(differences) != allowed:
+        raise ValueError(
+            "objective fork differences must equal the frozen contract: "
+            f"expected={sorted(allowed)}, actual={sorted(differences)}")
+    for name, expected in contracts[contract].items():
+        if differences[name] != expected:
+            raise ValueError(
+                f"objective fork value mismatch for {name}: {differences[name]}")
+    identity_fields = (
+        "implementation_base", "fold", "seed", "data", "initialization",
+        "validation_comparator",
+    )
+    mismatched = [
+        field for field in identity_fields
+        if origin_identity.get(field) != execution_identity.get(field)]
+    if origin_identity.get("ablation") != ablation:
+        mismatched.append("ablation")
+    if mismatched:
+        raise ValueError(
+            f"objective fork identity differs outside the contract: {sorted(mismatched)}")
+    return {
+        "schema": "ebjd-controlled-objective-fork-v1",
+        "contract": contract,
+        "origin_checkpoint_absolute_path": str(checkpoint.resolve()),
+        "origin_checkpoint_sha256": actual_sha256,
+        "origin_epoch": int(payload["epoch"]),
+        "resume_start_epoch": int(payload["epoch"]) + 1,
+        "origin_update_index": int(payload["update_index"]),
+        "origin_source_commit": origin_identity.get("source_commit"),
+        "origin_config_hash": origin_identity.get("config_hash"),
+        "execution_source_commit": execution_identity["source_commit"],
+        "execution_config_hash": execution_identity["config_hash"],
+        "checked_config_diff": differences,
+        "full_state_policy": "model+optimizer+RNG+update+selection exact",
+        "origin_tensor_audit": audit,
+    }
+
+
 def audit_restored_state(
     trainer: EBJDTrainer, payload: dict, loader_generator: torch.Generator,
 ) -> dict[str, bool]:
@@ -437,6 +531,16 @@ def main() -> None:
     if bool(args.resume_from) != bool(args.resume_from_sha256):
         raise ValueError(
             "--resume-from and --resume-from-sha256 must be provided together")
+    if bool(args.objective_fork_from) != bool(args.objective_fork_from_sha256):
+        raise ValueError(
+            "--objective-fork-from and --objective-fork-from-sha256 must be "
+            "provided together")
+    if bool(args.objective_fork_from) != bool(args.objective_fork_contract):
+        raise ValueError(
+            "--objective-fork-contract is mandatory only for "
+            "--objective-fork-from")
+    if args.max_epochs_this_run is not None and args.max_epochs_this_run < 1:
+        raise ValueError("--max-epochs-this-run must be positive")
     if args.migration_only and not args.resume_from:
         raise ValueError("--migration-only requires --resume-from")
     config = load_config(args.config)
@@ -453,17 +557,24 @@ def main() -> None:
         Path(args.resume).resolve().parent.name if args.resume
         else datetime.now().strftime("%Y%m%d_%H%M%S"))
     identity = _identity(config, args.ablation, run_id, args.smoke)
+    if args.max_epochs_this_run is not None:
+        identity["bounded_training"] = {
+            "max_epochs_this_run": int(args.max_epochs_this_run),
+            "lr_schedule_total_epochs": int(config["training"]["epochs"]),
+        }
     checkpoint_payload = None
     migration_receipt = None
-    if args.resume or args.resume_from:
-        checkpoint_path = Path(args.resume or args.resume_from).resolve()
+    objective_fork_receipt = None
+    if args.resume or args.resume_from or args.objective_fork_from:
+        checkpoint_path = Path(
+            args.resume or args.resume_from or args.objective_fork_from).resolve()
         checkpoint_payload = torch.load(
             checkpoint_path, map_location="cpu", weights_only=False)
         if args.resume:
             saved_identity = checkpoint_payload.get("run_identity", {})
             if "resume_origin" in saved_identity:
                 identity["resume_origin"] = saved_identity["resume_origin"]
-        else:
+        elif args.resume_from:
             migration_receipt = validate_migration_payload(
                 checkpoint_payload, checkpoint_path,
                 args.resume_from_sha256, config, identity, args.ablation)
@@ -475,6 +586,21 @@ def main() -> None:
                 "source_commit": checkpoint_payload["run_identity"].get(
                     "source_commit"),
                 "run_id": checkpoint_payload["run_identity"].get("run_id"),
+            }
+        else:
+            objective_fork_receipt = validate_objective_fork_payload(
+                checkpoint_payload, checkpoint_path,
+                args.objective_fork_from_sha256, config, identity,
+                args.ablation, args.objective_fork_contract)
+            identity["resume_origin"] = {
+                "checkpoint_absolute_path": str(checkpoint_path),
+                "checkpoint_sha256": args.objective_fork_from_sha256,
+                "epoch": int(checkpoint_payload["epoch"]),
+                "update_index": int(checkpoint_payload["update_index"]),
+                "source_commit": checkpoint_payload["run_identity"].get(
+                    "source_commit"),
+                "run_id": checkpoint_payload["run_identity"].get("run_id"),
+                "objective_fork_contract": args.objective_fork_contract,
             }
     root = Path(config["paths"]["output_root"])
     output = root / identity["fold"] / str(seed) / args.ablation / run_id
@@ -497,7 +623,8 @@ def main() -> None:
     validation_loader = _loader(config, "validation", args.smoke, loader_generator)
     fitted_scales = (
         fit_training_scales(model, train_loader)
-        if not (args.resume or args.resume_from) else None)
+        if not (args.resume or args.resume_from or args.objective_fork_from)
+        else None)
     trainer = EBJDTrainer(model, options, config, identity)
     baseline = config["evaluation"]["matched_gdts_validation"]
     selector = ConstrainedSelector(
@@ -512,9 +639,11 @@ def main() -> None:
         selector = ConstrainedSelector.from_state_dict(
             checkpoint_payload["selection_state"])
         start_epoch = int(checkpoint_payload["epoch"]) + 1
-    elif args.resume_from:
-        if checkpoint_payload is None or migration_receipt is None:
-            raise AssertionError("migration payload was not validated")
+    elif args.resume_from or args.objective_fork_from:
+        active_receipt = (
+            migration_receipt if args.resume_from else objective_fork_receipt)
+        if checkpoint_payload is None or active_receipt is None:
+            raise AssertionError("fork/migration payload was not validated")
         trainer.restore_checkpoint_payload(
             checkpoint_payload, loader_generator, require_identity=False)
         restoration_checks = audit_restored_state(
@@ -522,33 +651,36 @@ def main() -> None:
         selector = ConstrainedSelector.from_state_dict(
             checkpoint_payload["selection_state"])
         start_epoch = int(checkpoint_payload["epoch"]) + 1
-        migration_receipt["restoration_checks"] = restoration_checks
-        migration_receipt["execution_run_identity"] = identity
-        migration_receipt["selection_state_summary"] = {
+        active_receipt["restoration_checks"] = restoration_checks
+        active_receipt["execution_run_identity"] = identity
+        active_receipt["selection_state_summary"] = {
             "candidate_count": len(selector.candidates),
             "best_eligible": selector.best_eligible,
             "least_violation": selector.least_violation,
             "simultaneous_improvement": selector.best_eligible is not None,
         }
-        _atomic_json(output / "MIGRATION_RECEIPT.json", migration_receipt)
+        receipt_name = (
+            "MIGRATION_RECEIPT.json" if args.resume_from
+            else "OBJECTIVE_FORK_RECEIPT.json")
+        _atomic_json(output / receipt_name, active_receipt)
         _atomic_json(output / "SELECTION_STATUS.json", selector.state_dict())
         trainer.save_checkpoint(
             output / "last.pt", int(checkpoint_payload["epoch"]),
             selector.state_dict(), loader_generator,
-            {"migration_receipt": migration_receipt})
+            {"fork_or_migration_receipt": active_receipt})
         # Exercise the same strict restore path used by an ordinary resume from
         # the newly written execution identity before any optimizer update.
         migrated_payload = torch.load(
             output / "last.pt", map_location="cpu", weights_only=False)
         trainer.restore_checkpoint_payload(
             migrated_payload, loader_generator, require_identity=True)
-        migration_receipt["secondary_restore_checks"] = audit_restored_state(
+        active_receipt["secondary_restore_checks"] = audit_restored_state(
             trainer, migrated_payload, loader_generator)
-        _atomic_json(output / "MIGRATION_RECEIPT.json", migration_receipt)
+        _atomic_json(output / receipt_name, active_receipt)
         trainer.save_checkpoint(
             output / "last.pt", int(checkpoint_payload["epoch"]),
             selector.state_dict(), loader_generator,
-            {"migration_receipt": migration_receipt})
+            {"fork_or_migration_receipt": active_receipt})
         del migrated_payload
     if checkpoint_payload is not None:
         del checkpoint_payload
@@ -564,7 +696,23 @@ def main() -> None:
         }, sort_keys=True), flush=True)
         return
     log_path = output / "train.jsonl"
-    for epoch in range(start_epoch, options.epochs + 1):
+    stop_epoch = options.epochs
+    if args.max_epochs_this_run is not None:
+        stop_epoch = min(
+            stop_epoch, start_epoch + int(args.max_epochs_this_run) - 1)
+    short_roles = {
+        "definition": {
+            "best_joint_short": "minimum JADE+JFDE within this bounded run",
+            "best_marginal_short": "minimum minADE+minFDE within this bounded run",
+            "least_violation_short": (
+                "minimum summed positive marginal excess over bound baseline "
+                "within this bounded run"),
+        },
+        "start_epoch": start_epoch, "stop_epoch": stop_epoch,
+        "best_joint_short": None, "best_marginal_short": None,
+        "least_violation_short": None,
+    }
+    for epoch in range(start_epoch, stop_epoch + 1):
         model.train()
         pending = []
         train_iterator = iter(train_loader)
@@ -611,6 +759,26 @@ def main() -> None:
             trainer.save_checkpoint(
                 output / "least_violation.pt", epoch, state, loader_generator,
                 {"validation": metrics, "candidate": candidate})
+        role_scores = {
+            "best_joint_short": float(metrics["JADE"] + metrics["JFDE"]),
+            "best_marginal_short": float(
+                metrics["minADE"] + metrics["minFDE"]),
+            "least_violation_short": float(
+                max(0.0, metrics["minADE"] - float(baseline["minADE"])
+                    - float(config["evaluation"].get("marginal_tolerance", 0)))
+                + max(0.0, metrics["minFDE"] - float(baseline["minFDE"])
+                      - float(config["evaluation"].get("marginal_tolerance", 0)))),
+        }
+        for role, score in role_scores.items():
+            current = short_roles[role]
+            if current is None or score < current["score"]:
+                short_roles[role] = {"epoch": epoch, "score": score,
+                                     "metrics": metrics}
+                trainer.save_checkpoint(
+                    output / f"{role}.pt", epoch, state, loader_generator,
+                    {"validation": metrics, "candidate": candidate,
+                     "short_run_role": role, "short_run_score": score})
+        _atomic_json(output / "SHORT_RUN_SELECTION.json", short_roles)
         (output / "SELECTION_STATUS.json").write_text(
             json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
         print(json.dumps({

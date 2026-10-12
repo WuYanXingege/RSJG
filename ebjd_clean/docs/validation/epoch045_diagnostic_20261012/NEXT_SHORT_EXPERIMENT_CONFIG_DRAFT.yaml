@@ -1,0 +1,44 @@
+schema: ebjd-epoch45-short-paired-experiment-draft-v1
+status: NOT_LAUNCHED
+origin:
+  epoch: 45
+  update_index: 11970
+  checkpoint_sha256: 425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1
+  checkpoint_state: complete_model_optimizer_rng_selection_epoch_boundary
+common_contract:
+  epochs_to_run: 5
+  epoch_indices: [46, 47, 48, 49, 50]
+  preserve_original_total_epoch_lr_schedule: 100
+  same_origin_model_optimizer_rng_update_and_selection: true
+  same_data_order: true
+  rollout_worlds: 4
+  rollout_steps: 20
+  rollout_frequency_compensation: 4.0
+  bridge_v_weight: 1.0
+  coarse_v_weight: 0.25
+  inference_worlds: 20
+  inference_steps: 20
+arms:
+  control:
+    goal_v_weight: 1.0
+    change_from_origin: none
+  candidate:
+    goal_v_weight: 2.0
+    only_semantic_change: objectives.goal_v_weight_1_to_2
+selection_artifacts:
+  - last.pt
+  - best.pt
+  - least_violation.pt
+  - best_joint_short.pt
+  - best_marginal_short.pt
+  - least_violation_short.pt
+  - SHORT_RUN_SELECTION.json
+formal_evaluation:
+  entrance: batch_size_1
+  inference_seeds: [2035, 2036, 2037, 2038, 2039]
+  metrics: [minADE, minFDE, JADE, JFDE]
+estimate:
+  minutes_per_epoch: 40.82
+  hours_per_arm: 3.4
+  total_two_arm_gpu_hours_if_sequential: 6.8
+training_launched_in_diagnostic_round: false

@@ -1,0 +1,50 @@
+{
+  "schema": "ebjd-epoch45-diagnostic-figure-qa-v1",
+  "backend": "Python/matplotlib",
+  "core_conclusion": "K-dependent coverage and independent world permutations distinguish marginal tail coverage from within-world coordination value.",
+  "results_level_question": "Where does the EBJD marginal cost arise, and does its joint gain use preserved within-world pairing?",
+  "archetype": "quantitative grid with fixed-rule case plate",
+  "export_contract": {
+    "vector": ["PDF", "SVG"],
+    "web_preview": "PNG 300 dpi",
+    "editable_text": true,
+    "minimum_pdf_glyph_pt": 5,
+    "tiff_omitted_reason": "diagnostic web archive, not a submission production bundle"
+  },
+  "data_integrity": {
+    "excluded_windows": 0,
+    "excluded_valid_agents": 0,
+    "case_selection": "five largest and five smallest five-seed mean paired minFDE deltas",
+    "uncertainty": "5th-95th percentiles over shared random world subsets",
+    "random_calls_are_deterministic_diagnostic_resampling_not_demo_data": true
+  },
+  "panels": {
+    "epoch045_k_curve": "Random-subset K sensitivity for marginal and joint ADE/FDE; shared indices within each scene and repeat.",
+    "epoch045_world_permutation": "Full 100-repeat independent-agent world-permutation delta distributions.",
+    "epoch045_fixed_rule_cases": "Predefined five most worsened and five most improved scene windows at inference seed 2035."
+  },
+  "automated_qa": {
+    "source_preflight": "PASS_WITH_REVIEWED_WARNINGS",
+    "source_preflight_failures": 0,
+    "reviewed_source_warnings": [
+      "PNG is 300 dpi and TIFF is omitted because these are web diagnostic figures.",
+      "Deterministic NumPy RNG constructs the preregistered diagnostic subsets/permutations; no simulated scientific observations are plotted."
+    ],
+    "panel_alignment": {
+      "epoch045_k_curve": "PASS",
+      "epoch045_world_permutation": "PASS",
+      "epoch045_fixed_rule_cases": "PASS"
+    },
+    "rendered_collision": {
+      "epoch045_k_curve": "PASS",
+      "epoch045_world_permutation": "PASS",
+      "epoch045_fixed_rule_cases": "PASS"
+    },
+    "pdf_text_floor": {
+      "epoch045_k_curve_min_pt": 6,
+      "epoch045_world_permutation_min_pt": 7,
+      "epoch045_fixed_rule_cases_min_pt": 5
+    },
+    "final_size_visual_inspection": "PASS"
+  }
+}
