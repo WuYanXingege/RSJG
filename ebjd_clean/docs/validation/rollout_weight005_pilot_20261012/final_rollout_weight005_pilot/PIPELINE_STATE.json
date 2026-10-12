@@ -1,0 +1,225 @@
+{
+  "completed_at": "2026-10-12T17:21:30Z",
+  "control_policy": "reuse_prevalidated_goal1_rollout020",
+  "current_stage": "cpu_final_analysis",
+  "execution_commit": "ba2adb2919e18edb68ab4d63088b06b50d302462",
+  "final_result_receipt": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/analysis/FINAL_RESULT_RECEIPT.json",
+  "schema": "ebjd-rollout-weight005-pilot-pipeline-v1",
+  "source_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009/hotel/3101/none/hotel_main_seed3101_9ecde66_speed_20261009/epoch_045.pt",
+  "source_checkpoint_sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+  "stages": [
+    {
+      "decision": "REUSE",
+      "name": "control_reuse_prevalidation",
+      "receipt": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/CONTROL_REUSE_RECEIPT.json",
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T13:48:08Z"
+    },
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "-m",
+        "ebjd.train",
+        "--config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/materialized_configs/CANDIDATE_ROLLOUT_WEIGHT_005.yaml",
+        "--objective-fork-from",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009/hotel/3101/none/hotel_main_seed3101_9ecde66_speed_20261009/epoch_045.pt",
+        "--objective-fork-from-sha256",
+        "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+        "--objective-fork-contract",
+        "rollout_weight_end_005",
+        "--max-epochs-this-run",
+        "5",
+        "--absolute-stop-epoch",
+        "50",
+        "--run-id",
+        "hotel_epoch45_candidate_rollout005_e46_50_ba2adb2_20261012"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/logs/candidate_train.log",
+      "name": "candidate_train",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T13:48:08Z"
+    },
+    {
+      "elapsed_seconds": 11679.942444250919,
+      "name": "candidate_train",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T17:02:48Z"
+    },
+    {
+      "name": "candidate_validate",
+      "receipt": {
+        "active_rollout_weight_max_abs_deviation": 1.3877787807814457e-17,
+        "checkpoint_sha256": {
+          "best_joint_short.pt": "1cf7724cc0b980e37bfacf603f9b74e758647d725a4fa08e11fb4926254f03eb",
+          "best_marginal_short.pt": "74768a0ed31ab38121dfbdef65813c3b33c43e1b3aa385344a5dfc0f4a2abb12",
+          "epoch_046.pt": "ab9228dbc9978bc40bb31ff69e015163c1ad65aaa4eb3ea5042afefc19f5461a",
+          "epoch_047.pt": "dcfd9e2fc449c716a286e2c8d3df46d21057db386b4d481aad3cac9d123d7c77",
+          "epoch_048.pt": "a59ddd50ab9159fddb790aede858a4ddbb0a9e39c130cc889773eea80069c52d",
+          "epoch_049.pt": "132774aa4fb97223a91b9e85ddd9fe8e6603c2d9535a776a7386100182268100",
+          "epoch_050.pt": "26e7551e1afe868ca0e6faf203cae3a0d1a440e51d0c4bb87d5e1bebb0663497",
+          "last.pt": "92759ca40ddf5bcb3eed3446733c457c492f645e50fdb7f4019fec9457742c06",
+          "least_violation_short.pt": "5e766a7df48a2f12af93c6057a17bc2e488e96b4d6b8d1fffc89a0e6cf7f07a2"
+        },
+        "checkpointed_rollout_group_fraction_by_epoch": [
+          {
+            "epoch": 46,
+            "mean": 0.16698232323232332
+          },
+          {
+            "epoch": 47,
+            "mean": 0.17910447761194032
+          },
+          {
+            "epoch": 48,
+            "mean": 0.17361111111111108
+          },
+          {
+            "epoch": 49,
+            "mean": 0.13277363184079602
+          },
+          {
+            "epoch": 50,
+            "mean": 0.15246212121212122
+          }
+        ],
+        "config_hash": "d754ceef34d56f87a1a02fb02385a964bfa41da2e5f7c67afe50a169050cd2e3",
+        "effective_coefficient_max_abs_deviation": 5.551115123125783e-17,
+        "epoch50_sha256": "26e7551e1afe868ca0e6faf203cae3a0d1a440e51d0c4bb87d5e1bebb0663497",
+        "epoch_wall_seconds": [
+          2378.1303650231566,
+          2287.825792846037,
+          2393.2956913439557,
+          2353.697407922009,
+          2262.9342077709734
+        ],
+        "execution_profile": {
+          "physical_group_max_agent_slots": 96,
+          "physical_group_max_padding_ratio": 1.5,
+          "physical_group_max_scenes": 4,
+          "rollout_block_checkpointing": false,
+          "rollout_uncheckpointed_max_agent_slots": 32,
+          "scene_compaction": true,
+          "scene_forward_chunk": 1,
+          "strategy": "small_group_uncheckpoint_v1"
+        },
+        "first_update": 11971,
+        "goal_v_weight": 1.0,
+        "last_update": 13300,
+        "peak_cuda_allocated_bytes": 10746306048,
+        "projection_active_updates": 31,
+        "rollout_compensation_max_abs_deviation": 8.881784197001252e-16,
+        "rollout_updates": 332,
+        "rollout_weight_end": 0.05,
+        "run_directory": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/runs/hotel/3101/none/hotel_epoch45_candidate_rollout005_e46_50_ba2adb2_20261012",
+        "updates": 1330
+      },
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T17:02:49Z"
+    },
+    {
+      "name": "training_pairing_and_control_reuse",
+      "receipt": {
+        "compared_fields": [
+          "epoch",
+          "update",
+          "rollout_update",
+          "logical_scene_id_sha256",
+          "random_draw_sha256",
+          "learning_rate",
+          "unet_learning_rate"
+        ],
+        "mismatches": [],
+        "status": "PASSED",
+        "updates_compared": 1330
+      },
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T17:02:49Z"
+    },
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_rollout005_pilot_worktree/ebjd_clean/scripts/export_epoch45_diagnostic_bank.py",
+        "--config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/materialized_configs/CANDIDATE_ROLLOUT_WEIGHT_005.yaml",
+        "--checkpoint",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/runs/hotel/3101/none/hotel_epoch45_candidate_rollout005_e46_50_ba2adb2_20261012/epoch_050.pt",
+        "--output-root",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/banks",
+        "--expected-checkpoint-sha256",
+        "26e7551e1afe868ca0e6faf203cae3a0d1a440e51d0c4bb87d5e1bebb0663497",
+        "--expected-config-sha256",
+        "eff3a77bb54f70b45839f7036167e4b3a061cf9286ae90790823244cd0b30bd3",
+        "--expected-manifest-sha256",
+        "84c95cb431caf7214d1b85e8e7dbfeaf48c9fe301b1cda7f3201c3e8cf199c78",
+        "--bank-name",
+        "candidate",
+        "--model-label",
+        "EBJD_rollout005_candidate_epoch50",
+        "--seeds",
+        "2035",
+        "2036",
+        "2037",
+        "2038",
+        "2039",
+        "--device",
+        "cuda",
+        "--resume"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/logs/candidate_bank_export.log",
+      "name": "candidate_bank_export",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T17:02:49Z"
+    },
+    {
+      "elapsed_seconds": 611.7054880498908,
+      "name": "candidate_bank_export",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T17:13:00Z"
+    },
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_rollout005_pilot_worktree/ebjd_clean/scripts/analyze_rollout_weight005_pilot_banks.py",
+        "--gdts-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/evaluations/hotel_epoch045_diagnostic_20261012/banks/gdts",
+        "--epoch45-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/evaluations/hotel_epoch045_diagnostic_20261012/banks/ebjd",
+        "--control-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/banks/control",
+        "--candidate-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/banks/candidate",
+        "--control-reuse-receipt",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/CONTROL_REUSE_RECEIPT.json",
+        "--training-receipt",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/TRAINING_AND_PAIRING_RECEIPT.json",
+        "--preflight-receipt",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/preflight/ROLLOUT_WEIGHT005_REAL_CUDA_PREFLIGHT.json",
+        "--output-dir",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/analysis",
+        "--archive-dir",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_rollout005_pilot_worktree/ebjd_clean/docs/validation/rollout_weight005_pilot_20261012/final_rollout_weight005_pilot"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/pipeline/logs/cpu_final_analysis.log",
+      "name": "cpu_final_analysis",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T17:13:00Z"
+    },
+    {
+      "elapsed_seconds": 509.583889109781,
+      "name": "cpu_final_analysis",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T17:21:30Z"
+    }
+  ],
+  "started_at": "2026-10-12T13:48:07Z",
+  "status": "COMPLETED",
+  "supervisor_pid": 1413498,
+  "updated_at": "2026-10-12T17:21:30Z"
+}

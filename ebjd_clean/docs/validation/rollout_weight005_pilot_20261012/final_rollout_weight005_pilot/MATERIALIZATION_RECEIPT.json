@@ -1,0 +1,50 @@
+{
+  "candidate": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/materialized_configs/CANDIDATE_ROLLOUT_WEIGHT_005.yaml",
+  "candidate_config_hash": "d754ceef34d56f87a1a02fb02385a964bfa41da2e5f7c67afe50a169050cd2e3",
+  "candidate_semantic_hash": "9f5a9ff27f144facf6e1cb040ebd0464b2eb2e46a243fd03c046c92c99a5847a",
+  "disk_round_trip_exact": true,
+  "execution_profile": {
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "physical_group_max_scenes": 4,
+    "rollout_block_checkpointing": false,
+    "rollout_uncheckpointed_max_agent_slots": 32,
+    "scene_compaction": true,
+    "scene_forward_chunk": 1,
+    "strategy": "small_group_uncheckpoint_v1"
+  },
+  "normalized_paired_arm_differences": {
+    "training.rollout_weight_end": {
+      "new": 0.05,
+      "old": 0.2
+    }
+  },
+  "reused_control_config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/materialized_configs/CONTROL_GOAL_WEIGHT_1.yaml",
+  "reused_control_config_hash": "9f564115df5632e394d16106ba7f76c572c376e5cb94d0b6a25a4c639dac0f35",
+  "schema": "ebjd-rollout-weight005-materialization-v1",
+  "sole_semantic_change": "training.rollout_weight_end: 0.20 -> 0.05",
+  "source_commit": "ba2adb2919e18edb68ab4d63088b06b50d302462",
+  "source_differences": {
+    "experiment.source_commit": {
+      "new": "ba2adb2919e18edb68ab4d63088b06b50d302462",
+      "old": "9ecde66aa86f7a577fa29bd94b0168ae735a1f16"
+    },
+    "paths.output_root": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_rollout_weight005_pair_ba2adb2_20261012/runs",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009"
+    },
+    "training.execution_strategy": {
+      "new": "small_group_uncheckpoint_v1",
+      "old": "compact_grouped_v1"
+    },
+    "training.rollout_uncheckpointed_max_agent_slots": {
+      "new": 32,
+      "old": "<MISSING>"
+    },
+    "training.rollout_weight_end": {
+      "new": 0.05,
+      "old": 0.2
+    }
+  },
+  "training_launched": false
+}
