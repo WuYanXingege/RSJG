@@ -27,7 +27,11 @@ from validate_goal_weight_wiring import (
 
 
 LOSS_TOLERANCE = 2e-5
-GRADIENT_RELATIVE_TOLERANCE = 2e-5
+# Each arm reconstructs the same BF16 graph independently.  The scalar loss
+# identity is checked at the strict tolerance above; CUDA BF16 backward can
+# differ slightly across repeated passes, so the vector identity uses a
+# separately reported relative-norm tolerance.
+GRADIENT_RELATIVE_TOLERANCE = 3e-3
 
 
 def make_config(payload: dict, rollout_weight: float) -> dict:
@@ -271,6 +275,12 @@ def main() -> None:
         "formal_weights": {"control": 0.20, "candidate": 0.05},
         "formal_effective_coefficients": {"control": 0.80, "candidate": 0.20},
         "zero_weight_arm_role": "diagnostic gradient decomposition only",
+        "tolerances": {
+            "loss_formula_absolute": LOSS_TOLERANCE,
+            "bf16_repeated_backward_gradient_relative_norm": (
+                GRADIENT_RELATIVE_TOLERANCE),
+            "projection_dot": PROJECTION_TOLERANCE,
+        },
         "elapsed_seconds": time.perf_counter() - started,
         "results": results,
         "diagnostic_optimizer_updates_saved": 0,
