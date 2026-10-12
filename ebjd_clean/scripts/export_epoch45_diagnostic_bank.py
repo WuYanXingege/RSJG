@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Export the frozen EBJD P20 trajectories without altering inference."""
+"""Export a SHA-bound frozen EBJD P20 trajectory bank without training."""
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import subprocess
@@ -54,12 +55,32 @@ def complete_seed(path: Path, expected_scenes: int) -> bool:
         return False
 
 
+def generator_state_sha256(generator: torch.Generator) -> str:
+    """Hash generator state without consuming or otherwise changing RNG."""
+    state = generator.get_state().detach().cpu().contiguous().numpy()
+    return hashlib.sha256(state.tobytes()).hexdigest()
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Export frozen EBJD epoch-45 predictions as portable banks")
+        description="Export a frozen EBJD checkpoint as a portable P20 bank")
     parser.add_argument("--config", required=True)
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--output-root", required=True)
+    parser.add_argument(
+        "--expected-checkpoint-sha256", default=EXPECTED_CHECKPOINT_SHA256,
+        help="required byte identity; defaults to the frozen epoch-45 source")
+    parser.add_argument(
+        "--expected-config-sha256", default=EXPECTED_CONFIG_SHA256,
+        help="required config byte identity; defaults to the epoch-45 config")
+    parser.add_argument(
+        "--expected-manifest-sha256", default=EXPECTED_MANIFEST_SHA256)
+    parser.add_argument(
+        "--bank-name", default="ebjd",
+        help="output subdirectory name, e.g. control or candidate")
+    parser.add_argument(
+        "--model-label", default="EBJD",
+        help="descriptive manifest label; does not affect inference")
     parser.add_argument("--seeds", nargs="+", type=int,
                         default=[2035, 2036, 2037, 2038, 2039])
     parser.add_argument("--device", default="cuda")
@@ -70,13 +91,16 @@ def main() -> None:
     started = time.monotonic()
     config_path = Path(args.config).resolve()
     checkpoint_path = Path(args.checkpoint).resolve()
-    if sha256_file(checkpoint_path) != EXPECTED_CHECKPOINT_SHA256:
-        raise RuntimeError("EBJD epoch-45 checkpoint SHA256 mismatch")
-    if sha256_file(config_path) != EXPECTED_CONFIG_SHA256:
+    checkpoint_sha256 = sha256_file(checkpoint_path)
+    config_sha256 = sha256_file(config_path)
+    if checkpoint_sha256 != args.expected_checkpoint_sha256:
+        raise RuntimeError("EBJD checkpoint SHA256 mismatch")
+    if config_sha256 != args.expected_config_sha256:
         raise RuntimeError("frozen EBJD config SHA256 mismatch")
     config = load_config(config_path)
     manifest_path = Path(config["paths"]["test_manifest"]).resolve()
-    if sha256_file(manifest_path) != EXPECTED_MANIFEST_SHA256:
+    manifest_sha256 = sha256_file(manifest_path)
+    if manifest_sha256 != args.expected_manifest_sha256:
         raise RuntimeError("EBJD test manifest SHA256 mismatch")
     dataset = SceneManifestDataset(manifest_path)
     scene_limit = len(dataset) if args.max_scenes is None else min(
@@ -99,7 +123,9 @@ def main() -> None:
     worlds, steps = int(evaluation["worlds"]), int(evaluation["steps"])
     if (worlds, steps) != (20, 20):
         raise RuntimeError("diagnostic export is frozen to P20/DDIM20")
-    output_root = Path(args.output_root).resolve() / "ebjd"
+    if not args.bank_name or Path(args.bank_name).name != args.bank_name:
+        raise ValueError("--bank-name must be one non-empty path component")
+    output_root = Path(args.output_root).resolve() / args.bank_name
     output_root.mkdir(parents=True, exist_ok=True)
     repository = Path(__file__).resolve().parents[2]
     seed_manifests = []
@@ -115,14 +141,19 @@ def main() -> None:
             generator = torch.Generator(device=device).manual_seed(int(seed))
             files = []
             metric_scenes = []
+            rng_chain = hashlib.sha256()
             seed_start = time.monotonic()
             for scene_index, batch in enumerate(loader):
                 if scene_index >= scene_limit:
                     break
                 batch = batch.to(device)
+                rng_before = generator_state_sha256(generator)
                 prediction, goal = predict(
                     model, batch.observed, batch.semantic_maps, batch.valid,
                     worlds, steps, generator)
+                rng_after = generator_state_sha256(generator)
+                rng_chain.update(
+                    f"{scene_index}:{rng_before}:{rng_after}\n".encode("ascii"))
                 valid = batch.valid[0]
                 predicted = prediction[0, :, valid].float().cpu().numpy()
                 explicit_goal = goal[0, :, valid].float().cpu().numpy()
@@ -155,6 +186,8 @@ def main() -> None:
                     "original_batch_size": 1,
                     "original_world_order": list(range(worlds)),
                     "goal_final_max_abs_m": goal_difference,
+                    "rng_state_sha256_before": rng_before,
+                    "rng_state_sha256_after": rng_after,
                 })
                 if (scene_index + 1) % 50 == 0:
                     print(
@@ -163,17 +196,17 @@ def main() -> None:
             metrics = summarize_scenes(metric_scenes)
             seed_payload = {
                 "schema": SEED_MANIFEST_SCHEMA, "bank_schema": BANK_SCHEMA,
-                "status": "COMPLETED", "model": "EBJD", "fold": "hotel",
+                "status": "COMPLETED", "model": args.model_label, "fold": "hotel",
                 "training_seed": 3101, "inference_seed": int(seed),
                 "worlds": worlds, "steps": steps, "scene_count": len(files),
                 "agent_occurrences": int(sum(x["valid_agents"] for x in files)),
                 "unit": "m", "dtype": "float32", "dt_seconds": 0.4,
                 "checkpoint": str(checkpoint_path),
-                "checkpoint_sha256": EXPECTED_CHECKPOINT_SHA256,
+                "checkpoint_sha256": checkpoint_sha256,
                 "config": str(config_path),
-                "config_sha256": EXPECTED_CONFIG_SHA256,
+                "config_sha256": config_sha256,
                 "source_manifest": str(manifest_path),
-                "source_manifest_sha256": EXPECTED_MANIFEST_SHA256,
+                "source_manifest_sha256": manifest_sha256,
                 "execution_commit": git_head(repository),
                 "model_definition_commit": config["experiment"]["source_commit"],
                 "inference_precision": "model FP32; sampler/geometry FP32",
@@ -182,6 +215,7 @@ def main() -> None:
                 "sampler": "native EBJD deterministic DDIM20; B=1; P=20",
                 "coordinate_conversion": "none; native metre-space output",
                 "optimizer_updates": 0, "forward_calls": len(files),
+                "rng_state_chain_sha256": rng_chain.hexdigest(),
                 "elapsed_seconds": time.monotonic() - seed_start,
                 "replay_metrics": metrics, "files": files,
             }
@@ -196,7 +230,7 @@ def main() -> None:
     else:
         peak = 0
     index = {
-        "schema": "ebjd-trajectory-bank-index-v1", "model": "EBJD",
+        "schema": "ebjd-trajectory-bank-index-v1", "model": args.model_label,
         "status": "COMPLETED", "optimizer_updates": 0,
         "seed_manifests": [{
             "path": str(path.relative_to(output_root)),

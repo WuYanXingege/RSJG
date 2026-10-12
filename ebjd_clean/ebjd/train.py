@@ -609,8 +609,9 @@ def main() -> None:
         raise ValueError("--max-epochs-this-run must be positive")
     if args.absolute_stop_epoch is not None and args.absolute_stop_epoch < 1:
         raise ValueError("--absolute-stop-epoch must be positive")
-    if args.migration_only and not args.resume_from:
-        raise ValueError("--migration-only requires --resume-from")
+    if args.migration_only and not (args.resume_from or args.objective_fork_from):
+        raise ValueError(
+            "--migration-only requires --resume-from or --objective-fork-from")
     config = load_config(args.config)
     if not args.smoke:
         verify_formal_baseline_binding(config)
