@@ -137,4 +137,3 @@ cd /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_epoch45_diag
 结果为 `44 passed`。测试覆盖独立数学参考、marginal/joint 差异、ADE/FDE 不同最佳 world、各种排列不变量、mask/padding、ID 重排、空分层、K 单调性、goal/末步、单位只转换一次、shape/P=20、NaN/Inf、身份重复/缺失及哈希损坏拒绝。
 
 图使用 Python/matplotlib，病例选择规则预先固定，K 曲线显示 5–95% 随机子集分位；PDF/SVG 保持可编辑文本，另有 300 dpi PNG。三图均通过 panel alignment、渲染碰撞、PDF 文字和最终尺寸检查。TIFF 未生成，因为本轮是网页诊断归档而非投稿生产包。详情见 [FIGURE_QA.json](validation/epoch045_diagnostic_20261012/FIGURE_QA.json)。
-
