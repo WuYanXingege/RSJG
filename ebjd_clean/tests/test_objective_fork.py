@@ -12,7 +12,7 @@ def fixture_payload(tmp_path):
         "experiment": {"source_commit": "old"},
         "paths": {"output_root": "/old"},
         "objectives": {"goal_v_weight": 1.0, "bridge_v_weight": 1.0},
-        "training": {"epochs": 100},
+        "training": {"epochs": 100, "scene_forward_chunk": 1},
     }
     fixed = {
         "implementation_base": "base", "fold": "hotel", "seed": 3101,
@@ -60,6 +60,27 @@ def test_goal_weight_fork_is_exactly_whitelisted(tmp_path):
 def test_goal_weight_fork_rejects_any_second_semantic_change(tmp_path):
     payload, path, config, identity = fixture_payload(tmp_path)
     config["objectives"]["bridge_v_weight"] = 0.5
+    identity["config_hash"] = config_hash(config)
+    with pytest.raises(ValueError, match="frozen contract"):
+        validate_objective_fork_payload(
+            payload, path, file_sha256(path), config, identity, "none",
+            "goal_v_weight_2")
+
+
+@pytest.mark.parametrize(
+    ("section", "key", "value"),
+    [
+        ("training", "new_module_lr", 5e-5),
+        ("objectives", "rollout_joint_ade_weight", 0.5),
+        ("evaluation", "worlds", 8),
+        ("diffusion", "training_noise_bins", 50),
+    ],
+)
+def test_goal_weight_fork_rejects_lr_objective_world_or_step_changes(
+    tmp_path, section, key, value,
+):
+    payload, path, config, identity = fixture_payload(tmp_path)
+    config.setdefault(section, {})[key] = value
     identity["config_hash"] = config_hash(config)
     with pytest.raises(ValueError, match="frozen contract"):
         validate_objective_fork_payload(

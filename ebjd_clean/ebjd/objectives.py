@@ -20,12 +20,40 @@ def _masked_mean(value: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
 def diffusion_loss(
     final: torch.Tensor, coarse: torch.Tensor, target: torch.Tensor,
     valid: torch.Tensor, coarse_weight: float = 0.25,
-) -> torch.Tensor:
-    def split_loss(prediction: torch.Tensor) -> torch.Tensor:
+    goal_weight: float = 1.0, return_components: bool = False,
+) -> torch.Tensor | tuple[torch.Tensor, dict[str, torch.Tensor]]:
+    """Weighted endpoint/bridge velocity loss with unweighted diagnostics.
+
+    The ``goal_weight == 1`` branch deliberately preserves the historical
+    floating-point operation order.  Endpoint and bridge terms keep their
+    separate masked means, so two endpoint coordinates are not diluted by the
+    22 bridge coordinates.
+    """
+    def split_loss(
+        prediction: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
         goal = _masked_mean((prediction[..., 11, :] - target[..., 11, :]).square(), valid[:, None])
         bridge = _masked_mean((prediction[..., :11, :] - target[..., :11, :]).square(), valid[:, None])
-        return goal + bridge
-    return split_loss(final) + float(coarse_weight) * split_loss(coarse)
+        return goal, bridge
+
+    fine_goal, fine_bridge = split_loss(final)
+    coarse_goal, coarse_bridge = split_loss(coarse)
+    if float(goal_weight) == 1.0:
+        loss = (fine_goal + fine_bridge) + float(coarse_weight) * (
+            coarse_goal + coarse_bridge)
+    else:
+        loss = (
+            float(goal_weight) * fine_goal + fine_bridge
+            + float(coarse_weight) * (
+                float(goal_weight) * coarse_goal + coarse_bridge))
+    if not return_components:
+        return loss
+    return loss, {
+        "goal_fine_unweighted": fine_goal,
+        "bridge_fine_unweighted": fine_bridge,
+        "goal_coarse_unweighted": coarse_goal,
+        "bridge_coarse_unweighted": coarse_bridge,
+    }
 
 
 def supervision_edges(

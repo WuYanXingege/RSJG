@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 import os
 import random
+import hashlib
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -39,6 +40,7 @@ class TrainerOptions:
     weight_decay: float = 1e-4
     gradient_clip_norm: float = 5.0
     noise_bins: int = 100
+    goal_v_weight: float = 1.0
     coarse_v_weight: float = 0.25
     geometry_weight: float = 0.05
     map_weight: float = 0.10
@@ -207,6 +209,26 @@ class EBJDTrainer:
         self.use_bf16 = (
             wants_bf16 and next(model.parameters()).is_cuda
             and torch.cuda.is_bf16_supported())
+        self._last_random_draw_sha256: str | None = None
+
+    @staticmethod
+    def _random_draw_digest(draws: BatchRandomDraws) -> str:
+        """Hash already-drawn tensors without consuming or changing RNG state."""
+        digest = hashlib.sha256()
+        for label, value in (
+            ("time", draws.time),
+            ("diffusion_noise", draws.diffusion_noise),
+            ("rollout_initial", draws.rollout_initial),
+        ):
+            digest.update(label.encode("ascii"))
+            if value is None:
+                digest.update(b"<NONE>")
+                continue
+            cpu = value.detach().to(device="cpu").contiguous()
+            digest.update(str(cpu.dtype).encode("ascii"))
+            digest.update(str(tuple(cpu.shape)).encode("ascii"))
+            digest.update(cpu.numpy().tobytes())
+        return digest.hexdigest()
 
     def _rollout_weight(self, epoch: int) -> float:
         if epoch < self.options.rollout_start_epoch:
@@ -323,9 +345,11 @@ class EBJDTrainer:
                 final_clean = alpha * latent_noisy.float() - sigma * final.float()
                 final_trajectory, _ = self.model.representation.decode(
                     final_clean, context.baseline)
-                loss_diff = diffusion_loss(
+                loss_diff, diffusion_components = diffusion_loss(
                     final, coarse, velocity_target, batch.valid,
-                    coarse_weight=self.options.coarse_v_weight)
+                    coarse_weight=self.options.coarse_v_weight,
+                    goal_weight=self.options.goal_v_weight,
+                    return_components=True)
                 loss_geo = loss_diff.new_zeros(())
                 if self.options.use_geometry_loss:
                     per_scene_geo = 0.5 * (
@@ -398,6 +422,16 @@ class EBJDTrainer:
             total_gradient = gradients(total, self.parameters)
         logs = {
             "loss": float(total.detach()), "diffusion": float(loss_diff.detach()),
+            "weighted_diffusion": float(loss_diff.detach()),
+            "diffusion_goal_fine_unweighted": float(
+                diffusion_components["goal_fine_unweighted"].detach()),
+            "diffusion_bridge_fine_unweighted": float(
+                diffusion_components["bridge_fine_unweighted"].detach()),
+            "diffusion_goal_coarse_unweighted": float(
+                diffusion_components["goal_coarse_unweighted"].detach()),
+            "diffusion_bridge_coarse_unweighted": float(
+                diffusion_components["bridge_coarse_unweighted"].detach()),
+            "active_goal_v_weight": float(self.options.goal_v_weight),
             "geometry": float(loss_geo.detach()), "map": float(loss_map.detach()),
             "rollout": float(loss_roll.detach()),
             "soft_marginal_ade": float(marginal_a.detach()),
@@ -424,6 +458,7 @@ class EBJDTrainer:
         batch_size = int(logical_batch.observed.shape[0])
         agent_weights, scene_weights = logical_scene_weights(logical_batch.valid)
         draws = self._prepare_batch_draws(logical_batch, do_rollout)
+        self._last_random_draw_sha256 = self._random_draw_digest(draws)
         if self.options.scene_compaction:
             groups = contiguous_scene_groups(
                 logical_batch.valid,
@@ -439,6 +474,12 @@ class EBJDTrainer:
         grad_f = zeros_for(self.parameters)
         aggregate = {
             "loss": 0.0, "diffusion": 0.0, "geometry": 0.0, "map": 0.0,
+            "weighted_diffusion": 0.0,
+            "diffusion_goal_fine_unweighted": 0.0,
+            "diffusion_bridge_fine_unweighted": 0.0,
+            "diffusion_goal_coarse_unweighted": 0.0,
+            "diffusion_bridge_coarse_unweighted": 0.0,
+            "active_goal_v_weight": 0.0,
             "rollout": 0.0, "soft_marginal_ade": 0.0,
             "soft_marginal_fde": 0.0,
         }
@@ -469,7 +510,15 @@ class EBJDTrainer:
                 self._add_gradients_(grad_a, gradients_a)
                 self._add_gradients_(grad_f, gradients_f)
             aggregate["loss"] += logs["loss"]
-            aggregate["diffusion"] += agent_weight * logs["diffusion"]
+            for name in (
+                "diffusion", "weighted_diffusion",
+                "diffusion_goal_fine_unweighted",
+                "diffusion_bridge_fine_unweighted",
+                "diffusion_goal_coarse_unweighted",
+                "diffusion_bridge_coarse_unweighted",
+                "active_goal_v_weight",
+            ):
+                aggregate[name] += agent_weight * logs[name]
             aggregate["map"] += agent_weight * logs["map"]
             for name in (
                 "geometry", "rollout", "soft_marginal_ade",
@@ -503,11 +552,18 @@ class EBJDTrainer:
         grad_a = zeros_for(self.parameters)
         grad_f = zeros_for(self.parameters)
         aggregate: dict[str, float] = {}
+        input_digest = hashlib.sha256()
+        random_draw_digest = hashlib.sha256()
         scale = 1 / len(microbatches)
         for batch in microbatches:
+            input_digest.update("\0".join(batch.scene_ids).encode("utf-8"))
             if self.options.scene_forward_chunk:
                 gradients_total, gradients_a, gradients_f, logs = (
                     self._scene_chunked_batch_gradients(batch, epoch, do_rollout))
+                if self._last_random_draw_sha256 is None:
+                    raise AssertionError("formal scene-chunked draw digest is missing")
+                random_draw_digest.update(bytes.fromhex(
+                    self._last_random_draw_sha256))
             else:
                 physical_batch = (
                     batch if batch.observed.device == self.device else batch.to(self.device))
@@ -520,6 +576,7 @@ class EBJDTrainer:
                 aggregate[name] = aggregate.get(name, 0) + scale * value
             del gradients_total, gradients_a, gradients_f, logs
         with record_function("ebjd.adamw_proposal"):
+            total_gradient_norm_before_clip = float(list_norm(total_grad))
             candidate, pending = self.optimizer.propose(
                 clip_global_norm(total_grad, self.options.gradient_clip_norm))
         candidate_dot_a = float(list_dot(grad_a, candidate)) if do_rollout else 0.0
@@ -552,6 +609,10 @@ class EBJDTrainer:
             "parameter_norm_after": parameter_norm_after,
             "learning_rate": self.optimizer.lr,
             "unet_learning_rate": self.optimizer.unet_lr,
+            "total_gradient_norm_before_clip": total_gradient_norm_before_clip,
+            "logical_scene_id_sha256": input_digest.hexdigest(),
+            "random_draw_sha256": random_draw_digest.hexdigest()
+            if self.options.scene_forward_chunk else "not-recorded-legacy-path",
             "scene_forward_chunk": float(self.options.scene_forward_chunk),
             "scene_compaction": float(self.options.scene_compaction),
             "physical_group_max_scenes": float(

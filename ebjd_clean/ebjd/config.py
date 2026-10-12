@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from copy import deepcopy
 from pathlib import Path
 
@@ -231,7 +232,6 @@ def validate_supported_config(config: dict) -> None:
         ("diffusion", "exact_terminal_snr_zero", True),
         ("diffusion", "shared_time_within_scene", True),
         ("diffusion", "sampler", "ddim"), ("diffusion", "ddim_eta", 0.0),
-        ("objectives", "goal_v_weight", 1.0),
         ("objectives", "bridge_v_weight", 1.0),
         ("objectives", "relative_velocity_factor", 0.5),
         ("objectives", "rollout_joint_ade_weight", 1.0),
@@ -256,6 +256,16 @@ def validate_supported_config(config: dict) -> None:
             "geometry_loss_off", "rollout_loss_off", "actual_step_constraint_off"]),
     ):
         _require(config, section, key, expected)
+    goal_weight = config["objectives"].get("goal_v_weight")
+    if (
+        isinstance(goal_weight, bool)
+        or not isinstance(goal_weight, (int, float))
+        or not math.isfinite(float(goal_weight))
+        or float(goal_weight) not in {1.0, 2.0}
+    ):
+        raise ValueError(
+            "objectives.goal_v_weight must be the certified numeric value "
+            "1.0 or 2.0")
     precision = config["training"].get("mixed_precision")
     if precision not in ("fp32", "bf16_with_fp32_geometry_loss_optimizer"):
         raise ValueError(f"unsupported training.mixed_precision={precision!r}")
@@ -420,6 +430,7 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
         weight_decay=float(training["weight_decay"]),
         gradient_clip_norm=float(training["total_gradient_clip_norm"]),
         noise_bins=int(diffusion["training_noise_bins"]),
+        goal_v_weight=float(objective["goal_v_weight"]),
         coarse_v_weight=float(objective["coarse_v_weight"]),
         geometry_weight=float(objective["relative_motion_weight"]),
         map_weight=float(objective["map_bce_weight"]),

@@ -5,9 +5,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import random
 import subprocess
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -96,6 +98,9 @@ def parse_args() -> argparse.Namespace:
         "--max-epochs-this-run", type=int,
         help="execution bound; preserve the original epoch-indexed LR schedule")
     parser.add_argument(
+        "--absolute-stop-epoch", type=int,
+        help="persistent inclusive epoch boundary retained across interruption resumes")
+    parser.add_argument(
         "--migration-only", action="store_true",
         help="validate --resume-from, write and reload the migrated boundary, then exit")
     parser.add_argument("--run-id", help="new unique run id; defaults to UTC-like local timestamp")
@@ -116,6 +121,52 @@ def _atomic_json(path: Path, payload: dict) -> None:
     temporary.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     os.replace(temporary, path)
+
+
+def resolve_stop_epoch(
+    start_epoch: int, schedule_epochs: int,
+    max_epochs_this_run: int | None, absolute_stop_epoch: int | None,
+) -> int:
+    """Resolve a bounded run without ever extending an absolute contract."""
+    if start_epoch < 1 or schedule_epochs < 1:
+        raise ValueError("epoch indices and schedule length must be positive")
+    stop = int(schedule_epochs)
+    if absolute_stop_epoch is not None:
+        if absolute_stop_epoch < 1 or absolute_stop_epoch > schedule_epochs:
+            raise ValueError("absolute stop epoch must lie within the LR schedule")
+        if start_epoch > absolute_stop_epoch + 1:
+            raise ValueError("resume starts beyond the persistent absolute stop epoch")
+        stop = min(stop, int(absolute_stop_epoch))
+    if max_epochs_this_run is not None:
+        if max_epochs_this_run < 1:
+            raise ValueError("max epochs this run must be positive")
+        stop = min(stop, start_epoch + int(max_epochs_this_run) - 1)
+    return stop
+
+
+def new_short_selection(start_epoch: int, stop_epoch: int) -> dict:
+    return {
+        "definition": {
+            "best_joint_short": "minimum JADE+0.5*JFDE within epochs 46-50",
+            "best_marginal_short": "minimum minADE+minFDE within epochs 46-50",
+            "least_violation_short": (
+                "minimum summed positive marginal excess over bound baseline "
+                "within epochs 46-50"),
+        },
+        "start_epoch": int(start_epoch), "stop_epoch": int(stop_epoch),
+        "best_joint_short": None, "best_marginal_short": None,
+        "least_violation_short": None,
+    }
+
+
+def short_role_scores(metrics: dict, baseline: dict, tolerance: float) -> dict:
+    return {
+        "best_joint_short": float(metrics["JADE"] + 0.5 * metrics["JFDE"]),
+        "best_marginal_short": float(metrics["minADE"] + metrics["minFDE"]),
+        "least_violation_short": float(
+            max(0.0, metrics["minADE"] - float(baseline["minADE"]) - tolerance)
+            + max(0.0, metrics["minFDE"] - float(baseline["minFDE"]) - tolerance)),
+    }
 
 
 def _tree_equal(left, right) -> bool:
@@ -458,14 +509,21 @@ def validate_objective_fork_payload(
     if contract not in contracts:
         raise ValueError(f"unsupported objective fork contract: {contract!r}")
     differences = config_differences(origin_config, config)
-    allowed = {
-        "experiment.source_commit", "paths.output_root",
-        *contracts[contract],
-    }
-    if set(differences) != allowed:
+    identity_changes = {"experiment.source_commit", "paths.output_root"}
+    execution_fields = {".".join(path) for path in SEMANTIC_CONFIG_EXCLUSIONS}
+    execution_fields -= identity_changes
+    semantic_changes = set(contracts[contract])
+    actual = set(differences)
+    allowed = identity_changes | execution_fields | semantic_changes
+    if not identity_changes.issubset(actual) or actual - allowed:
         raise ValueError(
-            "objective fork differences must equal the frozen contract: "
-            f"expected={sorted(allowed)}, actual={sorted(differences)}")
+            "objective fork differences violate the categorized frozen contract: "
+            f"required_identity={sorted(identity_changes)}, "
+            f"allowed_execution={sorted(execution_fields)}, "
+            f"allowed_semantic={sorted(semantic_changes)}, "
+            f"actual={sorted(differences)}")
+    if actual & semantic_changes != semantic_changes:
+        raise ValueError("objective fork is missing its sole semantic goal-weight change")
     for name, expected in contracts[contract].items():
         if differences[name] != expected:
             raise ValueError(
@@ -482,6 +540,7 @@ def validate_objective_fork_payload(
     if mismatched:
         raise ValueError(
             f"objective fork identity differs outside the contract: {sorted(mismatched)}")
+    migration_profile = validate_execution_migration_settings(config)
     return {
         "schema": "ebjd-controlled-objective-fork-v1",
         "contract": contract,
@@ -495,6 +554,13 @@ def validate_objective_fork_payload(
         "execution_source_commit": execution_identity["source_commit"],
         "execution_config_hash": execution_identity["config_hash"],
         "checked_config_diff": differences,
+        "categorized_changes": {
+            "identity": sorted(actual & identity_changes),
+            "execution": sorted(actual & execution_fields),
+            "semantic": sorted(actual & semantic_changes),
+        },
+        "validated_execution_migration_profile": migration_profile,
+        "semantic_config_hash": semantic_config_hash(config),
         "full_state_policy": "model+optimizer+RNG+update+selection exact",
         "origin_tensor_audit": audit,
     }
@@ -541,6 +607,8 @@ def main() -> None:
             "--objective-fork-from")
     if args.max_epochs_this_run is not None and args.max_epochs_this_run < 1:
         raise ValueError("--max-epochs-this-run must be positive")
+    if args.absolute_stop_epoch is not None and args.absolute_stop_epoch < 1:
+        raise ValueError("--absolute-stop-epoch must be positive")
     if args.migration_only and not args.resume_from:
         raise ValueError("--migration-only requires --resume-from")
     config = load_config(args.config)
@@ -557,11 +625,6 @@ def main() -> None:
         Path(args.resume).resolve().parent.name if args.resume
         else datetime.now().strftime("%Y%m%d_%H%M%S"))
     identity = _identity(config, args.ablation, run_id, args.smoke)
-    if args.max_epochs_this_run is not None:
-        identity["bounded_training"] = {
-            "max_epochs_this_run": int(args.max_epochs_this_run),
-            "lr_schedule_total_epochs": int(config["training"]["epochs"]),
-        }
     checkpoint_payload = None
     migration_receipt = None
     objective_fork_receipt = None
@@ -602,6 +665,27 @@ def main() -> None:
                 "run_id": checkpoint_payload["run_identity"].get("run_id"),
                 "objective_fork_contract": args.objective_fork_contract,
             }
+    if args.absolute_stop_epoch is not None:
+        if checkpoint_payload is None:
+            raise ValueError("absolute stop contracts require an epoch-boundary resume")
+        saved_contract = checkpoint_payload.get("run_identity", {}).get(
+            "bounded_training") if args.resume else None
+        if saved_contract is not None:
+            if int(saved_contract.get("absolute_stop_epoch", -1)) != int(
+                    args.absolute_stop_epoch):
+                raise ValueError("resume absolute stop differs from the persisted contract")
+            identity["bounded_training"] = saved_contract
+        else:
+            identity["bounded_training"] = {
+                "origin_epoch": int(checkpoint_payload["epoch"]),
+                "absolute_stop_epoch": int(args.absolute_stop_epoch),
+                "lr_schedule_total_epochs": int(config["training"]["epochs"]),
+            }
+    elif args.max_epochs_this_run is not None:
+        identity["bounded_training"] = {
+            "max_epochs_this_run": int(args.max_epochs_this_run),
+            "lr_schedule_total_epochs": int(config["training"]["epochs"]),
+        }
     root = Path(config["paths"]["output_root"])
     output = root / identity["fold"] / str(seed) / args.ablation / run_id
     if args.resume:
@@ -696,23 +780,47 @@ def main() -> None:
         }, sort_keys=True), flush=True)
         return
     log_path = output / "train.jsonl"
-    stop_epoch = options.epochs
-    if args.max_epochs_this_run is not None:
-        stop_epoch = min(
-            stop_epoch, start_epoch + int(args.max_epochs_this_run) - 1)
-    short_roles = {
-        "definition": {
-            "best_joint_short": "minimum JADE+JFDE within this bounded run",
-            "best_marginal_short": "minimum minADE+minFDE within this bounded run",
-            "least_violation_short": (
-                "minimum summed positive marginal excess over bound baseline "
-                "within this bounded run"),
-        },
-        "start_epoch": start_epoch, "stop_epoch": stop_epoch,
-        "best_joint_short": None, "best_marginal_short": None,
-        "least_violation_short": None,
+    stop_epoch = resolve_stop_epoch(
+        start_epoch, options.epochs, args.max_epochs_this_run,
+        args.absolute_stop_epoch)
+    bounded = identity.get("bounded_training", {})
+    short_start_epoch = int(bounded.get("origin_epoch", start_epoch - 1)) + 1
+    short_stop_epoch = int(bounded.get("absolute_stop_epoch", stop_epoch))
+    short_path = output / "SHORT_RUN_SELECTION.json"
+    if args.resume and short_path.is_file():
+        short_roles = json.loads(short_path.read_text(encoding="utf-8"))
+        if (
+            int(short_roles.get("start_epoch", -1)) != short_start_epoch
+            or int(short_roles.get("stop_epoch", -1)) != short_stop_epoch
+        ):
+            raise ValueError("persisted short selector window differs on resume")
+    else:
+        short_roles = new_short_selection(short_start_epoch, short_stop_epoch)
+    updates_per_epoch = math.ceil(len(train_loader) / options.accumulation)
+    origin_update = int(identity.get("resume_origin", {}).get(
+        "update_index", trainer.update_index))
+    run_contract = {
+        "schema": "ebjd-absolute-epoch-pilot-contract-v1",
+        "origin_epoch": short_start_epoch - 1,
+        "absolute_stop_epoch": short_stop_epoch,
+        "lr_schedule_total_epochs": options.epochs,
+        "updates_per_epoch": updates_per_epoch,
+        "origin_update_index": origin_update,
+        "expected_terminal_update_index": origin_update + updates_per_epoch * (
+            short_stop_epoch - short_start_epoch + 1),
+        "current_resume_start_epoch": start_epoch,
+        "current_invocation_stop_epoch": stop_epoch,
     }
+    _atomic_json(output / "RUN_CONTRACT.json", run_contract)
     for epoch in range(start_epoch, stop_epoch + 1):
+        epoch_started = time.perf_counter()
+        epoch_update_start = trainer.update_index
+        normal_step_seconds = 0.0
+        rollout_step_seconds = 0.0
+        projection_updates = 0
+        rollout_updates = 0
+        if device.type == "cuda":
+            torch.cuda.reset_peak_memory_stats(device)
         model.train()
         pending = []
         train_iterator = iter(train_loader)
@@ -728,14 +836,42 @@ def main() -> None:
                 pending.append(
                     augmented if options.scene_forward_chunk else augmented.to(device))
             if len(pending) == options.accumulation:
+                step_started = time.perf_counter()
                 record = trainer.train_step(pending, epoch)
+                step_seconds = time.perf_counter() - step_started
+                record["step_wall_seconds"] = step_seconds
+                if record["rollout_update"]:
+                    rollout_step_seconds += step_seconds
+                    rollout_updates += 1
+                else:
+                    normal_step_seconds += step_seconds
+                projection_updates += int(record["projection_active"] > 0)
+                nonfinite = [
+                    name for name, value in record.items()
+                    if isinstance(value, (int, float)) and not math.isfinite(float(value))]
+                if nonfinite:
+                    raise FloatingPointError(f"nonfinite training record fields: {nonfinite}")
                 record.update({"epoch": epoch, "update": trainer.update_index})
                 with record_function("ebjd.jsonl_logging"):
                     with log_path.open("a", encoding="utf-8") as handle:
                         handle.write(json.dumps(record, sort_keys=True) + "\n")
                 pending = []
         if pending:
+            step_started = time.perf_counter()
             record = trainer.train_step(pending, epoch)
+            step_seconds = time.perf_counter() - step_started
+            record["step_wall_seconds"] = step_seconds
+            if record["rollout_update"]:
+                rollout_step_seconds += step_seconds
+                rollout_updates += 1
+            else:
+                normal_step_seconds += step_seconds
+            projection_updates += int(record["projection_active"] > 0)
+            nonfinite = [
+                name for name, value in record.items()
+                if isinstance(value, (int, float)) and not math.isfinite(float(value))]
+            if nonfinite:
+                raise FloatingPointError(f"nonfinite training record fields: {nonfinite}")
             record.update({"epoch": epoch, "update": trainer.update_index})
             with record_function("ebjd.jsonl_logging"):
                 with log_path.open("a", encoding="utf-8") as handle:
@@ -743,14 +879,22 @@ def main() -> None:
         evaluation = config["evaluation"]
         worlds = 2 if args.smoke else int(evaluation["worlds"])
         steps = 2 if args.smoke else int(evaluation["steps"])
+        validation_started = time.perf_counter()
         metrics = validate(
             model, validation_loader, str(device), worlds, steps,
             seed=int(evaluation["selection_seed"]))
+        if device.type == "cuda":
+            torch.cuda.synchronize(device)
+        validation_seconds = time.perf_counter() - validation_started
         candidate = selector.consider(epoch, metrics)
         state = selector.state_dict()
         trainer.save_checkpoint(
             output / "last.pt", epoch, state, loader_generator,
             {"validation": metrics, "candidate": candidate})
+        trainer.save_checkpoint(
+            output / f"epoch_{epoch:03d}.pt", epoch, state, loader_generator,
+            {"validation": metrics, "candidate": candidate,
+             "checkpoint_role": "complete_epoch_pilot"})
         if selector.best_eligible is candidate:
             trainer.save_checkpoint(
                 output / "best.pt", epoch, state, loader_generator,
@@ -759,16 +903,9 @@ def main() -> None:
             trainer.save_checkpoint(
                 output / "least_violation.pt", epoch, state, loader_generator,
                 {"validation": metrics, "candidate": candidate})
-        role_scores = {
-            "best_joint_short": float(metrics["JADE"] + metrics["JFDE"]),
-            "best_marginal_short": float(
-                metrics["minADE"] + metrics["minFDE"]),
-            "least_violation_short": float(
-                max(0.0, metrics["minADE"] - float(baseline["minADE"])
-                    - float(config["evaluation"].get("marginal_tolerance", 0)))
-                + max(0.0, metrics["minFDE"] - float(baseline["minFDE"])
-                      - float(config["evaluation"].get("marginal_tolerance", 0)))),
-        }
+        role_scores = short_role_scores(
+            metrics, baseline,
+            float(config["evaluation"].get("marginal_tolerance", 0)))
         for role, score in role_scores.items():
             current = short_roles[role]
             if current is None or score < current["score"]:
@@ -781,10 +918,30 @@ def main() -> None:
         _atomic_json(output / "SHORT_RUN_SELECTION.json", short_roles)
         (output / "SELECTION_STATUS.json").write_text(
             json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        epoch_summary = {
+            "epoch": epoch,
+            "start_update_exclusive": epoch_update_start,
+            "end_update_inclusive": trainer.update_index,
+            "updates": trainer.update_index - epoch_update_start,
+            "wall_seconds": time.perf_counter() - epoch_started,
+            "normal_step_seconds": normal_step_seconds,
+            "rollout_step_seconds": rollout_step_seconds,
+            "validation_seconds": validation_seconds,
+            "rollout_updates": rollout_updates,
+            "projection_active_updates": projection_updates,
+            "peak_cuda_allocated_bytes": (
+                int(torch.cuda.max_memory_allocated(device))
+                if device.type == "cuda" else 0),
+            "execution_strategy": config["training"].get(
+                "execution_strategy", "legacy_or_oom_safe_v1"),
+            "validation": metrics,
+        }
+        with (output / "EPOCH_SUMMARY.jsonl").open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(epoch_summary, sort_keys=True) + "\n")
         print(json.dumps({
             "epoch": epoch, "validation": metrics,
             "simultaneous_improvement": state["simultaneous_improvement"],
-            "candidate": candidate,
+            "candidate": candidate, "epoch_summary": epoch_summary,
         }, sort_keys=True), flush=True)
 
 
