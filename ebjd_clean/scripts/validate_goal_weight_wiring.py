@@ -135,7 +135,7 @@ def isolated_snapshot(
     before = [parameter.detach().clone() for parameter in trainer.parameters]
     trainer.optimizer.apply(decrement, pending)
     parameter_change_norm = float(list_norm([
-        left - right for left, right in zip(
+        left.detach() - right for left, right in zip(
             trainer.parameters, before, strict=True)]))
     finite = (
         all(math.isfinite(float(value)) for value in logs.values())

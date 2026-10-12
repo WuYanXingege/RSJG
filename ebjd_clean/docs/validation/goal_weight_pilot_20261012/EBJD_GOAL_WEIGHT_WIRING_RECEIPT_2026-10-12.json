@@ -1,0 +1,48 @@
+{
+  "schema": "ebjd-goal-weight-wiring-receipt-v1",
+  "status": "GOAL_WEIGHT_WIRING_READY",
+  "source_commit": "87e99666ab71b17cecc87fade85d4898deda62e8",
+  "execution_commit": "fb7fb8c319db8c3fdfe449e6293a4436e22514c1",
+  "checkpoint": {
+    "epoch": 45,
+    "update_index": 11970,
+    "sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+    "unchanged_after_preflight": true
+  },
+  "objective": {
+    "supported_goal_weights": [1.0, 2.0],
+    "bridge_weight": 1.0,
+    "coarse_weight": 0.25,
+    "formula": "wg*goal_fine + bridge_fine + 0.25*(wg*goal_coarse + bridge_coarse)",
+    "default_weight_one_legacy_order_preserved": true,
+    "model_parameter_count": 3612764,
+    "model_state_schema_changed": false
+  },
+  "cpu_tests": {
+    "passed": 60,
+    "failed": 0
+  },
+  "cuda_preflight": {
+    "status": "PASSED",
+    "small_agent_counts": [1, 2, 5, 3],
+    "dense_agent_count": 57,
+    "rollout_off_and_on": true,
+    "same_random_draws": true,
+    "maximum_formula_absolute_error": 5.5540691601407843e-08,
+    "full_state_restore_exact": true,
+    "gradient_connections": ["map_unet", "denoiser", "future_geometry", "map_injection"],
+    "diagnostic_optimizer_updates_saved": 0
+  },
+  "execution_profile": {
+    "strategy": "small_group_uncheckpoint_v1",
+    "scene_forward_chunk": 1,
+    "scene_compaction": true,
+    "physical_group_max_scenes": 4,
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "rollout_block_checkpointing": false,
+    "rollout_uncheckpointed_max_agent_slots": 32
+  },
+  "formal_training_started": false,
+  "diagnostic_correction": "The prior report overstated short-run entry completeness; frozen-bank results remain valid because they performed no training."
+}
