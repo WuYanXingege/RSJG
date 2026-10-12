@@ -1,0 +1,253 @@
+{
+  "completed_at": "2026-10-12T12:41:00Z",
+  "continuation_reason": "original validator used exact equality; 9/1330 grouped means differed from 1.0 by at most 2.22e-16",
+  "current_stage": "cpu_final_analysis",
+  "execution_commit": "69a4adf298b59b7724f98b1f638a17f6082c1006",
+  "final_result_receipt": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/analysis/FINAL_RESULT_RECEIPT.json",
+  "preserved_failed_state": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/PIPELINE_STATE_FAILED_EXACT_FLOAT_VALIDATOR.json",
+  "schema": "ebjd-goal-weight-pilot-pipeline-v1",
+  "stages": [
+    {
+      "name": "control_revalidate",
+      "receipt": {
+        "checkpoint_sha256": {
+          "best_joint_short.pt": "d14c9f3dde324225b1696db04ea2495308975371147a766360d9ab537b30cb77",
+          "best_marginal_short.pt": "a98cb54a5ba61ab997fc115082090d1c0b93c35033127a9c745ecd2380917701",
+          "epoch_046.pt": "b2799d377f3d85acc8b5a1cf65ff4553c42f06c5d8961ac8d350947abfe0a152",
+          "epoch_047.pt": "36b9236282975cf65383f773e57a9fc46b2c4b5d560a1608c1bcb358ef97e46a",
+          "epoch_048.pt": "a5504491df2028dae2237cb8a80b6331b12701b94cd9d68bca6d37941e434fb7",
+          "epoch_049.pt": "df490c11304e181287a25396c9435101f7b30c6a25c1e856d32077f6e358f306",
+          "epoch_050.pt": "c44af3ed4456282033e2ffefbc1293e2ef5e55eff2a394f6e8b8a5d124ef9817",
+          "last.pt": "b937e396ad8a8cf0bcbb6286b5b9420aead8ffe44c6b387fdeccbd299ab18bb6",
+          "least_violation_short.pt": "c1d3802ef344cd61e90488e64a0e44b9a3eb7441e9de4fc8e0dd45494e247cd9"
+        },
+        "epoch50_sha256": "c44af3ed4456282033e2ffefbc1293e2ef5e55eff2a394f6e8b8a5d124ef9817",
+        "epoch_wall_seconds": [
+          2455.969231533818,
+          2446.6708320009056,
+          2546.2695605710614,
+          2536.7666743309237,
+          2411.71813580906
+        ],
+        "first_update": 11971,
+        "goal_v_weight": 1.0,
+        "goal_weight_max_abs_deviation": 2.220446049250313e-16,
+        "goal_weight_validation_abs_tolerance": 1e-12,
+        "last_update": 13300,
+        "projection_active_updates": 2,
+        "rollout_updates": 332,
+        "run_directory": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/runs/hotel/3101/none/hotel_epoch45_control_goalw1_e46_50_69a4adf_20261012",
+        "updates": 1330
+      },
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T08:51:31Z"
+    },
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "-m",
+        "ebjd.train",
+        "--config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/materialized_configs/CANDIDATE_GOAL_WEIGHT_2.yaml",
+        "--objective-fork-from",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009/hotel/3101/none/hotel_main_seed3101_9ecde66_speed_20261009/epoch_045.pt",
+        "--objective-fork-from-sha256",
+        "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+        "--objective-fork-contract",
+        "goal_v_weight_2",
+        "--max-epochs-this-run",
+        "5",
+        "--absolute-stop-epoch",
+        "50",
+        "--run-id",
+        "hotel_epoch45_candidate_goalw2_e46_50_69a4adf_20261012"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/logs/candidate_train.log",
+      "name": "candidate_train",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T08:51:31Z"
+    },
+    {
+      "elapsed_seconds": 12302.656074268045,
+      "name": "candidate_train",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T12:16:33Z"
+    },
+    {
+      "name": "candidate_validate",
+      "receipt": {
+        "checkpoint_sha256": {
+          "best_joint_short.pt": "9c5a25f8c2aa57b16b545d6af672de63090b143f7abf5decdaaac66a0e296d21",
+          "best_marginal_short.pt": "8d8587cb08c3afe16ac165e682903908af58cbaba6883f2df94b7fb3fbb081f9",
+          "epoch_046.pt": "f7407dd1054189e9729171e49e34f3c89b3d27912854aeb9322b912f617e8875",
+          "epoch_047.pt": "334e0c0dec117d16bb02e7f506b80fe35d79ca48856d9446c71fb7f34a86f92f",
+          "epoch_048.pt": "c020e29cbda76e2d852a811dadb5f19e33c56aef2d927efdf2c9c16a72c35388",
+          "epoch_049.pt": "4b08c56c726cf9aa31b724f660ff71a20460a499386486ea5a33677fa3b6f27c",
+          "epoch_050.pt": "29f38d982169ce5e1a24d52b3c58988a9477a06f4660ce0f9d03d49f4dcb01fb",
+          "last.pt": "9dc48ba1e52eb61098de30ef1bc1d00d308f196b7c3e9a20fd51a179cc2baef8",
+          "least_violation_short.pt": "f86e3192ed8d943b3d6c8bdfe2232eb77ef51bb50605e0d44a1a4d37c26ffc85"
+        },
+        "epoch50_sha256": "29f38d982169ce5e1a24d52b3c58988a9477a06f4660ce0f9d03d49f4dcb01fb",
+        "epoch_wall_seconds": [
+          2446.3590100868605,
+          2441.209221023135,
+          2499.2015717851464,
+          2514.9091766499914,
+          2396.519290804863
+        ],
+        "first_update": 11971,
+        "goal_v_weight": 2.0,
+        "goal_weight_max_abs_deviation": 4.440892098500626e-16,
+        "goal_weight_validation_abs_tolerance": 1e-12,
+        "last_update": 13300,
+        "projection_active_updates": 10,
+        "rollout_updates": 332,
+        "run_directory": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/runs/hotel/3101/none/hotel_epoch45_candidate_goalw2_e46_50_69a4adf_20261012",
+        "updates": 1330
+      },
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T12:16:34Z"
+    },
+    {
+      "name": "training_pairing",
+      "receipt": {
+        "compared_fields": [
+          "epoch",
+          "update",
+          "rollout_update",
+          "logical_scene_id_sha256",
+          "random_draw_sha256",
+          "learning_rate",
+          "unet_learning_rate"
+        ],
+        "mismatches": [],
+        "status": "PASSED",
+        "updates_compared": 1330
+      },
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T12:16:34Z"
+    },
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_goalweight_pilot_worktree/ebjd_clean/scripts/export_epoch45_diagnostic_bank.py",
+        "--config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/materialized_configs/CONTROL_GOAL_WEIGHT_1.yaml",
+        "--checkpoint",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/runs/hotel/3101/none/hotel_epoch45_control_goalw1_e46_50_69a4adf_20261012/epoch_050.pt",
+        "--output-root",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/banks",
+        "--expected-checkpoint-sha256",
+        "c44af3ed4456282033e2ffefbc1293e2ef5e55eff2a394f6e8b8a5d124ef9817",
+        "--expected-config-sha256",
+        "63b7e1a86a80e19e5dc947c9a62a00918300990d448bd22b7baa97a7073ff9a4",
+        "--expected-manifest-sha256",
+        "84c95cb431caf7214d1b85e8e7dbfeaf48c9fe301b1cda7f3201c3e8cf199c78",
+        "--bank-name",
+        "control",
+        "--model-label",
+        "EBJD_control_epoch50",
+        "--seeds",
+        "2035",
+        "2036",
+        "2037",
+        "2038",
+        "2039",
+        "--device",
+        "cuda",
+        "--resume"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/logs/control_bank_export.log",
+      "name": "control_bank_export",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T12:16:34Z"
+    },
+    {
+      "elapsed_seconds": 647.3170093069784,
+      "name": "control_bank_export",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T12:27:21Z"
+    },
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_goalweight_pilot_worktree/ebjd_clean/scripts/export_epoch45_diagnostic_bank.py",
+        "--config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/materialized_configs/CANDIDATE_GOAL_WEIGHT_2.yaml",
+        "--checkpoint",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/runs/hotel/3101/none/hotel_epoch45_candidate_goalw2_e46_50_69a4adf_20261012/epoch_050.pt",
+        "--output-root",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/banks",
+        "--expected-checkpoint-sha256",
+        "29f38d982169ce5e1a24d52b3c58988a9477a06f4660ce0f9d03d49f4dcb01fb",
+        "--expected-config-sha256",
+        "c91c8fb5b7f2547796b340d8fde597c7e4b70085475905d2e5261287fd797b44",
+        "--expected-manifest-sha256",
+        "84c95cb431caf7214d1b85e8e7dbfeaf48c9fe301b1cda7f3201c3e8cf199c78",
+        "--bank-name",
+        "candidate",
+        "--model-label",
+        "EBJD_candidate_epoch50",
+        "--seeds",
+        "2035",
+        "2036",
+        "2037",
+        "2038",
+        "2039",
+        "--device",
+        "cuda",
+        "--resume"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/logs/candidate_bank_export.log",
+      "name": "candidate_bank_export",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T12:27:21Z"
+    },
+    {
+      "elapsed_seconds": 650.4771386869252,
+      "name": "candidate_bank_export",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T12:38:12Z"
+    },
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_goalweight_pilot_worktree/ebjd_clean/scripts/analyze_goal_weight_pilot_banks.py",
+        "--gdts-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/evaluations/hotel_epoch045_diagnostic_20261012/banks/gdts",
+        "--epoch45-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/evaluations/hotel_epoch045_diagnostic_20261012/banks/ebjd",
+        "--control-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/banks/control",
+        "--candidate-bank",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/banks/candidate",
+        "--output-dir",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/analysis",
+        "--archive-dir",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_goalweight_pilot_worktree/ebjd_clean/docs/validation/goal_weight_pilot_20261012/final_goal_weight_pilot"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/logs/cpu_final_analysis.log",
+      "name": "cpu_final_analysis",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T12:38:12Z"
+    },
+    {
+      "elapsed_seconds": 168.23831115290523,
+      "name": "cpu_final_analysis",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T12:41:00Z"
+    }
+  ],
+  "started_at": "2026-10-12T08:51:30Z",
+  "status": "COMPLETED",
+  "supervisor_pid": 1397690,
+  "updated_at": "2026-10-12T12:41:00Z"
+}

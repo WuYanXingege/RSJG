@@ -1,0 +1,47 @@
+{
+  "current_stage": "control_train",
+  "error": "active goal weight differs from arm contract",
+  "error_type": "RuntimeError",
+  "execution_commit": "69a4adf298b59b7724f98b1f638a17f6082c1006",
+  "failed_at": "2026-10-12T07:33:01Z",
+  "schema": "ebjd-goal-weight-pilot-pipeline-v1",
+  "source_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009/hotel/3101/none/hotel_main_seed3101_9ecde66_speed_20261009/epoch_045.pt",
+  "source_checkpoint_sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+  "stages": [
+    {
+      "command": [
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+        "-u",
+        "-m",
+        "ebjd.train",
+        "--config",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/materialized_configs/CONTROL_GOAL_WEIGHT_1.yaml",
+        "--resume-from",
+        "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009/hotel/3101/none/hotel_main_seed3101_9ecde66_speed_20261009/epoch_045.pt",
+        "--resume-from-sha256",
+        "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+        "--max-epochs-this-run",
+        "5",
+        "--absolute-stop-epoch",
+        "50",
+        "--run-id",
+        "hotel_epoch45_control_goalw1_e46_50_69a4adf_20261012"
+      ],
+      "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/epoch45_goal_weight_pair_69a4adf_20261012/pipeline/logs/control_train.log",
+      "name": "control_train",
+      "status": "STARTED",
+      "timestamp": "2026-10-12T04:06:20Z"
+    },
+    {
+      "elapsed_seconds": 12401.595998446923,
+      "name": "control_train",
+      "returncode": 0,
+      "status": "COMPLETED",
+      "timestamp": "2026-10-12T07:33:01Z"
+    }
+  ],
+  "started_at": "2026-10-12T04:06:19Z",
+  "status": "FAILED",
+  "supervisor_pid": 1392083,
+  "updated_at": "2026-10-12T07:33:01Z"
+}
