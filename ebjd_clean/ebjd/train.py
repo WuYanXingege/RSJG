@@ -92,7 +92,8 @@ def parse_args() -> argparse.Namespace:
         "--objective-fork-from-sha256",
         help="mandatory expected SHA256 for --objective-fork-from")
     parser.add_argument(
-        "--objective-fork-contract", choices=("goal_v_weight_2",),
+        "--objective-fork-contract", choices=(
+            "goal_v_weight_2", "rollout_weight_end_005"),
         help="strictly allow one preregistered semantic change")
     parser.add_argument(
         "--max-epochs-this-run", type=int,
@@ -504,6 +505,9 @@ def validate_objective_fork_payload(
     contracts = {
         "goal_v_weight_2": {
             "objectives.goal_v_weight": {"old": 1.0, "new": 2.0},
+        },
+        "rollout_weight_end_005": {
+            "training.rollout_weight_end": {"old": 0.2, "new": 0.05},
         },
     }
     if contract not in contracts:

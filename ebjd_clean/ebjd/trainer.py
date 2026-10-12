@@ -432,6 +432,11 @@ class EBJDTrainer:
             "diffusion_bridge_coarse_unweighted": float(
                 diffusion_components["bridge_coarse_unweighted"].detach()),
             "active_goal_v_weight": float(self.options.goal_v_weight),
+            "active_rollout_weight": float(self._rollout_weight(epoch)),
+            "rollout_frequency_compensation": float(
+                self.options.rollout_compensation),
+            "effective_rollout_coefficient": float(
+                self.options.rollout_compensation * self._rollout_weight(epoch)),
             "geometry": float(loss_geo.detach()), "map": float(loss_map.detach()),
             "rollout": float(loss_roll.detach()),
             "soft_marginal_ade": float(marginal_a.detach()),
@@ -480,6 +485,9 @@ class EBJDTrainer:
             "diffusion_goal_coarse_unweighted": 0.0,
             "diffusion_bridge_coarse_unweighted": 0.0,
             "active_goal_v_weight": 0.0,
+            "active_rollout_weight": 0.0,
+            "rollout_frequency_compensation": 0.0,
+            "effective_rollout_coefficient": 0.0,
             "rollout": 0.0, "soft_marginal_ade": 0.0,
             "soft_marginal_fde": 0.0,
         }
@@ -517,6 +525,9 @@ class EBJDTrainer:
                 "diffusion_goal_coarse_unweighted",
                 "diffusion_bridge_coarse_unweighted",
                 "active_goal_v_weight",
+                "active_rollout_weight",
+                "rollout_frequency_compensation",
+                "effective_rollout_coefficient",
             ):
                 aggregate[name] += agent_weight * logs[name]
             aggregate["map"] += agent_weight * logs["map"]

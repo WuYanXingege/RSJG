@@ -12,7 +12,10 @@ def fixture_payload(tmp_path):
         "experiment": {"source_commit": "old"},
         "paths": {"output_root": "/old"},
         "objectives": {"goal_v_weight": 1.0, "bridge_v_weight": 1.0},
-        "training": {"epochs": 100, "scene_forward_chunk": 1},
+        "training": {
+            "epochs": 100, "scene_forward_chunk": 1,
+            "rollout_weight_end": 0.20,
+        },
     }
     fixed = {
         "implementation_base": "base", "fold": "hotel", "seed": 3101,
@@ -65,6 +68,32 @@ def test_goal_weight_fork_rejects_any_second_semantic_change(tmp_path):
         validate_objective_fork_payload(
             payload, path, file_sha256(path), config, identity, "none",
             "goal_v_weight_2")
+
+
+def test_rollout_weight_fork_is_exactly_whitelisted(tmp_path):
+    payload, path, config, identity = fixture_payload(tmp_path)
+    config["objectives"]["goal_v_weight"] = 1.0
+    config["training"]["rollout_weight_end"] = 0.05
+    identity["config_hash"] = config_hash(config)
+    receipt = validate_objective_fork_payload(
+        payload, path, file_sha256(path), config, identity, "none",
+        "rollout_weight_end_005")
+    assert receipt["origin_epoch"] == 45
+    assert receipt["resume_start_epoch"] == 46
+    assert receipt["checked_config_diff"]["training.rollout_weight_end"] == {
+        "old": 0.2, "new": 0.05}
+
+
+def test_rollout_weight_fork_rejects_a_second_semantic_change(tmp_path):
+    payload, path, config, identity = fixture_payload(tmp_path)
+    config["objectives"]["goal_v_weight"] = 1.0
+    config["training"]["rollout_weight_end"] = 0.05
+    config["objectives"]["bridge_v_weight"] = 0.5
+    identity["config_hash"] = config_hash(config)
+    with pytest.raises(ValueError, match="frozen contract"):
+        validate_objective_fork_payload(
+            payload, path, file_sha256(path), config, identity, "none",
+            "rollout_weight_end_005")
 
 
 @pytest.mark.parametrize(
