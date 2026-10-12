@@ -1,4 +1,5 @@
 import copy
+import importlib.util
 import math
 from pathlib import Path
 
@@ -14,9 +15,29 @@ from ebjd.model import EBJDModel
 from ebjd.objectives import diffusion_loss
 from ebjd.train import new_short_selection, resolve_stop_epoch, short_role_scores
 from ebjd.trainer import EBJDTrainer, TrainerOptions
-
-
 ROOT = Path(__file__).parents[1]
+
+
+MATERIALIZER_SPEC = importlib.util.spec_from_file_location(
+    "ebjd_goal_weight_materializer",
+    ROOT / "scripts" / "materialize_epoch45_short_experiment.py")
+assert MATERIALIZER_SPEC is not None and MATERIALIZER_SPEC.loader is not None
+MATERIALIZER = importlib.util.module_from_spec(MATERIALIZER_SPEC)
+MATERIALIZER_SPEC.loader.exec_module(MATERIALIZER)
+
+
+def test_materialized_yaml_preserves_scientific_float_types(tmp_path):
+    payload = {
+        "unet_lr": 1e-5, "optimizer_eps": 1e-8,
+        "weight": 2.0, "enabled": False,
+    }
+    path = tmp_path / "materialized.yaml"
+    MATERIALIZER.atomic_yaml(payload, path)
+    import yaml
+    restored = yaml.safe_load(path.read_text(encoding="utf-8"))
+    assert restored == payload
+    assert isinstance(restored["unet_lr"], float)
+    assert isinstance(restored["optimizer_eps"], float)
 
 
 def _masked_mean(value, valid):

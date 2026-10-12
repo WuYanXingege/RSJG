@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import tempfile
@@ -33,13 +34,39 @@ EXECUTION_PROFILE = {
 }
 
 
+class ExactFloatSafeDumper(yaml.SafeDumper):
+    """Emit scientific-notation floats with an explicit YAML float form."""
+
+
+def _represent_exact_float(dumper: yaml.SafeDumper, value: float):
+    if math.isnan(value):
+        text = ".nan"
+    elif math.isinf(value):
+        text = ".inf" if value > 0 else "-.inf"
+    else:
+        text = repr(value)
+        if "e" in text.lower():
+            significand, exponent = text.lower().split("e", 1)
+            if "." not in significand:
+                significand += ".0"
+            text = f"{significand}e{int(exponent):+03d}"
+        elif "." not in text:
+            text += ".0"
+    return dumper.represent_scalar("tag:yaml.org,2002:float", text)
+
+
+ExactFloatSafeDumper.add_representer(float, _represent_exact_float)
+
+
 def atomic_yaml(payload: dict, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     descriptor, temporary = tempfile.mkstemp(
         prefix=path.name + ".", suffix=".tmp", dir=path.parent)
     try:
         with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
-            yaml.safe_dump(payload, handle, sort_keys=False)
+            yaml.dump(
+                payload, handle, Dumper=ExactFloatSafeDumper,
+                sort_keys=False)
         os.replace(temporary, path)
     finally:
         if os.path.exists(temporary):
@@ -115,14 +142,23 @@ def main() -> None:
     candidate_path = output / "CANDIDATE_GOAL_WEIGHT_2.yaml"
     atomic_yaml(control, control_path)
     atomic_yaml(candidate, candidate_path)
+    # The on-disk artifact, not the pre-serialization dictionary, is the
+    # executable contract.  Reject YAML type drift (notably 1e-5 -> string).
+    control_disk = load_config(control_path)
+    candidate_disk = load_config(candidate_path)
+    if control_disk != control or candidate_disk != candidate:
+        raise RuntimeError("materialized YAML round-trip changed config values or types")
+    if config_differences(control_disk, candidate_disk) != arm_differences:
+        raise RuntimeError("on-disk paired configs violate the sole-factor contract")
     receipt = {
         "schema": "ebjd-goal-weight-paired-materialization-v2",
         "source_commit": commit, "training_launched": False,
         "control": str(control_path), "candidate": str(candidate_path),
-        "control_config_hash": config_hash(control),
-        "candidate_config_hash": config_hash(candidate),
-        "control_semantic_hash": semantic_config_hash(control),
-        "candidate_semantic_hash": semantic_config_hash(candidate),
+        "control_config_hash": config_hash(control_disk),
+        "candidate_config_hash": config_hash(candidate_disk),
+        "control_semantic_hash": semantic_config_hash(control_disk),
+        "candidate_semantic_hash": semantic_config_hash(candidate_disk),
+        "disk_round_trip_exact": True,
         "execution_profile": control_profile,
         "categorized_changes": {
             "identity": sorted(identity_fields),
