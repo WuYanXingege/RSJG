@@ -100,8 +100,14 @@ def verify_goal_checkpoint(path: Path) -> dict:
         raise RuntimeError("goal-pretrain artifact contains non-goal model parameters")
     config_path = path.parent.parent / "config.yaml"
     source_config = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    # ``src.parser.save_args`` deliberately rewrites transient execution
+    # controls before persisting the shared cross-phase config.  Consequently
+    # a real ``--phase goal_pretrain`` invocation is recorded as
+    # ``phase: train_test`` in config.yaml.  The artifact type above is the
+    # authoritative execution-phase evidence; here we audit the documented
+    # persisted representation instead of requiring an impossible value.
     expected = {
-        "dataset": "eth5", "test_set": "univ", "phase": "goal_pretrain",
+        "dataset": "eth5", "test_set": "univ", "phase": "train_test",
         "seed": 3101, "num_epochs": 150, "batch_size": 64,
         "learning_rate": 0.001, "optimizer": "Adam",
         "scheduler": "ExponentialLR", "data_augmentation": False,
@@ -131,6 +137,11 @@ def verify_goal_checkpoint(path: Path) -> dict:
         "source_config": str(config_path.resolve()),
         "source_config_sha256": sha256(config_path),
         "source_config_contract": expected,
+        "execution_phase": "goal_pretrain",
+        "execution_phase_evidence": {
+            "checkpoint_type": payload["checkpoint_type"],
+            "persisted_phase_is_transient_default": True,
+        },
     }
 
 
