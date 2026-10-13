@@ -37,14 +37,27 @@ fi
 
 cd "$ebjd_root"
 PYTHONPATH=. PYTHONUNBUFFERED=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True \
-  setsid nohup "$python_bin" -u -B scripts/run_univ_main_pipeline.py \
+  setsid -f nohup "$python_bin" -u -B scripts/run_univ_main_pipeline.py \
     --python "$python_bin" \
     --runtime-dir "$runtime" \
     --goal-run-id univ_goal_pretrain_seed3101_20261013 \
     --hotel-checkpoint "$workspace/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009/hotel/3101/none/hotel_main_seed3101_9ecde66_speed_20261009/epoch_045.pt" \
     --gdts-five-seed-result "$workspace/RSJG_JDV2_clean/outputs/joint_dependency_v2/univ/joint_dependency_v2/audits/gdts_baseline_five_seed/results.json" \
-    >"$launch_log" 2>&1 < /dev/null &
-pipeline_pid=$!
+    >"$launch_log" 2>&1 < /dev/null
+
+for _ in 1 2 3 4 5; do
+  if [[ -f "$state_file" ]]; then
+    pipeline_pid="$($python_bin -c 'import json,sys; print(json.load(open(sys.argv[1]))["supervisor_pid"])' "$state_file")"
+    if kill -0 "$pipeline_pid" 2>/dev/null; then
+      break
+    fi
+  fi
+  sleep 1
+done
+if [[ -z "${pipeline_pid:-}" ]] || ! kill -0 "$pipeline_pid" 2>/dev/null; then
+  printf 'Detached supervisor did not remain alive; inspect %s\n' "$launch_log" >&2
+  exit 1
+fi
 printf '%s\n' "$pipeline_pid" > "$pid_file"
 printf 'UNIV pipeline PID: %s\nstate: %s\nlog: %s\n' \
   "$pipeline_pid" "$state_file" "$launch_log"
