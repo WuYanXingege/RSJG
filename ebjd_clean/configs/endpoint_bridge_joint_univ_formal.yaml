@@ -1,0 +1,170 @@
+seed: 3101
+
+experiment:
+  fold: univ
+  source_commit: 9ecde66aa86f7a577fa29bd94b0168ae735a1f16
+  implementation_base: 01faa633162a2b73794a40184e8d64e4d44964bc
+
+paths:
+  train_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official_train_scene_shards_20261010/train/train_manifest.json
+  validation_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/validation/validation_manifest.json
+  test_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/test/test_manifest.json
+  output_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_deferred_9ecde66_20261010
+  accepted_fold_matched_gdts_unet: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/univ/saved_models/best_model.pt
+  accepted_fold_matched_gdts_unet_sha256: ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e
+  initialization_role: trainable_goal_unet_only
+  matched_gdts_validation_checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/univ/saved_models/best_model.pt
+  matched_gdts_validation_checkpoint_sha256: ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e
+  matched_gdts_validation_result: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/docs/validation/EBJD_UNIV_MATCHED_GDTS_VALIDATION_2026-10-10.json
+  matched_gdts_validation_result_sha256: 0d0bdd18f7ba63bc6a601117e27b62f99f30a78736449edf1cab920c9b3688ef
+
+data:
+  obs_length: 8
+  pred_length: 12
+  dt_seconds: 0.4
+  coordinates: metres
+  complete_horizon_required: true
+  scene_agent_padding: true
+  do_not_truncate_scene_agents: true
+
+map_encoder:
+  semantic_channels: 6
+  history_heatmap_channels: 8
+  crop_width_m: 32.0
+  crop_pixels: 256
+  enc_channels: [14, 32, 32, 64, 64, 64]
+  dec_channels: [64, 64, 64, 32, 32]
+  future_heatmap_channels: 12
+  heatmap_sigma_m: 0.5
+  memory_grid: [8, 8]
+  agent_chunk: 8
+  trainable: true
+
+history_encoder:
+  input_dim: 6
+  hidden_dim: 128
+  social_blocks: 2
+  social_heads: 4
+  social_ff_dim: 512
+  observed_geometry_dim: 10
+  observed_bias_bound: 2.0
+  dropout: 0.0
+
+representation:
+  type: invertible_endpoint_brownian_bridge
+  goal_tokens: 1
+  bridge_tokens: 11
+  goal_scale_m: 1.0
+  bridge_scale_m: 1.0
+  train_fold_rms_scaling: true
+  goal_rms_floor_m: 0.5
+  bridge_rms_floor_m: 0.1
+  literal_endpoint_concatenation: true
+
+denoiser:
+  hidden_dim: 128
+  heads: 4
+  ff_dim: 512
+  coarse_blocks: 3
+  refinement_blocks: 3
+  sublayers: [temporal_attention, social_attention, context_cross_attention, ffn]
+  memory_tokens_per_agent: 72
+  cross_world_attention: false
+  target_parameterization: v
+  geometry_gate: alpha_squared
+  clean_future_detach: false
+
+diffusion:
+  schedule: cosine_vp_alpha_cos_sigma_sin
+  exact_terminal_snr_zero: true
+  training_noise_bins: 100
+  shared_time_within_scene: true
+  sampler: ddim
+  ddim_eta: 0.0
+
+objectives:
+  goal_v_weight: 1.0
+  bridge_v_weight: 1.0
+  coarse_v_weight: 0.25
+  relative_motion_weight: 0.05
+  map_bce_weight: 0.10
+  relative_velocity_factor: 0.5
+  rollout_joint_ade_weight: 1.0
+  rollout_joint_fde_weight: 0.5
+  rollout_marginal_ade_weight: 1.0
+  rollout_marginal_fde_weight: 0.5
+  supervision_edge_radius_m: 6.0
+  supervision_edge_cv_cpa_radius_m: 2.0
+  supervision_edge_cv_horizon_s: 4.8
+
+training:
+  epochs: 100
+  batch_scenes: 4
+  scene_forward_chunk: 1
+  execution_strategy: compact_grouped_v1
+  scene_compaction: true
+  physical_group_max_scenes: 4
+  physical_group_max_agent_slots: 96
+  physical_group_max_padding_ratio: 1.5
+  rollout_block_checkpointing: false
+  gradient_accumulation: 4
+  new_module_lr: 0.0001
+  unet_lr: 0.00001
+  lr_warmup_epochs: 5
+  lr_final_fraction: 0.01
+  optimizer: adamw_actual_step_projection
+  optimizer_betas: [0.9, 0.999]
+  optimizer_eps: 0.00000001
+  weight_decay: 0.0001
+  total_gradient_clip_norm: 5.0
+  exclude_bias_and_layernorm_from_decay: true
+  gradient_constraint_uses_unclipped_marginal_gradients: true
+  rollout_start_epoch: 21
+  rollout_ramp_end_epoch: 40
+  rollout_weight_start: 0.01
+  rollout_weight_end: 0.20
+  rollout_every_optimizer_updates: 4
+  rollout_frequency_loss_compensation: 4.0
+  rollout_worlds: 4
+  rollout_steps: 20
+  rollout_detach_between_steps: false
+  softmin_temperature_start_m: 0.10
+  softmin_temperature_end_m: 0.05
+  protected_losses: [soft_marginal_ade, soft_marginal_fde]
+  activation_checkpointing: true
+  checkpoint_use_reentrant: false
+  mixed_precision: bf16_with_fp32_geometry_loss_optimizer
+  ema: false
+  train_all_modules: true
+
+evaluation:
+  worlds: 20
+  steps: 20
+  selection_seed: 2035
+  inference_seeds: [2035, 2036, 2037, 2038, 2039]
+  minimum_training_seeds: 3
+  metrics: [minADE, minFDE, JADE, JFDE]
+  per_agent_reordering: false
+  final_test_used_for_checkpoint_selection: false
+  validation_test_identity: mirrored_official_package_internal_only
+  marginal_tolerance: 0.0
+  matched_gdts_validation:
+    status: bound_to_manifest
+    minADE: 0.2875914513856816
+    minFDE: 0.5213610204515161
+    source: E_joint_GDTS_UNIV_epoch100_seed2035_exact_synchronized_scene_manifest
+    reference_limitation: comparator_full_checkpoint_and_goal_only_initialization_share_source_bytes_but_only_unet_is_loaded_for_ebjd
+    manifest_sha256: 46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e
+    checkpoint_sha256: ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e
+    ebjd_initialization_sha256: ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e
+    fold: univ
+    unit: m
+    worlds: 20
+    steps: 20
+    evaluation_seed: 2035
+    scene_count: 947
+    agent_occurrence_count: 24334
+    result_sha256: 0d0bdd18f7ba63bc6a601117e27b62f99f30a78736449edf1cab920c9b3688ef
+
+ablations:
+  available: [future_social_off, noisy_geometry, cartesian_velocity, geometry_loss_off, rollout_loss_off, actual_step_constraint_off]

@@ -1,0 +1,136 @@
+{
+  "schema": "ebjd-hotel-training-status-snapshot-v1",
+  "status": "RUNNING_STABLE_VALIDATION_VARIANCE_BEST_EPOCH35_GATE_NOT_MET",
+  "snapshot_at": "2026-10-10T10:09:10+08:00",
+  "execution_code_commit": "9ecde66aa86f7a577fa29bd94b0168ae735a1f16",
+  "previous_snapshot_commit": "77caa8d6d0f63682e0c67d217e8ec2e6246ebc29",
+  "queue": {
+    "queue_id": "hotel_main_speed_9ecde66_20261009_115417",
+    "queue_status": "RUNNING",
+    "supervisor_pid": 1263005,
+    "seed3101": {
+      "status": "RUNNING",
+      "pid": 1263016,
+      "run_id": "hotel_main_seed3101_9ecde66_speed_20261009"
+    },
+    "seed3102": "QUEUED",
+    "seed3103": "QUEUED",
+    "state_file_is_transition_log_not_heartbeat": true
+  },
+  "progress": {
+    "completed_epoch": 44,
+    "current_epoch": 45,
+    "epochs_target": 100,
+    "current_epoch_updates": 72,
+    "updates_per_full_epoch": 266,
+    "current_epoch_fraction": 0.2706766917293233,
+    "latest_update": 11776,
+    "canonical_log_records": 6190,
+    "update_sequence_first": 5587,
+    "update_sequence_last": 11776,
+    "update_sequence_continuous": true
+  },
+  "latest_checkpoint": {
+    "epoch": 44,
+    "update_index": 11704,
+    "sha256": "ec6f90d8f81c9bee341990b1853dad27197db3a85fd533ca484a006cfe090e84"
+  },
+  "validation": {
+    "selection_seed": 2035,
+    "scene_count": 445,
+    "worlds": 20,
+    "steps": 20,
+    "baseline": {
+      "minADE": 0.1352196876519829,
+      "minFDE": 0.19338157261354552,
+      "JADE": 0.21118598435953093,
+      "JFDE": 0.35985399696222514
+    },
+    "latest_epoch44": {
+      "minADE": 0.14692631378515453,
+      "minFDE": 0.2302933557344118,
+      "JADE": 0.17973587317601517,
+      "JFDE": 0.31287899545885706,
+      "absolute_delta_ebjd_minus_baseline": {
+        "minADE": 0.011706626133171638,
+        "minFDE": 0.036911783120866265,
+        "JADE": -0.03145011118351576,
+        "JFDE": -0.046975001503368086
+      },
+      "relative_delta_ebjd_minus_baseline": {
+        "minADE": 0.08657486447758389,
+        "minFDE": 0.1908753901522504,
+        "JADE": -0.1489213939973114,
+        "JFDE": -0.13053905722853254
+      },
+      "joint_score": 0.3361753709054437,
+      "total_marginal_violation": 0.0486184092540379
+    },
+    "least_violation_epoch35": {
+      "minADE": 0.1376098649479634,
+      "minFDE": 0.20428209013224688,
+      "JADE": 0.16666932677107163,
+      "JFDE": 0.27834125981768176,
+      "absolute_delta_ebjd_minus_baseline": {
+        "minADE": 0.002390177295980511,
+        "minFDE": 0.010900517518701358,
+        "JADE": -0.044516657588459296,
+        "JFDE": -0.08151273714454338
+      },
+      "relative_delta_ebjd_minus_baseline": {
+        "minADE": 0.01767625216035218,
+        "minFDE": 0.056367922607005516,
+        "JADE": -0.2107936174053694,
+        "JFDE": -0.22651613663499193
+      },
+      "joint_score": 0.3058399566799125,
+      "total_marginal_violation": 0.01329069481468187
+    },
+    "best_eligible": null,
+    "simultaneous_improvement": false
+  },
+  "training_health": {
+    "all_recorded_values_finite": true,
+    "normal_update_p50_seconds": 1.8351137429708615,
+    "normal_update_p90_seconds": 2.184963788022287,
+    "rollout_update_p50_seconds": 42.26345244189724,
+    "rollout_update_p90_seconds": 51.42040283791721,
+    "maximum_cuda_allocated_bytes": 6059829760,
+    "maximum_cuda_reserved_bytes": 6557794304,
+    "rollout_updates": 1547,
+    "projection_active_updates": 97,
+    "minimum_applied_dot_marginal_ade": -1.1621375068268902e-11,
+    "minimum_applied_dot_marginal_fde": -2.2802973016521064e-11,
+    "mean_soft_marginal_ade": 0.41920578789740515,
+    "mean_soft_marginal_fde": 0.803531982460107,
+    "mean_rollout_loss": 1.8013349453426937,
+    "recent_epochs": {
+      "43": {
+        "updates": 266,
+        "mean_loss": 1.7165619371920373,
+        "mean_diffusion": 1.367289237474569,
+        "mean_rollout_loss": 1.7258460305321879
+      },
+      "44": {
+        "updates": 266,
+        "mean_loss": 1.7151517474136624,
+        "mean_diffusion": 1.3713741033578726,
+        "mean_rollout_loss": 1.7242600193289532
+      },
+      "45_partial": {
+        "updates": 72,
+        "mean_loss": 1.735626392441999,
+        "mean_diffusion": 1.3976555742232748,
+        "mean_rollout_loss": 1.6823232602457412
+      }
+    }
+  },
+  "bindings": {
+    "selection_status_sha256": "429645688f36ab34230902df0f55ebabf6ec9185a5d583ead6100658cfbd7fa7",
+    "run_identity_sha256": "5c6306f3b876b750391a0727cd8c791827c0e5abb147b7db9ce50232c9977594",
+    "resolved_config_sha256": "a3800984c4876bec69caa62a587ab2db609d2dce1c7670995ddee0ecb6440278",
+    "queue_manifest_sha256": "30a1d292d0d233983c12d409543d42823ca6a72a15faa91f41b2ed3aedf68463",
+    "first_formal_update_receipt_sha256": "84f81a20ea396a8fa30b54102ca8fe0a90ea0c10aa4cd97bbc248dd5bd4c22e2"
+  },
+  "evidence_boundary": "internal development validation with mirrored official-package validation/test identity; not a final independent test, three-seed aggregate, or standard five-fold external benchmark result"
+}

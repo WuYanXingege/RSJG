@@ -1,0 +1,60 @@
+{
+  "schema": "ebjd-single-training-seed-queue-receipt-v1",
+  "created_at": "2026-10-10T14:14:46+08:00",
+  "decision": {
+    "training_seeds_per_fold": 1,
+    "training_seeds": [3101],
+    "inference_seeds_unchanged": [2035, 2036, 2037, 2038, 2039],
+    "evidence_scope": "single_training_seed_only"
+  },
+  "hotel": {
+    "queue_status": "RUNNING",
+    "trainer_pid": 1263016,
+    "snapshot_epoch_in_progress": 49,
+    "snapshot_max_update": 12847,
+    "last_complete_epoch": 48,
+    "last_checkpoint_sha256": "f2c5a8a552e12b48825bccce6768826991fd4b4e409b0017ad024cb48904330f",
+    "queue_manifest_sha256": "ae2d51e94eb759c3f65f127115fa6529d57b6d87b95c5a9b5de27680a32391c0",
+    "queue_state_snapshot_sha256": "b1d3385df3306b443ac320076ebf6ebcb7b1a610ee61ec0b538206c1809d28df",
+    "future_training_seeds_cancelled": [3102, 3103]
+  },
+  "epoch_45": {
+    "saved": true,
+    "epoch": 45,
+    "update_index": 11970,
+    "canonical_name": "least_violation.pt",
+    "explicit_alias": "epoch_045.pt",
+    "hardlink_same_inode": true,
+    "sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+    "selection_role": "least_violation",
+    "best_eligible": false,
+    "metrics": {
+      "minADE": 0.13729323806597502,
+      "minFDE": 0.20226440469505041,
+      "JADE": 0.16520817553457082,
+      "JFDE": 0.2719628852020342,
+      "total_marginal_violation": 0.010956382495497019
+    },
+    "binding_receipt_sha256": "246864e415cfa38c6b29f06815d43dfdf5a53c36fa777d7fb8e5afcc0678dc7b"
+  },
+  "duplicate_write_audit": {
+    "range": [12769, 12847],
+    "records": 79,
+    "unique_updates": 79,
+    "duplicate_updates": 0,
+    "missing_updates": 0,
+    "result": "PASS"
+  },
+  "univ": {
+    "queue_status": "WAITING",
+    "training_seeds": [3101],
+    "queue_manifest_sha256": "fd61ea13886a2d86bffa1e6b0215dc0f227ca8c1f589d5b4f75e5a79be1e0de7",
+    "queue_state_snapshot_sha256": "55118f1178746c2b210fbc961fc80b06a300483e773ec9ef02a38d4930a1206c",
+    "launch_policy": "after HOTEL completion and exact CUDA validation preflight"
+  },
+  "identity_boundary": {
+    "checkpoint_config_minimum_training_seeds": 3,
+    "actual_queue_minimum_training_seeds": 1,
+    "reason": "Preserve immutable checkpoint identity and exact resume under source commit 9ecde66; queue manifest is authoritative for actual training cardinality."
+  }
+}

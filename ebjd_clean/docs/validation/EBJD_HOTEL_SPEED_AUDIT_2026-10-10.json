@@ -1,0 +1,81 @@
+{
+  "schema": "ebjd-hotel-live-speed-audit-v1",
+  "experiment_id": "EBJD-GPU-261010-001",
+  "snapshot_time": "2026-10-10T15:36:19+08:00",
+  "status": "RUNNING_EXPECTED_SLOW",
+  "run": {
+    "dataset": "hotel",
+    "seed": 3101,
+    "run_id": "hotel_main_seed3101_9ecde66_speed_20261009",
+    "execution_commit": "9ecde66aa86f7a577fa29bd94b0168ae735a1f16",
+    "trainer_pid": 1263016,
+    "last_checkpoint_epoch": 49,
+    "last_checkpoint_update": 13034,
+    "current_epoch": 50,
+    "current_epoch_updates": 178,
+    "current_max_update": 13212,
+    "updates_per_epoch": 266
+  },
+  "throughput": {
+    "completed_epochs": 28,
+    "wall_hours_through_epoch_49": 27.022878909905753,
+    "wall_minutes_per_epoch": 57.90616909265518,
+    "recorded_train_hours": 24.845954828816726,
+    "non_train_hours": 2.1769240810890267,
+    "non_train_minutes_per_epoch": 4.664837316619343,
+    "all_update_mean_seconds": 12.009322957000565,
+    "recent_epoch_45_49_train_minutes_mean": 55.77282588218921,
+    "recent_vs_epoch_22_40_slowdown_fraction": 0.05676260530794375
+  },
+  "update_breakdown": {
+    "normal": {
+      "count": 5586,
+      "mean_seconds": 1.8482995573940388,
+      "median_seconds": 1.8486076290137134,
+      "compute_time_fraction": 0.11542904400263967
+    },
+    "rollout": {
+      "count": 1862,
+      "mean_seconds": 42.492393155820146,
+      "median_seconds": 42.43489713547751,
+      "compute_time_fraction": 0.8845709559973604
+    }
+  },
+  "resource_observation": {
+    "device": "NVIDIA GeForce RTX 5070 Ti",
+    "sample_seconds": 30,
+    "sample_interval_seconds": 1,
+    "gpu_sm_utilization_percent_mean_approx": 24.1,
+    "gpu_sm_utilization_percent_range": [11, 42],
+    "memory_controller_percent_range": [1, 17],
+    "framebuffer_used_mib_range": [7388, 7404],
+    "trainer_used_memory_mib": 6626,
+    "temperature_c_range": [49, 53],
+    "power_w_range": [61, 81],
+    "process_cpu_percent": 173,
+    "process_threads": 33,
+    "peak_allocated_gib": 5.643656253814697,
+    "peak_reserved_gib": 6.107421875,
+    "thermal_or_memory_throttling_observed": false
+  },
+  "integrity": {
+    "jsonl_records_at_snapshot": 7630,
+    "invalid_json_or_nonfinite_records": 0,
+    "oom_observed": false,
+    "nan_or_inf_observed": false
+  },
+  "eta": {
+    "remaining_hours": 48.57442304589396,
+    "estimated_completion": "2026-10-12T16:11:10+08:00",
+    "method": "linear extrapolation from actual wall time through epoch 49 and current epoch-50 update fraction",
+    "uncertainty": "System interruption, OOM, validation variation or manual pause will change the estimate."
+  },
+  "assessment": {
+    "abnormal_stall": false,
+    "absolute_speed_slow": true,
+    "matches_certified_expectation": true,
+    "dominant_bottleneck": "differentiable S4 x 20-step rollout every four optimizer updates",
+    "safe_midrun_speed_change_available": false,
+    "recommendation": "Finish HOTEL seed 3101 unchanged; evaluate any further execution optimization independently before using it for a new run."
+  }
+}

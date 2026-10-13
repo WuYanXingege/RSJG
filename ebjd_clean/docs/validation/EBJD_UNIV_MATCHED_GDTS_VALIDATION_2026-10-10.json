@@ -1,0 +1,45 @@
+{
+  "agent_occurrence_count": 24334,
+  "baseline_source": {
+    "checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/univ/saved_models/best_model.pt",
+    "checkpoint_epoch": 100,
+    "checkpoint_sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+    "five_seed_result": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/univ/joint_dependency_v2/audits/gdts_baseline_five_seed/results.json",
+    "five_seed_result_sha256": "04f8d43f92b94ec09037bb267949f66092fa2dd2f42fe2b3e4388b33602c3477",
+    "seed_2035_result": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/univ/joint_dependency_v2/audits/gdts_baseline_five_seed/per_seed/seed_2035.json",
+    "seed_2035_result_sha256": "a825a60bf4f3fe2009f2d0bf2453e6e94b1a01cbe2b8091dcd2efddb5a77e0e5"
+  },
+  "evaluation_seed": 2035,
+  "fold": "univ",
+  "metrics": {
+    "JADE": 0.6542967933819186,
+    "JFDE": 1.3185818239401361,
+    "minADE": 0.2875914513856816,
+    "minFDE": 0.5213610204515161
+  },
+  "parity": {
+    "compared_agents": 24334,
+    "compared_points": 486680,
+    "exported_scenes": 947,
+    "grouped_scenes": 947,
+    "maximum_world_absolute_error_m": 4.768348631500885e-07,
+    "missing_legacy_fragments": 0,
+    "missing_scenes_in_either_direction": 0,
+    "report": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/audits/univ_official_export_parity.json",
+    "semantic_control_point_agreement_fraction": 1.0,
+    "semantic_control_points": 219006,
+    "status": "PASS"
+  },
+  "protocol": {
+    "coordinate_unit": "m",
+    "manifest_sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+    "per_agent_reordering": false,
+    "scene_count": 947,
+    "split": "validation",
+    "steps": 20,
+    "validation_test_identity": "mirrored_official_package_internal_only",
+    "worlds": 20
+  },
+  "schema": "ebjd-matched-gdts-validation-v1",
+  "status": "BOUND_TO_EXACT_MANIFEST"
+}
