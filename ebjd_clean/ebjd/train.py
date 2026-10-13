@@ -146,17 +146,38 @@ def resolve_stop_epoch(
 
 
 def new_short_selection(start_epoch: int, stop_epoch: int) -> dict:
+    window = f"epochs {start_epoch}-{stop_epoch}"
     return {
         "definition": {
-            "best_joint_short": "minimum JADE+0.5*JFDE within epochs 46-50",
-            "best_marginal_short": "minimum minADE+minFDE within epochs 46-50",
+            "best_joint_short": f"minimum JADE+0.5*JFDE within {window}",
+            "best_marginal_short": f"minimum minADE+minFDE within {window}",
             "least_violation_short": (
                 "minimum summed positive marginal excess over bound baseline "
-                "within epochs 46-50"),
+                f"within {window}"),
         },
         "start_epoch": int(start_epoch), "stop_epoch": int(stop_epoch),
         "best_joint_short": None, "best_marginal_short": None,
         "least_violation_short": None,
+    }
+
+
+def new_auxiliary_selection(start_epoch: int, stop_epoch: int) -> dict:
+    """Track non-primary observations for an ordinary full training run."""
+    window = f"epochs {start_epoch}-{stop_epoch}"
+    return {
+        "definition": {
+            "best_joint_auxiliary": (
+                f"minimum JADE+0.5*JFDE within {window}; never primary selection"),
+            "best_marginal_auxiliary": (
+                f"minimum minADE+minFDE within {window}; never primary selection"),
+            "least_violation_auxiliary": (
+                "minimum summed positive marginal excess over bound baseline "
+                f"within {window}; never primary selection and never overrides "
+                "ConstrainedSelector"),
+        },
+        "start_epoch": int(start_epoch), "stop_epoch": int(stop_epoch),
+        "best_joint_auxiliary": None, "best_marginal_auxiliary": None,
+        "least_violation_auxiliary": None,
     }
 
 
@@ -167,6 +188,14 @@ def short_role_scores(metrics: dict, baseline: dict, tolerance: float) -> dict:
         "least_violation_short": float(
             max(0.0, metrics["minADE"] - float(baseline["minADE"]) - tolerance)
             + max(0.0, metrics["minFDE"] - float(baseline["minFDE"]) - tolerance)),
+    }
+
+
+def auxiliary_role_scores(metrics: dict, baseline: dict, tolerance: float) -> dict:
+    short = short_role_scores(metrics, baseline, tolerance)
+    return {
+        name.replace("_short", "_auxiliary"): score
+        for name, score in short.items()
     }
 
 
@@ -789,30 +818,46 @@ def main() -> None:
         start_epoch, options.epochs, args.max_epochs_this_run,
         args.absolute_stop_epoch)
     bounded = identity.get("bounded_training", {})
-    short_start_epoch = int(bounded.get("origin_epoch", start_epoch - 1)) + 1
-    short_stop_epoch = int(bounded.get("absolute_stop_epoch", stop_epoch))
-    short_path = output / "SHORT_RUN_SELECTION.json"
-    if args.resume and short_path.is_file():
-        short_roles = json.loads(short_path.read_text(encoding="utf-8"))
+    bounded_pilot = bool(bounded)
+    role_start_epoch = (
+        int(bounded.get("origin_epoch", start_epoch - 1)) + 1
+        if bounded_pilot else 1)
+    role_stop_epoch = (
+        int(bounded.get("absolute_stop_epoch", stop_epoch))
+        if bounded_pilot else int(options.epochs))
+    role_path = output / (
+        "SHORT_RUN_SELECTION.json" if bounded_pilot
+        else "AUXILIARY_SELECTION.json")
+    if args.resume and role_path.is_file():
+        auxiliary_roles = json.loads(role_path.read_text(encoding="utf-8"))
         if (
-            int(short_roles.get("start_epoch", -1)) != short_start_epoch
-            or int(short_roles.get("stop_epoch", -1)) != short_stop_epoch
+            int(auxiliary_roles.get("start_epoch", -1)) != role_start_epoch
+            or int(auxiliary_roles.get("stop_epoch", -1)) != role_stop_epoch
         ):
-            raise ValueError("persisted short selector window differs on resume")
+            raise ValueError("persisted auxiliary selector window differs on resume")
     else:
-        short_roles = new_short_selection(short_start_epoch, short_stop_epoch)
+        auxiliary_roles = (
+            new_short_selection(role_start_epoch, role_stop_epoch)
+            if bounded_pilot else
+            new_auxiliary_selection(role_start_epoch, role_stop_epoch))
     updates_per_epoch = math.ceil(len(train_loader) / options.accumulation)
-    origin_update = int(identity.get("resume_origin", {}).get(
-        "update_index", trainer.update_index))
+    origin_update = (
+        int(identity.get("resume_origin", {}).get(
+            "update_index", trainer.update_index))
+        if bounded_pilot else
+        int(trainer.update_index - updates_per_epoch * (start_epoch - 1)))
     run_contract = {
-        "schema": "ebjd-absolute-epoch-pilot-contract-v1",
-        "origin_epoch": short_start_epoch - 1,
-        "absolute_stop_epoch": short_stop_epoch,
+        "schema": (
+            "ebjd-absolute-epoch-pilot-contract-v1" if bounded_pilot
+            else "ebjd-formal-training-contract-v1"),
+        "run_role": "bounded_pilot" if bounded_pilot else "formal_training",
+        "origin_epoch": role_start_epoch - 1,
+        "absolute_stop_epoch": role_stop_epoch,
         "lr_schedule_total_epochs": options.epochs,
         "updates_per_epoch": updates_per_epoch,
         "origin_update_index": origin_update,
         "expected_terminal_update_index": origin_update + updates_per_epoch * (
-            short_stop_epoch - short_start_epoch + 1),
+            role_stop_epoch - role_start_epoch + 1),
         "current_resume_start_epoch": start_epoch,
         "current_invocation_stop_epoch": stop_epoch,
     }
@@ -899,7 +944,9 @@ def main() -> None:
         trainer.save_checkpoint(
             output / f"epoch_{epoch:03d}.pt", epoch, state, loader_generator,
             {"validation": metrics, "candidate": candidate,
-             "checkpoint_role": "complete_epoch_pilot"})
+             "checkpoint_role": (
+                 "complete_epoch_pilot" if bounded_pilot
+                 else "complete_epoch_formal")})
         if selector.best_eligible is candidate:
             trainer.save_checkpoint(
                 output / "best.pt", epoch, state, loader_generator,
@@ -908,21 +955,24 @@ def main() -> None:
             trainer.save_checkpoint(
                 output / "least_violation.pt", epoch, state, loader_generator,
                 {"validation": metrics, "candidate": candidate})
-        role_scores = short_role_scores(
-            metrics, baseline,
-            float(config["evaluation"].get("marginal_tolerance", 0)))
+        role_scores = (
+            short_role_scores if bounded_pilot else auxiliary_role_scores)(
+                metrics, baseline,
+                float(config["evaluation"].get("marginal_tolerance", 0)))
         for role, score in role_scores.items():
-            current = short_roles[role]
+            current = auxiliary_roles[role]
             if current is None or score < current["score"]:
-                short_roles[role] = {"epoch": epoch, "score": score,
-                                     "metrics": metrics}
+                auxiliary_roles[role] = {
+                    "epoch": epoch, "score": score, "metrics": metrics}
                 trainer.save_checkpoint(
                     output / f"{role}.pt", epoch, state, loader_generator,
                     {"validation": metrics, "candidate": candidate,
-                     "short_run_role": role, "short_run_score": score})
-        _atomic_json(output / "SHORT_RUN_SELECTION.json", short_roles)
-        (output / "SELECTION_STATUS.json").write_text(
-            json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+                     "auxiliary_role": role, "auxiliary_score": score,
+                     "checkpoint_role": (
+                         "bounded_pilot_auxiliary" if bounded_pilot
+                         else "formal_auxiliary")})
+        _atomic_json(role_path, auxiliary_roles)
+        _atomic_json(output / "SELECTION_STATUS.json", state)
         epoch_summary = {
             "epoch": epoch,
             "start_update_exclusive": epoch_update_start,

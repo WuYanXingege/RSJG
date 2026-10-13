@@ -14,7 +14,10 @@ from ebjd.config import (
 )
 from ebjd.model import EBJDModel
 from ebjd.objectives import diffusion_loss
-from ebjd.train import new_short_selection, resolve_stop_epoch, short_role_scores
+from ebjd.train import (
+    auxiliary_role_scores, new_auxiliary_selection, new_short_selection,
+    resolve_stop_epoch, short_role_scores,
+)
 from ebjd.trainer import EBJDTrainer, TrainerOptions
 ROOT = Path(__file__).parents[1]
 
@@ -177,6 +180,25 @@ def test_epoch_schedule_absolute_boundary_and_short_selector_contract():
         {"minADE": 0.2, "minFDE": 0.3, "JADE": 0.4, "JFDE": 0.6},
         {"minADE": 0.1, "minFDE": 0.2}, 0.0)
     assert scores["best_joint_short"] == pytest.approx(0.7)
+
+
+def test_full_run_auxiliary_selector_is_not_a_short_pilot_selector():
+    roles = new_auxiliary_selection(1, 100)
+    assert roles["start_epoch"] == 1 and roles["stop_epoch"] == 100
+    assert "epochs 1-100" in roles["definition"]["best_joint_auxiliary"]
+    assert "never primary selection" in roles["definition"][
+        "least_violation_auxiliary"]
+    assert all(roles[name] is None for name in (
+        "best_joint_auxiliary", "best_marginal_auxiliary",
+        "least_violation_auxiliary"))
+    scores = auxiliary_role_scores(
+        {"minADE": 0.2, "minFDE": 0.3, "JADE": 0.4, "JFDE": 0.6},
+        {"minADE": 0.1, "minFDE": 0.2}, 0.0)
+    assert scores == {
+        "best_joint_auxiliary": pytest.approx(0.7),
+        "best_marginal_auxiliary": pytest.approx(0.5),
+        "least_violation_auxiliary": pytest.approx(0.2),
+    }
 
 
 def test_goal_weight_adds_no_model_state_or_parameters():
