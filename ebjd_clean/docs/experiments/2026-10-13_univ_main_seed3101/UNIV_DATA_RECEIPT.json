@@ -1,0 +1,334 @@
+{
+  "fold": "univ",
+  "independent_test": false,
+  "schema": "ebjd-univ-data-receipt-v1",
+  "test": {
+    "all_shards_present_and_bound": true,
+    "map_sources": {
+      "univ": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/pred_mask.png",
+        "semantic_sha256": "5ba94820f52a38cde8355c56b764fc694ff5f8c9cfffc58927cf0753e48c95ad"
+      }
+    },
+    "metadata": {
+      "align_corners": true,
+      "crop_center": "last_observed_world_position_only",
+      "crop_pixels": 256,
+      "crop_width_m": 32.0,
+      "dataset": "ETH/UCY",
+      "dt_seconds": 0.4,
+      "fold": "univ",
+      "future_used_for_crop": false,
+      "obs_length": 8,
+      "out_of_bounds_fill": 0,
+      "pixel_grid": "x=columns,y=rows",
+      "pred_length": 12,
+      "protocol": "official_leave_one_scene_out_sources",
+      "semantic_channels": 6,
+      "semantic_storage": "categorical_one_hot_uint8",
+      "split": "test",
+      "unit": "m",
+      "world_grid": "x=columns,y=rows"
+    },
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/test/test_manifest.json",
+    "sha256": "aabb35de82e936495fcd948a7ba0416d92d4fc93366151b99573a4d7683ee7e0",
+    "shard_count": 60,
+    "source_files": [
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/test/students001.txt",
+        "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/test/students003.txt",
+        "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+      }
+    ],
+    "statistics": {
+      "N_histogram": {
+        "10": 12,
+        "11": 10,
+        "12": 13,
+        "13": 32,
+        "14": 17,
+        "15": 25,
+        "16": 24,
+        "17": 29,
+        "18": 34,
+        "19": 23,
+        "20": 33,
+        "21": 40,
+        "22": 41,
+        "23": 37,
+        "24": 36,
+        "25": 38,
+        "26": 23,
+        "27": 17,
+        "28": 20,
+        "29": 30,
+        "3": 1,
+        "30": 32,
+        "31": 28,
+        "32": 40,
+        "33": 38,
+        "34": 33,
+        "35": 17,
+        "36": 23,
+        "37": 25,
+        "38": 25,
+        "39": 28,
+        "4": 5,
+        "40": 10,
+        "41": 9,
+        "42": 7,
+        "43": 9,
+        "44": 4,
+        "45": 7,
+        "46": 6,
+        "47": 2,
+        "48": 4,
+        "49": 3,
+        "5": 9,
+        "50": 1,
+        "51": 5,
+        "52": 2,
+        "53": 2,
+        "57": 1,
+        "6": 13,
+        "7": 7,
+        "8": 5,
+        "9": 12
+      },
+      "agents": 24334,
+      "max_N": 57,
+      "min_N": 3,
+      "scenes": 947,
+      "shard_bytes": 30736871,
+      "world_pixel_roundtrip_max_abs_m": 1.7763568394002505e-15
+    }
+  },
+  "train": {
+    "all_shards_present_and_bound": true,
+    "map_sources": {
+      "eth": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/H.txt",
+        "homography_sha256": "a85a44838a451323f0b6e8e649dd4ee4db696de7d0e59f651506edaa8af77aff",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/pred_mask.png",
+        "semantic_sha256": "5c3510ddb5d3763741de83dc4fbb16d037f131d259d225721e5dcefc2e66232e"
+      },
+      "hotel": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/hotel/H.txt",
+        "homography_sha256": "b62940ea5f69c89990673f91f88724937ed41387a39d8d68ad5bbc6d5ee5c8b7",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/hotel/pred_mask.png",
+        "semantic_sha256": "dd55bde37b2c2ba8665010f229706ff77a0fa46f14760d0bb8da22832e89e2b2"
+      },
+      "univ": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/pred_mask.png",
+        "semantic_sha256": "5ba94820f52a38cde8355c56b764fc694ff5f8c9cfffc58927cf0753e48c95ad"
+      },
+      "zara1": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara1/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara1/pred_mask.png",
+        "semantic_sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d"
+      },
+      "zara2": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara2/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara2/pred_mask.png",
+        "semantic_sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d"
+      }
+    },
+    "metadata": {
+      "align_corners": true,
+      "crop_center": "last_observed_world_position_only",
+      "crop_pixels": 256,
+      "crop_width_m": 32.0,
+      "dataset": "ETH/UCY",
+      "dt_seconds": 0.4,
+      "fold": "univ",
+      "future_used_for_crop": false,
+      "obs_length": 8,
+      "out_of_bounds_fill": 0,
+      "pixel_grid": "x=columns,y=rows",
+      "pred_length": 12,
+      "protocol": "official_leave_one_scene_out_sources",
+      "semantic_channels": 6,
+      "semantic_storage": "categorical_one_hot_uint8",
+      "split": "train",
+      "storage_layout": "one_complete_scene_per_npz",
+      "unit": "m",
+      "world_grid": "x=columns,y=rows"
+    },
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official_train_scene_shards_20261010/train/train_manifest.json",
+    "sha256": "6f6fca362ec1e591bf9a79c9b1a0204123947a0c7b754992f131432af40dfd5d",
+    "shard_count": 4067,
+    "source_files": [
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/train/biwi_eth.txt",
+        "sha256": "cd75b1008b82b7f442b2e03967b0f4aac36da2e73d440df1f605bb197d23fb33"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/train/biwi_hotel.txt",
+        "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/train/crowds_zara01.txt",
+        "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/train/crowds_zara02.txt",
+        "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/train/crowds_zara03.txt",
+        "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/train/uni_examples.txt",
+        "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7"
+      }
+    ],
+    "statistics": {
+      "N_histogram": {
+        "1": 891,
+        "10": 63,
+        "11": 47,
+        "12": 26,
+        "13": 21,
+        "14": 8,
+        "15": 2,
+        "16": 3,
+        "2": 830,
+        "3": 592,
+        "4": 516,
+        "5": 345,
+        "6": 290,
+        "7": 185,
+        "8": 119,
+        "9": 129
+      },
+      "agents": 15186,
+      "max_N": 16,
+      "min_N": 1,
+      "scenes": 4067,
+      "shard_bytes": 36371496,
+      "world_pixel_roundtrip_max_abs_m": 7.105427357601002e-15
+    }
+  },
+  "validation": {
+    "all_shards_present_and_bound": true,
+    "map_sources": {
+      "univ": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/pred_mask.png",
+        "semantic_sha256": "5ba94820f52a38cde8355c56b764fc694ff5f8c9cfffc58927cf0753e48c95ad"
+      }
+    },
+    "metadata": {
+      "align_corners": true,
+      "crop_center": "last_observed_world_position_only",
+      "crop_pixels": 256,
+      "crop_width_m": 32.0,
+      "dataset": "ETH/UCY",
+      "dt_seconds": 0.4,
+      "fold": "univ",
+      "future_used_for_crop": false,
+      "obs_length": 8,
+      "out_of_bounds_fill": 0,
+      "pixel_grid": "x=columns,y=rows",
+      "pred_length": 12,
+      "protocol": "official_leave_one_scene_out_sources",
+      "semantic_channels": 6,
+      "semantic_storage": "categorical_one_hot_uint8",
+      "split": "validation",
+      "unit": "m",
+      "world_grid": "x=columns,y=rows"
+    },
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/validation/validation_manifest.json",
+    "sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+    "shard_count": 60,
+    "source_files": [
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/val/students001.txt",
+        "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/val/students003.txt",
+        "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+      }
+    ],
+    "statistics": {
+      "N_histogram": {
+        "10": 12,
+        "11": 10,
+        "12": 13,
+        "13": 32,
+        "14": 17,
+        "15": 25,
+        "16": 24,
+        "17": 29,
+        "18": 34,
+        "19": 23,
+        "20": 33,
+        "21": 40,
+        "22": 41,
+        "23": 37,
+        "24": 36,
+        "25": 38,
+        "26": 23,
+        "27": 17,
+        "28": 20,
+        "29": 30,
+        "3": 1,
+        "30": 32,
+        "31": 28,
+        "32": 40,
+        "33": 38,
+        "34": 33,
+        "35": 17,
+        "36": 23,
+        "37": 25,
+        "38": 25,
+        "39": 28,
+        "4": 5,
+        "40": 10,
+        "41": 9,
+        "42": 7,
+        "43": 9,
+        "44": 4,
+        "45": 7,
+        "46": 6,
+        "47": 2,
+        "48": 4,
+        "49": 3,
+        "5": 9,
+        "50": 1,
+        "51": 5,
+        "52": 2,
+        "53": 2,
+        "57": 1,
+        "6": 13,
+        "7": 7,
+        "8": 5,
+        "9": 12
+      },
+      "agents": 24334,
+      "max_N": 57,
+      "min_N": 3,
+      "scenes": 947,
+      "shard_bytes": 30737883,
+      "world_pixel_roundtrip_max_abs_m": 1.7763568394002505e-15
+    }
+  },
+  "validation_test_mirror": true,
+  "window_identity_intersections": {
+    "train_test": 0,
+    "train_validation": 0,
+    "validation_test": 947
+  }
+}

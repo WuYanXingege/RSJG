@@ -1,0 +1,118 @@
+{
+  "categorized_change_prefixes": [
+    "experiment",
+    "paths",
+    "evaluation.matched_gdts_validation",
+    "training.execution",
+    "training.physical_group",
+    "training.rollout_uncheckpointed_max_agent_slots"
+  ],
+  "differences": {
+    "evaluation.matched_gdts_validation.agent_occurrence_count": {
+      "new": 24334,
+      "old": 1197
+    },
+    "evaluation.matched_gdts_validation.checkpoint_sha256": {
+      "new": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+      "old": "5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b"
+    },
+    "evaluation.matched_gdts_validation.ebjd_initialization_sha256": {
+      "new": "9fe5b2a7ae1e765d2706763b342d461c11ac0e736a2b597b6e18d63381652229",
+      "old": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13"
+    },
+    "evaluation.matched_gdts_validation.fold": {
+      "new": "univ",
+      "old": "hotel"
+    },
+    "evaluation.matched_gdts_validation.manifest_sha256": {
+      "new": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+      "old": "90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d"
+    },
+    "evaluation.matched_gdts_validation.minADE": {
+      "new": 0.2875914513856816,
+      "old": 0.1352196876519829
+    },
+    "evaluation.matched_gdts_validation.minFDE": {
+      "new": 0.5213610204515161,
+      "old": 0.19338157261354552
+    },
+    "evaluation.matched_gdts_validation.reference_limitation": {
+      "new": "comparator_full_checkpoint_differs_from_fold_matched_goal_pretrain_initialization",
+      "old": "comparator_full_checkpoint_differs_from_goal_only_ebjd_initialization"
+    },
+    "evaluation.matched_gdts_validation.result_sha256": {
+      "new": "0d0bdd18f7ba63bc6a601117e27b62f99f30a78736449edf1cab920c9b3688ef",
+      "old": "df9aa35cd26296558c864a2bcda792a8411bbc83a530376c45d3429a768eae6c"
+    },
+    "evaluation.matched_gdts_validation.scene_count": {
+      "new": 947,
+      "old": 445
+    },
+    "evaluation.matched_gdts_validation.source": {
+      "new": "E_joint_GDTS_UNIV_epoch100_seed2035_exact_synchronized_scene_manifest",
+      "old": "E_joint_official_GDTS_epoch110_seed2035_synchronized_scene_manifest"
+    },
+    "experiment.fold": {
+      "new": "univ",
+      "old": "hotel"
+    },
+    "experiment.source_commit": {
+      "new": "1ef0c76e495d5f18d31cbe9b69912dc78410dfc1",
+      "old": "9ecde66aa86f7a577fa29bd94b0168ae735a1f16"
+    },
+    "paths.accepted_fold_matched_gdts_unet": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/univ/runs/univ_goal_pretrain_seed3101_20261013/saved_models/goal_pretrain_best_model.pt",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/hotel/runs/grouped_fresh_goal_official_prior_seed3101_20261005_114637/epoch_096.pt"
+    },
+    "paths.accepted_fold_matched_gdts_unet_sha256": {
+      "new": "9fe5b2a7ae1e765d2706763b342d461c11ac0e736a2b597b6e18d63381652229",
+      "old": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13"
+    },
+    "paths.matched_gdts_validation_checkpoint": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/univ/saved_models/best_model.pt",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS_official_297d508_HOTEL/output/hotel/saved_models/best_model.pt"
+    },
+    "paths.matched_gdts_validation_checkpoint_sha256": {
+      "new": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+      "old": "5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b"
+    },
+    "paths.matched_gdts_validation_result": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/docs/validation/EBJD_UNIV_MATCHED_GDTS_VALIDATION_2026-10-10.json",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/outputs/joint_dependency_v2/hotel_a0_a1_5b6e4e4/formal_launch/results/E_joint_baseline.json"
+    },
+    "paths.matched_gdts_validation_result_sha256": {
+      "new": "0d0bdd18f7ba63bc6a601117e27b62f99f30a78736449edf1cab920c9b3688ef",
+      "old": "df9aa35cd26296558c864a2bcda792a8411bbc83a530376c45d3429a768eae6c"
+    },
+    "paths.output_root": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/formal_training",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009"
+    },
+    "paths.test_manifest": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/test/test_manifest.json",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/hotel_official/test/test_manifest.json"
+    },
+    "paths.train_manifest": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official_train_scene_shards_20261010/train/train_manifest.json",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/hotel_official_train_scene_shards_e7a1948/train/train_manifest.json"
+    },
+    "paths.validation_manifest": {
+      "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/validation/validation_manifest.json",
+      "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/hotel_official/validation/validation_manifest.json"
+    },
+    "training.execution_strategy": {
+      "new": "small_group_uncheckpoint_v1",
+      "old": "compact_grouped_v1"
+    },
+    "training.rollout_uncheckpointed_max_agent_slots": {
+      "new": 32,
+      "old": "<MISSING>"
+    }
+  },
+  "hotel_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_hotel_speed_9ecde66_20261009/hotel/3101/none/hotel_main_seed3101_9ecde66_speed_20261009/epoch_045.pt",
+  "hotel_checkpoint_sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+  "schema": "ebjd-hotel-epoch45-to-univ-difference-v1",
+  "semantic_and_optimizer_protocol_exact": true,
+  "source_commit": "1ef0c76e495d5f18d31cbe9b69912dc78410dfc1",
+  "univ_config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/archive/endpoint_bridge_joint_univ_seed3101.yaml"
+}

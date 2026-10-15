@@ -1,0 +1,26 @@
+{
+  "config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/archive/endpoint_bridge_joint_univ_seed3101.yaml",
+  "config_sha256": "1fdae469634e6fe92ff96e115fc33fac3637b2eca493f394638052e6331f74c9",
+  "data_receipt": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/archive/UNIV_DATA_RECEIPT.json",
+  "difference_receipt": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/archive/HOTEL_TO_UNIV_DIFFERENCES.json",
+  "execution_profile": {
+    "execution_strategy": "small_group_uncheckpoint_v1",
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "physical_group_max_scenes": 4,
+    "rollout_block_checkpointing": false,
+    "rollout_uncheckpointed_max_agent_slots": 32,
+    "scene_compaction": true,
+    "scene_forward_chunk": 1
+  },
+  "expected_terminal_update_index": 25500,
+  "expected_updates_per_epoch": 255,
+  "initialization_receipt": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/archive/UNIV_INITIALIZATION_RECEIPT.json",
+  "minimum_training_seeds_requirement": 3,
+  "schema": "ebjd-univ-main-materialization-v1",
+  "source_commit": "1ef0c76e495d5f18d31cbe9b69912dc78410dfc1",
+  "status": "READY",
+  "training_seeds_executed_by_this_experiment": [
+    3101
+  ]
+}

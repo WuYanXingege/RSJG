@@ -1,0 +1,47 @@
+{
+  "ablation": "none",
+  "config_hash": "594ba4b679f24cacd706ceed9a101f3e60108d6de4ac65e7336c77ee95009c09",
+  "data": {
+    "test": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/test/test_manifest.json",
+      "sha256": "aabb35de82e936495fcd948a7ba0416d92d4fc93366151b99573a4d7683ee7e0"
+    },
+    "train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official_train_scene_shards_20261010/train/train_manifest.json",
+      "sha256": "6f6fca362ec1e591bf9a79c9b1a0204123947a0c7b754992f131432af40dfd5d"
+    },
+    "validation": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/univ_official/validation/validation_manifest.json",
+      "sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e"
+    }
+  },
+  "execution": {
+    "cpu_scene_staging": true,
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "physical_group_max_scenes": 4,
+    "pytorch_cuda_alloc_conf": "expandable_segments:True",
+    "rollout_block_checkpointing": false,
+    "rollout_uncheckpointed_max_agent_slots": 32,
+    "scene_compaction": true,
+    "scene_forward_chunk": 1,
+    "strategy": "small_group_uncheckpoint_v1"
+  },
+  "fold": "univ",
+  "implementation_base": "01faa633162a2b73794a40184e8d64e4d44964bc",
+  "initialization": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/univ/runs/univ_goal_pretrain_seed3101_20261013/saved_models/goal_pretrain_best_model.pt",
+    "sha256": "9fe5b2a7ae1e765d2706763b342d461c11ac0e736a2b597b6e18d63381652229"
+  },
+  "run_id": "univ_main_seed3101_1ef0c76_20261013",
+  "seed": 3101,
+  "semantic_config_hash": "2aa45004e3ccbca348bcfccd0da21baf436434df1e81445497eaf5ae9a76ec24",
+  "source_commit": "1ef0c76e495d5f18d31cbe9b69912dc78410dfc1",
+  "validation_comparator": {
+    "checkpoint_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/univ/saved_models/best_model.pt",
+    "checkpoint_sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+    "result_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/docs/validation/EBJD_UNIV_MATCHED_GDTS_VALIDATION_2026-10-10.json",
+    "result_sha256": "0d0bdd18f7ba63bc6a601117e27b62f99f30a78736449edf1cab920c9b3688ef"
+  },
+  "working_tree_dirty": false
+}

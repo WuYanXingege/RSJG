@@ -1,0 +1,3670 @@
+{
+  "baseline_minade": 0.2875914513856816,
+  "baseline_minfde": 0.5213610204515161,
+  "best_eligible": {
+    "epoch": 73,
+    "joint_score": 1.1017224535487649,
+    "marginal_violations": {
+      "minADE": 0.0,
+      "minFDE": 0.0
+    },
+    "metrics": {
+      "JADE": 0.5333317646947556,
+      "JFDE": 1.1367813777080182,
+      "agent_count": 24334,
+      "coordination_gap_ADE": 0.25164222232643374,
+      "coordination_gap_FDE": 0.6056442921617342,
+      "minADE": 0.27401226467973144,
+      "minFDE": 0.5157314216758847,
+      "scene_count": 947,
+      "scene_weighted_minADE": 0.2816895423683219,
+      "scene_weighted_minFDE": 0.531137085546284,
+      "sums": {
+        "agent_minADE": 6667.814448716585,
+        "agent_minFDE": 12549.80841506098,
+        "scene_JADE": 505.0651811659336,
+        "scene_JFDE": 1076.5319646894932,
+        "scene_marginal_ADE": 266.7599966228008,
+        "scene_marginal_FDE": 502.986820012331
+      }
+    },
+    "simultaneous_improvement": true,
+    "total_violation": 0.0
+  },
+  "candidates": [
+    {
+      "epoch": 1,
+      "joint_score": 1.3480251084033639,
+      "marginal_violations": {
+        "minADE": 0.019120799032993463,
+        "minFDE": 0.031089877535166344
+      },
+      "metrics": {
+        "JADE": 0.6738273430588128,
+        "JFDE": 1.3483955306891025,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.35817151408890363,
+        "coordination_gap_FDE": 0.7759053648588146,
+        "minADE": 0.30671225041867506,
+        "minFDE": 0.5524508979866825,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3156558289699091,
+        "scene_weighted_minFDE": 0.5724901658302879,
+        "sums": {
+          "agent_minADE": 7463.535901688039,
+          "agent_minFDE": 13443.340151607932,
+          "scene_JADE": 638.1144938766956,
+          "scene_JFDE": 1276.93056756258,
+          "scene_marginal_ADE": 298.92607003450394,
+          "scene_marginal_FDE": 542.1481870412827
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.05021067656815981
+    },
+    {
+      "epoch": 2,
+      "joint_score": 1.2088756472375852,
+      "marginal_violations": {
+        "minADE": 0.02507159682058102,
+        "minFDE": 0.0580470745011763
+      },
+      "metrics": {
+        "JADE": 0.5938310412947706,
+        "JFDE": 1.2300892118856295,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2719300440743707,
+        "coordination_gap_FDE": 0.6318550682307045,
+        "minADE": 0.3126630482062626,
+        "minFDE": 0.5794080949526924,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3219009972203999,
+        "scene_weighted_minFDE": 0.598234143654925,
+        "sums": {
+          "agent_minADE": 7608.342615051195,
+          "agent_minFDE": 14099.316582578816,
+          "scene_JADE": 562.3579961061478,
+          "scene_JFDE": 1164.8944836556911,
+          "scene_marginal_ADE": 304.8402443677187,
+          "scene_marginal_FDE": 566.527734041214
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.08311867132175732
+    },
+    {
+      "epoch": 3,
+      "joint_score": 1.2188149652391704,
+      "marginal_violations": {
+        "minADE": 0.022750271470697803,
+        "minFDE": 0.0315353470487334
+      },
+      "metrics": {
+        "JADE": 0.59813725789409,
+        "JFDE": 1.2413554146901606,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.27885568396846244,
+        "coordination_gap_FDE": 0.6719297272759984,
+        "minADE": 0.3103417228563794,
+        "minFDE": 0.5528963675002495,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.31928157392562756,
+        "scene_weighted_minFDE": 0.5694256874141622,
+        "sums": {
+          "agent_minADE": 7551.855483987136,
+          "agent_minFDE": 13454.180206751073,
+          "scene_JADE": 566.4359832257032,
+          "scene_JFDE": 1175.5635777115822,
+          "scene_marginal_ADE": 302.3596505075693,
+          "scene_marginal_FDE": 539.2461259812117
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.0542856185194312
+    },
+    {
+      "epoch": 4,
+      "joint_score": 1.173820835122211,
+      "marginal_violations": {
+        "minADE": 0.03461676098369115,
+        "minFDE": 0.08535881645045484
+      },
+      "metrics": {
+        "JADE": 0.5761426208106114,
+        "JFDE": 1.1953564286231995,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24450771313912006,
+        "coordination_gap_FDE": 0.5690384376577742,
+        "minADE": 0.32220821236937275,
+        "minFDE": 0.606719836901971,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.33163490767149134,
+        "scene_weighted_minFDE": 0.6263179909654253,
+        "sums": {
+          "agent_minADE": 7840.614639796317,
+          "agent_minFDE": 14763.92051117256,
+          "scene_JADE": 545.607061907649,
+          "scene_JFDE": 1132.00253790617,
+          "scene_marginal_ADE": 314.0582575649023,
+          "scene_marginal_FDE": 593.1231374442577
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.119975577434146
+    },
+    {
+      "epoch": 5,
+      "joint_score": 1.19751120324875,
+      "marginal_violations": {
+        "minADE": 0.025635295032397365,
+        "minFDE": 0.0646651657426085
+      },
+      "metrics": {
+        "JADE": 0.5857903525909879,
+        "JFDE": 1.2234417013155243,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.26560444141705664,
+        "coordination_gap_FDE": 0.6245098969217591,
+        "minADE": 0.31322674641807896,
+        "minFDE": 0.5860261861941246,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.32018591117393125,
+        "scene_weighted_minFDE": 0.5989318043937653,
+        "sums": {
+          "agent_minADE": 7622.0596473375335,
+          "agent_minFDE": 14260.361214847828,
+          "scene_JADE": 554.7434639036655,
+          "scene_JFDE": 1158.5992911458015,
+          "scene_marginal_ADE": 303.2160578817129,
+          "scene_marginal_FDE": 567.1884187608957
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.09030046077500586
+    },
+    {
+      "epoch": 6,
+      "joint_score": 1.1228502912185259,
+      "marginal_violations": {
+        "minADE": 0.051604436604222925,
+        "minFDE": 0.14878234100861087
+      },
+      "metrics": {
+        "JADE": 0.5450146245006019,
+        "JFDE": 1.1556713334358482,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.19962198048861496,
+        "coordination_gap_FDE": 0.4744198568236111,
+        "minADE": 0.3391958879899045,
+        "minFDE": 0.670143361460127,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.34539264401198694,
+        "scene_weighted_minFDE": 0.6812514766122371,
+        "sums": {
+          "agent_minADE": 8253.992738346336,
+          "agent_minFDE": 16307.26855777073,
+          "scene_JADE": 516.12884940207,
+          "scene_JFDE": 1094.4207527637482,
+          "scene_marginal_ADE": 327.0868338793516,
+          "scene_marginal_FDE": 645.1451483517885
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.2003867776128338
+    },
+    {
+      "epoch": 7,
+      "joint_score": 1.1445652976584912,
+      "marginal_violations": {
+        "minADE": 0.017282788306751784,
+        "minFDE": 0.06403329595155816
+      },
+      "metrics": {
+        "JADE": 0.5562958007849509,
+        "JFDE": 1.1765389937470807,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24370118428057075,
+        "coordination_gap_FDE": 0.5762377949520048,
+        "minADE": 0.3048742396924334,
+        "minFDE": 0.5853943164030743,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.31259461650438014,
+        "scene_weighted_minFDE": 0.6003011987950759,
+        "sums": {
+          "agent_minADE": 7418.809748675674,
+          "agent_minFDE": 14244.98529535241,
+          "scene_JADE": 526.8121233433485,
+          "scene_JFDE": 1114.1824270784855,
+          "scene_marginal_ADE": 296.027101829648,
+          "scene_marginal_FDE": 568.4852352589369
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.08131608425830994
+    },
+    {
+      "epoch": 8,
+      "joint_score": 1.1080322531863276,
+      "marginal_violations": {
+        "minADE": 0.01819016852445493,
+        "minFDE": 0.06698493518479554
+      },
+      "metrics": {
+        "JADE": 0.5390924382109074,
+        "JFDE": 1.1378796299508407,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22447353359134803,
+        "coordination_gap_FDE": 0.532561621938487,
+        "minADE": 0.3057816199101365,
+        "minFDE": 0.5883459556363116,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3146189046195593,
+        "scene_weighted_minFDE": 0.6053180080123537,
+        "sums": {
+          "agent_minADE": 7440.889938893262,
+          "agent_minFDE": 14316.810484454007,
+          "scene_JADE": 510.5205389857292,
+          "scene_JFDE": 1077.572009563446,
+          "scene_marginal_ADE": 297.94410267472267,
+          "scene_marginal_FDE": 573.2361535876989
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.08517510370925047
+    },
+    {
+      "epoch": 9,
+      "joint_score": 1.0944519257438472,
+      "marginal_violations": {
+        "minADE": 0.03859784263829902,
+        "minFDE": 0.12610034605521536
+      },
+      "metrics": {
+        "JADE": 0.530750761329813,
+        "JFDE": 1.1274023288280683,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.1954746088199908,
+        "coordination_gap_FDE": 0.46062611351861615,
+        "minADE": 0.3261892940239806,
+        "minFDE": 0.6474613665067315,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.33527615250982223,
+        "scene_weighted_minFDE": 0.6667762153094522,
+        "sums": {
+          "agent_minADE": 7937.490280779544,
+          "agent_minFDE": 15755.324892574805,
+          "scene_JADE": 502.6209709793329,
+          "scene_JFDE": 1067.6500054001808,
+          "scene_marginal_ADE": 317.5065164268017,
+          "scene_marginal_FDE": 631.4370758980513
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.16469818869351438
+    },
+    {
+      "epoch": 10,
+      "joint_score": 1.1079416535125992,
+      "marginal_violations": {
+        "minADE": 0.01833340655986082,
+        "minFDE": 0.06717155095621763
+      },
+      "metrics": {
+        "JADE": 0.5382152980207264,
+        "JFDE": 1.1394527109837456,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22470198240457645,
+        "coordination_gap_FDE": 0.5379495978544229,
+        "minADE": 0.3059248579455424,
+        "minFDE": 0.5885325714077337,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.31351331561615,
+        "scene_weighted_minFDE": 0.6015031131293227,
+        "sums": {
+          "agent_minADE": 7444.375493246829,
+          "agent_minFDE": 14321.351592635794,
+          "scene_JADE": 509.6898872256279,
+          "scene_JFDE": 1079.0617173016071,
+          "scene_marginal_ADE": 296.897109888494,
+          "scene_marginal_FDE": 569.6234481334686
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.08550495751607845
+    },
+    {
+      "epoch": 11,
+      "joint_score": 1.117067120442169,
+      "marginal_violations": {
+        "minADE": 0.011197568059301832,
+        "minFDE": 0.027230824925154495
+      },
+      "metrics": {
+        "JADE": 0.5444903836488221,
+        "JFDE": 1.1451534735866937,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23775791744244268,
+        "coordination_gap_FDE": 0.5821060991620816,
+        "minADE": 0.29878901944498343,
+        "minFDE": 0.5485918453766706,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3067324662063794,
+        "scene_weighted_minFDE": 0.5630473744246122,
+        "sums": {
+          "agent_minADE": 7270.731999174226,
+          "agent_minFDE": 13349.433965395903,
+          "scene_JADE": 515.6323933154345,
+          "scene_JFDE": 1084.460339486599,
+          "scene_marginal_ADE": 290.4756454974413,
+          "scene_marginal_FDE": 533.2058635801077
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03842839298445633
+    },
+    {
+      "epoch": 12,
+      "joint_score": 1.178263903624027,
+      "marginal_violations": {
+        "minADE": 0.00520590936751375,
+        "minFDE": 0.015657518379257884
+      },
+      "metrics": {
+        "JADE": 0.573576092625621,
+        "JFDE": 1.2093756219968121,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2721545917179668,
+        "coordination_gap_FDE": 0.6552950030206501,
+        "minADE": 0.29279736075319535,
+        "minFDE": 0.537018538830774,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.30142150090765424,
+        "scene_weighted_minFDE": 0.554080618976162,
+        "sums": {
+          "agent_minADE": 7124.930976568256,
+          "agent_minFDE": 13067.809123908053,
+          "scene_JADE": 543.1765597164631,
+          "scene_JFDE": 1145.278714030981,
+          "scene_marginal_ADE": 285.44616135954857,
+          "scene_marginal_FDE": 524.7143461704254
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.020863427746771634
+    },
+    {
+      "epoch": 13,
+      "joint_score": 1.101923024987973,
+      "marginal_violations": {
+        "minADE": 0.004474461402055874,
+        "minFDE": 0.035474202977177516
+      },
+      "metrics": {
+        "JADE": 0.5372620663962621,
+        "JFDE": 1.129321917183422,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23648578078026755,
+        "coordination_gap_FDE": 0.5558762862381488,
+        "minADE": 0.29206591278773747,
+        "minFDE": 0.5568352234286936,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3007762856159945,
+        "scene_weighted_minFDE": 0.5734456309452731,
+        "sums": {
+          "agent_minADE": 7107.131921776803,
+          "agent_minFDE": 13550.02832691383,
+          "scene_JADE": 508.7871768772602,
+          "scene_JFDE": 1069.4678555727005,
+          "scene_marginal_ADE": 284.8351424783468,
+          "scene_marginal_FDE": 543.0530125051737
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03994866437923339
+    },
+    {
+      "epoch": 14,
+      "joint_score": 1.081954937770475,
+      "marginal_violations": {
+        "minADE": 0.01653871077210528,
+        "minFDE": 0.06905022523885274
+      },
+      "metrics": {
+        "JADE": 0.5256467338222637,
+        "JFDE": 1.1126164078964225,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.21283944537263233,
+        "coordination_gap_FDE": 0.5048789254841104,
+        "minADE": 0.3041301621577869,
+        "minFDE": 0.5904112456903688,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.31280728844963135,
+        "scene_weighted_minFDE": 0.6077374824123121,
+        "sums": {
+          "agent_minADE": 7400.703365947586,
+          "agent_minFDE": 14367.067252629437,
+          "scene_JADE": 497.7874569296837,
+          "scene_JFDE": 1053.6477382779121,
+          "scene_marginal_ADE": 296.22850216180086,
+          "scene_marginal_FDE": 575.5273958444595
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.08558893601095802
+    },
+    {
+      "epoch": 15,
+      "joint_score": 1.0680903012233904,
+      "marginal_violations": {
+        "minADE": 0.015736941136623772,
+        "minFDE": 0.06857068478012929
+      },
+      "metrics": {
+        "JADE": 0.5179779944034665,
+        "JFDE": 1.1002246136398477,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.20633983670280498,
+        "coordination_gap_FDE": 0.4936810981761566,
+        "minADE": 0.30332839252230537,
+        "minFDE": 0.5899317052316454,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3116381577006615,
+        "scene_weighted_minFDE": 0.6065435154636911,
+        "sums": {
+          "agent_minADE": 7381.193103637779,
+          "agent_minFDE": 14355.398115106858,
+          "scene_JADE": 490.5251607000828,
+          "scene_JFDE": 1041.9127091169357,
+          "scene_marginal_ADE": 295.12133534252644,
+          "scene_marginal_FDE": 574.3967091441154
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.08430762591675306
+    },
+    {
+      "epoch": 16,
+      "joint_score": 1.0834370205117883,
+      "marginal_violations": {
+        "minADE": 0.012331973546888975,
+        "minFDE": 0.057821699188627784
+      },
+      "metrics": {
+        "JADE": 0.5249899788636718,
+        "JFDE": 1.116894083296233,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2169196424885813,
+        "coordination_gap_FDE": 0.5216407774934799,
+        "minADE": 0.29992342493257057,
+        "minFDE": 0.5791827196401439,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3080703363750905,
+        "scene_weighted_minFDE": 0.5952533058027532,
+        "sums": {
+          "agent_minADE": 7298.3366223091725,
+          "agent_minFDE": 14093.83229972326,
+          "scene_JADE": 497.1655099838972,
+          "scene_JFDE": 1057.6986968815327,
+          "scene_marginal_ADE": 291.7426085472107,
+          "scene_marginal_FDE": 563.7048805952072
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.07015367273551676
+    },
+    {
+      "epoch": 17,
+      "joint_score": 1.0975831854447267,
+      "marginal_violations": {
+        "minADE": 0.0047781125487853515,
+        "minFDE": 0.02748197839746347
+      },
+      "metrics": {
+        "JADE": 0.5321519625822619,
+        "JFDE": 1.1308624457249294,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2332395398251736,
+        "coordination_gap_FDE": 0.5709587330551309,
+        "minADE": 0.29236956393446695,
+        "minFDE": 0.5488429988489796,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29891242275708835,
+        "scene_weighted_minFDE": 0.5599037126697985,
+        "sums": {
+          "agent_minADE": 7114.5209687813185,
+          "agent_minFDE": 13355.54553399107,
+          "scene_JADE": 503.94790856540203,
+          "scene_JFDE": 1070.9267361015081,
+          "scene_marginal_ADE": 283.07006435096264,
+          "scene_marginal_FDE": 530.2288158982992
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03226009094624882
+    },
+    {
+      "epoch": 18,
+      "joint_score": 1.081538634888096,
+      "marginal_violations": {
+        "minADE": 0.005486417635941598,
+        "minFDE": 0.04325230252418277
+      },
+      "metrics": {
+        "JADE": 0.5260605895940957,
+        "JFDE": 1.1109560905880007,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22503191014749818,
+        "coordination_gap_FDE": 0.5319558777772638,
+        "minADE": 0.2930778690216232,
+        "minFDE": 0.5646133229756989,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.30102867944659756,
+        "scene_weighted_minFDE": 0.5790002128107369,
+        "sums": {
+          "agent_minADE": 7131.756864772178,
+          "agent_minFDE": 13739.300601290655,
+          "scene_JADE": 498.1793783456087,
+          "scene_JFDE": 1052.0754177868366,
+          "scene_marginal_ADE": 285.07415943592787,
+          "scene_marginal_FDE": 548.3132015317678
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.04873872016012437
+    },
+    {
+      "epoch": 19,
+      "joint_score": 1.0856833640788903,
+      "marginal_violations": {
+        "minADE": 0.007278768061253438,
+        "minFDE": 0.04614969244667455
+      },
+      "metrics": {
+        "JADE": 0.5284387389514615,
+        "JFDE": 1.1144892502548576,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2255558439519615,
+        "coordination_gap_FDE": 0.5311459800604152,
+        "minADE": 0.29487021944693503,
+        "minFDE": 0.5675107128981907,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.30288289499950005,
+        "scene_weighted_minFDE": 0.5833432701944423,
+        "sums": {
+          "agent_minADE": 7175.3719200217165,
+          "agent_minFDE": 13809.805687664571,
+          "scene_JADE": 500.43148578703403,
+          "scene_JFDE": 1055.4213199913502,
+          "scene_marginal_ADE": 286.83010156452656,
+          "scene_marginal_FDE": 552.4260768741369
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.05342846050792799
+    },
+    {
+      "epoch": 20,
+      "joint_score": 1.1355350170178298,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.003329650698339348
+      },
+      "metrics": {
+        "JADE": 0.5493048137287907,
+        "JFDE": 1.1724604065780782,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2569201775878636,
+        "coordination_gap_FDE": 0.6350724698214496,
+        "minADE": 0.2852197534781268,
+        "minFDE": 0.5246906711498555,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2923846361409271,
+        "scene_weighted_minFDE": 0.5373879367566285,
+        "sums": {
+          "agent_minADE": 6940.5374811367365,
+          "agent_minFDE": 12767.822791760584,
+          "scene_JADE": 520.1916586011648,
+          "scene_JFDE": 1110.32000502944,
+          "scene_marginal_ADE": 276.88825042545795,
+          "scene_marginal_FDE": 508.9063761085272
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.003329650698339348
+    },
+    {
+      "epoch": 21,
+      "joint_score": 1.13763439726112,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0059233005230554525
+      },
+      "metrics": {
+        "JADE": 0.5513659201428656,
+        "JFDE": 1.172536954236509,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2597668980343666,
+        "coordination_gap_FDE": 0.6284008388502923,
+        "minADE": 0.2830705990451429,
+        "minFDE": 0.5272843209745716,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.291599022108499,
+        "scene_weighted_minFDE": 0.5441361153862166,
+        "sums": {
+          "agent_minADE": 6888.239957164507,
+          "agent_minFDE": 12830.936666595226,
+          "scene_JADE": 522.1435263752937,
+          "scene_JFDE": 1110.392495661974,
+          "scene_marginal_ADE": 276.1442739367485,
+          "scene_marginal_FDE": 515.2969012707472
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.0059233005230554525
+    },
+    {
+      "epoch": 22,
+      "joint_score": 1.1498459109755228,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.009009575466912945
+      },
+      "metrics": {
+        "JADE": 0.5561042285771154,
+        "JFDE": 1.1874833647968148,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.26275313374957165,
+        "coordination_gap_FDE": 0.6412185394021249,
+        "minADE": 0.2850784963156427,
+        "minFDE": 0.530370595918429,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29335109482754373,
+        "scene_weighted_minFDE": 0.5462648253946899,
+        "sums": {
+          "agent_minADE": 6937.10012934485,
+          "agent_minFDE": 12906.038081079052,
+          "scene_JADE": 526.6307044625282,
+          "scene_JFDE": 1124.5467464625835,
+          "scene_marginal_ADE": 277.8034868016839,
+          "scene_marginal_FDE": 517.3127896487713
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.009009575466912945
+    },
+    {
+      "epoch": 23,
+      "joint_score": 1.1074748679193047,
+      "marginal_violations": {
+        "minADE": 0.0043112109608031135,
+        "minFDE": 0.016095602464736847
+      },
+      "metrics": {
+        "JADE": 0.537734727122464,
+        "JFDE": 1.1394802815936813,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23904603274407332,
+        "coordination_gap_FDE": 0.5916476486508421,
+        "minADE": 0.2919026623464847,
+        "minFDE": 0.537456622916253,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29868869437839063,
+        "scene_weighted_minFDE": 0.5478326329428392,
+        "sums": {
+          "agent_minADE": 7103.1593855393585,
+          "agent_minFDE": 13078.4694620441,
+          "scene_JADE": 509.23478658497334,
+          "scene_JFDE": 1079.0878266692162,
+          "scene_marginal_ADE": 282.8581935763359,
+          "scene_marginal_FDE": 518.7975033968687
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.02040681342553996
+    },
+    {
+      "epoch": 24,
+      "joint_score": 1.1328174615674185,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5519119516691663,
+        "JFDE": 1.1618110197965044,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2690248300637086,
+        "coordination_gap_FDE": 0.6542831206460185,
+        "minADE": 0.27687391745868994,
+        "minFDE": 0.49622836097075196,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2828871216054577,
+        "scene_weighted_minFDE": 0.5075278991504859,
+        "sums": {
+          "agent_minADE": 6737.449907439761,
+          "agent_minFDE": 12075.220935862279,
+          "scene_JADE": 522.6606182307005,
+          "scene_JFDE": 1100.2350357472897,
+          "scene_marginal_ADE": 267.89410416036844,
+          "scene_marginal_FDE": 480.6289204955101
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 25,
+      "joint_score": 1.083686321375866,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.007464060130559114
+      },
+      "metrics": {
+        "JADE": 0.5275208290583733,
+        "JFDE": 1.1123309846349856,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2356103525163632,
+        "coordination_gap_FDE": 0.5713657787760058,
+        "minADE": 0.28485305574919306,
+        "minFDE": 0.5288250805820752,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2919104765420101,
+        "scene_weighted_minFDE": 0.5409652058589798,
+        "sums": {
+          "agent_minADE": 6931.614258600865,
+          "agent_minFDE": 12868.42951088422,
+          "scene_JADE": 499.56222511827946,
+          "scene_JFDE": 1053.3774424493313,
+          "scene_marginal_ADE": 276.43922128528357,
+          "scene_marginal_FDE": 512.2940499484539
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.007464060130559114
+    },
+    {
+      "epoch": 26,
+      "joint_score": 1.0568996783043036,
+      "marginal_violations": {
+        "minADE": 0.012177422149576456,
+        "minFDE": 0.06190522722242964
+      },
+      "metrics": {
+        "JADE": 0.5124831875626867,
+        "JFDE": 1.0888329814832338,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.20666705369319938,
+        "coordination_gap_FDE": 0.4957975020126656,
+        "minADE": 0.29976887353525805,
+        "minFDE": 0.5832662476739457,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.30581613386948736,
+        "scene_weighted_minFDE": 0.5930354794705682,
+        "sums": {
+          "agent_minADE": 7294.57576860697,
+          "agent_minFDE": 14193.200870897796,
+          "scene_JADE": 485.3215786218643,
+          "scene_JFDE": 1031.1248334646225,
+          "scene_marginal_ADE": 289.6078787744045,
+          "scene_marginal_FDE": 561.6045990586281
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.07408264937200609
+    },
+    {
+      "epoch": 27,
+      "joint_score": 1.0902351205962009,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.013112113440420958
+      },
+      "metrics": {
+        "JADE": 0.5306570525217207,
+        "JFDE": 1.1191561361489604,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2401594082965518,
+        "coordination_gap_FDE": 0.5711230730997849,
+        "minADE": 0.28296467089654337,
+        "minFDE": 0.5344731338919371,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2904976442251689,
+        "scene_weighted_minFDE": 0.5480330630491754,
+        "sums": {
+          "agent_minADE": 6885.662301596487,
+          "agent_minFDE": 13005.869240126398,
+          "scene_JADE": 502.53222873806953,
+          "scene_JFDE": 1059.8408609330654,
+          "scene_marginal_ADE": 275.10126908123493,
+          "scene_marginal_FDE": 518.9873107075691
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.013112113440420958
+    },
+    {
+      "epoch": 28,
+      "joint_score": 1.0775480855889659,
+      "marginal_violations": {
+        "minADE": 0.003231874327147999,
+        "minFDE": 0.022983608465862893
+      },
+      "metrics": {
+        "JADE": 0.5227519918111209,
+        "JFDE": 1.1095921875556898,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22448893463378722,
+        "coordination_gap_FDE": 0.5518624944319318,
+        "minADE": 0.2908233257128296,
+        "minFDE": 0.544344628917379,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29826305717733365,
+        "scene_weighted_minFDE": 0.557729693123758,
+        "sums": {
+          "agent_minADE": 7076.894807895995,
+          "agent_minFDE": 13246.0822000755,
+          "scene_JADE": 495.0461362451315,
+          "scene_JFDE": 1050.7838016152382,
+          "scene_marginal_ADE": 282.455115146935,
+          "scene_marginal_FDE": 528.1700193881989
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.02621548279301089
+    },
+    {
+      "epoch": 29,
+      "joint_score": 1.108451970527391,
+      "marginal_violations": {
+        "minADE": 0.006232634373016854,
+        "minFDE": 0.028536308451000414
+      },
+      "metrics": {
+        "JADE": 0.5375964140407387,
+        "JFDE": 1.1417111129733049,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23569859685464795,
+        "coordination_gap_FDE": 0.5762816804924384,
+        "minADE": 0.29382408575869845,
+        "minFDE": 0.5498973289025165,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3018978171860907,
+        "scene_weighted_minFDE": 0.5654294324808664,
+        "sums": {
+          "agent_minADE": 7149.915302852169,
+          "agent_minFDE": 13381.201601513836,
+          "scene_JADE": 509.10380409657955,
+          "scene_JFDE": 1081.2004239857197,
+          "scene_marginal_ADE": 285.8972328752279,
+          "scene_marginal_FDE": 535.4616725593805
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03476894282401727
+    },
+    {
+      "epoch": 30,
+      "joint_score": 1.111398619309524,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.015197582591574
+      },
+      "metrics": {
+        "JADE": 0.5377356628587404,
+        "JFDE": 1.1473259129015672,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24305053923865177,
+        "coordination_gap_FDE": 0.5973466132799952,
+        "minADE": 0.2871780628199001,
+        "minFDE": 0.5365586030430901,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29468512362008864,
+        "scene_weighted_minFDE": 0.549979299621572,
+        "sums": {
+          "agent_minADE": 6988.1909806594485,
+          "agent_minFDE": 13056.617046450556,
+          "scene_JADE": 509.2356727272272,
+          "scene_JFDE": 1086.5176395177841,
+          "scene_marginal_ADE": 279.06681206822395,
+          "scene_marginal_FDE": 520.8303967416286
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.015197582591574
+    },
+    {
+      "epoch": 31,
+      "joint_score": 1.0547598804786817,
+      "marginal_violations": {
+        "minADE": 0.006018469821415795,
+        "minFDE": 0.0445895449459891
+      },
+      "metrics": {
+        "JADE": 0.5132273112393231,
+        "JFDE": 1.083065138478717,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.21149842380501777,
+        "coordination_gap_FDE": 0.5018538935886894,
+        "minADE": 0.2936099212070974,
+        "minFDE": 0.5659505653975052,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3017288874343053,
+        "scene_weighted_minFDE": 0.5812112448900277,
+        "sums": {
+          "agent_minADE": 7144.703822653508,
+          "agent_minFDE": 13771.841058382892,
+          "scene_JADE": 486.026263743639,
+          "scene_JFDE": 1025.6626861393452,
+          "scene_marginal_ADE": 285.73725640028715,
+          "scene_marginal_FDE": 550.4070489108562
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.050608014767404896
+    },
+    {
+      "epoch": 32,
+      "joint_score": 1.0505225140259158,
+      "marginal_violations": {
+        "minADE": 0.01053448620623576,
+        "minFDE": 0.06007404155796059
+      },
+      "metrics": {
+        "JADE": 0.5107274124872848,
+        "JFDE": 1.079590203077262,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.20579797265522082,
+        "coordination_gap_FDE": 0.4862497308721261,
+        "minADE": 0.29812593759191736,
+        "minFDE": 0.5814350620094767,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.304929439832064,
+        "scene_weighted_minFDE": 0.5933404722051359,
+        "sums": {
+          "agent_minADE": 7254.596565361717,
+          "agent_minFDE": 14148.640798938606,
+          "scene_JADE": 483.6588596254587,
+          "scene_JFDE": 1022.371922314167,
+          "scene_marginal_ADE": 288.7681795209646,
+          "scene_marginal_FDE": 561.8934271782637
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.07060852776419635
+    },
+    {
+      "epoch": 33,
+      "joint_score": 1.0967030467774324,
+      "marginal_violations": {
+        "minADE": 0.008847544009912611,
+        "minFDE": 0.04561804550942039
+      },
+      "metrics": {
+        "JADE": 0.5306602470978009,
+        "JFDE": 1.1320855993592627,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.228472491354537,
+        "coordination_gap_FDE": 0.5568881501554814,
+        "minADE": 0.2964389953955942,
+        "minFDE": 0.5669790659609365,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3021877557432639,
+        "scene_weighted_minFDE": 0.5751974492037812,
+        "sums": {
+          "agent_minADE": 7213.546513956389,
+          "agent_minFDE": 13796.86859109343,
+          "scene_JADE": 502.53525400161743,
+          "scene_JFDE": 1072.0850625932217,
+          "scene_marginal_ADE": 286.1718046888709,
+          "scene_marginal_FDE": 544.7119843959808
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.054465589519333
+    },
+    {
+      "epoch": 34,
+      "joint_score": 1.1217158132772638,
+      "marginal_violations": {
+        "minADE": 0.006122317333525695,
+        "minFDE": 0.038497068438639426
+      },
+      "metrics": {
+        "JADE": 0.5440800334577701,
+        "JFDE": 1.155271559638987,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24570991522155566,
+        "coordination_gap_FDE": 0.5878556347289835,
+        "minADE": 0.2937137687192073,
+        "minFDE": 0.5598580888901555,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29837011823621445,
+        "scene_weighted_minFDE": 0.5674159249100036,
+        "sums": {
+          "agent_minADE": 7147.230848013191,
+          "agent_minFDE": 13623.586735053046,
+          "scene_JADE": 515.2437916845083,
+          "scene_JFDE": 1094.0421669781208,
+          "scene_marginal_ADE": 282.5565019696951,
+          "scene_marginal_FDE": 537.3428808897734
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.04461938577216512
+    },
+    {
+      "epoch": 35,
+      "joint_score": 1.1268236171355848,
+      "marginal_violations": {
+        "minADE": 0.0005373732106041529,
+        "minFDE": 0.024245981430194297
+      },
+      "metrics": {
+        "JADE": 0.5470158806603712,
+        "JFDE": 1.1596154729504269,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.25190734387293784,
+        "coordination_gap_FDE": 0.6017796080303797,
+        "minADE": 0.28812882459628575,
+        "minFDE": 0.5456070018817104,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2951085367874334,
+        "scene_weighted_minFDE": 0.5578358649200472,
+        "sums": {
+          "agent_minADE": 7011.326817726018,
+          "agent_minFDE": 13276.800783789542,
+          "scene_JADE": 518.0240389853716,
+          "scene_JFDE": 1098.1558528840542,
+          "scene_marginal_ADE": 279.4677843376994,
+          "scene_marginal_FDE": 528.2705640792847
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.02478335464079845
+    },
+    {
+      "epoch": 36,
+      "joint_score": 1.077950841238783,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.017202390529209466
+      },
+      "metrics": {
+        "JADE": 0.5241982471099499,
+        "JFDE": 1.1075051882576665,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23472835454763302,
+        "coordination_gap_FDE": 0.5550700786908048,
+        "minADE": 0.28223601555471567,
+        "minFDE": 0.5385634109807256,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28946989256231687,
+        "scene_weighted_minFDE": 0.5524351095668617,
+        "sums": {
+          "agent_minADE": 6867.931202508451,
+          "agent_minFDE": 13105.402042804977,
+          "scene_JADE": 496.41574001312256,
+          "scene_JFDE": 1048.8074132800102,
+          "scene_marginal_ADE": 274.1279882565141,
+          "scene_marginal_FDE": 523.1560487598181
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.017202390529209466
+    },
+    {
+      "epoch": 37,
+      "joint_score": 1.0684974343528717,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01100961130982503
+      },
+      "metrics": {
+        "JADE": 0.5184815681314267,
+        "JFDE": 1.10003173244289,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23422468569298854,
+        "coordination_gap_FDE": 0.5559736351308501,
+        "minADE": 0.2774900052721305,
+        "minFDE": 0.5323706317613411,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2842568824384381,
+        "scene_weighted_minFDE": 0.54405809731204,
+        "sums": {
+          "agent_minADE": 6752.441788292024,
+          "agent_minFDE": 12954.706953280474,
+          "scene_JADE": 491.0020450204611,
+          "scene_JFDE": 1041.730050623417,
+          "scene_marginal_ADE": 269.1912676692009,
+          "scene_marginal_FDE": 515.2230181545019
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01100961130982503
+    },
+    {
+      "epoch": 38,
+      "joint_score": 1.0714616060194018,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.009743873554282634
+      },
+      "metrics": {
+        "JADE": 0.5206849032495694,
+        "JFDE": 1.1015534055396647,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23156851858152383,
+        "coordination_gap_FDE": 0.5592442116490639,
+        "minADE": 0.28254389990521706,
+        "minFDE": 0.5311048940057987,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28911638466804557,
+        "scene_weighted_minFDE": 0.5423091938906008,
+        "sums": {
+          "agent_minADE": 6875.423260293552,
+          "agent_minFDE": 12923.906490737107,
+          "scene_JADE": 493.0886033773422,
+          "scene_JFDE": 1043.1710750460625,
+          "scene_marginal_ADE": 273.7932162806392,
+          "scene_marginal_FDE": 513.566806614399
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.009743873554282634
+    },
+    {
+      "epoch": 39,
+      "joint_score": 1.0667074620566372,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.033661827431560654
+      },
+      "metrics": {
+        "JADE": 0.5159750629566539,
+        "JFDE": 1.1014647981999668,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2215410819416816,
+        "coordination_gap_FDE": 0.5340487023750605,
+        "minADE": 0.2872902800060567,
+        "minFDE": 0.5550228478830768,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29443398101497226,
+        "scene_weighted_minFDE": 0.5674160958249063,
+        "sums": {
+          "agent_minADE": 6990.921673667384,
+          "agent_minFDE": 13505.92598038679,
+          "scene_JADE": 488.62838461995125,
+          "scene_JFDE": 1043.0871638953686,
+          "scene_marginal_ADE": 278.8289800211787,
+          "scene_marginal_FDE": 537.3430427461863
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.033661827431560654
+    },
+    {
+      "epoch": 40,
+      "joint_score": 1.0819800906945434,
+      "marginal_violations": {
+        "minADE": 0.004138782211148884,
+        "minFDE": 0.045773525090621936
+      },
+      "metrics": {
+        "JADE": 0.5240768563973992,
+        "JFDE": 1.1158064685942883,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22484682790675414,
+        "coordination_gap_FDE": 0.5342466353410276,
+        "minADE": 0.2917302335968305,
+        "minFDE": 0.567134545542138,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29923002849064506,
+        "scene_weighted_minFDE": 0.5815598332532608,
+        "sums": {
+          "agent_minADE": 7098.963504345273,
+          "agent_minFDE": 13800.652031222387,
+          "scene_JADE": 496.300783008337,
+          "scene_JFDE": 1056.668725758791,
+          "scene_marginal_ADE": 283.3708369806409,
+          "scene_marginal_FDE": 550.737162090838
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.04991230730177082
+    },
+    {
+      "epoch": 41,
+      "joint_score": 1.0503845088018662,
+      "marginal_violations": {
+        "minADE": 0.007009259280605917,
+        "minFDE": 0.05218400108106169
+      },
+      "metrics": {
+        "JADE": 0.5108489455869608,
+        "JFDE": 1.0790711264298105,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2099995607669527,
+        "coordination_gap_FDE": 0.4943896473052005,
+        "minADE": 0.2946007106662875,
+        "minFDE": 0.5735450215325778,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3008493848200081,
+        "scene_weighted_minFDE": 0.58468147912461,
+        "sums": {
+          "agent_minADE": 7168.813693353441,
+          "agent_minFDE": 13956.644553973747,
+          "scene_JADE": 483.7739514708519,
+          "scene_JFDE": 1021.8803567290306,
+          "scene_marginal_ADE": 284.9043674245477,
+          "scene_marginal_FDE": 553.6933607310057
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.05919326036166761
+    },
+    {
+      "epoch": 42,
+      "joint_score": 1.1333717843232463,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5520247177092049,
+        "JFDE": 1.1626941332280825,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2715096792880811,
+        "coordination_gap_FDE": 0.6476307445556838,
+        "minADE": 0.2742307472072094,
+        "minFDE": 0.5039818751254496,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2805150384211238,
+        "scene_weighted_minFDE": 0.5150633886723986,
+        "sums": {
+          "agent_minADE": 6673.1310025402345,
+          "agent_minFDE": 12263.894949302688,
+          "scene_JADE": 522.7674076706171,
+          "scene_JFDE": 1101.071344166994,
+          "scene_marginal_ADE": 265.64774138480425,
+          "scene_marginal_FDE": 487.76502907276154
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 43,
+      "joint_score": 1.0590638970718214,
+      "marginal_violations": {
+        "minADE": 0.0013668447695427965,
+        "minFDE": 0.035482213893081926
+      },
+      "metrics": {
+        "JADE": 0.5144941680912232,
+        "JFDE": 1.0891394579611962,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.21884891936022483,
+        "coordination_gap_FDE": 0.520431213403453,
+        "minADE": 0.2889582961552244,
+        "minFDE": 0.556843234344598,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29564524873099834,
+        "scene_weighted_minFDE": 0.5687082445577432,
+        "sums": {
+          "agent_minADE": 7031.511178641231,
+          "agent_minFDE": 13550.223264541448,
+          "scene_JADE": 487.2259771823883,
+          "scene_JFDE": 1031.4150666892529,
+          "scene_marginal_ADE": 279.97605054825544,
+          "scene_marginal_FDE": 538.5667075961828
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03684905866262472
+    },
+    {
+      "epoch": 44,
+      "joint_score": 1.2258739415103808,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5885833370742224,
+        "JFDE": 1.2745812088723167,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.3136077826604672,
+        "coordination_gap_FDE": 0.7780418978038282,
+        "minADE": 0.2684704153773117,
+        "minFDE": 0.48515093614556054,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2749755544137552,
+        "scene_weighted_minFDE": 0.49653931106848853,
+        "sums": {
+          "agent_minADE": 6532.959087791503,
+          "agent_minFDE": 11805.66288016607,
+          "scene_JADE": 557.3884202092886,
+          "scene_JFDE": 1207.028404802084,
+          "scene_marginal_ADE": 260.40185002982616,
+          "scene_marginal_FDE": 470.22272758185863
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 45,
+      "joint_score": 1.0617962562200765,
+      "marginal_violations": {
+        "minADE": 0.005066874831278989,
+        "minFDE": 0.04390656690503236
+      },
+      "metrics": {
+        "JADE": 0.5156235069099424,
+        "JFDE": 1.0923454986202679,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.21691095687393902,
+        "coordination_gap_FDE": 0.5165002538794071,
+        "minADE": 0.2926583262169606,
+        "minFDE": 0.5652675873565485,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2987125500360034,
+        "scene_weighted_minFDE": 0.5758452447408607,
+        "sums": {
+          "agent_minADE": 7121.547710163519,
+          "agent_minFDE": 13755.22147073425,
+          "scene_JADE": 488.2954610437155,
+          "scene_JFDE": 1034.4511871933937,
+          "scene_marginal_ADE": 282.8807848840952,
+          "scene_marginal_FDE": 545.3254467695951
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.04897344173631135
+    },
+    {
+      "epoch": 46,
+      "joint_score": 1.0395583277046996,
+      "marginal_violations": {
+        "minADE": 0.00726082473534323,
+        "minFDE": 0.058159010398398436
+      },
+      "metrics": {
+        "JADE": 0.5027319183445279,
+        "JFDE": 1.0736528187203433,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.20074308699010673,
+        "coordination_gap_FDE": 0.4816468398007069,
+        "minADE": 0.2948522761210248,
+        "minFDE": 0.5795200308499145,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.30198883135442117,
+        "scene_weighted_minFDE": 0.5920059789196365,
+        "sums": {
+          "agent_minADE": 7174.9352871290175,
+          "agent_minFDE": 14102.040430701822,
+          "scene_JADE": 476.0871266722679,
+          "scene_JFDE": 1016.749219328165,
+          "scene_marginal_ADE": 285.98342329263687,
+          "scene_marginal_FDE": 560.6296620368958
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.06541983513374167
+    },
+    {
+      "epoch": 47,
+      "joint_score": 1.0805563761320638,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01082557583080368
+      },
+      "metrics": {
+        "JADE": 0.523075056743219,
+        "JFDE": 1.1149626387776896,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2370196988898572,
+        "coordination_gap_FDE": 0.5709673351949474,
+        "minADE": 0.2794330509143049,
+        "minFDE": 0.5321865962823198,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2860553578533618,
+        "scene_weighted_minFDE": 0.5439953035827423,
+        "sums": {
+          "agent_minADE": 6799.723860948696,
+          "agent_minFDE": 12950.22863393397,
+          "scene_JADE": 495.3520787358284,
+          "scene_JFDE": 1055.869618922472,
+          "scene_marginal_ADE": 270.8944238871336,
+          "scene_marginal_FDE": 515.163552492857
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01082557583080368
+    },
+    {
+      "epoch": 48,
+      "joint_score": 1.0735365633696414,
+      "marginal_violations": {
+        "minADE": 0.005726015809236817,
+        "minFDE": 0.05180053060720491
+      },
+      "metrics": {
+        "JADE": 0.5218801553328665,
+        "JFDE": 1.1033128160735497,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22200547221658606,
+        "coordination_gap_FDE": 0.5174021426324734,
+        "minADE": 0.2933174671949184,
+        "minFDE": 0.573161551058721,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2998746831162804,
+        "scene_weighted_minFDE": 0.5859106734410763,
+        "sums": {
+          "agent_minADE": 7137.587246721145,
+          "agent_minFDE": 13947.313183462917,
+          "scene_JADE": 494.2205071002245,
+          "scene_JFDE": 1044.8372368216515,
+          "scene_marginal_ADE": 283.98132491111755,
+          "scene_marginal_FDE": 554.8574077486992
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.057526546416441726
+    },
+    {
+      "epoch": 49,
+      "joint_score": 1.0829342166876466,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.016192113100641836
+      },
+      "metrics": {
+        "JADE": 0.5256423407648282,
+        "JFDE": 1.1145837518456367,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2365733849901584,
+        "coordination_gap_FDE": 0.5659786199456535,
+        "minADE": 0.2826798520840753,
+        "minFDE": 0.537553133552158,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2890689557746698,
+        "scene_weighted_minFDE": 0.5486051318999833,
+        "sums": {
+          "agent_minADE": 6878.731520613888,
+          "agent_minFDE": 13080.817951858211,
+          "scene_JADE": 497.7832967042923,
+          "scene_JFDE": 1055.510812997818,
+          "scene_marginal_ADE": 273.7483011186123,
+          "scene_marginal_FDE": 519.5290599092841
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.016192113100641836
+    },
+    {
+      "epoch": 50,
+      "joint_score": 1.1017417351950312,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01856829349302347
+      },
+      "metrics": {
+        "JADE": 0.5355703810263335,
+        "JFDE": 1.1323427083373951,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2427922417473642,
+        "coordination_gap_FDE": 0.5798348682955176,
+        "minADE": 0.2861773006670332,
+        "minFDE": 0.5399293139445396,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2927781392789693,
+        "scene_weighted_minFDE": 0.5525078400418776,
+        "sums": {
+          "agent_minADE": 6963.8384344315855,
+          "agent_minFDE": 13138.639925526426,
+          "scene_JADE": 507.1851508319378,
+          "scene_JFDE": 1072.3285447955132,
+          "scene_marginal_ADE": 277.2608978971839,
+          "scene_marginal_FDE": 523.2249245196581
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01856829349302347
+    },
+    {
+      "epoch": 51,
+      "joint_score": 1.08978712837258,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.010345838118784867
+      },
+      "metrics": {
+        "JADE": 0.5296130291920906,
+        "JFDE": 1.1203481983609789,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24269405602936756,
+        "coordination_gap_FDE": 0.5772848600539385,
+        "minADE": 0.28063922442061984,
+        "minFDE": 0.531706858570301,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2869189731627231,
+        "scene_weighted_minFDE": 0.5430633383070403,
+        "sums": {
+          "agent_minADE": 6829.0748870513635,
+          "agent_minFDE": 12938.554696449704,
+          "scene_JADE": 501.54353864490986,
+          "scene_JFDE": 1060.969743847847,
+          "scene_marginal_ADE": 271.71226758509874,
+          "scene_marginal_FDE": 514.2809813767672
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.010345838118784867
+    },
+    {
+      "epoch": 52,
+      "joint_score": 1.0515673562900065,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.020071423620724116
+      },
+      "metrics": {
+        "JADE": 0.5110617883920417,
+        "JFDE": 1.0810111357959296,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22355638698545904,
+        "coordination_gap_FDE": 0.5278225148366144,
+        "minADE": 0.2808698814819328,
+        "minFDE": 0.5414324440722402,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2875054014065827,
+        "scene_weighted_minFDE": 0.5531886209593152,
+        "sums": {
+          "agent_minADE": 6834.687695981353,
+          "agent_minFDE": 13175.217094053893,
+          "scene_JADE": 483.97551360726357,
+          "scene_JFDE": 1023.7175455987453,
+          "scene_marginal_ADE": 272.2676151320338,
+          "scene_marginal_FDE": 523.8696240484715
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.020071423620724116
+    },
+    {
+      "epoch": 53,
+      "joint_score": 1.0856623678549795,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.008638669036130087
+      },
+      "metrics": {
+        "JADE": 0.5273265405907173,
+        "JFDE": 1.1166716545285242,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24105829079935392,
+        "coordination_gap_FDE": 0.574123015861325,
+        "minADE": 0.2794438461130158,
+        "minFDE": 0.5299996894876462,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28626824979136334,
+        "scene_weighted_minFDE": 0.5425486386671993,
+        "sums": {
+          "agent_minADE": 6799.986551314127,
+          "agent_minFDE": 12897.012443992382,
+          "scene_JADE": 499.37823393940926,
+          "scene_JFDE": 1057.4880568385124,
+          "scene_marginal_ADE": 271.0960325524211,
+          "scene_marginal_FDE": 513.7935608178377
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.008638669036130087
+    },
+    {
+      "epoch": 54,
+      "joint_score": 1.0853050429661146,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.02385431223600587
+      },
+      "metrics": {
+        "JADE": 0.5256104766850487,
+        "JFDE": 1.1193891325621317,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23397612980829502,
+        "coordination_gap_FDE": 0.5624848545667613,
+        "minADE": 0.2849606022182586,
+        "minFDE": 0.545215332687522,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29163434687675366,
+        "scene_weighted_minFDE": 0.5569042779953703,
+        "sums": {
+          "agent_minADE": 6934.231294379104,
+          "agent_minFDE": 13267.26990561816,
+          "scene_JADE": 497.7531214207411,
+          "scene_JFDE": 1060.0615085363388,
+          "scene_marginal_ADE": 276.17772649228573,
+          "scene_marginal_FDE": 527.3883512616158
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.02385431223600587
+    },
+    {
+      "epoch": 55,
+      "joint_score": 1.1038456930215408,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.021588896794272006
+      },
+      "metrics": {
+        "JADE": 0.53416474515999,
+        "JFDE": 1.1393618957231013,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24169390616346437,
+        "coordination_gap_FDE": 0.583569001410365,
+        "minADE": 0.28574121729289376,
+        "minFDE": 0.5429499172457881,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29247083899652565,
+        "scene_weighted_minFDE": 0.5557928943127363,
+        "sums": {
+          "agent_minADE": 6953.226781605277,
+          "agent_minFDE": 13212.143286259008,
+          "scene_JADE": 505.8540136665106,
+          "scene_JFDE": 1078.9757152497768,
+          "scene_marginal_ADE": 276.9698845297098,
+          "scene_marginal_FDE": 526.3358709141612
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.021588896794272006
+    },
+    {
+      "epoch": 56,
+      "joint_score": 1.0776937668621855,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.010265324455182356
+      },
+      "metrics": {
+        "JADE": 0.5214727805433707,
+        "JFDE": 1.1124419726376298,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23636887564767378,
+        "coordination_gap_FDE": 0.5658625889778013,
+        "minADE": 0.27753470259180446,
+        "minFDE": 0.5316263449066985,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28510390489569687,
+        "scene_weighted_minFDE": 0.5465793836598285,
+        "sums": {
+          "agent_minADE": 6753.52945286897,
+          "agent_minFDE": 12936.5954769596,
+          "scene_JADE": 493.834723174572,
+          "scene_JFDE": 1053.4825480878353,
+          "scene_marginal_ADE": 269.99339793622494,
+          "scene_marginal_FDE": 517.6106763258576
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.010265324455182356
+    },
+    {
+      "epoch": 57,
+      "joint_score": 1.0519790473967445,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.03056054716489165
+      },
+      "metrics": {
+        "JADE": 0.5109969613229838,
+        "JFDE": 1.0819641721475213,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22037370694130498,
+        "coordination_gap_FDE": 0.5194659249143088,
+        "minADE": 0.28462441578835646,
+        "minFDE": 0.5519215676164078,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2906232543816788,
+        "scene_weighted_minFDE": 0.5624982472332125,
+        "sums": {
+          "agent_minADE": 6926.050533793867,
+          "agent_minFDE": 13430.459426377667,
+          "scene_JADE": 483.9141223728657,
+          "scene_JFDE": 1024.6200710237026,
+          "scene_marginal_ADE": 275.2202218994498,
+          "scene_marginal_FDE": 532.6858401298523
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03056054716489165
+    },
+    {
+      "epoch": 58,
+      "joint_score": 1.097855471759059,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.015586157093966158
+      },
+      "metrics": {
+        "JADE": 0.533649147296405,
+        "JFDE": 1.128412648925308,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2456039069053238,
+        "coordination_gap_FDE": 0.5778830829838638,
+        "minADE": 0.28083578643143603,
+        "minFDE": 0.5369471775454823,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2880452403910812,
+        "scene_weighted_minFDE": 0.5505295659414441,
+        "sums": {
+          "agent_minADE": 6833.858027022565,
+          "agent_minFDE": 13066.072618391765,
+          "scene_JADE": 505.36574248969555,
+          "scene_JFDE": 1068.6067785322666,
+          "scene_marginal_ADE": 272.7788426503539,
+          "scene_marginal_FDE": 521.3514989465475
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.015586157093966158
+    },
+    {
+      "epoch": 59,
+      "joint_score": 1.061506148675553,
+      "marginal_violations": {
+        "minADE": 0.0018068391099222425,
+        "minFDE": 0.04284984936759906
+      },
+      "metrics": {
+        "JADE": 0.5141307037980655,
+        "JFDE": 1.0947508897549751,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.21776436979724084,
+        "coordination_gap_FDE": 0.5178495644893667,
+        "minADE": 0.28939829049560384,
+        "minFDE": 0.5642108698191152,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2963663340008246,
+        "scene_weighted_minFDE": 0.5769013252656084,
+        "sums": {
+          "agent_minADE": 7042.218000920024,
+          "agent_minFDE": 13729.507306178348,
+          "scene_JADE": 486.881776496768,
+          "scene_JFDE": 1036.7290925979614,
+          "scene_marginal_ADE": 280.6589182987809,
+          "scene_marginal_FDE": 546.3255550265312
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.0446566884775213
+    },
+    {
+      "epoch": 60,
+      "joint_score": 1.0746139355609636,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.020238661758490317
+      },
+      "metrics": {
+        "JADE": 0.5226696920841775,
+        "JFDE": 1.1038884869535721,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23403373043571124,
+        "coordination_gap_FDE": 0.5498903980036093,
+        "minADE": 0.28205218710796814,
+        "minFDE": 0.5415996822100064,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2886359616484662,
+        "scene_weighted_minFDE": 0.5539980889499628,
+        "sums": {
+          "agent_minADE": 6863.457921085297,
+          "agent_minFDE": 13179.286666898297,
+          "scene_JADE": 494.9681984037161,
+          "scene_JFDE": 1045.3823971450329,
+          "scene_marginal_ADE": 273.3382556810975,
+          "scene_marginal_FDE": 524.6361902356148
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.020238661758490317
+    },
+    {
+      "epoch": 61,
+      "joint_score": 1.0524870419231616,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.013749264675115502
+      },
+      "metrics": {
+        "JADE": 0.5092486271668135,
+        "JFDE": 1.0864768295126959,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2217010179615197,
+        "coordination_gap_FDE": 0.5371674714017947,
+        "minADE": 0.2799118645649745,
+        "minFDE": 0.5351102851266316,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2875476092052938,
+        "scene_weighted_minFDE": 0.5493093581109012,
+        "sums": {
+          "agent_minADE": 6811.3753123240895,
+          "agent_minFDE": 13021.373678271455,
+          "scene_JADE": 482.2584499269724,
+          "scene_JFDE": 1028.893557548523,
+          "scene_marginal_ADE": 272.30758591741323,
+          "scene_marginal_FDE": 520.1959621310234
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.013749264675115502
+    },
+    {
+      "epoch": 62,
+      "joint_score": 1.086681695554677,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.00521661504452664
+      },
+      "metrics": {
+        "JADE": 0.5271425697688945,
+        "JFDE": 1.1190782515715647,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23999139724777263,
+        "coordination_gap_FDE": 0.5792108408028876,
+        "minADE": 0.2799209454122592,
+        "minFDE": 0.5265776354960428,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2871511725211219,
+        "scene_weighted_minFDE": 0.5398674107686771,
+        "sums": {
+          "agent_minADE": 6811.596285661915,
+          "agent_minFDE": 12813.740182160705,
+          "scene_JADE": 499.20401357114315,
+          "scene_JFDE": 1059.7671042382717,
+          "scene_marginal_ADE": 271.93216037750244,
+          "scene_marginal_FDE": 511.2544379979372
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.00521661504452664
+    },
+    {
+      "epoch": 63,
+      "joint_score": 1.062101811815718,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01405807220276567
+      },
+      "metrics": {
+        "JADE": 0.5146602695727172,
+        "JFDE": 1.0948830844860016,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2277459434873828,
+        "coordination_gap_FDE": 0.5475299233903099,
+        "minADE": 0.2803076165585897,
+        "minFDE": 0.5354190926542818,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28691432608533435,
+        "scene_weighted_minFDE": 0.5473531610956917,
+        "sums": {
+          "agent_minADE": 6821.005541336723,
+          "agent_minFDE": 13028.888200649293,
+          "scene_JADE": 487.3832752853632,
+          "scene_JFDE": 1036.8542810082436,
+          "scene_marginal_ADE": 271.7078668028116,
+          "scene_marginal_FDE": 518.34344355762
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01405807220276567
+    },
+    {
+      "epoch": 64,
+      "joint_score": 1.0756507879860675,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.005934185967446881
+      },
+      "metrics": {
+        "JADE": 0.5217500199202877,
+        "JFDE": 1.1078015361315596,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.238076021743362,
+        "coordination_gap_FDE": 0.5669486456272341,
+        "minADE": 0.2763140207289,
+        "minFDE": 0.527295206418963,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2836739981769257,
+        "scene_weighted_minFDE": 0.5408528905043255,
+        "sums": {
+          "agent_minADE": 6723.825380417053,
+          "agent_minFDE": 12831.201552999046,
+          "scene_JADE": 494.09726886451244,
+          "scene_JFDE": 1049.088054716587,
+          "scene_marginal_ADE": 268.6392762735486,
+          "scene_marginal_FDE": 512.1876873075962
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.005934185967446881
+    },
+    {
+      "epoch": 65,
+      "joint_score": 1.0675995087264836,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.03754577243417301
+      },
+      "metrics": {
+        "JADE": 0.5163262577406834,
+        "JFDE": 1.1025465019716003,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2221550044565292,
+        "coordination_gap_FDE": 0.5293545770009442,
+        "minADE": 0.28673487764681704,
+        "minFDE": 0.5589067928856891,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2941712532841542,
+        "scene_weighted_minFDE": 0.5731919249706561,
+        "sums": {
+          "agent_minADE": 6977.406512657646,
+          "agent_minFDE": 13600.43789808036,
+          "scene_JADE": 488.96096608042717,
+          "scene_JFDE": 1044.1115373671055,
+          "scene_marginal_ADE": 278.58017686009407,
+          "scene_marginal_FDE": 542.8127529472113
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03754577243417301
+    },
+    {
+      "epoch": 66,
+      "joint_score": 1.0842747432440363,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.026917862399373327
+      },
+      "metrics": {
+        "JADE": 0.5253389063738719,
+        "JFDE": 1.1178716737403285,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23328095647765063,
+        "coordination_gap_FDE": 0.5542104146989119,
+        "minADE": 0.28405323675142774,
+        "minFDE": 0.5482788828508894,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2920579498962213,
+        "scene_weighted_minFDE": 0.5636612590414166,
+        "sums": {
+          "agent_minADE": 6912.151463109243,
+          "agent_minFDE": 13341.818335293545,
+          "scene_JADE": 497.4959443360567,
+          "scene_JFDE": 1058.6244750320911,
+          "scene_marginal_ADE": 276.5788785517216,
+          "scene_marginal_FDE": 533.7872123122215
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.026917862399373327
+    },
+    {
+      "epoch": 67,
+      "joint_score": 1.0743877866955467,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.03201420836755742
+      },
+      "metrics": {
+        "JADE": 0.5205477687914747,
+        "JFDE": 1.1076800358081442,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.227323997667435,
+        "coordination_gap_FDE": 0.5417177180396717,
+        "minADE": 0.28638312560031204,
+        "minFDE": 0.5533752288190735,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2932237711240397,
+        "scene_weighted_minFDE": 0.5659623177684725,
+        "sums": {
+          "agent_minADE": 6968.846978357993,
+          "agent_minFDE": 13465.832818083334,
+          "scene_JADE": 492.9587370455265,
+          "scene_JFDE": 1048.9729939103127,
+          "scene_marginal_ADE": 277.6829112544656,
+          "scene_marginal_FDE": 535.9663149267435
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03201420836755742
+    },
+    {
+      "epoch": 68,
+      "joint_score": 1.1122529899746714,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5399105298198138,
+        "JFDE": 1.1446849203097154,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.25704271484799723,
+        "coordination_gap_FDE": 0.6158076608602702,
+        "minADE": 0.27541062240826536,
+        "minFDE": 0.51409039145122,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28286781497181657,
+        "scene_weighted_minFDE": 0.5288772594494452,
+        "sums": {
+          "agent_minADE": 6701.842085682729,
+          "agent_minFDE": 12509.875585573987,
+          "scene_JADE": 511.29527173936367,
+          "scene_JFDE": 1084.0166195333004,
+          "scene_marginal_ADE": 267.8758207783103,
+          "scene_marginal_FDE": 500.8467646986246
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 69,
+      "joint_score": 1.1023746221124686,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.013594207627401822
+      },
+      "metrics": {
+        "JADE": 0.5343555089758971,
+        "JFDE": 1.136038226273143,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24824086021250386,
+        "coordination_gap_FDE": 0.5883112617600179,
+        "minADE": 0.27939535206453764,
+        "minFDE": 0.5349552280789179,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28611464876339326,
+        "scene_weighted_minFDE": 0.5477269645131251,
+        "sums": {
+          "agent_minADE": 6798.806497138459,
+          "agent_minFDE": 13017.600520072388,
+          "scene_JADE": 506.0346670001745,
+          "scene_JFDE": 1075.8282002806664,
+          "scene_marginal_ADE": 270.95057237893343,
+          "scene_marginal_FDE": 518.6974353939295
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.013594207627401822
+    },
+    {
+      "epoch": 70,
+      "joint_score": 1.0731516840229443,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.030138226901379128
+      },
+      "metrics": {
+        "JADE": 0.5204248606938369,
+        "JFDE": 1.1054536466582146,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22826205125548643,
+        "coordination_gap_FDE": 0.5405601656345655,
+        "minADE": 0.28498234181710225,
+        "minFDE": 0.5514992473528952,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29216280943835043,
+        "scene_weighted_minFDE": 0.564893481023649,
+        "sums": {
+          "agent_minADE": 6934.760305777367,
+          "agent_minFDE": 13420.182685085354,
+          "scene_JADE": 492.84234307706356,
+          "scene_JFDE": 1046.8646033853292,
+          "scene_marginal_ADE": 276.6781805381179,
+          "scene_marginal_FDE": 534.9541265293956
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.030138226901379128
+    },
+    {
+      "epoch": 71,
+      "joint_score": 1.0797141329822972,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0072809795296611135
+      },
+      "metrics": {
+        "JADE": 0.5224935728525536,
+        "JFDE": 1.1144411202594875,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23717512534154378,
+        "coordination_gap_FDE": 0.5715409715708106,
+        "minADE": 0.27780206247391953,
+        "minFDE": 0.5286419999811772,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2853184475110098,
+        "scene_weighted_minFDE": 0.5429001486886769,
+        "sums": {
+          "agent_minADE": 6760.035388240358,
+          "agent_minFDE": 12863.974427541965,
+          "scene_JADE": 494.8014134913683,
+          "scene_JFDE": 1055.3757408857346,
+          "scene_marginal_ADE": 270.1965697929263,
+          "scene_marginal_FDE": 514.126440808177
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.0072809795296611135
+    },
+    {
+      "epoch": 72,
+      "joint_score": 1.0598175370202272,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.019402167572778906
+      },
+      "metrics": {
+        "JADE": 0.5125053691448607,
+        "JFDE": 1.0946243357507328,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2242415010409849,
+        "coordination_gap_FDE": 0.5374679729232313,
+        "minADE": 0.2798999005740952,
+        "minFDE": 0.540763188024295,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2882638681038758,
+        "scene_weighted_minFDE": 0.5571563628275015,
+        "sums": {
+          "agent_minADE": 6811.084180570033,
+          "agent_minFDE": 13158.931417383195,
+          "scene_JADE": 485.34258458018303,
+          "scene_JFDE": 1036.609245955944,
+          "scene_marginal_ADE": 272.98588309437037,
+          "scene_marginal_FDE": 527.6270755976439
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.019402167572778906
+    },
+    {
+      "epoch": 73,
+      "joint_score": 1.1017224535487649,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5333317646947556,
+        "JFDE": 1.1367813777080182,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.25164222232643374,
+        "coordination_gap_FDE": 0.6056442921617342,
+        "minADE": 0.27401226467973144,
+        "minFDE": 0.5157314216758847,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2816895423683219,
+        "scene_weighted_minFDE": 0.531137085546284,
+        "sums": {
+          "agent_minADE": 6667.814448716585,
+          "agent_minFDE": 12549.80841506098,
+          "scene_JADE": 505.0651811659336,
+          "scene_JFDE": 1076.5319646894932,
+          "scene_marginal_ADE": 266.7599966228008,
+          "scene_marginal_FDE": 502.986820012331
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 74,
+      "joint_score": 1.0716118224539501,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.008383455345453483
+      },
+      "metrics": {
+        "JADE": 0.5199421855533514,
+        "JFDE": 1.1033392738011973,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2345776168478077,
+        "coordination_gap_FDE": 0.557544688740401,
+        "minADE": 0.2773664967044703,
+        "minFDE": 0.5297444757969696,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28536456870554366,
+        "scene_weighted_minFDE": 0.5457945850607964,
+        "sums": {
+          "agent_minADE": 6749.43633080658,
+          "agent_minFDE": 12890.802074043459,
+          "scene_JADE": 492.3852497190237,
+          "scene_JFDE": 1044.862292289734,
+          "scene_marginal_ADE": 270.24024656414986,
+          "scene_marginal_FDE": 516.8674720525742
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.008383455345453483
+    },
+    {
+      "epoch": 75,
+      "joint_score": 1.0765319075730435,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.021196434939162012
+      },
+      "metrics": {
+        "JADE": 0.5209393631411203,
+        "JFDE": 1.1111850888638461,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23274004434991669,
+        "coordination_gap_FDE": 0.5534963190256605,
+        "minADE": 0.28031411808460044,
+        "minFDE": 0.5425574553906781,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28819931879120364,
+        "scene_weighted_minFDE": 0.5576887698381856,
+        "sums": {
+          "agent_minADE": 6821.1637494706665,
+          "agent_minFDE": 13202.593119476762,
+          "scene_JADE": 493.3295768946409,
+          "scene_JFDE": 1052.2922791540623,
+          "scene_marginal_ADE": 272.92475489526987,
+          "scene_marginal_FDE": 528.1312650367618
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.021196434939162012
+    },
+    {
+      "epoch": 76,
+      "joint_score": 1.069180712009433,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.022565107200667955
+      },
+      "metrics": {
+        "JADE": 0.5168164720741094,
+        "JFDE": 1.1047284798706472,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22674592828265971,
+        "coordination_gap_FDE": 0.5451575201221102,
+        "minADE": 0.28180862247542715,
+        "minFDE": 0.5439261276521841,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2900705437914497,
+        "scene_weighted_minFDE": 0.559570959748537,
+        "sums": {
+          "agent_minADE": 6857.531019317044,
+          "agent_minFDE": 13235.898390288246,
+          "scene_JADE": 489.4251990541816,
+          "scene_JFDE": 1046.1778704375029,
+          "scene_marginal_ADE": 274.69680497050285,
+          "scene_marginal_FDE": 529.9136988818645
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.022565107200667955
+    },
+    {
+      "epoch": 77,
+      "joint_score": 1.0896132416952373,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.023434602968825713
+      },
+      "metrics": {
+        "JADE": 0.5275641488188675,
+        "JFDE": 1.1240981857527397,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23605317289625322,
+        "coordination_gap_FDE": 0.5651087444806677,
+        "minADE": 0.28394726989740804,
+        "minFDE": 0.5447956234203418,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29151097592261427,
+        "scene_weighted_minFDE": 0.558989441272072,
+        "sums": {
+          "agent_minADE": 6909.572865683527,
+          "agent_minFDE": 13257.056700310597,
+          "scene_JADE": 499.60324893146753,
+          "scene_JFDE": 1064.5209819078445,
+          "scene_marginal_ADE": 276.0608941987157,
+          "scene_marginal_FDE": 529.3630008846521
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.023434602968825713
+    },
+    {
+      "epoch": 78,
+      "joint_score": 1.088681930040797,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.006077281193135997
+      },
+      "metrics": {
+        "JADE": 0.5272981499605974,
+        "JFDE": 1.1227675601603992,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.24300550483757238,
+        "coordination_gap_FDE": 0.5820735240121074,
+        "minADE": 0.27721005976880203,
+        "minFDE": 0.5274383016446521,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28429264512302505,
+        "scene_weighted_minFDE": 0.5406940361482918,
+        "sums": {
+          "agent_minADE": 6745.629594414029,
+          "agent_minFDE": 12834.683632220964,
+          "scene_JADE": 499.3513480126858,
+          "scene_JFDE": 1063.260879471898,
+          "scene_marginal_ADE": 269.2251349315047,
+          "scene_marginal_FDE": 512.0372522324324
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.006077281193135997
+    },
+    {
+      "epoch": 79,
+      "joint_score": 1.0732134722385638,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.008180898613951437
+      },
+      "metrics": {
+        "JADE": 0.5199500713202366,
+        "JFDE": 1.1065268018366543,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23501810395289618,
+        "coordination_gap_FDE": 0.5620793072072103,
+        "minADE": 0.2771433016855613,
+        "minFDE": 0.5295419190654675,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28493196736734044,
+        "scene_weighted_minFDE": 0.544447494629444,
+        "sums": {
+          "agent_minADE": 6744.005103216448,
+          "agent_minFDE": 12885.873058539088,
+          "scene_JADE": 492.39271754026413,
+          "scene_JFDE": 1047.8808813393116,
+          "scene_marginal_ADE": 269.8305730968714,
+          "scene_marginal_FDE": 515.5917774140835
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.008180898613951437
+    },
+    {
+      "epoch": 80,
+      "joint_score": 1.0565642021525625,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.015257194363129889
+      },
+      "metrics": {
+        "JADE": 0.5111185133362773,
+        "JFDE": 1.0908913776325702,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22486567549179326,
+        "coordination_gap_FDE": 0.5394513506477713,
+        "minADE": 0.27860706143125663,
+        "minFDE": 0.536618214814646,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2862528378444841,
+        "scene_weighted_minFDE": 0.5514400269847989,
+        "sums": {
+          "agent_minADE": 6779.624232868198,
+          "agent_minFDE": 13058.067639299596,
+          "scene_JADE": 484.0292321294546,
+          "scene_JFDE": 1033.074134618044,
+          "scene_marginal_ADE": 271.0814374387264,
+          "scene_marginal_FDE": 522.2137055546045
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.015257194363129889
+    },
+    {
+      "epoch": 81,
+      "joint_score": 1.0526019959320112,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.021829691779408078
+      },
+      "metrics": {
+        "JADE": 0.5084168016753202,
+        "JFDE": 1.0883703885133817,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.21942372049707548,
+        "coordination_gap_FDE": 0.5307787737033183,
+        "minADE": 0.2813652006728122,
+        "minFDE": 0.5431907122309242,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28899308117824474,
+        "scene_weighted_minFDE": 0.5575916148100635,
+        "sums": {
+          "agent_minADE": 6846.740793172212,
+          "agent_minFDE": 13218.002791427309,
+          "scene_JADE": 481.4707111865282,
+          "scene_JFDE": 1030.6867579221725,
+          "scene_marginal_ADE": 273.67644787579775,
+          "scene_marginal_FDE": 528.0392592251301
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.021829691779408078
+    },
+    {
+      "epoch": 82,
+      "joint_score": 1.055153809086574,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.023144409053554194
+      },
+      "metrics": {
+        "JADE": 0.5107305209293033,
+        "JFDE": 1.0888465763145414,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22145599374643976,
+        "coordination_gap_FDE": 0.5293086841309083,
+        "minADE": 0.2813956604890981,
+        "minFDE": 0.5445054295050703,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2892745271828635,
+        "scene_weighted_minFDE": 0.5595378921836331,
+        "sums": {
+          "agent_minADE": 6847.482002341712,
+          "agent_minFDE": 13249.99512157638,
+          "scene_JADE": 483.66180332005024,
+          "scene_JFDE": 1031.1377077698708,
+          "scene_marginal_ADE": 273.94297724217176,
+          "scene_marginal_FDE": 529.8823838979006
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.023144409053554194
+    },
+    {
+      "epoch": 83,
+      "joint_score": 1.0812787597068638,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01764200154198703
+      },
+      "metrics": {
+        "JADE": 0.5233812633008866,
+        "JFDE": 1.1157949928119542,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23528383586480978,
+        "coordination_gap_FDE": 0.5630370791541233,
+        "minADE": 0.2808856990917733,
+        "minFDE": 0.5390030219935031,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28809742743607686,
+        "scene_weighted_minFDE": 0.5527579136578309,
+        "sums": {
+          "agent_minADE": 6835.072601699212,
+          "agent_minFDE": 13116.099537189904,
+          "scene_JADE": 495.64205634593964,
+          "scene_JFDE": 1056.6578581929207,
+          "scene_marginal_ADE": 272.8282637819648,
+          "scene_marginal_FDE": 523.4617442339659
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01764200154198703
+    },
+    {
+      "epoch": 84,
+      "joint_score": 1.0739881189062075,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.016302593739137006
+      },
+      "metrics": {
+        "JADE": 0.5196991348058898,
+        "JFDE": 1.1085779682006354,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2320263371375068,
+        "coordination_gap_FDE": 0.5555042568299184,
+        "minADE": 0.2798956433121766,
+        "minFDE": 0.5376636141906531,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.287672797668383,
+        "scene_weighted_minFDE": 0.5530737113707169,
+        "sums": {
+          "agent_minADE": 6810.980584358505,
+          "agent_minFDE": 13083.506387715352,
+          "scene_JADE": 492.15508066117764,
+          "scene_JFDE": 1049.8233358860016,
+          "scene_marginal_ADE": 272.4261393919587,
+          "scene_marginal_FDE": 523.7608046680689
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.016302593739137006
+    },
+    {
+      "epoch": 85,
+      "joint_score": 1.0712370523020485,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.02187585055327579
+      },
+      "metrics": {
+        "JADE": 0.5183495501372983,
+        "JFDE": 1.1057750043295,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22855400506489637,
+        "coordination_gap_FDE": 0.5477318619127132,
+        "minADE": 0.2820669968497608,
+        "minFDE": 0.5432368710047919,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28979554507240196,
+        "scene_weighted_minFDE": 0.5580431424167869,
+        "sums": {
+          "agent_minADE": 6863.8183013420785,
+          "agent_minFDE": 13219.126019030606,
+          "scene_JADE": 490.8770239800215,
+          "scene_JFDE": 1047.1689291000366,
+          "scene_marginal_ADE": 274.43638118356466,
+          "scene_marginal_FDE": 528.4668558686972
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.02187585055327579
+    },
+    {
+      "epoch": 86,
+      "joint_score": 1.0675942113872818,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01756271955144706
+      },
+      "metrics": {
+        "JADE": 0.5160703209662513,
+        "JFDE": 1.1030477808420611,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22873636858327334,
+        "coordination_gap_FDE": 0.5494375320932304,
+        "minADE": 0.279577144741064,
+        "minFDE": 0.5389237400029632,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28733395238297793,
+        "scene_weighted_minFDE": 0.5536102487488307,
+        "sums": {
+          "agent_minADE": 6803.230240129051,
+          "agent_minFDE": 13114.170289232105,
+          "scene_JADE": 488.71859395504,
+          "scene_JFDE": 1044.5862484574318,
+          "scene_marginal_ADE": 272.1052529066801,
+          "scene_marginal_FDE": 524.2689055651426
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01756271955144706
+    },
+    {
+      "epoch": 87,
+      "joint_score": 1.079551302864282,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.018526713880529067
+      },
+      "metrics": {
+        "JADE": 0.522039780174918,
+        "JFDE": 1.1150230453787282,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2337774020691482,
+        "coordination_gap_FDE": 0.5605518021704402,
+        "minADE": 0.2805920442086396,
+        "minFDE": 0.5398877343320452,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2882623781057698,
+        "scene_weighted_minFDE": 0.554471243208288,
+        "sums": {
+          "agent_minADE": 6827.926803773036,
+          "agent_minFDE": 13137.628127235988,
+          "scene_JADE": 494.37167182564735,
+          "scene_JFDE": 1055.9268239736557,
+          "scene_marginal_ADE": 272.984472066164,
+          "scene_marginal_FDE": 525.0842673182487
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.018526713880529067
+    },
+    {
+      "epoch": 88,
+      "joint_score": 1.0911308788195835,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0065706311953430685
+      },
+      "metrics": {
+        "JADE": 0.5278142317028081,
+        "JFDE": 1.1266332942335509,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2426055402051433,
+        "coordination_gap_FDE": 0.5844653903368031,
+        "minADE": 0.27762059810087664,
+        "minFDE": 0.5279316516468592,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28520869149766476,
+        "scene_weighted_minFDE": 0.5421679038967477,
+        "sums": {
+          "agent_minADE": 6755.619634186733,
+          "agent_minFDE": 12846.688811174672,
+          "scene_JADE": 499.84007742255926,
+          "scene_JFDE": 1066.9217296391726,
+          "scene_marginal_ADE": 270.09263084828854,
+          "scene_marginal_FDE": 513.4330049902201
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.0065706311953430685
+    },
+    {
+      "epoch": 89,
+      "joint_score": 1.076617146196058,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.02898182049012643
+      },
+      "metrics": {
+        "JADE": 0.5203990581924334,
+        "JFDE": 1.1124361760072496,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2282908178999658,
+        "coordination_gap_FDE": 0.5468604212042648,
+        "minADE": 0.2840905926983265,
+        "minFDE": 0.5503428409416425,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.29210824029246757,
+        "scene_weighted_minFDE": 0.5655757548029848,
+        "sums": {
+          "agent_minADE": 6913.060482721077,
+          "agent_minFDE": 13392.04269147393,
+          "scene_JADE": 492.8179081082344,
+          "scene_JFDE": 1053.4770586788654,
+          "scene_marginal_ADE": 276.6265035569668,
+          "scene_marginal_FDE": 535.6002397984266
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.02898182049012643
+    },
+    {
+      "epoch": 90,
+      "joint_score": 1.0803786960706792,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.018333965271447372
+      },
+      "metrics": {
+        "JADE": 0.5220906805746659,
+        "JFDE": 1.1165760309920265,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23297377255643942,
+        "coordination_gap_FDE": 0.561618080533797,
+        "minADE": 0.2811614803381416,
+        "minFDE": 0.5396949857229635,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2891169080182265,
+        "scene_weighted_minFDE": 0.5549579504582295,
+        "sums": {
+          "agent_minADE": 6841.783462548337,
+          "agent_minFDE": 13132.937782582594,
+          "scene_JADE": 494.41987450420856,
+          "scene_JFDE": 1057.3975013494492,
+          "scene_marginal_ADE": 273.7937118932605,
+          "scene_marginal_FDE": 525.5451790839434
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.018333965271447372
+    },
+    {
+      "epoch": 91,
+      "joint_score": 1.069616161389109,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.015070934196420027
+      },
+      "metrics": {
+        "JADE": 0.5175184528830185,
+        "JFDE": 1.1041954170121815,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2299714546017309,
+        "coordination_gap_FDE": 0.5529500105533328,
+        "minADE": 0.27970479933745807,
+        "minFDE": 0.5364319546479361,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28754699828128755,
+        "scene_weighted_minFDE": 0.5512454064588487,
+        "sums": {
+          "agent_minADE": 6806.336587077705,
+          "agent_minFDE": 13053.535184402877,
+          "scene_JADE": 490.0899748802185,
+          "scene_JFDE": 1045.6730599105358,
+          "scene_marginal_ADE": 272.3070073723793,
+          "scene_marginal_FDE": 522.0293999165297
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.015070934196420027
+    },
+    {
+      "epoch": 92,
+      "joint_score": 1.0707898792567827,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.015776852183257084
+      },
+      "metrics": {
+        "JADE": 0.5181652118452876,
+        "JFDE": 1.1052493348229901,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23176844632833277,
+        "coordination_gap_FDE": 0.5533752509067278,
+        "minADE": 0.27873718294977845,
+        "minFDE": 0.5371378726347732,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28639676551695487,
+        "scene_weighted_minFDE": 0.5518740839162624,
+        "sums": {
+          "agent_minADE": 6782.790609899908,
+          "agent_minFDE": 13070.71299269457,
+          "scene_JADE": 490.70245561748743,
+          "scene_JFDE": 1046.6711200773716,
+          "scene_marginal_ADE": 271.21773694455624,
+          "scene_marginal_FDE": 522.6247574687004
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.015776852183257084
+    },
+    {
+      "epoch": 93,
+      "joint_score": 1.061781225086769,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.026464287914253037
+      },
+      "metrics": {
+        "JADE": 0.5138380815606435,
+        "JFDE": 1.0958862870522512,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2242073501443536,
+        "coordination_gap_FDE": 0.5330791337594563,
+        "minADE": 0.28194120327603533,
+        "minFDE": 0.5478253083657691,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28963073141628987,
+        "scene_weighted_minFDE": 0.562807153292795,
+        "sums": {
+          "agent_minADE": 6860.757240519044,
+          "agent_minFDE": 13330.781053772625,
+          "scene_JADE": 486.60466323792934,
+          "scene_JFDE": 1037.804313838482,
+          "scene_marginal_ADE": 274.2803026512265,
+          "scene_marginal_FDE": 532.9783741682768
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.026464287914253037
+    },
+    {
+      "epoch": 94,
+      "joint_score": 1.0758806726528447,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.011719864637532496
+      },
+      "metrics": {
+        "JADE": 0.5206863016771288,
+        "JFDE": 1.1103887419514318,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23475681375928514,
+        "coordination_gap_FDE": 0.5623184346535892,
+        "minADE": 0.27819708586484826,
+        "minFDE": 0.5330808850890486,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28592948791784367,
+        "scene_weighted_minFDE": 0.5480703072978426,
+        "sums": {
+          "agent_minADE": 6769.647887435218,
+          "agent_minFDE": 12971.990257756908,
+          "scene_JADE": 493.089927688241,
+          "scene_JFDE": 1051.538138628006,
+          "scene_marginal_ADE": 270.775225058198,
+          "scene_marginal_FDE": 519.0225810110569
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.011719864637532496
+    },
+    {
+      "epoch": 95,
+      "joint_score": 1.0757310616271423,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.012364008809176985
+      },
+      "metrics": {
+        "JADE": 0.5206688014670435,
+        "JFDE": 1.1101245203201975,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2344647146281496,
+        "coordination_gap_FDE": 0.56146598996746,
+        "minADE": 0.27846529256556996,
+        "minFDE": 0.5337250292606931,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2862040868388939,
+        "scene_weighted_minFDE": 0.5486585303527375,
+        "sums": {
+          "agent_minADE": 6776.174429290579,
+          "agent_minFDE": 12987.664862029706,
+          "scene_JADE": 493.07335498929024,
+          "scene_JFDE": 1051.287920743227,
+          "scene_marginal_ADE": 271.03527023643255,
+          "scene_marginal_FDE": 519.5796282440424
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.012364008809176985
+    },
+    {
+      "epoch": 96,
+      "joint_score": 1.07604618115624,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.014869110238213024
+      },
+      "metrics": {
+        "JADE": 0.5204368476158966,
+        "JFDE": 1.111218667080687,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23330335614862513,
+        "coordination_gap_FDE": 0.5600438744238841,
+        "minADE": 0.2793726302594408,
+        "minFDE": 0.5362301306897291,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28713349146727146,
+        "scene_weighted_minFDE": 0.5511747926568028,
+        "sums": {
+          "agent_minADE": 6798.253584733233,
+          "agent_minFDE": 13048.624000203868,
+          "scene_JADE": 492.85369469225407,
+          "scene_JFDE": 1052.3240777254105,
+          "scene_marginal_ADE": 271.9154164195061,
+          "scene_marginal_FDE": 521.9625286459923
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.014869110238213024
+    },
+    {
+      "epoch": 97,
+      "joint_score": 1.0776300204420166,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.011250826932951208
+      },
+      "metrics": {
+        "JADE": 0.5213664752896383,
+        "JFDE": 1.1125270903047564,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23548950878814756,
+        "coordination_gap_FDE": 0.565062185527153,
+        "minADE": 0.27815516468627816,
+        "minFDE": 0.5326118473844673,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28587696650149075,
+        "scene_weighted_minFDE": 0.5474649047776033,
+        "sums": {
+          "agent_minADE": 6768.627777475893,
+          "agent_minFDE": 12960.576694253628,
+          "scene_JADE": 493.7340520992875,
+          "scene_JFDE": 1053.5631545186043,
+          "scene_marginal_ADE": 270.72548727691174,
+          "scene_marginal_FDE": 518.4492648243904
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.011250826932951208
+    },
+    {
+      "epoch": 98,
+      "joint_score": 1.0734654188297745,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01224617737437217
+      },
+      "metrics": {
+        "JADE": 0.5192368722342765,
+        "JFDE": 1.1084570931909958,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23338670450348287,
+        "coordination_gap_FDE": 0.560251332906005,
+        "minADE": 0.27820941793660037,
+        "minFDE": 0.5336071978258883,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28585016773079364,
+        "scene_weighted_minFDE": 0.5482057602849908,
+        "sums": {
+          "agent_minADE": 6769.947976069234,
+          "agent_minFDE": 12984.797551895164,
+          "scene_JADE": 491.71731800585985,
+          "scene_JFDE": 1049.708867251873,
+          "scene_marginal_ADE": 270.7001088410616,
+          "scene_marginal_FDE": 519.1508549898863
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01224617737437217
+    },
+    {
+      "epoch": 99,
+      "joint_score": 1.0727639475949462,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.013608624972671679
+      },
+      "metrics": {
+        "JADE": 0.5190000061610558,
+        "JFDE": 1.1075278828677808,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2326479338605149,
+        "coordination_gap_FDE": 0.5579745695545655,
+        "minADE": 0.27867325360645223,
+        "minFDE": 0.5349696454241878,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2863520723005409,
+        "scene_weighted_minFDE": 0.5495533133132153,
+        "sums": {
+          "agent_minADE": 6781.234953259409,
+          "agent_minFDE": 13017.951351752185,
+          "scene_JADE": 491.49300583451986,
+          "scene_JFDE": 1048.8289050757885,
+          "scene_marginal_ADE": 271.1754124686122,
+          "scene_marginal_FDE": 520.4269877076149
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.013608624972671679
+    },
+    {
+      "epoch": 100,
+      "joint_score": 1.0773185306910227,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.007809909886501987
+      },
+      "metrics": {
+        "JADE": 0.5211507557264855,
+        "JFDE": 1.1123355499290741,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23633826607415392,
+        "coordination_gap_FDE": 0.5687658734375725,
+        "minADE": 0.27722403562053294,
+        "minFDE": 0.5291709303380181,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2848124896523316,
+        "scene_weighted_minFDE": 0.5435696764915017,
+        "sums": {
+          "agent_minADE": 6745.969682790048,
+          "agent_minFDE": 12876.845418845332,
+          "scene_JADE": 493.52976567298174,
+          "scene_JFDE": 1053.381765782833,
+          "scene_marginal_ADE": 269.717427700758,
+          "scene_marginal_FDE": 514.7604836374521
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.007809909886501987
+    }
+  ],
+  "least_violation": {
+    "epoch": 73,
+    "joint_score": 1.1017224535487649,
+    "marginal_violations": {
+      "minADE": 0.0,
+      "minFDE": 0.0
+    },
+    "metrics": {
+      "JADE": 0.5333317646947556,
+      "JFDE": 1.1367813777080182,
+      "agent_count": 24334,
+      "coordination_gap_ADE": 0.25164222232643374,
+      "coordination_gap_FDE": 0.6056442921617342,
+      "minADE": 0.27401226467973144,
+      "minFDE": 0.5157314216758847,
+      "scene_count": 947,
+      "scene_weighted_minADE": 0.2816895423683219,
+      "scene_weighted_minFDE": 0.531137085546284,
+      "sums": {
+        "agent_minADE": 6667.814448716585,
+        "agent_minFDE": 12549.80841506098,
+        "scene_JADE": 505.0651811659336,
+        "scene_JFDE": 1076.5319646894932,
+        "scene_marginal_ADE": 266.7599966228008,
+        "scene_marginal_FDE": 502.986820012331
+      }
+    },
+    "simultaneous_improvement": true,
+    "total_violation": 0.0
+  },
+  "pareto_candidates": [
+    {
+      "epoch": 24,
+      "joint_score": 1.1328174615674185,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5519119516691663,
+        "JFDE": 1.1618110197965044,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2690248300637086,
+        "coordination_gap_FDE": 0.6542831206460185,
+        "minADE": 0.27687391745868994,
+        "minFDE": 0.49622836097075196,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2828871216054577,
+        "scene_weighted_minFDE": 0.5075278991504859,
+        "sums": {
+          "agent_minADE": 6737.449907439761,
+          "agent_minFDE": 12075.220935862279,
+          "scene_JADE": 522.6606182307005,
+          "scene_JFDE": 1100.2350357472897,
+          "scene_marginal_ADE": 267.89410416036844,
+          "scene_marginal_FDE": 480.6289204955101
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 37,
+      "joint_score": 1.0684974343528717,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.01100961130982503
+      },
+      "metrics": {
+        "JADE": 0.5184815681314267,
+        "JFDE": 1.10003173244289,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23422468569298854,
+        "coordination_gap_FDE": 0.5559736351308501,
+        "minADE": 0.2774900052721305,
+        "minFDE": 0.5323706317613411,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2842568824384381,
+        "scene_weighted_minFDE": 0.54405809731204,
+        "sums": {
+          "agent_minADE": 6752.441788292024,
+          "agent_minFDE": 12954.706953280474,
+          "scene_JADE": 491.0020450204611,
+          "scene_JFDE": 1041.730050623417,
+          "scene_marginal_ADE": 269.1912676692009,
+          "scene_marginal_FDE": 515.2230181545019
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.01100961130982503
+    },
+    {
+      "epoch": 38,
+      "joint_score": 1.0714616060194018,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.009743873554282634
+      },
+      "metrics": {
+        "JADE": 0.5206849032495694,
+        "JFDE": 1.1015534055396647,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23156851858152383,
+        "coordination_gap_FDE": 0.5592442116490639,
+        "minADE": 0.28254389990521706,
+        "minFDE": 0.5311048940057987,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28911638466804557,
+        "scene_weighted_minFDE": 0.5423091938906008,
+        "sums": {
+          "agent_minADE": 6875.423260293552,
+          "agent_minFDE": 12923.906490737107,
+          "scene_JADE": 493.0886033773422,
+          "scene_JFDE": 1043.1710750460625,
+          "scene_marginal_ADE": 273.7932162806392,
+          "scene_marginal_FDE": 513.566806614399
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.009743873554282634
+    },
+    {
+      "epoch": 41,
+      "joint_score": 1.0503845088018662,
+      "marginal_violations": {
+        "minADE": 0.007009259280605917,
+        "minFDE": 0.05218400108106169
+      },
+      "metrics": {
+        "JADE": 0.5108489455869608,
+        "JFDE": 1.0790711264298105,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2099995607669527,
+        "coordination_gap_FDE": 0.4943896473052005,
+        "minADE": 0.2946007106662875,
+        "minFDE": 0.5735450215325778,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.3008493848200081,
+        "scene_weighted_minFDE": 0.58468147912461,
+        "sums": {
+          "agent_minADE": 7168.813693353441,
+          "agent_minFDE": 13956.644553973747,
+          "scene_JADE": 483.7739514708519,
+          "scene_JFDE": 1021.8803567290306,
+          "scene_marginal_ADE": 284.9043674245477,
+          "scene_marginal_FDE": 553.6933607310057
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.05919326036166761
+    },
+    {
+      "epoch": 42,
+      "joint_score": 1.1333717843232463,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5520247177092049,
+        "JFDE": 1.1626941332280825,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2715096792880811,
+        "coordination_gap_FDE": 0.6476307445556838,
+        "minADE": 0.2742307472072094,
+        "minFDE": 0.5039818751254496,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2805150384211238,
+        "scene_weighted_minFDE": 0.5150633886723986,
+        "sums": {
+          "agent_minADE": 6673.1310025402345,
+          "agent_minFDE": 12263.894949302688,
+          "scene_JADE": 522.7674076706171,
+          "scene_JFDE": 1101.071344166994,
+          "scene_marginal_ADE": 265.64774138480425,
+          "scene_marginal_FDE": 487.76502907276154
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 44,
+      "joint_score": 1.2258739415103808,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5885833370742224,
+        "JFDE": 1.2745812088723167,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.3136077826604672,
+        "coordination_gap_FDE": 0.7780418978038282,
+        "minADE": 0.2684704153773117,
+        "minFDE": 0.48515093614556054,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2749755544137552,
+        "scene_weighted_minFDE": 0.49653931106848853,
+        "sums": {
+          "agent_minADE": 6532.959087791503,
+          "agent_minFDE": 11805.66288016607,
+          "scene_JADE": 557.3884202092886,
+          "scene_JFDE": 1207.028404802084,
+          "scene_marginal_ADE": 260.40185002982616,
+          "scene_marginal_FDE": 470.22272758185863
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 46,
+      "joint_score": 1.0395583277046996,
+      "marginal_violations": {
+        "minADE": 0.00726082473534323,
+        "minFDE": 0.058159010398398436
+      },
+      "metrics": {
+        "JADE": 0.5027319183445279,
+        "JFDE": 1.0736528187203433,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.20074308699010673,
+        "coordination_gap_FDE": 0.4816468398007069,
+        "minADE": 0.2948522761210248,
+        "minFDE": 0.5795200308499145,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.30198883135442117,
+        "scene_weighted_minFDE": 0.5920059789196365,
+        "sums": {
+          "agent_minADE": 7174.9352871290175,
+          "agent_minFDE": 14102.040430701822,
+          "scene_JADE": 476.0871266722679,
+          "scene_JFDE": 1016.749219328165,
+          "scene_marginal_ADE": 285.98342329263687,
+          "scene_marginal_FDE": 560.6296620368958
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.06541983513374167
+    },
+    {
+      "epoch": 52,
+      "joint_score": 1.0515673562900065,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.020071423620724116
+      },
+      "metrics": {
+        "JADE": 0.5110617883920417,
+        "JFDE": 1.0810111357959296,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22355638698545904,
+        "coordination_gap_FDE": 0.5278225148366144,
+        "minADE": 0.2808698814819328,
+        "minFDE": 0.5414324440722402,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2875054014065827,
+        "scene_weighted_minFDE": 0.5531886209593152,
+        "sums": {
+          "agent_minADE": 6834.687695981353,
+          "agent_minFDE": 13175.217094053893,
+          "scene_JADE": 483.97551360726357,
+          "scene_JFDE": 1023.7175455987453,
+          "scene_marginal_ADE": 272.2676151320338,
+          "scene_marginal_FDE": 523.8696240484715
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.020071423620724116
+    },
+    {
+      "epoch": 57,
+      "joint_score": 1.0519790473967445,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.03056054716489165
+      },
+      "metrics": {
+        "JADE": 0.5109969613229838,
+        "JFDE": 1.0819641721475213,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22037370694130498,
+        "coordination_gap_FDE": 0.5194659249143088,
+        "minADE": 0.28462441578835646,
+        "minFDE": 0.5519215676164078,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2906232543816788,
+        "scene_weighted_minFDE": 0.5624982472332125,
+        "sums": {
+          "agent_minADE": 6926.050533793867,
+          "agent_minFDE": 13430.459426377667,
+          "scene_JADE": 483.9141223728657,
+          "scene_JFDE": 1024.6200710237026,
+          "scene_marginal_ADE": 275.2202218994498,
+          "scene_marginal_FDE": 532.6858401298523
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.03056054716489165
+    },
+    {
+      "epoch": 61,
+      "joint_score": 1.0524870419231616,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.013749264675115502
+      },
+      "metrics": {
+        "JADE": 0.5092486271668135,
+        "JFDE": 1.0864768295126959,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2217010179615197,
+        "coordination_gap_FDE": 0.5371674714017947,
+        "minADE": 0.2799118645649745,
+        "minFDE": 0.5351102851266316,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2875476092052938,
+        "scene_weighted_minFDE": 0.5493093581109012,
+        "sums": {
+          "agent_minADE": 6811.3753123240895,
+          "agent_minFDE": 13021.373678271455,
+          "scene_JADE": 482.2584499269724,
+          "scene_JFDE": 1028.893557548523,
+          "scene_marginal_ADE": 272.30758591741323,
+          "scene_marginal_FDE": 520.1959621310234
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.013749264675115502
+    },
+    {
+      "epoch": 62,
+      "joint_score": 1.086681695554677,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.00521661504452664
+      },
+      "metrics": {
+        "JADE": 0.5271425697688945,
+        "JFDE": 1.1190782515715647,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23999139724777263,
+        "coordination_gap_FDE": 0.5792108408028876,
+        "minADE": 0.2799209454122592,
+        "minFDE": 0.5265776354960428,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2871511725211219,
+        "scene_weighted_minFDE": 0.5398674107686771,
+        "sums": {
+          "agent_minADE": 6811.596285661915,
+          "agent_minFDE": 12813.740182160705,
+          "scene_JADE": 499.20401357114315,
+          "scene_JFDE": 1059.7671042382717,
+          "scene_marginal_ADE": 271.93216037750244,
+          "scene_marginal_FDE": 511.2544379979372
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.00521661504452664
+    },
+    {
+      "epoch": 64,
+      "joint_score": 1.0756507879860675,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.005934185967446881
+      },
+      "metrics": {
+        "JADE": 0.5217500199202877,
+        "JFDE": 1.1078015361315596,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.238076021743362,
+        "coordination_gap_FDE": 0.5669486456272341,
+        "minADE": 0.2763140207289,
+        "minFDE": 0.527295206418963,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2836739981769257,
+        "scene_weighted_minFDE": 0.5408528905043255,
+        "sums": {
+          "agent_minADE": 6723.825380417053,
+          "agent_minFDE": 12831.201552999046,
+          "scene_JADE": 494.09726886451244,
+          "scene_JFDE": 1049.088054716587,
+          "scene_marginal_ADE": 268.6392762735486,
+          "scene_marginal_FDE": 512.1876873075962
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.005934185967446881
+    },
+    {
+      "epoch": 68,
+      "joint_score": 1.1122529899746714,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5399105298198138,
+        "JFDE": 1.1446849203097154,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.25704271484799723,
+        "coordination_gap_FDE": 0.6158076608602702,
+        "minADE": 0.27541062240826536,
+        "minFDE": 0.51409039145122,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28286781497181657,
+        "scene_weighted_minFDE": 0.5288772594494452,
+        "sums": {
+          "agent_minADE": 6701.842085682729,
+          "agent_minFDE": 12509.875585573987,
+          "scene_JADE": 511.29527173936367,
+          "scene_JFDE": 1084.0166195333004,
+          "scene_marginal_ADE": 267.8758207783103,
+          "scene_marginal_FDE": 500.8467646986246
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 73,
+      "joint_score": 1.1017224535487649,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.0
+      },
+      "metrics": {
+        "JADE": 0.5333317646947556,
+        "JFDE": 1.1367813777080182,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.25164222232643374,
+        "coordination_gap_FDE": 0.6056442921617342,
+        "minADE": 0.27401226467973144,
+        "minFDE": 0.5157314216758847,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2816895423683219,
+        "scene_weighted_minFDE": 0.531137085546284,
+        "sums": {
+          "agent_minADE": 6667.814448716585,
+          "agent_minFDE": 12549.80841506098,
+          "scene_JADE": 505.0651811659336,
+          "scene_JFDE": 1076.5319646894932,
+          "scene_marginal_ADE": 266.7599966228008,
+          "scene_marginal_FDE": 502.986820012331
+        }
+      },
+      "simultaneous_improvement": true,
+      "total_violation": 0.0
+    },
+    {
+      "epoch": 74,
+      "joint_score": 1.0716118224539501,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.008383455345453483
+      },
+      "metrics": {
+        "JADE": 0.5199421855533514,
+        "JFDE": 1.1033392738011973,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2345776168478077,
+        "coordination_gap_FDE": 0.557544688740401,
+        "minADE": 0.2773664967044703,
+        "minFDE": 0.5297444757969696,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28536456870554366,
+        "scene_weighted_minFDE": 0.5457945850607964,
+        "sums": {
+          "agent_minADE": 6749.43633080658,
+          "agent_minFDE": 12890.802074043459,
+          "scene_JADE": 492.3852497190237,
+          "scene_JFDE": 1044.862292289734,
+          "scene_marginal_ADE": 270.24024656414986,
+          "scene_marginal_FDE": 516.8674720525742
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.008383455345453483
+    },
+    {
+      "epoch": 79,
+      "joint_score": 1.0732134722385638,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.008180898613951437
+      },
+      "metrics": {
+        "JADE": 0.5199500713202366,
+        "JFDE": 1.1065268018366543,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23501810395289618,
+        "coordination_gap_FDE": 0.5620793072072103,
+        "minADE": 0.2771433016855613,
+        "minFDE": 0.5295419190654675,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28493196736734044,
+        "scene_weighted_minFDE": 0.544447494629444,
+        "sums": {
+          "agent_minADE": 6744.005103216448,
+          "agent_minFDE": 12885.873058539088,
+          "scene_JADE": 492.39271754026413,
+          "scene_JFDE": 1047.8808813393116,
+          "scene_marginal_ADE": 269.8305730968714,
+          "scene_marginal_FDE": 515.5917774140835
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.008180898613951437
+    },
+    {
+      "epoch": 80,
+      "joint_score": 1.0565642021525625,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.015257194363129889
+      },
+      "metrics": {
+        "JADE": 0.5111185133362773,
+        "JFDE": 1.0908913776325702,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.22486567549179326,
+        "coordination_gap_FDE": 0.5394513506477713,
+        "minADE": 0.27860706143125663,
+        "minFDE": 0.536618214814646,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2862528378444841,
+        "scene_weighted_minFDE": 0.5514400269847989,
+        "sums": {
+          "agent_minADE": 6779.624232868198,
+          "agent_minFDE": 13058.067639299596,
+          "scene_JADE": 484.0292321294546,
+          "scene_JFDE": 1033.074134618044,
+          "scene_marginal_ADE": 271.0814374387264,
+          "scene_marginal_FDE": 522.2137055546045
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.015257194363129889
+    },
+    {
+      "epoch": 81,
+      "joint_score": 1.0526019959320112,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.021829691779408078
+      },
+      "metrics": {
+        "JADE": 0.5084168016753202,
+        "JFDE": 1.0883703885133817,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.21942372049707548,
+        "coordination_gap_FDE": 0.5307787737033183,
+        "minADE": 0.2813652006728122,
+        "minFDE": 0.5431907122309242,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28899308117824474,
+        "scene_weighted_minFDE": 0.5575916148100635,
+        "sums": {
+          "agent_minADE": 6846.740793172212,
+          "agent_minFDE": 13218.002791427309,
+          "scene_JADE": 481.4707111865282,
+          "scene_JFDE": 1030.6867579221725,
+          "scene_marginal_ADE": 273.67644787579775,
+          "scene_marginal_FDE": 528.0392592251301
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.021829691779408078
+    },
+    {
+      "epoch": 91,
+      "joint_score": 1.069616161389109,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.015070934196420027
+      },
+      "metrics": {
+        "JADE": 0.5175184528830185,
+        "JFDE": 1.1041954170121815,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.2299714546017309,
+        "coordination_gap_FDE": 0.5529500105533328,
+        "minADE": 0.27970479933745807,
+        "minFDE": 0.5364319546479361,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.28754699828128755,
+        "scene_weighted_minFDE": 0.5512454064588487,
+        "sums": {
+          "agent_minADE": 6806.336587077705,
+          "agent_minFDE": 13053.535184402877,
+          "scene_JADE": 490.0899748802185,
+          "scene_JFDE": 1045.6730599105358,
+          "scene_marginal_ADE": 272.3070073723793,
+          "scene_marginal_FDE": 522.0293999165297
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.015070934196420027
+    },
+    {
+      "epoch": 100,
+      "joint_score": 1.0773185306910227,
+      "marginal_violations": {
+        "minADE": 0.0,
+        "minFDE": 0.007809909886501987
+      },
+      "metrics": {
+        "JADE": 0.5211507557264855,
+        "JFDE": 1.1123355499290741,
+        "agent_count": 24334,
+        "coordination_gap_ADE": 0.23633826607415392,
+        "coordination_gap_FDE": 0.5687658734375725,
+        "minADE": 0.27722403562053294,
+        "minFDE": 0.5291709303380181,
+        "scene_count": 947,
+        "scene_weighted_minADE": 0.2848124896523316,
+        "scene_weighted_minFDE": 0.5435696764915017,
+        "sums": {
+          "agent_minADE": 6745.969682790048,
+          "agent_minFDE": 12876.845418845332,
+          "scene_JADE": 493.52976567298174,
+          "scene_JFDE": 1053.381765782833,
+          "scene_marginal_ADE": 269.717427700758,
+          "scene_marginal_FDE": 514.7604836374521
+        }
+      },
+      "simultaneous_improvement": false,
+      "total_violation": 0.007809909886501987
+    }
+  ],
+  "simultaneous_improvement": true,
+  "tolerance": 0.0
+}

@@ -1,0 +1,381 @@
+{
+  "baseline_binding": {
+    "agent_occurrence_count": 24334,
+    "checkpoint_sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+    "ebjd_initialization_sha256": "9fe5b2a7ae1e765d2706763b342d461c11ac0e736a2b597b6e18d63381652229",
+    "evaluation_seed": 2035,
+    "fold": "univ",
+    "manifest_sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+    "result_sha256": "0d0bdd18f7ba63bc6a601117e27b62f99f30a78736449edf1cab920c9b3688ef",
+    "scene_count": 947,
+    "steps": 20,
+    "unit": "m",
+    "worlds": 20
+  },
+  "checks": {
+    "full_weight_effective_coefficient_is_0_8": true,
+    "large_n_is_57": true,
+    "large_n_p20x20_finite": true,
+    "normal_finite": true,
+    "normal_is_not_rollout": true,
+    "rollout_effective_coefficient_is_0_08_at_epoch22": true,
+    "rollout_finite": true,
+    "rollout_is_active": true,
+    "rollout_worlds_steps_exact": true,
+    "tail_finite": true,
+    "tail_has_three_scenes": true
+  },
+  "config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/archive/endpoint_bridge_joint_univ_seed3101.yaml",
+  "config_sha256": "1fdae469634e6fe92ff96e115fc33fac3637b2eca493f394638052e6331f74c9",
+  "cuda_version": "12.8",
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "execution_profile": {
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "physical_group_max_scenes": 4,
+    "rollout_block_checkpointing": false,
+    "rollout_uncheckpointed_max_agent_slots": 32,
+    "scene_compaction": true,
+    "scene_forward_chunk": 1,
+    "strategy": "small_group_uncheckpoint_v1"
+  },
+  "large_n_inference": {
+    "agents": 57,
+    "dataset_index": 0,
+    "elapsed_seconds": 0.7761175129562616,
+    "finite": true,
+    "metrics": {
+      "JADE": 0.9386030435562134,
+      "JFDE": 1.505293846130371,
+      "agent_count": 57,
+      "coordination_gap_ADE": 0.4893137514591217,
+      "coordination_gap_FDE": 0.9589883685112,
+      "minADE": 0.44928928425437525,
+      "minFDE": 0.5463055356552726,
+      "scene_count": 1,
+      "scene_weighted_minADE": 0.4492892920970917,
+      "scene_weighted_minFDE": 0.5463054776191711,
+      "sums": {
+        "agent_minADE": 25.60948920249939,
+        "agent_minFDE": 31.13941553235054,
+        "scene_JADE": 0.9386030435562134,
+        "scene_JFDE": 1.505293846130371,
+        "scene_marginal_ADE": 0.4492892920970917,
+        "scene_marginal_FDE": 0.5463054776191711
+      }
+    },
+    "peak_allocated_bytes": 1652581888,
+    "peak_reserved_bytes": 1931476992,
+    "prediction_shape": [
+      1,
+      20,
+      57,
+      12,
+      2
+    ],
+    "steps": 20,
+    "worlds": 20
+  },
+  "normal_update": {
+    "agent_counts": [
+      [
+        16,
+        16,
+        16,
+        15
+      ],
+      [
+        15,
+        14,
+        14,
+        14
+      ],
+      [
+        14,
+        14,
+        14,
+        14
+      ],
+      [
+        14,
+        13,
+        13,
+        13
+      ]
+    ],
+    "device_total_bytes": 16617701376,
+    "driver_free_before_bytes": 15535570944,
+    "elapsed_seconds": 12.127942302031443,
+    "finite": true,
+    "peak_allocated_bytes": 2377053184,
+    "peak_reserved_bytes": 2701131776,
+    "record": {
+      "active_goal_v_weight": 1.0,
+      "active_rollout_weight": 0.02,
+      "applied_decrement_norm": 0.15089028098462692,
+      "applied_dot_marginal_ade": 0.0,
+      "applied_dot_marginal_fde": 0.0,
+      "candidate_decrement_norm": 0.15089028098462692,
+      "candidate_dot_marginal_ade": 0.0,
+      "candidate_dot_marginal_fde": 0.0,
+      "diffusion": 2.278495490550995,
+      "diffusion_bridge_coarse_unweighted": 0.5781743302941322,
+      "diffusion_bridge_fine_unweighted": 0.5775569379329681,
+      "diffusion_goal_coarse_unweighted": 1.2457534670829773,
+      "diffusion_goal_fine_unweighted": 1.2449565827846527,
+      "effective_rollout_coefficient": 0.08,
+      "geometry": 0.0836496502161026,
+      "learning_rate": 9.23817149948363e-05,
+      "logical_scene_id_sha256": "2df7021b3bb826d731373d1edac77e4ddded44ce226349dbb57ad7cf052132bb",
+      "loss": 2.284612774848938,
+      "map": 0.01934784883633256,
+      "maximum_physical_agent_slots": 59.0,
+      "maximum_physical_group_scenes": 4.0,
+      "maximum_time": 0.7174999862909317,
+      "minimum_time": 0.22999999299645424,
+      "parameter_norm_after": 115.45180566436453,
+      "parameter_norm_before": 115.45159667247962,
+      "physical_group_count": 1.0,
+      "physical_group_max_scenes": 4.0,
+      "projection_active": 0.0,
+      "projection_changed_fraction": 0,
+      "random_draw_sha256": "4ee46a197a07a9c5d97f108e020d711ed83f995b04c2a6fb47ae7796cc808f7c",
+      "rollout": 0.0,
+      "rollout_block_checkpointing": 0.0,
+      "rollout_frequency_compensation": 4.0,
+      "rollout_step_checkpointed_group_fraction": 0.0,
+      "rollout_update": 0.0,
+      "scene_compaction": 1.0,
+      "scene_forward_chunk": 1.0,
+      "soft_marginal_ade": 0.0,
+      "soft_marginal_fde": 0.0,
+      "total_gradient_norm_before_clip": 1.3240507798896743,
+      "unet_learning_rate": 9.23817149948363e-06,
+      "weighted_diffusion": 2.278495490550995
+    },
+    "scene_counts": [
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "rollout_update": {
+    "agent_counts": [
+      [
+        16,
+        16,
+        16,
+        15
+      ],
+      [
+        15,
+        14,
+        14,
+        14
+      ],
+      [
+        14,
+        14,
+        14,
+        14
+      ],
+      [
+        14,
+        13,
+        13,
+        13
+      ]
+    ],
+    "device_total_bytes": 16617701376,
+    "driver_free_before_bytes": 15484911616,
+    "elapsed_seconds": 19.82302062306553,
+    "finite": true,
+    "peak_allocated_bytes": 4050847232,
+    "peak_reserved_bytes": 4800380928,
+    "record": {
+      "active_goal_v_weight": 1.0,
+      "active_rollout_weight": 0.02,
+      "applied_decrement_norm": 0.1506620896005898,
+      "applied_dot_marginal_ade": 0.001728022428710336,
+      "applied_dot_marginal_fde": 0.0021106351211338304,
+      "candidate_decrement_norm": 0.1506620896005898,
+      "candidate_dot_marginal_ade": 0.001728022428710336,
+      "candidate_dot_marginal_fde": 0.0021106351211338304,
+      "diffusion": 2.16637921333313,
+      "diffusion_bridge_coarse_unweighted": 0.6212298721075058,
+      "diffusion_bridge_fine_unweighted": 0.6205839663743973,
+      "diffusion_goal_coarse_unweighted": 1.1130214929580688,
+      "diffusion_goal_fine_unweighted": 1.112232357263565,
+      "effective_rollout_coefficient": 0.08,
+      "geometry": 0.06391874514520168,
+      "learning_rate": 9.23817149948363e-05,
+      "logical_scene_id_sha256": "2df7021b3bb826d731373d1edac77e4ddded44ce226349dbb57ad7cf052132bb",
+      "loss": 2.427064597606659,
+      "map": 0.01934784883633256,
+      "maximum_physical_agent_slots": 59.0,
+      "maximum_physical_group_scenes": 4.0,
+      "maximum_time": 0.8149999752640724,
+      "minimum_time": 0.07999999728053808,
+      "parameter_norm_after": 115.37456599369591,
+      "parameter_norm_before": 115.37428578683063,
+      "physical_group_count": 1.0,
+      "physical_group_max_scenes": 4.0,
+      "projection_active": 0.0,
+      "projection_changed_fraction": 0.0,
+      "random_draw_sha256": "31f604aac31a1d6a4b4a0b96237d87a5e671c6ac94a3781ee1d7d132ea7e2ace",
+      "rollout": 3.1944331526756287,
+      "rollout_block_checkpointing": 0.0,
+      "rollout_frequency_compensation": 4.0,
+      "rollout_step_checkpointed_group_fraction": 1.0,
+      "rollout_update": 1.0,
+      "scene_compaction": 1.0,
+      "scene_forward_chunk": 1.0,
+      "soft_marginal_ade": 0.8006053417921066,
+      "soft_marginal_fde": 1.1449014246463776,
+      "total_gradient_norm_before_clip": 1.666092534490576,
+      "unet_learning_rate": 9.23817149948363e-06,
+      "weighted_diffusion": 2.16637921333313
+    },
+    "scene_counts": [
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "schema": "ebjd-univ-targeted-cuda-preflight-v1",
+  "source_commit": "1ef0c76e495d5f18d31cbe9b69912dc78410dfc1",
+  "status": "PASS",
+  "tail_update": {
+    "agent_counts": [
+      [
+        2,
+        2,
+        2
+      ]
+    ],
+    "device_total_bytes": 16617701376,
+    "driver_free_before_bytes": 15398076416,
+    "elapsed_seconds": 0.36298063094727695,
+    "finite": true,
+    "peak_allocated_bytes": 670936576,
+    "peak_reserved_bytes": 719323136,
+    "record": {
+      "active_goal_v_weight": 1.0,
+      "active_rollout_weight": 0.0,
+      "applied_decrement_norm": 0.03271805417449419,
+      "applied_dot_marginal_ade": 0.0,
+      "applied_dot_marginal_fde": 0.0,
+      "candidate_decrement_norm": 0.03271805417449419,
+      "candidate_dot_marginal_ade": 0.0,
+      "candidate_dot_marginal_fde": 0.0,
+      "diffusion": 1.3225185871124268,
+      "diffusion_bridge_coarse_unweighted": 0.5766167044639587,
+      "diffusion_bridge_fine_unweighted": 0.5768381953239441,
+      "diffusion_goal_coarse_unweighted": 0.4780995547771454,
+      "diffusion_goal_fine_unweighted": 0.48200133442878723,
+      "effective_rollout_coefficient": 0.0,
+      "geometry": 0.10492931306362152,
+      "learning_rate": 2e-05,
+      "logical_scene_id_sha256": "d08ca5076484daa7838d2458f5e2d5a2ebe19c3e10b474c23df860ff2a3cc659",
+      "loss": 1.3304102420806885,
+      "map": 0.02645176835358143,
+      "maximum_physical_agent_slots": 6.0,
+      "maximum_physical_group_scenes": 3.0,
+      "maximum_time": 0.7599999904632568,
+      "minimum_time": 0.14000000059604645,
+      "parameter_norm_after": 115.38844065764744,
+      "parameter_norm_before": 115.38845274724196,
+      "physical_group_count": 1.0,
+      "physical_group_max_scenes": 4.0,
+      "projection_active": 0.0,
+      "projection_changed_fraction": 0,
+      "random_draw_sha256": "87f67166a3eaa028d22abe737a0499658e22b298cc3248c0aaee5187e6d5d5df",
+      "rollout": 0.0,
+      "rollout_block_checkpointing": 0.0,
+      "rollout_frequency_compensation": 4.0,
+      "rollout_step_checkpointed_group_fraction": 0.0,
+      "rollout_update": 0.0,
+      "scene_compaction": 1.0,
+      "scene_forward_chunk": 1.0,
+      "soft_marginal_ade": 0.0,
+      "soft_marginal_fde": 0.0,
+      "total_gradient_norm_before_clip": 3.814166897960609,
+      "unet_learning_rate": 2.0000000000000003e-06,
+      "weighted_diffusion": 1.3225185871124268
+    },
+    "scene_counts": [
+      3
+    ]
+  },
+  "top_train_indices_and_agents": [
+    [
+      16,
+      723
+    ],
+    [
+      16,
+      720
+    ],
+    [
+      16,
+      719
+    ],
+    [
+      15,
+      722
+    ],
+    [
+      15,
+      721
+    ],
+    [
+      14,
+      2792
+    ],
+    [
+      14,
+      2791
+    ],
+    [
+      14,
+      2790
+    ],
+    [
+      14,
+      2583
+    ],
+    [
+      14,
+      2582
+    ],
+    [
+      14,
+      1799
+    ],
+    [
+      14,
+      725
+    ],
+    [
+      14,
+      724
+    ],
+    [
+      13,
+      2948
+    ],
+    [
+      13,
+      2793
+    ],
+    [
+      13,
+      2586
+    ]
+  ],
+  "torch_version": "2.8.0+cu128",
+  "train_scenes": 4067,
+  "validation_scenes": 947
+}
