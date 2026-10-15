@@ -1,0 +1,207 @@
+{
+  "schema": "ebjd-eth-targeted-diagnostic-v1",
+  "experiment_id": "EBJD-ETH-TARGETED-DIAGNOSTIC-20261015",
+  "snapshot_at": "2026-10-15T22:44:33+08:00",
+  "status": "CPU_COMPLETE_GPU_PENDING",
+  "scope": {
+    "optimizer_updates": 0,
+    "new_training_experiments": 0,
+    "frozen_model_forward_calls": 0,
+    "cpu_elapsed_seconds_latest_run": 12.451532874023542,
+    "gpu_active_seconds": 0,
+    "running_training_modified": false,
+    "running_training_stopped_or_restarted": false
+  },
+  "source_binding": {
+    "archived_evidence_commit": "ebbbe189a258ed161be97e26e29fecb53acf467f",
+    "formal_training_source_commit": "d266681b7f08940f6caf5c20a01b41bb867b70b7",
+    "pipeline_orchestration_commit": "092ed91f1f4117f50aa835ec8e47cd2c9ce74a98",
+    "diagnostic_branch": "research/ebjd-eth-targeted-diagnostic-v1",
+    "run_id": "eth_main_seed3101_d266681_20261015",
+    "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+    "resolved_config_sha256": "936924d8b773f61e9fc5e419fdc0e939bd369beb155c4e74474924ae727214a9",
+    "gdts_checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "gdts_config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+    "ebjd_epoch_005_checkpoint_sha256": "a5f45606329b80754567cf86381ceff0d19e68c8eaddf999c74f71ef1bdde525",
+    "ebjd_epoch_027_checkpoint_sha256": "1b3de8d31c580640efabe12fa34b5bfb27e23ec509a6bd6f6a597c58eb757874"
+  },
+  "runtime_snapshot": {
+    "pipeline_status": "RUNNING",
+    "latest_complete_epoch": 27,
+    "active_epoch_from_complete_train_records": 28,
+    "latest_complete_update": 6939,
+    "planned_epochs": 100,
+    "planned_updates": 25700,
+    "rollout_start_epoch": 21,
+    "rollout_ramp_end_epoch": 40,
+    "update_log_complete_record_count": 7072,
+    "update_log_byte_boundary": 12376332,
+    "update_log_prefix_sha256": "230ddfdd5fca0a5ba3bfc3169a0a8f206f29b65e44423d2a011d71f2755662fc",
+    "epoch_log_complete_record_count": 27,
+    "epoch_log_byte_boundary": 26285,
+    "epoch_log_prefix_sha256": "6f1d8b40b065c045ff5dda809a204c189df9fcc9b37c2fcf20ae9f5e8bc5a597",
+    "state_file_active_epoch_field_note": "The state file retained goal-pretrain active_epoch=1; current EBJD epoch is derived from append-only train records."
+  },
+  "headline_answers": {
+    "method_gap_after_metric_parity": {
+      "status": "CONFIRMED",
+      "answer": "The same-tensor parity check found no metric arithmetic explanation; the archived matched-protocol GDTS-to-EBJD gap remains. Exact bank replay is still pending."
+    },
+    "single_vs_multi_gap_contribution": {
+      "status": "OPEN",
+      "answer": "Population and CV strata are measured, but model predictions are absent, so EBJD-minus-GDTS group contributions cannot be computed without fabrication."
+    },
+    "dominant_mechanism": {
+      "status": "SUPPORTED_BUT_NOT_CAUSAL",
+      "answer": "A broad endpoint and bridge distribution shift is supported. Endpoint center bias, under-dispersion, candidate coverage and model-specific heavy-tail dominance remain open until the frozen banks are exported."
+    },
+    "next_training_milestone": {
+      "status": "SUPPORTED_BUT_NOT_CAUSAL",
+      "answer": "Epoch 40 tests whether the planned rollout ramp changes the validation trend; it cannot identify sampler or scale causality. From the epoch-27 boundary the estimated cost is about 8.55 hours."
+    }
+  },
+  "evaluator_parity": {
+    "status": "PASSED",
+    "real_manifest_scene_count": 253,
+    "atol_m": 1e-06,
+    "rtol": 1e-05,
+    "maximum_absolute_error_m": {
+      "per_world_ADE": 9.5367431640625e-07,
+      "per_world_FDE": 0.0,
+      "agent_minADE": 9.5367431640625e-07,
+      "agent_minFDE": 0.0,
+      "scene_marginal_ADE": 4.76837158203125e-07,
+      "scene_marginal_FDE": 0.0,
+      "JADE": 4.76837158203125e-07,
+      "JFDE": 0.0
+    },
+    "maximum_relative_error": 2.485345476088696e-07,
+    "first_failure": null,
+    "real_N1_joint_marginal_max_abs_m": 0.0,
+    "invariants": {
+      "common_world_permutation_max_abs_m": 0.0,
+      "agent_axis_synchronous_permutation_max_abs_m": 0.0,
+      "independent_world_marginal_max_abs_m": 0.0,
+      "independent_world_joint_change_ADE_m": -5.0,
+      "independent_world_joint_change_FDE_m": -5.0,
+      "padding_valid_agent_max_abs_m": 0.0
+    },
+    "aggregation": {
+      "marginal": "agent-occurrence weighted",
+      "joint": "scene-window weighted"
+    }
+  },
+  "known_model_metrics_m": {
+    "GDTS_matched_seed2035": {
+      "minADE": 0.41705285937904,
+      "minFDE": 0.5800323037873278,
+      "JADE": 0.4899067671402641,
+      "JFDE": 0.7434117917354282
+    },
+    "EBJD_epoch005": {
+      "minADE": 0.5760879134401106,
+      "minFDE": 1.0049685405255142,
+      "JADE": 0.6343192191934397,
+      "JFDE": 1.0930590782932967
+    },
+    "EBJD_epoch027": {
+      "minADE": 0.6277311155367847,
+      "minFDE": 1.1782307618241348,
+      "JADE": 0.6681755341795593,
+      "JFDE": 1.2278633089110313
+    }
+  },
+  "population": {
+    "scene_count": 253,
+    "agent_occurrences": 364,
+    "N1_scenes": 183,
+    "N1_agents": 183,
+    "Nge2_scenes": 70,
+    "Nge2_agents": 181
+  },
+  "constant_velocity_metrics_m": {
+    "overall": {
+      "minADE": 1.0413427972170028,
+      "minFDE": 2.2235539402131166,
+      "JADE": 1.0807398449932097,
+      "JFDE": 2.2421923343288976
+    },
+    "N1": {
+      "minADE": 1.121887934519488,
+      "minFDE": 2.2705943790776426,
+      "JADE": 1.121887934519488,
+      "JFDE": 2.2705943790776426
+    },
+    "Nge2": {
+      "minADE": 0.9599076583973627,
+      "minFDE": 2.1759937174937343,
+      "JADE": 0.9731669823745099,
+      "JFDE": 2.167941274485749
+    },
+    "note": "CV is one deterministic trajectory. Joint and marginal coincide per N=1 scene; aggregate overall values use different scene/agent weights."
+  },
+  "distribution_shift": {
+    "train_goal_rms_m": 1.0596676835064214,
+    "eth_goal_rms_m": 2.0714570612216843,
+    "goal_ratio": 1.9548176220371938,
+    "train_bridge_rms_m": 0.20777413132170952,
+    "eth_bridge_rms_m": 0.5000102827622581,
+    "bridge_ratio": 2.40650883525082,
+    "train_cv_residual_median_p90_p95": [0.8680804111557235, 2.418592924214539, 3.071001966904554],
+    "eth_cv_residual_median_p90_p95": [1.6228587828815664, 4.785681028550865, 5.761116395369668],
+    "train_bridge_agent_rms_median_p90_p95": [0.1447675309304232, 0.32570914848097354, 0.4026701496940717],
+    "eth_bridge_agent_rms_median_p90_p95": [0.41854176273060056, 0.7440645363794398, 0.9099386719233645],
+    "interpretation": "Median and tail statistics both shift; this is not confined to a few extreme windows. Association is diagnostic, not a scale-causality experiment."
+  },
+  "training_stage": {
+    "pre_rollout_epoch_1_to_20": {
+      "best_minADE_epoch_value": [5, 0.5760879134401106],
+      "best_minFDE_epoch_value": [5, 1.0049685405255142],
+      "best_JADE_epoch_value": [6, 0.6316591988026861],
+      "best_JFDE_epoch_value": [5, 1.0930590782932967],
+      "mean_epoch_wall_minutes": 12.459450599411696
+    },
+    "rollout_observed_epoch_21_to_27": {
+      "best_minADE_epoch_value": [22, 0.5874019231427215],
+      "best_minFDE_epoch_value": [22, 1.062744396441913],
+      "best_JADE_epoch_value": [22, 0.6386872141257577],
+      "best_JFDE_epoch_value": [22, 1.1374772332255312],
+      "mean_epoch_wall_minutes": 39.44758724381183
+    },
+    "interpretation": "The matched-baseline gap already existed in epochs 1-20. Epochs 21-27 do not show recovery, but correlation does not establish rollout causality."
+  },
+  "figure_qa": {
+    "backend": "Python/matplotlib",
+    "alignment_gate": "PASSED",
+    "rendered_collision_audit": "PASSED",
+    "pdf_minimum_text_size_pt": 5.8,
+    "pdf_text_floor_pt": 5.5,
+    "source_preflight": "19 PASS, 2 WARN, 0 FAIL",
+    "source_warning_interpretation": "The seeded permutation belongs to future bank K-curves, not simulated training data; one training seed is shown without an uncertainty interval."
+  },
+  "tests": {
+    "command": "PYTHONPATH=ebjd_clean python -m pytest -q ebjd_clean/tests/test_eth_targeted_diagnostic.py",
+    "result": "5 passed"
+  },
+  "pending": [
+    "Export and replay the complete selection-seed-2035 P20 banks for matched GDTS, EBJD epoch 5 and immutable EBJD epoch 27 after the current GPU job releases the device.",
+    "Compute exact N=1/N>=2 EBJD-minus-GDTS contribution decomposition and tail statistics.",
+    "Compute model endpoint center/spread/nearest diagnostics, nested K curves and fixed-rule cases.",
+    "Optional low-priority GDTS BF16-versus-FP32 and raw-ETH-versus-JMM checks remain OPEN."
+  ],
+  "training_recommendation": {
+    "decision": "REVIEW_AT_NEXT_MILESTONE",
+    "milestone": 40,
+    "estimated_hours_from_epoch_27_boundary": 8.55,
+    "reason": "Observe the already planned end of rollout ramp without changing or stopping the run. This only addresses training-stage trend uncertainty."
+  },
+  "single_highest_priority_next_action": "After the running ETH job naturally releases the GPU, export the three SHA-bound selection-seed-2035 P20 banks and run the existing CPU bank analysis. Do not change the model, scale, sampler or training objective before this evidence is available.",
+  "archived_small_assets": {
+    "cpu_results": "docs/diagnostics/eth_targeted_20261015/CPU_RESULTS.json",
+    "training_trend": "docs/diagnostics/eth_targeted_20261015/TRAINING_TREND.csv",
+    "figure_pdf": "docs/diagnostics/eth_targeted_20261015/eth_training_stage.pdf",
+    "figure_svg": "docs/diagnostics/eth_targeted_20261015/eth_training_stage.svg",
+    "figure_png": "docs/diagnostics/eth_targeted_20261015/eth_training_stage.png"
+  },
+  "local_uncommitted_large_assets": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_targeted_20261015"
+}

@@ -76,6 +76,9 @@ def main() -> None:
     parser.add_argument(
         "--expected-manifest-sha256", default=EXPECTED_MANIFEST_SHA256)
     parser.add_argument(
+        "--manifest-role", choices=("test", "validation"), default="test",
+        help="resolved config manifest to replay")
+    parser.add_argument(
         "--bank-name", default="ebjd",
         help="output subdirectory name, e.g. control or candidate")
     parser.add_argument(
@@ -98,7 +101,7 @@ def main() -> None:
     if config_sha256 != args.expected_config_sha256:
         raise RuntimeError("frozen EBJD config SHA256 mismatch")
     config = load_config(config_path)
-    manifest_path = Path(config["paths"]["test_manifest"]).resolve()
+    manifest_path = Path(config["paths"][f"{args.manifest_role}_manifest"]).resolve()
     manifest_sha256 = sha256_file(manifest_path)
     if manifest_sha256 != args.expected_manifest_sha256:
         raise RuntimeError("EBJD test manifest SHA256 mismatch")
@@ -196,8 +199,10 @@ def main() -> None:
             metrics = summarize_scenes(metric_scenes)
             seed_payload = {
                 "schema": SEED_MANIFEST_SCHEMA, "bank_schema": BANK_SCHEMA,
-                "status": "COMPLETED", "model": args.model_label, "fold": "hotel",
-                "training_seed": 3101, "inference_seed": int(seed),
+                "status": "COMPLETED", "model": args.model_label,
+                "fold": str(config["experiment"].get("fold", "unknown")),
+                "training_seed": int(config.get("seed", 3101)),
+                "inference_seed": int(seed),
                 "worlds": worlds, "steps": steps, "scene_count": len(files),
                 "agent_occurrences": int(sum(x["valid_agents"] for x in files)),
                 "unit": "m", "dtype": "float32", "dt_seconds": 0.4,
