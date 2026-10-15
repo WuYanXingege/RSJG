@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Persistent goal-pretrain -> UNIV EBJD -> P20 evaluation supervisor."""
+"""Persistent goal-pretrain -> fold EBJD -> P20 evaluation supervisor."""
 
 from __future__ import annotations
 
@@ -57,6 +57,8 @@ def atomic_copy(source: Path, destination: Path) -> None:
 class Supervisor:
     def __init__(self, args: argparse.Namespace) -> None:
         self.args = args
+        self.fold = args.fold.lower()
+        self.prefix = self.fold.upper()
         self.repo = Path(__file__).resolve().parents[2]
         self.ebjd_root = self.repo / "ebjd_clean"
         self.workspace = self.repo.parent
@@ -66,7 +68,7 @@ class Supervisor:
         self.runtime.mkdir(parents=True, exist_ok=True)
         self.state_path = self.runtime / "PIPELINE_STATE.json"
         self.state = {
-            "schema": "ebjd-univ-main-pipeline-state-v1",
+            "schema": f"ebjd-{self.fold}-main-pipeline-state-v1",
             "status": "STARTING", "stage": "STARTING",
             "supervisor_pid": os.getpid(), "started_at": now(),
             "updated_at": now(), "source_worktree": str(self.repo),
@@ -110,7 +112,7 @@ class Supervisor:
                 result.update({
                     "active_epoch": int(last["epoch"]),
                     "completed_update": int(last["update"]),
-                    "planned_updates": 25500,
+                    "planned_updates": getattr(self, "expected_terminal_update", None),
                 })
         return result
 
@@ -142,7 +144,7 @@ class Supervisor:
     def run_goal_pretrain(self) -> Path:
         self.goal_run_id = self.args.goal_run_id
         self.goal_run_dir = (
-            self.goal_repo / "output" / "univ" / "runs" / self.goal_run_id)
+            self.goal_repo / "output" / self.fold / "runs" / self.goal_run_id)
         best = self.goal_run_dir / "saved_models" / "goal_pretrain_best_model.pt"
         last = self.goal_run_dir / "saved_models" / "goal_pretrain_last_model.pt"
         completed = False
@@ -152,7 +154,7 @@ class Supervisor:
         if not completed:
             command = [
                 str(self.python), "-u", "-B", "main.py",
-                "--dataset", "eth5", "--test_set", "univ",
+                "--dataset", "eth5", "--test_set", self.fold,
                 "--phase", "goal_pretrain", "--run_name", self.goal_run_id,
                 "--num_epochs", "150", "--batch_size", "64",
                 "--start_validation", "1", "--validate_every", "1",
@@ -199,11 +201,12 @@ class Supervisor:
     def materialize(self, goal_checkpoint: Path) -> Path:
         self.archive = self.runtime / "archive"
         self.formal_output_root = self.runtime / "formal_training"
-        config = self.archive / "endpoint_bridge_joint_univ_seed3101.yaml"
+        config = self.archive / f"endpoint_bridge_joint_{self.fold}_seed3101.yaml"
         command = [
             str(self.python), "-u", "-B",
             "scripts/prepare_univ_main_experiment.py",
-            "--base-univ-config", "configs/endpoint_bridge_joint_univ_formal.yaml",
+            "--fold", self.fold,
+            "--base-univ-config", str(Path(self.args.base_config).resolve()),
             "--hotel-checkpoint", str(Path(self.args.hotel_checkpoint).resolve()),
             "--goal-checkpoint", str(goal_checkpoint),
             "--experiment-output-root", str(self.formal_output_root),
@@ -212,19 +215,22 @@ class Supervisor:
         self.run_logged(
             command, self.ebjd_root, self.runtime / "materialization.log",
             "MATERIALIZING_FORMAL_CONFIG")
+        receipt = json.loads((self.archive / "MATERIALIZATION_RECEIPT.json").read_text())
+        self.expected_updates_per_epoch = int(receipt["expected_updates_per_epoch"])
+        self.expected_terminal_update = int(receipt["expected_terminal_update_index"])
         self.update(status="RUNNING", stage="FORMAL_CONFIG_READY",
                     formal_config=str(config), formal_config_sha256=sha256(config))
         return config
 
     def preflight(self, config: Path) -> None:
-        output = self.archive / "UNIV_CUDA_PREFLIGHT.json"
+        output = self.archive / f"{self.prefix}_CUDA_PREFLIGHT.json"
         self.run_logged([
             str(self.python), "-u", "-B", "scripts/preflight_univ_main.py",
             "--config", str(config), "--output", str(output),
         ], self.ebjd_root, self.runtime / "cuda_preflight.log", "CUDA_PREFLIGHT_RUNNING")
         payload = json.loads(output.read_text())
         if payload["status"] != "PASS":
-            raise RuntimeError("targeted UNIV CUDA preflight failed")
+            raise RuntimeError(f"targeted {self.prefix} CUDA preflight failed")
         self.update(status="RUNNING", stage="CUDA_PREFLIGHT_PASS",
                     cuda_preflight=str(output), cuda_preflight_sha256=sha256(output))
 
@@ -232,9 +238,9 @@ class Supervisor:
         commit = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=self.repo, text=True).strip()
         self.run_id = self.args.run_id or (
-            f"univ_main_seed3101_{commit[:7]}_20261013")
+            f"{self.fold}_main_seed3101_{commit[:7]}_{self.args.date_tag}")
         self.run_dir = (
-            self.formal_output_root / "univ" / "3101" / "none" / self.run_id)
+            self.formal_output_root / self.fold / "3101" / "none" / self.run_id)
         last = self.run_dir / "last.pt"
         completed = False
         summary = self.run_dir / "EPOCH_SUMMARY.jsonl"
@@ -255,13 +261,16 @@ class Supervisor:
                 summary.read_text().splitlines()[-1])["epoch"]) != 100:
             raise RuntimeError("formal EBJD training did not complete epoch 100")
         if int(json.loads(summary.read_text().splitlines()[-1])[
-                "end_update_inclusive"]) != 25500:
-            raise RuntimeError("formal EBJD terminal update index is not 25500")
+                "end_update_inclusive"]) != self.expected_terminal_update:
+            raise RuntimeError(
+                "formal EBJD terminal update index differs from materialized contract: "
+                f"{json.loads(summary.read_text().splitlines()[-1])['end_update_inclusive']} "
+                f"!= {self.expected_terminal_update}")
         if not (self.run_dir / "epoch_045.pt").is_file():
-            raise RuntimeError("formal UNIV epoch-45 reference checkpoint is missing")
+            raise RuntimeError(f"formal {self.prefix} epoch-45 reference checkpoint is missing")
         self.update(status="RUNNING", stage="EBJD_TRAINING_COMPLETE",
                     run_dir=str(self.run_dir), completed_epoch=100,
-                    completed_update=25500)
+                    completed_update=self.expected_terminal_update)
         return self.run_dir
 
     def freeze_selection(self, run_dir: Path) -> Path:
@@ -286,7 +295,7 @@ class Supervisor:
         return selected
 
     def evaluate(self, config: Path, checkpoint: Path) -> Path:
-        output = self.runtime / "evaluation" / "EBJD_UNIV_SEEDS2035_2039.json"
+        output = self.runtime / "evaluation" / f"EBJD_{self.prefix}_SEEDS2035_2039.json"
         before = sha256(checkpoint)
         self.run_logged([
             str(self.python), "-u", "-B", "-m", "ebjd.evaluate",
@@ -301,10 +310,36 @@ class Supervisor:
                     evaluation_result=str(output), evaluation_result_sha256=sha256(output))
         return output
 
-    def finalize(self, run_dir: Path, checkpoint: Path, result: Path) -> None:
-        baseline = Path(self.args.gdts_five_seed_result).resolve()
+    def evaluate_gdts_baseline(self) -> Path:
+        output = Path(self.args.gdts_five_seed_result).resolve()
+        self.run_logged([
+            str(self.python), "-u", "-B",
+            str(Path(self.args.gdts_evaluator_script).resolve()),
+            "--jdv2-root", str(Path(self.args.gdts_root).resolve()),
+            "--config", str(Path(self.args.gdts_config).resolve()),
+            "--checkpoint", str(Path(self.args.gdts_checkpoint).resolve()),
+            "--manifest", str(Path(self.args.gdts_manifest).resolve()),
+            "--output", str(output), "--device", "cuda:0",
+            "--seeds", *(str(seed) for seed in SEEDS),
+        ], Path(self.args.gdts_root).resolve(),
+            self.runtime / "gdts_five_seed_evaluation.log",
+            "GDTS_BASELINE_FIVE_SEED_RUNNING")
+        payload = json.loads(output.read_text())
+        observed = [int(record["seed"]) for record in payload.get("runs", [])]
+        if payload.get("status") != "complete" or observed != list(SEEDS):
+            raise RuntimeError(
+                f"GDTS baseline evaluation is incomplete: {observed} != {list(SEEDS)}")
+        self.update(
+            status="RUNNING", stage="GDTS_BASELINE_FIVE_SEED_COMPLETE",
+            gdts_result=str(output), gdts_result_sha256=sha256(output))
+        return output
+
+    def finalize(
+            self, run_dir: Path, checkpoint: Path, result: Path,
+            baseline: Path) -> None:
         self.run_logged([
             str(self.python), "-u", "-B", "scripts/finalize_univ_main.py",
+            "--fold", self.fold,
             "--run-dir", str(run_dir), "--selected-checkpoint", str(checkpoint),
             "--ebjd-result", str(result), "--gdts-result", str(baseline),
             "--archive-dir", str(self.archive),
@@ -319,6 +354,7 @@ class Supervisor:
             if source.is_file():
                 atomic_copy(source, self.archive / name)
         atomic_copy(result, self.archive / result.name)
+        atomic_copy(baseline, self.archive / baseline.name)
         checkpoints = {}
         for name in (
             "epoch_045.pt", "last.pt", "best.pt", "least_violation.pt",
@@ -331,13 +367,14 @@ class Supervisor:
         logs = {}
         for path in (
             run_dir / "train.jsonl", self.runtime / "goal_pretrain.log",
-            self.runtime / "ebjd_training.log", self.runtime / "formal_evaluation.log"):
+            self.runtime / "ebjd_training.log", self.runtime / "formal_evaluation.log",
+            self.runtime / "gdts_five_seed_evaluation.log"):
             if path.is_file():
                 logs[path.name] = {
                     "path": str(path), "bytes": path.stat().st_size,
                     "sha256": sha256(path)}
         atomic_json({
-            "schema": "ebjd-univ-artifact-index-v1", "checkpoints": checkpoints,
+            "schema": f"ebjd-{self.fold}-artifact-index-v1", "checkpoints": checkpoints,
             "logs": logs, "large_artifacts_remain_on_host": True,
             "github_archive_contains_structured_small_files_only": True,
         }, self.archive / "ARTIFACT_INDEX.json")
@@ -346,7 +383,7 @@ class Supervisor:
     def archive_git(self) -> None:
         target = (
             self.ebjd_root / "docs" / "experiments" /
-            "2026-10-13_univ_main_seed3101")
+            f"{self.args.date_tag}_{self.fold}_main_seed3101")
         if target.exists():
             raise FileExistsError(f"refuse to replace existing archive: {target}")
         shutil.copytree(self.archive, target)
@@ -358,13 +395,13 @@ class Supervisor:
         if staged:
             subprocess.run([
                 "git", "commit", "-m",
-                "Archive formal UNIV EBJD seed 3101 results",
+                f"Archive formal {self.prefix} EBJD seed 3101 results",
             ], cwd=self.repo, check=True)
         commit = subprocess.check_output(
             ["git", "rev-parse", "HEAD"], cwd=self.repo, text=True).strip()
         push = subprocess.run(
             ["git", "push", "-u", "origin",
-             "research/ebjd-univ-main-seed3101-v1"],
+             self.args.git_branch],
             cwd=self.repo, text=True, capture_output=True)
         push_receipt = {
             "attempted_at": now(), "commit": commit,
@@ -385,17 +422,27 @@ class Supervisor:
         run_dir = self.train(config)
         checkpoint = self.freeze_selection(run_dir)
         result = self.evaluate(config, checkpoint)
-        self.finalize(run_dir, checkpoint, result)
+        baseline = self.evaluate_gdts_baseline()
+        self.finalize(run_dir, checkpoint, result, baseline)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--fold", required=True)
+    parser.add_argument("--base-config", required=True)
+    parser.add_argument("--date-tag", required=True)
+    parser.add_argument("--git-branch", required=True)
     parser.add_argument("--python", required=True)
     parser.add_argument("--runtime-dir", required=True)
     parser.add_argument("--goal-run-id", required=True)
     parser.add_argument("--run-id")
     parser.add_argument("--hotel-checkpoint", required=True)
     parser.add_argument("--gdts-five-seed-result", required=True)
+    parser.add_argument("--gdts-evaluator-script", required=True)
+    parser.add_argument("--gdts-root", required=True)
+    parser.add_argument("--gdts-config", required=True)
+    parser.add_argument("--gdts-checkpoint", required=True)
+    parser.add_argument("--gdts-manifest", required=True)
     args = parser.parse_args()
     supervisor = Supervisor(args)
     try:

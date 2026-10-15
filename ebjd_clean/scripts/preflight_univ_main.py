@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Targeted real-CUDA preflight for the formal UNIV EBJD configuration."""
+"""Targeted real-CUDA preflight for a formal ETH/UCY EBJD configuration."""
 
 from __future__ import annotations
 
@@ -98,7 +98,7 @@ def main() -> None:
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
     if not torch.cuda.is_available():
-        raise RuntimeError("UNIV formal preflight requires the real CUDA device")
+        raise RuntimeError("formal fold preflight requires the real CUDA device")
     config_path = Path(args.config).resolve()
     config = load_config(config_path)
     profile = validate_execution_migration_settings(config)
@@ -116,9 +116,9 @@ def main() -> None:
     # At epoch >=21, update_index mod 4 selects the real rollout path.
     normal = measured_update(config, logical_batches, epoch=22, update_index=1)
     rollout = measured_update(config, logical_batches, epoch=22, update_index=0)
-    tail_indices = list(range(len(train) - (len(train) % 4), len(train)))
-    if len(tail_indices) != 3:
-        raise RuntimeError(f"expected three-scene UNIV loader tail, got {tail_indices}")
+    logical_batch_size = int(config["training"]["batch_scenes"])
+    tail_count = len(train) % logical_batch_size or logical_batch_size
+    tail_indices = list(range(len(train) - tail_count, len(train)))
     tail_batch = collate_scenes([train[index] for index in tail_indices])
     tail = measured_update(config, [tail_batch], epoch=1, update_index=1)
 
@@ -165,12 +165,13 @@ def main() -> None:
         "normal_finite": normal["finite"],
         "rollout_finite": rollout["finite"],
         "tail_finite": tail["finite"],
-        "tail_has_three_scenes": tail["scene_counts"] == [3],
-        "large_n_is_57": largest_validation[0] == 57,
+        "tail_has_expected_scenes": tail["scene_counts"] == [tail_count],
+        "large_n_matches_manifest": largest_validation[0] == int(
+            validation.manifest["statistics"]["max_N"]),
         "large_n_p20x20_finite": large_inference["finite"],
     }
     result = {
-        "schema": "ebjd-univ-targeted-cuda-preflight-v1",
+        "schema": f"ebjd-{config['experiment']['fold']}-targeted-cuda-preflight-v1",
         "status": "PASS" if all(checks.values()) else "FAIL",
         "source_commit": subprocess.check_output(
             ["git", "rev-parse", "HEAD"], text=True).strip(),

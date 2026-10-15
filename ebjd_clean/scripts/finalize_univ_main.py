@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Freeze the UNIV result comparison and produce JSON/CSV/Chinese Markdown."""
+"""Freeze a fold result comparison and produce JSON/CSV/Chinese Markdown."""
 
 from __future__ import annotations
 
@@ -45,12 +45,15 @@ def atomic_json(payload: dict, path: Path) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--fold", required=True)
     parser.add_argument("--run-dir", required=True)
     parser.add_argument("--selected-checkpoint", required=True)
     parser.add_argument("--ebjd-result", required=True)
     parser.add_argument("--gdts-result", required=True)
     parser.add_argument("--archive-dir", required=True)
     args = parser.parse_args()
+    fold = args.fold.lower()
+    prefix = fold.upper()
     run_dir = Path(args.run_dir).resolve()
     selected = Path(args.selected_checkpoint).resolve()
     archive = Path(args.archive_dir).resolve()
@@ -65,13 +68,18 @@ def main() -> None:
         (run_dir / "EPOCH_SUMMARY.jsonl").read_text().splitlines()[-1])
     if int(final_epoch_summary["epoch"]) != 100:
         # Kept deliberately strict; a partial run must never be finalized.
-        raise RuntimeError("formal UNIV training did not reach epoch 100")
+        raise RuntimeError(f"formal {prefix} training did not reach epoch 100")
     if int(checkpoint["resolved_config"]["training"]["epochs"]) != 100:
         raise RuntimeError("selected checkpoint does not retain the 100-epoch schedule")
     if ebjd["checkpoint_sha256"] != sha256(selected):
         raise RuntimeError("formal evaluation is not bound to the selected checkpoint")
-    if ebjd["scene_count"] != 947 or ebjd["agent_occurrence_count"] != 24334:
-        raise RuntimeError("formal evaluation has incomplete UNIV coverage")
+    manifest_path = Path(checkpoint["resolved_config"]["paths"]["test_manifest"])
+    manifest = json.loads(manifest_path.read_text())
+    expected_scenes = int(manifest["statistics"]["scenes"])
+    expected_agents = int(manifest["statistics"]["agents"])
+    if (ebjd["scene_count"] != expected_scenes
+            or ebjd["agent_occurrence_count"] != expected_agents):
+        raise RuntimeError(f"formal evaluation has incomplete {prefix} coverage")
     if [item["seed"] for item in ebjd["per_seed"]] != list(range(2035, 2040)):
         raise RuntimeError("EBJD inference seeds are incomplete or reordered")
     gdts_by_seed = {int(item["seed"]): item for item in gdts["runs"]}
@@ -109,8 +117,8 @@ def main() -> None:
         means[name]["mean_difference"] > 0 for name in ("minADE", "minFDE"))
     objective_passed = selection["best_eligible"] is not None
     result = {
-        "schema": "ebjd-univ-main-final-comparison-v1", "status": "COMPLETED",
-        "fold": "univ", "training_seed": 3101,
+        "schema": f"ebjd-{fold}-main-final-comparison-v1", "status": "COMPLETED",
+        "fold": fold, "training_seed": 3101,
         "inference_seeds": list(range(2035, 2040)),
         "selected_checkpoint": str(selected),
         "selected_checkpoint_sha256": sha256(selected),
@@ -120,11 +128,11 @@ def main() -> None:
         "selection": selection,
         "per_seed": rows, "summary": means,
         "conclusions": {
-            "joint_gain_reproduced_on_univ": joint_gain,
-            "marginal_degradation_reproduced_on_univ": marginal_degradation,
+            f"joint_gain_reproduced_on_{fold}": joint_gain,
+            f"marginal_degradation_reproduced_on_{fold}": marginal_degradation,
             "marginal_preserving_selector_objective_passed": objective_passed,
             "scope": (
-                "UNIV fold, one independent training seed; five inference seeds "
+                f"{prefix} fold, one independent training seed; five inference seeds "
                 "measure inference randomness only"),
         },
         "protocol": {
@@ -141,9 +149,9 @@ def main() -> None:
             "gdts_result_sha256": sha256(args.gdts_result),
         },
     }
-    atomic_json(result, archive / "UNIV_FINAL_COMPARISON.json")
+    atomic_json(result, archive / f"{prefix}_FINAL_COMPARISON.json")
 
-    csv_path = archive / "UNIV_FINAL_COMPARISON.csv"
+    csv_path = archive / f"{prefix}_FINAL_COMPARISON.csv"
     header = list(rows[0])
     from io import StringIO
     stream = StringIO()
@@ -154,7 +162,7 @@ def main() -> None:
 
     outcome = lambda value: "是" if value else "否"
     report = [
-        "# EBJD UNIV seed 3101 正式训练与评测结果", "",
+        f"# EBJD {prefix} seed 3101 正式训练与评测结果", "",
         f"- 状态：`COMPLETED`；训练 100 epoch，训练种子 3101。",
         f"- 正式 checkpoint：epoch {checkpoint['epoch']}，选择依据 "
         f"`{result['selection_basis']}`，SHA256 `{sha256(selected)}`。",
@@ -171,13 +179,13 @@ def main() -> None:
             f"| {row['relative_change_percent']:+.2f}% | {row['better_seed_count']}/5 |")
     report.extend([
         "", "## 预注册问题", "",
-        f"- 联合收益是否在 UNIV 复现：**{outcome(joint_gain)}**。",
-        f"- 边际退化是否在 UNIV 复现：**{outcome(marginal_degradation)}**。",
+        f"- 联合收益是否在 {prefix} 复现：**{outcome(joint_gain)}**。",
+        f"- 边际退化是否在 {prefix} 复现：**{outcome(marginal_degradation)}**。",
         f"- 原 marginal-preserving 选模目标是否通过：**{outcome(objective_passed)}**。",
-        "", "结论只覆盖 HOTEL 与 UNIV 中已经完成的结果；UNIV 仍只有一个独立训练种子，"
+        "", f"结论只覆盖当前已完成的折；{prefix} 仍只有一个独立训练种子，"
         "五个推理种子的离散度不能作为多训练种子显著性证据。", "",
     ])
-    atomic_text("\n".join(report), archive / "UNIV_FINAL_REPORT_ZH.md")
+    atomic_text("\n".join(report), archive / f"{prefix}_FINAL_REPORT_ZH.md")
     print(json.dumps({
         "status": "COMPLETED", "archive": str(archive),
         "selected_epoch": int(checkpoint["epoch"]),

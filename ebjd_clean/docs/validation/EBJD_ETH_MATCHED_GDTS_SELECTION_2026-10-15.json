@@ -1,0 +1,88 @@
+{
+  "checkpoint": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/eth/saved_models/best_model.pt",
+    "sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950"
+  },
+  "checkpoint_unchanged_during_evaluation": true,
+  "config": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/eth/config.yaml",
+    "sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c"
+  },
+  "protocol": {
+    "agent_occurrence_count": 364,
+    "coordinate_conversion": "Scene_eth5.make_pixel_coord_torch",
+    "cross_method_rng_claim": "same seed labels, not identical random streams",
+    "inference_precision": "BF16 CUDA autocast; coordinate conversion FP32",
+    "manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json",
+    "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+    "metric_implementation": "GDTS.compute_model_metrics",
+    "sample_count": 20,
+    "sampler": "native GDTS TTST plus tree/DDIM",
+    "scene_count": 253,
+    "seeds": [
+      2035
+    ],
+    "split": "validation",
+    "steps": 20,
+    "target": "eth5/eth",
+    "worlds": 20
+  },
+  "runs": [
+    {
+      "ADE_world": 0.41705285937904,
+      "FDE_world": 0.5800323037873278,
+      "JADE": 0.4899067671402641,
+      "JFDE": 0.7434117917354282,
+      "agent_occurrence_count": 364,
+      "counts": {
+        "ADE_world": 364,
+        "FDE_world": 364,
+        "JADE": 253,
+        "JFDE": 253,
+        "minADE@K": 364,
+        "minFDE@K": 364
+      },
+      "elapsed_seconds": 110.7129487991333,
+      "minADE@K": 0.41705285937904,
+      "minFDE@K": 0.5800323037873278,
+      "protocol_binding": {
+        "agent_occurrence_count": 364,
+        "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+        "config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+        "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+        "scene_count": 253
+      },
+      "scene_count": 253,
+      "seed": 2035,
+      "status": "complete"
+    }
+  ],
+  "schema": "gdts-on-ebjd-synchronized-scene-manifest-v1",
+  "status": "partial",
+  "summary": {
+    "ADE_world": {
+      "mean": 0.41705285937904,
+      "sample_std": null
+    },
+    "FDE_world": {
+      "mean": 0.5800323037873278,
+      "sample_std": null
+    },
+    "JADE": {
+      "mean": 0.4899067671402641,
+      "sample_std": null
+    },
+    "JFDE": {
+      "mean": 0.7434117917354282,
+      "sample_std": null
+    },
+    "minADE@K": {
+      "mean": 0.41705285937904,
+      "sample_std": null
+    },
+    "minFDE@K": {
+      "mean": 0.5800323037873278,
+      "sample_std": null
+    }
+  }
+}

@@ -78,8 +78,19 @@ def semantic_crops(
     return sampled.numpy().astype(np.uint8)
 
 
-def synchronized_windows(path: Path) -> list[dict]:
-    table = np.loadtxt(path, dtype=np.float64)
+def synchronized_windows(path: Path, frame_scale: int = 1) -> list[dict]:
+    raw = np.genfromtxt(path, dtype=str)
+    raw = np.atleast_2d(raw)
+    if raw.shape[1] == 17:
+        # Pinned AgentFormer/JMM format: world x/y are columns 13/15 and its
+        # internal frame IDs are converted to the common ETH/UCY scale.
+        selected = raw[:, [0, 1, 13, 15]]
+    elif raw.shape[1] == 4:
+        selected = raw
+    else:
+        raise ValueError(f"unsupported ETH/UCY table width {raw.shape[1]}: {path}")
+    table = selected.astype(np.float64)
+    table[:, 0] *= frame_scale
     if table.ndim != 2 or table.shape[1] != 4 or not np.isfinite(table).all():
         raise ValueError(f"invalid ETH/UCY table: {path}")
     identities = table[:, :2].astype(np.int64)
@@ -145,13 +156,25 @@ def write_shard(path: Path, scenes: list[dict]) -> None:
 def export_split(
     source_root: Path, fold: str, split: str, output: Path,
     shard_scenes: int, maximum: int | None,
+    heldout_source: Path | None = None,
 ) -> dict:
+    if heldout_source is not None and fold != "eth":
+        raise ValueError("the pinned JMM held-out source is only defined for fold=eth")
     source_split = "val" if split == "validation" else split
     source_dir = source_root / fold / source_split
     candidates, source_files, map_files = [], [], {}
     map_cache: dict[str, tuple[np.ndarray, np.ndarray]] = {}
-    for path in sorted(source_dir.glob("*.txt")):
-        sequence = path.stem.replace("_train", "").replace("_val", "")
+    paths = (
+        [heldout_source]
+        if heldout_source is not None and split in {"validation", "test"}
+        else sorted(source_dir.glob("*.txt"))
+    )
+    for path in paths:
+        is_jmm_heldout = heldout_source is not None and path == heldout_source
+        sequence = (
+            "biwi_eth" if is_jmm_heldout
+            else path.stem.replace("_train", "").replace("_val", "")
+        )
         source_scene = SEQUENCE_TO_SCENE[sequence]
         homography_path = source_root / source_scene / "H.txt"
         semantic_path = source_root / source_scene / "pred_mask.png"
@@ -165,7 +188,7 @@ def export_split(
             "homography_sha256": sha256(homography_path),
         }
         map_cache[source_scene] = (homography, labels)
-        for window in synchronized_windows(path):
+        for window in synchronized_windows(path, frame_scale=10 if is_jmm_heldout else 1):
             first, last = int(window["frame_ids"][0]), int(window["frame_ids"][-1])
             key = f"{sequence}:{first}-{last}"
             candidates.append({
@@ -222,9 +245,17 @@ def export_split(
             flush()
     flush()
     counts = [len(scene["agent_ids"]) for scene in selected]
+    if heldout_source is not None and split in {"validation", "test"}:
+        if (len(selected), sum(counts)) != (253, 364):
+            raise ValueError(
+                "pinned JMM ETH held-out source must yield 253 scenes/364 "
+                f"agent occurrences, got {len(selected)}/{sum(counts)}")
     metadata = {
         "dataset": "ETH/UCY", "fold": fold, "split": split,
-        "protocol": "official_leave_one_scene_out_sources",
+        "protocol": (
+            "jmm_official_leave_one_scene_out_sources"
+            if heldout_source is not None and split in {"validation", "test"}
+            else "official_leave_one_scene_out_sources"),
         "unit": "m", "dt_seconds": 0.4, "obs_length": 8, "pred_length": 12,
         "crop_width_m": 32.0, "crop_pixels": 256, "semantic_channels": 6,
         "semantic_storage": "categorical_one_hot_uint8",
@@ -262,6 +293,11 @@ def main() -> None:
     parser.add_argument("--output-root", required=True)
     parser.add_argument("--shard-scenes", type=int, default=16)
     parser.add_argument("--max-scenes-per-split", type=int)
+    parser.add_argument(
+        "--heldout-source",
+        help=("Optional pinned 17-column AgentFormer/JMM source used for "
+              "validation and test; training remains the fold's leave-one-out sources."),
+    )
     args = parser.parse_args()
     source_root, output_root = Path(args.source_root), Path(args.output_root)
     results = {}
@@ -269,7 +305,8 @@ def main() -> None:
     for split in ("train", "validation", "test"):
         results[split] = export_split(
             source_root, args.fold, split, output_root / split,
-            args.shard_scenes, args.max_scenes_per_split)
+            args.shard_scenes, args.max_scenes_per_split,
+            Path(args.heldout_source).resolve() if args.heldout_source else None)
         manifest = json.loads(Path(results[split]["manifest"]).read_text(encoding="utf-8"))
         manifests[split] = set(manifest["window_keys"])
     overlaps = {

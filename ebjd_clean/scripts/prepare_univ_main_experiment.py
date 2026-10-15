@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Materialize and audit the single-seed formal UNIV EBJD experiment."""
+"""Materialize and audit a single-seed formal ETH/UCY EBJD experiment."""
 
 from __future__ import annotations
 
@@ -85,13 +85,13 @@ def manifest_receipt(path: Path) -> tuple[dict, dict]:
     return receipt, payload
 
 
-def verify_goal_checkpoint(path: Path) -> dict:
+def verify_goal_checkpoint(path: Path, fold: str) -> dict:
     payload = torch.load(path, map_location="cpu", weights_only=False)
     state = payload.get("model_state_dict")
     if payload.get("checkpoint_type") != "gdts_goal_pretrain":
-        raise RuntimeError("UNIV initialization is not a GDTS goal-pretrain artifact")
-    if payload.get("test_set") != "univ":
-        raise RuntimeError("goal-pretrain initialization is not fold=univ")
+        raise RuntimeError(f"{fold.upper()} initialization is not a GDTS goal-pretrain artifact")
+    if payload.get("test_set") != fold:
+        raise RuntimeError(f"goal-pretrain initialization is not fold={fold}")
     if int(payload.get("training_epochs_planned", -1)) != 150:
         raise RuntimeError("goal-pretrain artifact was not trained on the 150-epoch protocol")
     if not isinstance(state, dict) or len(state) != 46:
@@ -107,7 +107,7 @@ def verify_goal_checkpoint(path: Path) -> dict:
     # authoritative execution-phase evidence; here we audit the documented
     # persisted representation instead of requiring an impossible value.
     expected = {
-        "dataset": "eth5", "test_set": "univ", "phase": "train_test",
+        "dataset": "eth5", "test_set": fold, "phase": "train_test",
         "seed": 3101, "num_epochs": 150, "batch_size": 64,
         "learning_rate": 0.001, "optimizer": "Adam",
         "scheduler": "ExponentialLR", "data_augmentation": False,
@@ -145,22 +145,22 @@ def verify_goal_checkpoint(path: Path) -> dict:
     }
 
 
-def require_same_protocol(hotel: dict, univ: dict) -> None:
+def require_same_protocol(hotel: dict, candidate: dict, fold: str) -> None:
     exact_sections = (
         "data", "map_encoder", "history_encoder", "representation",
         "denoiser", "diffusion", "objectives", "ablations",
     )
     mismatched = {
-        section: config_differences(hotel[section], univ[section])
-        for section in exact_sections if hotel[section] != univ[section]}
+        section: config_differences(hotel[section], candidate[section])
+        for section in exact_sections if hotel[section] != candidate[section]}
     hotel_training = deepcopy(hotel["training"])
-    univ_training = deepcopy(univ["training"])
+    candidate_training = deepcopy(candidate["training"])
     for key in EXECUTION_PROFILE:
         hotel_training.pop(key, None)
-        univ_training.pop(key, None)
-    if hotel_training != univ_training:
+        candidate_training.pop(key, None)
+    if hotel_training != candidate_training:
         mismatched["training_without_execution_profile"] = config_differences(
-            hotel_training, univ_training)
+            hotel_training, candidate_training)
     evaluation_fields = (
         "worlds", "steps", "selection_seed", "inference_seeds",
         "minimum_training_seeds", "metrics", "per_agent_reordering",
@@ -169,17 +169,18 @@ def require_same_protocol(hotel: dict, univ: dict) -> None:
     )
     evaluation_diff = {
         key: {"hotel": hotel["evaluation"].get(key),
-              "univ": univ["evaluation"].get(key)}
+              fold: candidate["evaluation"].get(key)}
         for key in evaluation_fields
-        if hotel["evaluation"].get(key) != univ["evaluation"].get(key)}
+        if hotel["evaluation"].get(key) != candidate["evaluation"].get(key)}
     if evaluation_diff:
         mismatched["evaluation_protocol"] = evaluation_diff
     if mismatched:
-        raise RuntimeError(f"UNIV changes model/optimizer semantics: {mismatched}")
+        raise RuntimeError(f"{fold.upper()} changes model/optimizer semantics: {mismatched}")
 
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--fold", default="univ")
     parser.add_argument("--base-univ-config", required=True)
     parser.add_argument("--hotel-checkpoint", required=True)
     parser.add_argument("--goal-checkpoint", required=True)
@@ -207,7 +208,8 @@ def main() -> None:
     ):
         raise RuntimeError("HOTEL epoch-45 reference SHA256 mismatch")
     hotel = hotel_payload["resolved_config"]
-    initialization = verify_goal_checkpoint(Path(args.goal_checkpoint).resolve())
+    fold = args.fold.lower()
+    initialization = verify_goal_checkpoint(Path(args.goal_checkpoint).resolve(), fold)
 
     config = deepcopy(base)
     config["experiment"]["source_commit"] = commit
@@ -221,7 +223,10 @@ def main() -> None:
     config["training"].update(EXECUTION_PROFILE)
     validate_supported_config(config)
     validate_execution_migration_settings(config)
-    require_same_protocol(hotel, config)
+    if config["experiment"]["fold"] != fold:
+        raise RuntimeError(
+            f"base config fold={config['experiment']['fold']} differs from --fold={fold}")
+    require_same_protocol(hotel, config, fold)
 
     train_path = Path(config["paths"]["train_manifest"]).resolve()
     validation_path = Path(config["paths"]["validation_manifest"]).resolve()
@@ -233,7 +238,7 @@ def main() -> None:
     validation_keys = set(validation["window_keys"])
     test_keys = set(test["window_keys"])
     data_receipt = {
-        "schema": "ebjd-univ-data-receipt-v1", "fold": "univ",
+        "schema": f"ebjd-{fold}-data-receipt-v1", "fold": fold,
         "train": train_receipt, "validation": validation_receipt,
         "test": test_receipt,
         "window_identity_intersections": {
@@ -251,11 +256,12 @@ def main() -> None:
             train_receipt, validation_receipt, test_receipt)):
         raise RuntimeError("a manifest shard is missing or has a SHA256 mismatch")
     if data_receipt["window_identity_intersections"]["train_validation"] != 0:
-        raise RuntimeError("UNIV train and held-out validation window identities overlap")
+        raise RuntimeError(f"{fold.upper()} train and held-out validation window identities overlap")
     if data_receipt["window_identity_intersections"]["train_test"] != 0:
-        raise RuntimeError("UNIV train and held-out test window identities overlap")
+        raise RuntimeError(f"{fold.upper()} train and held-out test window identities overlap")
     if not data_receipt["validation_test_mirror"]:
-        raise RuntimeError("expected official UNIV validation/test mirror is not exact")
+        raise RuntimeError(
+            f"expected official {fold.upper()} validation/test mirror is not exact")
 
     archive = Path(args.archive_dir).resolve()
     config_path = Path(args.output_config).resolve()
@@ -264,10 +270,10 @@ def main() -> None:
         raise RuntimeError("materialized YAML changed values or scalar types")
     differences = config_differences(hotel, config)
     difference_receipt = {
-        "schema": "ebjd-hotel-epoch45-to-univ-difference-v1",
+        "schema": f"ebjd-hotel-epoch45-to-{fold}-difference-v1",
         "hotel_checkpoint": str(Path(args.hotel_checkpoint).resolve()),
         "hotel_checkpoint_sha256": sha256(args.hotel_checkpoint),
-        "univ_config": str(config_path), "source_commit": commit,
+        "candidate_config": str(config_path), "source_commit": commit,
         "differences": differences,
         "semantic_and_optimizer_protocol_exact": True,
         "categorized_change_prefixes": [
@@ -276,21 +282,30 @@ def main() -> None:
             "training.rollout_uncheckpointed_max_agent_slots",
         ],
     }
-    atomic_json(data_receipt, archive / "UNIV_DATA_RECEIPT.json")
-    atomic_json(initialization, archive / "UNIV_INITIALIZATION_RECEIPT.json")
-    atomic_json(difference_receipt, archive / "HOTEL_TO_UNIV_DIFFERENCES.json")
+    prefix = fold.upper()
+    atomic_json(data_receipt, archive / f"{prefix}_DATA_RECEIPT.json")
+    atomic_json(initialization, archive / f"{prefix}_INITIALIZATION_RECEIPT.json")
+    atomic_json(difference_receipt, archive / f"HOTEL_TO_{prefix}_DIFFERENCES.json")
+    updates_per_epoch = (
+        int(train["statistics"]["scenes"])
+        + int(config["training"]["batch_scenes"])
+        * int(config["training"]["gradient_accumulation"]) - 1
+    ) // (
+        int(config["training"]["batch_scenes"])
+        * int(config["training"]["gradient_accumulation"])
+    )
     result = {
-        "schema": "ebjd-univ-main-materialization-v1", "status": "READY",
+        "schema": f"ebjd-{fold}-main-materialization-v1", "status": "READY",
         "source_commit": commit, "config": str(config_path),
         "config_sha256": sha256(config_path),
         "execution_profile": EXECUTION_PROFILE,
-        "expected_updates_per_epoch": 255,
-        "expected_terminal_update_index": 25500,
+        "expected_updates_per_epoch": updates_per_epoch,
+        "expected_terminal_update_index": updates_per_epoch * int(config["training"]["epochs"]),
         "minimum_training_seeds_requirement": 3,
         "training_seeds_executed_by_this_experiment": [3101],
-        "data_receipt": str(archive / "UNIV_DATA_RECEIPT.json"),
-        "initialization_receipt": str(archive / "UNIV_INITIALIZATION_RECEIPT.json"),
-        "difference_receipt": str(archive / "HOTEL_TO_UNIV_DIFFERENCES.json"),
+        "data_receipt": str(archive / f"{prefix}_DATA_RECEIPT.json"),
+        "initialization_receipt": str(archive / f"{prefix}_INITIALIZATION_RECEIPT.json"),
+        "difference_receipt": str(archive / f"HOTEL_TO_{prefix}_DIFFERENCES.json"),
     }
     atomic_json(result, archive / "MATERIALIZATION_RECEIPT.json")
     print(json.dumps(result, indent=2, sort_keys=True))
