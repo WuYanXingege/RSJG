@@ -1,0 +1,161 @@
+{
+  "schema": "ebjd-eth-status-and-diagnosis-v1",
+  "experiment_id": "EBJD-GPU-261015-001",
+  "snapshot_at": "2026-10-15T22:12:24+08:00",
+  "status": "RUNNING_PRELIMINARY_NEGATIVE",
+  "run": {
+    "fold": "eth",
+    "training_seed": 3101,
+    "run_id": "eth_main_seed3101_d266681_20261015",
+    "formal_training_source_commit": "d266681b7f08940f6caf5c20a01b41bb867b70b7",
+    "pipeline_orchestration_source_commit": "092ed91f1f4117f50aa835ec8e47cd2c9ce74a98",
+    "implementation_base": "01faa633162a2b73794a40184e8d64e4d44964bc",
+    "completed_epoch": 26,
+    "active_epoch": 27,
+    "last_observed_update": 6872,
+    "planned_epochs": 100,
+    "planned_updates": 25700,
+    "rollout_start_epoch": 21,
+    "rollout_ramp_end_epoch": 40,
+    "current_rollout_weight": 0.07,
+    "current_effective_rollout_coefficient": 0.28,
+    "last_complete_epoch_wall_seconds": 2346.4980932369363,
+    "rough_remaining_seconds_at_epoch_26_boundary": 172365.4403187105,
+    "status_evidence": "PIPELINE_STATE reports RUNNING and update JSONL was actively appended at snapshot; PID visibility is unavailable in the audit namespace",
+    "numerical_health": {
+      "json_parse": "PASS",
+      "nan_or_infinity_tokens": 0,
+      "last_parameter_norm_before": 118.78047582194979,
+      "last_parameter_norm_after": 118.78083009653218,
+      "last_gradient_norm_before_clip": 3.302815958931608
+    }
+  },
+  "protocol": {
+    "name": "JMM ETH fixed scene manifest",
+    "unit": "m",
+    "worlds": 20,
+    "steps": 20,
+    "selection_seed": 2035,
+    "scene_count": 253,
+    "agent_occurrence_count": 364,
+    "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+    "validation_test_mirror": true,
+    "independent_test": false,
+    "single_agent_scenes": 183,
+    "single_agent_scene_fraction": 0.7233201581027668,
+    "world_pixel_roundtrip_max_abs_m": 7.105427357601002e-15
+  },
+  "matched_gdts": {
+    "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "sampler": "native GDTS TTST plus tree/DDIM",
+    "inference_precision": "BF16 CUDA autocast; coordinate conversion FP32",
+    "minADE": 0.41705285937904,
+    "minFDE": 0.5800323037873278,
+    "JADE": 0.4899067671402641,
+    "JFDE": 0.7434117917354282
+  },
+  "ebjd_checkpoints": {
+    "best_coherent_through_epoch_26": {
+      "epoch": 5,
+      "minADE": 0.5760879134401106,
+      "minFDE": 1.0049685405255142,
+      "JADE": 0.6343192191934397,
+      "JFDE": 1.0930590782932967,
+      "total_marginal_violation": 0.5839712907992569,
+      "relative_to_gdts_percent": {
+        "minADE": 38.133069,
+        "minFDE": 73.260788,
+        "JADE": 29.477538,
+        "JFDE": 47.032787
+      }
+    },
+    "best_JADE_only": {
+      "epoch": 6,
+      "JADE": 0.6316591988026861,
+      "warning": "single-metric minimum; do not combine with epoch-5 values"
+    },
+    "latest_complete": {
+      "epoch": 26,
+      "minADE": 0.6170043777751194,
+      "minFDE": 1.1524675482190674,
+      "JADE": 0.6565796983807455,
+      "JFDE": 1.208064528690143,
+      "coordination_gap_ADE": 0.026999260273139924,
+      "coordination_gap_FDE": 0.07237966974144383,
+      "relative_to_gdts_percent": {
+        "minADE": 47.943927,
+        "minFDE": 98.690235,
+        "JADE": 34.021357,
+        "JFDE": 62.50274
+      }
+    },
+    "eligible_epoch_count": 0
+  },
+  "diagnosis": {
+    "confirmed": [
+      {
+        "id": "protocol_population_mismatch",
+        "finding": "JMM-253 and legacy raw-ETH use different frame grids and window populations; published 0.31/0.48 is not a matched threshold",
+        "jmm": {"scenes": 253, "agent_occurrences": 364, "source_stride": 10},
+        "legacy": {"scenes": 904, "agent_occurrences": 2614, "modal_frame_stride": 6},
+        "window_identity_intersection": 0,
+        "raw_to_jmm_interpolation": {
+          "covered_rows": 5134,
+          "jmm_rows": 5492,
+          "mean_l2_m": 0.00384,
+          "p95_l2_m": 0.00599,
+          "max_l2_m": 0.00711
+        }
+      },
+      {
+        "id": "latent_scale_shift",
+        "finding": "held-out JMM ETH endpoint and bridge RMS exceed train-fold fitted scales",
+        "train_goal_rms_m": 1.0596677023682801,
+        "jmm_eth_goal_rms_m": 2.07145706,
+        "goal_ratio": 1.954817586,
+        "train_bridge_rms_m": 0.20777413429581112,
+        "jmm_eth_bridge_rms_m": 0.50001028,
+        "bridge_ratio": 2.406508788,
+        "train_endpoint_displacement_p90_m": 5.746,
+        "jmm_eth_endpoint_displacement_p90_m": 9.714
+      },
+      {
+        "id": "sampler_and_initialization_confound",
+        "finding": "GDTS uses TTST plus tree/DDIM and a full epoch-90 checkpoint; EBJD uses Gaussian-init DDIM and imports only an epoch-16 goal U-Net"
+      },
+      {
+        "id": "low_joint_leverage",
+        "finding": "72.33% of JMM ETH scenes contain one agent",
+        "N_histogram": {"1": 183, "2": 38, "3": 25, "4": 5, "5": 2}
+      }
+    ],
+    "not_found": [
+      "metric arithmetic error",
+      "world/pixel unit conversion error",
+      "scene or agent coverage mismatch between current EBJD and matched GDTS",
+      "NaN, Inf, or malformed update records",
+      "optimizer or gradient numerical collapse"
+    ],
+    "likely_but_not_closed": [
+      "endpoint under-coverage caused by scale shift and removal of TTST/tree proposal"
+    ],
+    "open_checks": [
+      "same prediction tensor through both metric implementations",
+      "N=1 versus N>=2 stratified EBJD/GDTS comparison",
+      "endpoint spread and best-of-20 endpoint coverage audit",
+      "same GDTS checkpoint on legacy raw-ETH and JMM-253 under one precision"
+    ]
+  },
+  "bindings": {
+    "formal_config_sha256": "f22fd9b5e30d8bbc3c56c824333f8cbbcbb933f02bca6c2b9abde1e5636fa04d",
+    "data_receipt_sha256": "117949f5c230cb85f8799274bb1f30ddad7c421a0eda5cd4e1d084e9d7f8edd0",
+    "matched_gdts_result_sha256": "05309b80a2eabd7c52fcd36e09e299e8d8c4d37079fb1b2e369f449d1f2d3a10",
+    "goal_initialization_sha256": "d130f47a3e13f457920a724465cc02d55bdb22e4827f7889bc49331d6c3bfec6"
+  },
+  "scope": {
+    "training_modified": false,
+    "gpu_job_stopped": false,
+    "large_runtime_artifacts_committed": false,
+    "interpretation": "interim diagnostic snapshot, not final epoch-100 model selection"
+  }
+}
