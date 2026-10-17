@@ -1,0 +1,47 @@
+{
+  "ablation": "none",
+  "config_hash": "c5753954caa5b1aa94f33b642a18da1dc6a4a06e449f5b3ed4aa02ac1a5de698",
+  "data": {
+    "test": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/test/test_manifest.json",
+      "sha256": "5a73bcc851dac828e22286ce11eabfbc2f6c026f7b514f06f760bdd7e06470c1"
+    },
+    "train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/train/train_manifest.json",
+      "sha256": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de"
+    },
+    "validation": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json",
+      "sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b"
+    }
+  },
+  "execution": {
+    "cpu_scene_staging": true,
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "physical_group_max_scenes": 4,
+    "pytorch_cuda_alloc_conf": "expandable_segments:True",
+    "rollout_block_checkpointing": false,
+    "rollout_uncheckpointed_max_agent_slots": 32,
+    "scene_compaction": true,
+    "scene_forward_chunk": 1,
+    "strategy": "small_group_uncheckpoint_v1"
+  },
+  "fold": "eth",
+  "implementation_base": "01faa633162a2b73794a40184e8d64e4d44964bc",
+  "initialization": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/eth/runs/eth_goal_pretrain_seed3101_20261015/saved_models/goal_pretrain_best_model.pt",
+    "sha256": "d130f47a3e13f457920a724465cc02d55bdb22e4827f7889bc49331d6c3bfec6"
+  },
+  "run_id": "eth_main_seed3101_d266681_20261015",
+  "seed": 3101,
+  "semantic_config_hash": "40d71861251ca62a61d4f238813731469e44889002c693bc7f8774ff6e3e3f33",
+  "source_commit": "d266681b7f08940f6caf5c20a01b41bb867b70b7",
+  "validation_comparator": {
+    "checkpoint_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/eth/saved_models/best_model.pt",
+    "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "result_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_eth_worktree/ebjd_clean/docs/validation/EBJD_ETH_MATCHED_GDTS_SELECTION_2026-10-15.json",
+    "result_sha256": "05309b80a2eabd7c52fcd36e09e299e8d8c4d37079fb1b2e369f449d1f2d3a10"
+  },
+  "working_tree_dirty": false
+}

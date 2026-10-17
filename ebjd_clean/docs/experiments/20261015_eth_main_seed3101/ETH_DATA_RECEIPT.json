@@ -1,0 +1,267 @@
+{
+  "fold": "eth",
+  "independent_test": false,
+  "schema": "ebjd-eth-data-receipt-v1",
+  "test": {
+    "all_shards_present_and_bound": true,
+    "map_sources": {
+      "eth": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/H.txt",
+        "homography_sha256": "a85a44838a451323f0b6e8e649dd4ee4db696de7d0e59f651506edaa8af77aff",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/pred_mask.png",
+        "semantic_sha256": "5c3510ddb5d3763741de83dc4fbb16d037f131d259d225721e5dcefc2e66232e"
+      }
+    },
+    "metadata": {
+      "align_corners": true,
+      "crop_center": "last_observed_world_position_only",
+      "crop_pixels": 256,
+      "crop_width_m": 32.0,
+      "dataset": "ETH/UCY",
+      "dt_seconds": 0.4,
+      "fold": "eth",
+      "future_used_for_crop": false,
+      "obs_length": 8,
+      "out_of_bounds_fill": 0,
+      "pixel_grid": "x=columns,y=rows",
+      "pred_length": 12,
+      "protocol": "jmm_official_leave_one_scene_out_sources",
+      "semantic_channels": 6,
+      "semantic_storage": "categorical_one_hot_uint8",
+      "split": "test",
+      "unit": "m",
+      "world_grid": "x=columns,y=rows"
+    },
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/test/test_manifest.json",
+    "sha256": "5a73bcc851dac828e22286ce11eabfbc2f6c026f7b514f06f760bdd7e06470c1",
+    "shard_count": 253,
+    "source_files": [
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/jmm_official/eth/biwi_eth_agentformer.txt",
+        "sha256": "d7cdcedd6472ebaa794bc56e037542e350dfe2ee992f818ab8c417e9fc2a17ad"
+      }
+    ],
+    "statistics": {
+      "N_histogram": {
+        "1": 183,
+        "2": 38,
+        "3": 25,
+        "4": 5,
+        "5": 2
+      },
+      "agents": 364,
+      "max_N": 5,
+      "min_N": 1,
+      "scenes": 253,
+      "shard_bytes": 2154524,
+      "world_pixel_roundtrip_max_abs_m": 7.105427357601002e-15
+    }
+  },
+  "train": {
+    "all_shards_present_and_bound": true,
+    "map_sources": {
+      "hotel": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/hotel/H.txt",
+        "homography_sha256": "b62940ea5f69c89990673f91f88724937ed41387a39d8d68ad5bbc6d5ee5c8b7",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/hotel/pred_mask.png",
+        "semantic_sha256": "dd55bde37b2c2ba8665010f229706ff77a0fa46f14760d0bb8da22832e89e2b2"
+      },
+      "univ": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/pred_mask.png",
+        "semantic_sha256": "5ba94820f52a38cde8355c56b764fc694ff5f8c9cfffc58927cf0753e48c95ad"
+      },
+      "zara1": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara1/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara1/pred_mask.png",
+        "semantic_sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d"
+      },
+      "zara2": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara2/H.txt",
+        "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara2/pred_mask.png",
+        "semantic_sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d"
+      }
+    },
+    "metadata": {
+      "align_corners": true,
+      "crop_center": "last_observed_world_position_only",
+      "crop_pixels": 256,
+      "crop_width_m": 32.0,
+      "dataset": "ETH/UCY",
+      "dt_seconds": 0.4,
+      "fold": "eth",
+      "future_used_for_crop": false,
+      "obs_length": 8,
+      "out_of_bounds_fill": 0,
+      "pixel_grid": "x=columns,y=rows",
+      "pred_length": 12,
+      "protocol": "official_leave_one_scene_out_sources",
+      "semantic_channels": 6,
+      "semantic_storage": "categorical_one_hot_uint8",
+      "split": "train",
+      "unit": "m",
+      "world_grid": "x=columns,y=rows"
+    },
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/train/train_manifest.json",
+    "sha256": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de",
+    "shard_count": 4110,
+    "source_files": [
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/train/biwi_hotel.txt",
+        "sha256": "9caa771bb9153d6b809dd0916b6f86761b641e6bbb15e766c1de3133fbbb7fcf"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/train/crowds_zara01.txt",
+        "sha256": "1147a1962a09abfb86f28c6cddcac862e095a0cf129b3016385b69eacdd09d85"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/train/crowds_zara02.txt",
+        "sha256": "8a649d0f8c9ae75c87c4d23a85f892786b0aa30266e996c7be03e69dafff22ff"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/train/crowds_zara03.txt",
+        "sha256": "16b3e899932c4baacd07f45013d5b921f90bc5a29eb2b0fe42f4d7c904ac3108"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/train/students001.txt",
+        "sha256": "a6d87f278d94136fe39b8be91555487a29ac77259ae403b9dba2d5c18caf7b5b"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/train/students003.txt",
+        "sha256": "e25798b660634330aa89f8bb259425de720e84d0873902726c1d1f4ccff21d6c"
+      },
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/train/uni_examples.txt",
+        "sha256": "61f432c0ab3070ed0ef150fbeabcd7baf839cab5495a46e6105bd747f0a092a7"
+      }
+    ],
+    "statistics": {
+      "N_histogram": {
+        "1": 590,
+        "10": 70,
+        "11": 55,
+        "12": 39,
+        "13": 50,
+        "14": 23,
+        "15": 25,
+        "16": 24,
+        "17": 29,
+        "18": 34,
+        "19": 23,
+        "2": 642,
+        "20": 33,
+        "21": 40,
+        "22": 41,
+        "23": 37,
+        "24": 36,
+        "25": 38,
+        "26": 23,
+        "27": 17,
+        "28": 20,
+        "29": 30,
+        "3": 430,
+        "30": 32,
+        "31": 28,
+        "32": 40,
+        "33": 38,
+        "34": 33,
+        "35": 17,
+        "36": 23,
+        "37": 25,
+        "38": 25,
+        "39": 28,
+        "4": 429,
+        "40": 10,
+        "41": 9,
+        "42": 7,
+        "43": 9,
+        "44": 4,
+        "45": 7,
+        "46": 6,
+        "47": 2,
+        "48": 4,
+        "49": 3,
+        "5": 292,
+        "50": 1,
+        "51": 5,
+        "52": 2,
+        "53": 2,
+        "57": 1,
+        "6": 255,
+        "7": 180,
+        "8": 116,
+        "9": 128
+      },
+      "agents": 36906,
+      "max_N": 57,
+      "min_N": 1,
+      "scenes": 4110,
+      "shard_bytes": 59758226,
+      "world_pixel_roundtrip_max_abs_m": 3.9968028886505635e-15
+    }
+  },
+  "validation": {
+    "all_shards_present_and_bound": true,
+    "map_sources": {
+      "eth": {
+        "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/H.txt",
+        "homography_sha256": "a85a44838a451323f0b6e8e649dd4ee4db696de7d0e59f651506edaa8af77aff",
+        "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/pred_mask.png",
+        "semantic_sha256": "5c3510ddb5d3763741de83dc4fbb16d037f131d259d225721e5dcefc2e66232e"
+      }
+    },
+    "metadata": {
+      "align_corners": true,
+      "crop_center": "last_observed_world_position_only",
+      "crop_pixels": 256,
+      "crop_width_m": 32.0,
+      "dataset": "ETH/UCY",
+      "dt_seconds": 0.4,
+      "fold": "eth",
+      "future_used_for_crop": false,
+      "obs_length": 8,
+      "out_of_bounds_fill": 0,
+      "pixel_grid": "x=columns,y=rows",
+      "pred_length": 12,
+      "protocol": "jmm_official_leave_one_scene_out_sources",
+      "semantic_channels": 6,
+      "semantic_storage": "categorical_one_hot_uint8",
+      "split": "validation",
+      "unit": "m",
+      "world_grid": "x=columns,y=rows"
+    },
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json",
+    "sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+    "shard_count": 253,
+    "source_files": [
+      {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/jmm_official/eth/biwi_eth_agentformer.txt",
+        "sha256": "d7cdcedd6472ebaa794bc56e037542e350dfe2ee992f818ab8c417e9fc2a17ad"
+      }
+    ],
+    "statistics": {
+      "N_histogram": {
+        "1": 183,
+        "2": 38,
+        "3": 25,
+        "4": 5,
+        "5": 2
+      },
+      "agents": 364,
+      "max_N": 5,
+      "min_N": 1,
+      "scenes": 253,
+      "shard_bytes": 2157493,
+      "world_pixel_roundtrip_max_abs_m": 7.105427357601002e-15
+    }
+  },
+  "validation_test_mirror": true,
+  "window_identity_intersections": {
+    "train_test": 0,
+    "train_validation": 0,
+    "validation_test": 253
+  }
+}

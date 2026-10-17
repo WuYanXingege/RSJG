@@ -1,0 +1,204 @@
+{
+  "checkpoint": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/eth/saved_models/best_model.pt",
+    "sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950"
+  },
+  "checkpoint_unchanged_during_evaluation": true,
+  "config": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/eth/config.yaml",
+    "sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c"
+  },
+  "protocol": {
+    "agent_occurrence_count": 364,
+    "coordinate_conversion": "Scene_eth5.make_pixel_coord_torch",
+    "cross_method_rng_claim": "same seed labels, not identical random streams",
+    "inference_precision": "BF16 CUDA autocast; coordinate conversion FP32",
+    "manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json",
+    "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+    "metric_implementation": "GDTS.compute_model_metrics",
+    "sample_count": 20,
+    "sampler": "native GDTS TTST plus tree/DDIM",
+    "scene_count": 253,
+    "seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "split": "validation",
+    "steps": 20,
+    "target": "eth5/eth",
+    "worlds": 20
+  },
+  "runs": [
+    {
+      "ADE_world": 0.41705285937904,
+      "FDE_world": 0.5800323037873278,
+      "JADE": 0.4899067671402641,
+      "JFDE": 0.7434117917354282,
+      "agent_occurrence_count": 364,
+      "counts": {
+        "ADE_world": 364,
+        "FDE_world": 364,
+        "JADE": 253,
+        "JFDE": 253,
+        "minADE@K": 364,
+        "minFDE@K": 364
+      },
+      "elapsed_seconds": 105.10794281959534,
+      "minADE@K": 0.41705285937904,
+      "minFDE@K": 0.5800323037873278,
+      "protocol_binding": {
+        "agent_occurrence_count": 364,
+        "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+        "config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+        "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+        "scene_count": 253
+      },
+      "scene_count": 253,
+      "seed": 2035,
+      "status": "complete"
+    },
+    {
+      "ADE_world": 0.40774962148414207,
+      "FDE_world": 0.5596334293924763,
+      "JADE": 0.49201604252747394,
+      "JFDE": 0.7487080934137224,
+      "agent_occurrence_count": 364,
+      "counts": {
+        "ADE_world": 364,
+        "FDE_world": 364,
+        "JADE": 253,
+        "JFDE": 253,
+        "minADE@K": 364,
+        "minFDE@K": 364
+      },
+      "elapsed_seconds": 103.95357632637024,
+      "minADE@K": 0.40774962148414207,
+      "minFDE@K": 0.5596334293924763,
+      "protocol_binding": {
+        "agent_occurrence_count": 364,
+        "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+        "config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+        "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+        "scene_count": 253
+      },
+      "scene_count": 253,
+      "seed": 2036,
+      "status": "complete"
+    },
+    {
+      "ADE_world": 0.41424887700026836,
+      "FDE_world": 0.5781578150690421,
+      "JADE": 0.4957222890241344,
+      "JFDE": 0.7541116256369904,
+      "agent_occurrence_count": 364,
+      "counts": {
+        "ADE_world": 364,
+        "FDE_world": 364,
+        "JADE": 253,
+        "JFDE": 253,
+        "minADE@K": 364,
+        "minFDE@K": 364
+      },
+      "elapsed_seconds": 103.68092966079712,
+      "minADE@K": 0.41424887700026836,
+      "minFDE@K": 0.5781578150690421,
+      "protocol_binding": {
+        "agent_occurrence_count": 364,
+        "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+        "config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+        "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+        "scene_count": 253
+      },
+      "scene_count": 253,
+      "seed": 2037,
+      "status": "complete"
+    },
+    {
+      "ADE_world": 0.42137177294672845,
+      "FDE_world": 0.58357331024708,
+      "JADE": 0.49915543764005066,
+      "JFDE": 0.7606855026287995,
+      "agent_occurrence_count": 364,
+      "counts": {
+        "ADE_world": 364,
+        "FDE_world": 364,
+        "JADE": 253,
+        "JFDE": 253,
+        "minADE@K": 364,
+        "minFDE@K": 364
+      },
+      "elapsed_seconds": 106.21012926101685,
+      "minADE@K": 0.42137177294672845,
+      "minFDE@K": 0.58357331024708,
+      "protocol_binding": {
+        "agent_occurrence_count": 364,
+        "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+        "config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+        "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+        "scene_count": 253
+      },
+      "scene_count": 253,
+      "seed": 2038,
+      "status": "complete"
+    },
+    {
+      "ADE_world": 0.4183286597215376,
+      "FDE_world": 0.5840565956218148,
+      "JADE": 0.48680896161808795,
+      "JFDE": 0.7389067443448446,
+      "agent_occurrence_count": 364,
+      "counts": {
+        "ADE_world": 364,
+        "FDE_world": 364,
+        "JADE": 253,
+        "JFDE": 253,
+        "minADE@K": 364,
+        "minFDE@K": 364
+      },
+      "elapsed_seconds": 103.6274425983429,
+      "minADE@K": 0.4183286597215376,
+      "minFDE@K": 0.5840565956218148,
+      "protocol_binding": {
+        "agent_occurrence_count": 364,
+        "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+        "config_sha256": "1906d36c39512de376359a890473de7f5678ec165d07344b47e41305b3a3481c",
+        "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+        "scene_count": 253
+      },
+      "scene_count": 253,
+      "seed": 2039,
+      "status": "complete"
+    }
+  ],
+  "schema": "gdts-on-ebjd-synchronized-scene-manifest-v1",
+  "status": "complete",
+  "summary": {
+    "ADE_world": {
+      "mean": 0.4157503581063433,
+      "sample_std": 0.0051529284295855635
+    },
+    "FDE_world": {
+      "mean": 0.5770906908235482,
+      "sample_std": 0.010063498421345006
+    },
+    "JADE": {
+      "mean": 0.49272189959000223,
+      "sample_std": 0.004841972453449841
+    },
+    "JFDE": {
+      "mean": 0.749164751551957,
+      "sample_std": 0.008598416478554713
+    },
+    "minADE@K": {
+      "mean": 0.4157503581063433,
+      "sample_std": 0.0051529284295855635
+    },
+    "minFDE@K": {
+      "mean": 0.5770906908235482,
+      "sample_std": 0.010063498421345006
+    }
+  }
+}

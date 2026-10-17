@@ -1,0 +1,39 @@
+{
+  "candidate": {
+    "epoch": 5,
+    "joint_score": 1.1808487583400882,
+    "marginal_violations": {
+      "minADE": 0.15903505406107055,
+      "minFDE": 0.42493623673818637
+    },
+    "metrics": {
+      "JADE": 0.6343192191934397,
+      "JFDE": 1.0930590782932967,
+      "agent_count": 364,
+      "coordination_gap_ADE": 0.042088146766890655,
+      "coordination_gap_FDE": 0.10424069029540417,
+      "minADE": 0.5760879134401106,
+      "minFDE": 1.0049685405255142,
+      "scene_count": 253,
+      "scene_weighted_minADE": 0.592231072426549,
+      "scene_weighted_minFDE": 0.9888183879978926,
+      "sums": {
+        "agent_minADE": 209.69600049220026,
+        "agent_minFDE": 365.80854875128716,
+        "scene_JADE": 160.48276245594025,
+        "scene_JFDE": 276.54394680820405,
+        "scene_marginal_ADE": 149.8344613239169,
+        "scene_marginal_FDE": 250.1710521634668
+      }
+    },
+    "simultaneous_improvement": false,
+    "total_violation": 0.5839712907992569
+  },
+  "frozen_at": "2026-10-17T21:55:59.407907+08:00",
+  "role": "least_violation",
+  "schema": "ebjd-formal-selection-freeze-v1",
+  "selected_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/formal_training/eth/3101/none/eth_main_seed3101_d266681_20261015/selected_formal.pt",
+  "selected_checkpoint_sha256": "08a6f86b1dff53ce75fa52ab30befac0d7abfe1c52ecd235fe7df3d6a5d6ea55",
+  "selected_epoch": 5,
+  "source_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/formal_training/eth/3101/none/eth_main_seed3101_d266681_20261015/least_violation.pt"
+}

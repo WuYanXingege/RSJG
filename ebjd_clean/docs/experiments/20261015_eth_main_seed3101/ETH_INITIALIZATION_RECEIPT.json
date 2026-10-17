@@ -1,0 +1,41 @@
+{
+  "best_metrics": {
+    "goal_BCE": 0.006374950100463338
+  },
+  "best_metrics_epochs": {
+    "goal_BCE": 16
+  },
+  "checkpoint_type": "gdts_goal_pretrain",
+  "epoch": 16,
+  "execution_phase": "goal_pretrain",
+  "execution_phase_evidence": {
+    "checkpoint_type": "gdts_goal_pretrain",
+    "persisted_phase_is_transient_default": true
+  },
+  "format_version": 1,
+  "non_goal_tensor_count": 0,
+  "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/eth/runs/eth_goal_pretrain_seed3101_20261015/saved_models/goal_pretrain_best_model.pt",
+  "selection_metric": "goal_BCE",
+  "sha256": "d130f47a3e13f457920a724465cc02d55bdb22e4827f7889bc49331d6c3bfec6",
+  "source_config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/eth/runs/eth_goal_pretrain_seed3101_20261015/config.yaml",
+  "source_config_contract": {
+    "amp_dtype": "fp32",
+    "amp_enabled": false,
+    "batch_size": 64,
+    "data_augmentation": false,
+    "dataset": "eth5",
+    "learning_rate": 0.001,
+    "num_epochs": 150,
+    "optimizer": "Adam",
+    "phase": "train_test",
+    "scheduler": "ExponentialLR",
+    "seed": 3101,
+    "shuffle_test_batches": false,
+    "shuffle_train_batches": false,
+    "test_set": "eth"
+  },
+  "source_config_sha256": "e80186d5002f2492b162c72bd81eccacd92b51652c98989df7ea3b7beb85b082",
+  "state_tensor_count": 46,
+  "test_set": "eth",
+  "training_epochs_planned": 150
+}
