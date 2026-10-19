@@ -1,0 +1,16 @@
+{
+  "schema": "ebjd-eth-goal-proposal-reproducibility-v1",
+  "status": "EXACT_MATCH",
+  "seed": 2035,
+  "full_runs_compared": 2,
+  "optimizer_updates_per_run": 0,
+  "agent_metrics_csv_sha256": "251c555d9c8ed97479a7124ef74d199944bb0c0630f967b7437c34e868240579",
+  "raw_candidate_bank_sha256": {
+    "A": "86f73155573b5807e34ea454a60bd11e900b3608201ce600b077ae7136ab2866",
+    "B": "7b4e0793dabd8bc6e92f30fce7f79e612fe014e3a219834e2ed57ea4bb91b309",
+    "B0": "035641e6c6027ca918e369695c5d05bb86e19497f433f28b0ac76f538726d419",
+    "C": "ebf1ed4a25ed5b222cdeccfee0d257c29998ecd6174eebd522e9240b7eb40e9f"
+  },
+  "comparison": "Committed result versus an independent full replay under /tmp; every listed SHA256 matched exactly.",
+  "runtime_fields_excluded": "Wall-clock durations differ normally and are not part of the candidate/metric equality claim."
+}
