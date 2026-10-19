@@ -52,6 +52,9 @@ def main() -> None:
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--output", required=True)
     parser.add_argument(
+        "--prediction-bank-root",
+        help="optional local-only directory for compressed per-seed predictions")
+    parser.add_argument(
         "--disable-native-goal-conditioner", action="store_true",
         help="registered intervention: retain weights/cache but bypass conditioning")
     args = parser.parse_args()
@@ -73,6 +76,7 @@ def main() -> None:
     evaluation = config.get("evaluation", {})
     worlds, steps = int(evaluation.get("worlds", 20)), int(evaluation.get("steps", 20))
     results = []
+    bank_index = []
     with torch.no_grad(), torch.autocast(
             device_type=device.type, enabled=False):
         for seed in evaluation.get("inference_seeds", [2035, 2036, 2037, 2038, 2039]):
@@ -99,12 +103,24 @@ def main() -> None:
                 "native_cv_relative_radius": 0.0,
                 "diffusion_cv_relative_radius": 0.0,
             }
+            prediction_rows = []
             for batch in loader:
                 batch = batch.to(device)
                 prediction, predicted_goal = predict(
                     model, batch.observed, batch.semantic_maps, batch.valid,
                     worlds, steps, generator, batch.native_goals)
                 accumulator.update(prediction, batch.future, batch.valid)
+                if args.prediction_bank_root:
+                    count = int(batch.valid.sum())
+                    prediction_rows.append({
+                        "scene_id": batch.scene_ids[0],
+                        "agent_ids": np.asarray(batch.agent_ids[0]),
+                        "observed": batch.observed[0, :count].cpu().numpy(),
+                        "future": batch.future[0, :count].cpu().numpy(),
+                        "predictions": prediction[0, :, :count].cpu().numpy(),
+                        "native_goals": None if batch.native_goals is None else
+                            batch.native_goals[0, :count].cpu().numpy(),
+                    })
                 for value in k_values:
                     k_accumulators[value].update(
                         prediction[:, :value], batch.future, batch.valid)
@@ -176,6 +192,26 @@ def main() -> None:
                         conditioner.last_condition_norm_ratio or 0.0),
                 },
             })
+            if args.prediction_bank_root:
+                root = Path(args.prediction_bank_root).resolve()
+                root.mkdir(parents=True, exist_ok=True)
+                bank_path = root / f"seed_{seed}.npz"
+                def objects(name):
+                    value = np.empty(len(prediction_rows), dtype=object)
+                    for row_index, row in enumerate(prediction_rows):
+                        value[row_index] = row[name]
+                    return value
+                np.savez_compressed(
+                    bank_path,
+                    scene_ids=np.asarray([x["scene_id"] for x in prediction_rows]),
+                    agent_ids=objects("agent_ids"), observed=objects("observed"),
+                    future=objects("future"), predictions=objects("predictions"),
+                    native_goals=objects("native_goals"),
+                )
+                bank_index.append({
+                    "seed": int(seed), "path": str(bank_path),
+                    "sha256": sha256(bank_path), "scenes": len(prediction_rows),
+                })
     metric_names = (
         "minADE", "minFDE", "JADE", "JFDE",
         "scene_weighted_minADE", "scene_weighted_minFDE",
@@ -207,6 +243,7 @@ def main() -> None:
         "native_goal_conditioner_disabled": bool(
             args.disable_native_goal_conditioner),
         "worlds": worlds, "steps": steps, "per_seed": results,
+        "prediction_bank_index_local_only": bank_index,
         "mean": means, "sample_standard_deviation": sample_standard_deviation,
     }
     output = Path(args.output)
