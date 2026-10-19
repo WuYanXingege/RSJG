@@ -57,11 +57,11 @@ def main() -> None:
     cache_root = Path(args.cache_root).resolve()
     provider_sha = "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950"
     provider_commit = "092ed91f1f4117f50aa835ec8e47cd2c9ce74a98"
-    train = cache_root / "train_seed3101_provider092/manifest.json"
+    train = cache_root / "train_seed3101_provider092_rngfix/manifest.json"
     validate_bank(train, 3101, provider_sha, provider_commit)
     heldout = {}
     for seed in range(2035, 2040):
-        path = cache_root / f"validation_seed{seed}_provider092/manifest.json"
+        path = cache_root / f"validation_seed{seed}_provider092_rngfix/manifest.json"
         validate_bank(path, seed, provider_sha, provider_commit)
         heldout[str(seed)] = str(path)
 
