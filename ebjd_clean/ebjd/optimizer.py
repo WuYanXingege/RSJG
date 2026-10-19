@@ -138,9 +138,16 @@ class ActualStepAdamW:
         decrement, pending = [], []
         for (name, parameter), grad in zip(self.named_parameters, gradient, strict=True):
             old = self.state.get(id(parameter))
-            moment = torch.zeros_like(parameter, dtype=torch.float32) if old is None else old["moment"]
-            variance = torch.zeros_like(parameter, dtype=torch.float32) if old is None else old["variance"]
-            step = 1 if old is None else int(old["step"]) + 1
+            # Checkpoints represent parameters that have never received an
+            # update with an empty mapping.  Treat that serialized form exactly
+            # like an absent in-memory state; model-extension parameters rely
+            # on this at their first formal update.
+            initialized = bool(old)
+            moment = old["moment"] if initialized else torch.zeros_like(
+                parameter, dtype=torch.float32)
+            variance = old["variance"] if initialized else torch.zeros_like(
+                parameter, dtype=torch.float32)
+            step = int(old["step"]) + 1 if initialized else 1
             moment_new = beta1 * moment + (1 - beta1) * grad.float()
             variance_new = beta2 * variance + (1 - beta2) * grad.float().square()
             mhat = moment_new / (1 - beta1 ** step)

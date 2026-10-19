@@ -81,3 +81,6 @@ def test_explicit_model_extension_preserves_old_state_and_rng():
     assert receipt["old_optimizer_state_by_name_exact"]
     assert receipt["new_optimizer_state_empty"]
     assert restored.update_index == 1285
+    gradients = [torch.zeros_like(parameter) for parameter in restored.parameters]
+    _, pending = restored.optimizer.propose(gradients)
+    assert all(state["step"] == 1 for state in pending)
