@@ -1,0 +1,831 @@
+{
+  "bank_binding": {
+    "agent_occurrences": 364,
+    "autocast": "disabled",
+    "bank_schema": "ebjd-trajectory-bank-v1",
+    "checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/formal_training/eth/3101/none/eth_main_seed3101_d266681_20261015/epoch_022.pt",
+    "checkpoint_sha256": "5d580d560857be3658f74f21a4f60f3d34f1214c0c517f0d29d791852b433151",
+    "config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/formal_training/eth/3101/none/eth_main_seed3101_d266681_20261015/RESOLVED_CONFIG.json",
+    "config_sha256": "936924d8b773f61e9fc5e419fdc0e939bd369beb155c4e74474924ae727214a9",
+    "coordinate_conversion": "none; native metre-space output",
+    "dtype": "float32",
+    "execution_commit": "1a96f93cbf5a665691fb82792a243b8952f92c43",
+    "inference_seed": 2035,
+    "scene_count": 253,
+    "source_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json",
+    "source_manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+    "status": "COMPLETED",
+    "steps": 20,
+    "worlds": 20
+  },
+  "bank_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_targeted_20261015/banks/ebjd_epoch022/seed_2035/manifest.json",
+  "bank_manifest_sha256": "3d54abc8198320d8c219f9822c30231fb8e0aa33bac4424a03603ef53b9b8537",
+  "case_plot_files": [],
+  "case_selection": [
+    {
+      "after_minFDE_m": 2.5248764421388845,
+      "agent_id": "230",
+      "agent_index": 0,
+      "before_minFDE_m": 5.508260067938341,
+      "delta_minFDE_m": -2.9833836257994566,
+      "endpoint_center_bias_m": 8.754129496356834,
+      "group": "N>=2",
+      "max_endpoint_radius_m": 9.16553976264597,
+      "scene_index": 170,
+      "selection_rule": "largest_improvement",
+      "window_key": "biwi_eth:9780-9970"
+    },
+    {
+      "after_minFDE_m": 1.9854733717900588,
+      "agent_id": "353",
+      "agent_index": 1,
+      "before_minFDE_m": 0.31816348044910014,
+      "delta_minFDE_m": 1.6673098913409587,
+      "endpoint_center_bias_m": 3.0924724236818983,
+      "group": "N>=2",
+      "max_endpoint_radius_m": 6.741057197025345,
+      "scene_index": 231,
+      "selection_rule": "largest_regression",
+      "window_key": "biwi_eth:11940-12130"
+    },
+    {
+      "after_minFDE_m": 5.967495210652646,
+      "agent_id": "230",
+      "agent_index": 0,
+      "before_minFDE_m": 7.6914384593013745,
+      "delta_minFDE_m": -1.7239432486487285,
+      "endpoint_center_bias_m": 9.467707572060577,
+      "group": "N>=2",
+      "max_endpoint_radius_m": 3.723448566255483,
+      "scene_index": 169,
+      "selection_rule": "largest_center_bias",
+      "window_key": "biwi_eth:9770-9960"
+    },
+    {
+      "after_minFDE_m": 0.31797596080153945,
+      "agent_id": "303",
+      "agent_index": 0,
+      "before_minFDE_m": 0.4764153287637878,
+      "delta_minFDE_m": -0.15843936796224833,
+      "endpoint_center_bias_m": 1.2683501419542234,
+      "group": "N=1",
+      "max_endpoint_radius_m": 12.110716965588557,
+      "scene_index": 215,
+      "selection_rule": "largest_expansion",
+      "window_key": "biwi_eth:10690-10880"
+    }
+  ],
+  "case_selection_factor": 2.0,
+  "external_binding_verification": {
+    "all_sha256_match": true,
+    "checkpoint": {
+      "actual_sha256": "5d580d560857be3658f74f21a4f60f3d34f1214c0c517f0d29d791852b433151",
+      "exists": true,
+      "expected_sha256": "5d580d560857be3658f74f21a4f60f3d34f1214c0c517f0d29d791852b433151",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/formal_training/eth/3101/none/eth_main_seed3101_d266681_20261015/epoch_022.pt",
+      "sha256_matches": true
+    },
+    "config": {
+      "actual_sha256": "936924d8b773f61e9fc5e419fdc0e939bd369beb155c4e74474924ae727214a9",
+      "exists": true,
+      "expected_sha256": "936924d8b773f61e9fc5e419fdc0e939bd369beb155c4e74474924ae727214a9",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/formal_training/eth/3101/none/eth_main_seed3101_d266681_20261015/RESOLVED_CONFIG.json",
+      "sha256_matches": true
+    },
+    "source_manifest": {
+      "actual_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+      "exists": true,
+      "expected_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json",
+      "sha256_matches": true
+    }
+  },
+  "factors": [
+    1.0,
+    1.25,
+    1.5,
+    2.0
+  ],
+  "fixed_contract": {
+    "actual": {
+      "agent_occurrences": 364,
+      "inference_seed": 2035,
+      "scene_count": 253,
+      "source_manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+      "steps": 20,
+      "worlds": 20
+    },
+    "expected": {
+      "agent_occurrences": 364,
+      "inference_seed": 2035,
+      "scene_count": 253,
+      "source_manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+      "steps": 20,
+      "worlds": 20
+    },
+    "matches": true
+  },
+  "formula": "Y_new[k,i,t]=Y[k,i,t]+(t/12)*(gamma-1)*(g[k,i]-mean_worlds(g[:,i]))",
+  "gamma1_replay": {
+    "absolute_differences_m": {
+      "JADE": 0.0,
+      "JFDE": 0.0,
+      "minADE": 0.0,
+      "minFDE": 0.0
+    },
+    "bank_replay_metrics": {
+      "JADE": 0.639614620698702,
+      "JFDE": 1.1498610123411166,
+      "minADE": 0.5903158285563191,
+      "minFDE": 1.0672647995018458
+    },
+    "maximum_absolute_difference_m": 0.0
+  },
+  "limitations": [
+    "Validation and test manifests are mirrored; this is exploratory evidence.",
+    "One inference seed is not an independent test or multiple training seeds.",
+    "The transform does not read ground truth, move candidate centers, add NFE, or retrain."
+  ],
+  "matched_GDTS_reference": {
+    "JADE": 0.489906767,
+    "JFDE": 0.743411792,
+    "minADE": 0.417052859,
+    "minFDE": 0.580032304
+  },
+  "optimizer_updates": 0,
+  "results": [
+    {
+      "comparison": {
+        "all_four_improve_vs_original": false,
+        "all_four_reach_matched_GDTS": false,
+        "delta_vs_matched_GDTS_m": {
+          "JADE": 0.149707853698702,
+          "JFDE": 0.40644922034111663,
+          "minADE": 0.17326296955631915,
+          "minFDE": 0.4872324955018458
+        },
+        "delta_vs_original_m": {
+          "JADE": 0.0,
+          "JFDE": 0.0,
+          "minADE": 0.0,
+          "minFDE": 0.0
+        }
+      },
+      "coverage": {
+        "endpoint_center_bias_mean_m": 2.1475627498011884,
+        "endpoint_center_bias_rms_m": 2.7154766807180115,
+        "endpoint_pairwise_distance_mean_m": 1.6211148018763415,
+        "endpoint_rms_radius_m": 1.3869784601707502,
+        "single_candidate_FDE_mean_m": 2.466136862466262
+      },
+      "factor": 1.0,
+      "invariants": {
+        "agent_order_preserved": true,
+        "bridge_residual_max_abs_m": 0.0,
+        "candidate_mean_max_abs_m": 0.0,
+        "endpoint_rms_radius_expected_ratio": 1.0,
+        "endpoint_rms_radius_ratio": 1.0,
+        "endpoint_rms_radius_ratio_abs_error": 0.0,
+        "world_order_preserved": true
+      },
+      "k_curve": [
+        {
+          "JADE": 1.1931720884401569,
+          "JFDE": 2.4520457781055622,
+          "K": 1,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 1.1649376517957928,
+          "minFDE": 2.464497396411531,
+          "scene_count": 253,
+          "scene_weighted_minADE": 1.1931720884401569,
+          "scene_weighted_minFDE": 2.4520457781055622
+        },
+        {
+          "JADE": 1.0036694591691675,
+          "JFDE": 2.0260563109311494,
+          "K": 2,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.011305377228486235,
+          "coordination_gap_FDE": 0.033625521188204166,
+          "minADE": 0.9587952874202252,
+          "minFDE": 1.9878305557956324,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.9923640819406813,
+          "scene_weighted_minFDE": 1.9924307897429452
+        },
+        {
+          "JADE": 0.8619522260900048,
+          "JFDE": 1.6800615872319427,
+          "K": 4,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.021520645186583143,
+          "coordination_gap_FDE": 0.04829311922844948,
+          "minADE": 0.8100015372925932,
+          "minFDE": 1.61904736381226,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.8404315809034216,
+          "scene_weighted_minFDE": 1.6317684680034932
+        },
+        {
+          "JADE": 0.7555813561695132,
+          "JFDE": 1.4164757300964421,
+          "K": 8,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.025946560953295505,
+          "coordination_gap_FDE": 0.06890845878033791,
+          "minADE": 0.7058804056863048,
+          "minFDE": 1.3467189643348003,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.7296347952162177,
+          "scene_weighted_minFDE": 1.3475672713161042
+        },
+        {
+          "JADE": 0.7069693780650933,
+          "JFDE": 1.3059605446415237,
+          "K": 12,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.029950833778085717,
+          "coordination_gap_FDE": 0.08153657220851529,
+          "minADE": 0.6510078371614697,
+          "minFDE": 1.2129469944453015,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6770185442870076,
+          "scene_weighted_minFDE": 1.2244239724330084
+        },
+        {
+          "JADE": 0.6635139833137335,
+          "JFDE": 1.2115512479900648,
+          "K": 16,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.03140620974341102,
+          "coordination_gap_FDE": 0.08496774113412275,
+          "minADE": 0.6144596535385417,
+          "minFDE": 1.1285010963048274,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6321077735703224,
+          "scene_weighted_minFDE": 1.126583506855942
+        },
+        {
+          "JADE": 0.639614620698702,
+          "JFDE": 1.1498610123411166,
+          "K": 20,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.03285987948963276,
+          "coordination_gap_FDE": 0.08738009377634293,
+          "minADE": 0.5903158285563191,
+          "minFDE": 1.0672647995018458,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6067547412090692,
+          "scene_weighted_minFDE": 1.0624809185647737
+        }
+      ],
+      "metrics": {
+        "JADE": 0.639614620698702,
+        "JFDE": 1.1498610123411166,
+        "agent_count": 364,
+        "coordination_gap_ADE": 0.03285987948963276,
+        "coordination_gap_FDE": 0.08738009377634293,
+        "minADE": 0.5903158285563191,
+        "minFDE": 1.0672647995018458,
+        "scene_count": 253,
+        "scene_weighted_minADE": 0.6067547412090692,
+        "scene_weighted_minFDE": 1.0624809185647737
+      },
+      "strata": {
+        "N=1": {
+          "JADE": 0.6148802070793301,
+          "JFDE": 1.0381144677772498,
+          "agent_count": 183,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 0.6148802070793301,
+          "minFDE": 1.0381144677772498,
+          "scene_count": 183,
+          "scene_weighted_minADE": 0.6148802070793301,
+          "scene_weighted_minFDE": 1.0381144677772498
+        },
+        "N>=2": {
+          "JADE": 0.7042774448750596,
+          "JFDE": 1.4419984074152257,
+          "agent_count": 181,
+          "coordination_gap_ADE": 0.11876499301252985,
+          "coordination_gap_FDE": 0.315816624648783,
+          "minADE": 0.5654800204363686,
+          "minFDE": 1.0967372343394208,
+          "scene_count": 70,
+          "scene_weighted_minADE": 0.5855124518625298,
+          "scene_weighted_minFDE": 1.1261817827664427
+        }
+      }
+    },
+    {
+      "comparison": {
+        "all_four_improve_vs_original": true,
+        "all_four_reach_matched_GDTS": false,
+        "delta_vs_matched_GDTS_m": {
+          "JADE": 0.12315151966780513,
+          "JFDE": 0.3579467098157695,
+          "minADE": 0.13961854330656442,
+          "minFDE": 0.4249837512579987
+        },
+        "delta_vs_original_m": {
+          "JADE": -0.026556334030896855,
+          "JFDE": -0.04850251052534715,
+          "minADE": -0.03364442624975472,
+          "minFDE": -0.062248744243847076
+        }
+      },
+      "coverage": {
+        "endpoint_center_bias_mean_m": 2.1475627498011884,
+        "endpoint_center_bias_rms_m": 2.7154766807180115,
+        "endpoint_pairwise_distance_mean_m": 2.0263935023454267,
+        "endpoint_rms_radius_m": 1.7337230752134374,
+        "single_candidate_FDE_mean_m": 2.6193016994733513
+      },
+      "factor": 1.25,
+      "invariants": {
+        "agent_order_preserved": true,
+        "bridge_residual_max_abs_m": 5.329070518200751e-15,
+        "candidate_mean_max_abs_m": 7.105427357601002e-15,
+        "endpoint_rms_radius_expected_ratio": 1.25,
+        "endpoint_rms_radius_ratio": 1.2499999999999998,
+        "endpoint_rms_radius_ratio_abs_error": 2.220446049250313e-16,
+        "world_order_preserved": true
+      },
+      "k_curve": [
+        {
+          "JADE": 1.2656967366319303,
+          "JFDE": 2.603107631299601,
+          "K": 1,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 1.2405306053877048,
+          "minFDE": 2.6195185281124753,
+          "scene_count": 253,
+          "scene_weighted_minADE": 1.2656967366319303,
+          "scene_weighted_minFDE": 2.603107631299601
+        },
+        {
+          "JADE": 1.0365220615339896,
+          "JFDE": 2.0883397596094784,
+          "K": 2,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.014011717040798732,
+          "coordination_gap_FDE": 0.03920492428696454,
+          "minADE": 0.986618683601602,
+          "minFDE": 2.043408148620067,
+          "scene_count": 253,
+          "scene_weighted_minADE": 1.022510344493191,
+          "scene_weighted_minFDE": 2.049134835322514
+        },
+        {
+          "JADE": 0.861049698402537,
+          "JFDE": 1.678602826850117,
+          "K": 4,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.025325248919475407,
+          "coordination_gap_FDE": 0.05550871220669373,
+          "minADE": 0.8042071189209113,
+          "minFDE": 1.6094067799028986,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.8357244494830616,
+          "scene_weighted_minFDE": 1.6230941146434232
+        },
+        {
+          "JADE": 0.7359553222106857,
+          "JFDE": 1.3776948299807763,
+          "K": 8,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.031953965679870966,
+          "coordination_gap_FDE": 0.0754881651006214,
+          "minADE": 0.6780381904933086,
+          "minFDE": 1.3041683099334862,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.7040013565308147,
+          "scene_weighted_minFDE": 1.302206664880155
+        },
+        {
+          "JADE": 0.6846383421701987,
+          "JFDE": 1.2644965302880706,
+          "K": 12,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.03575312099116357,
+          "coordination_gap_FDE": 0.08723208718790687,
+          "minADE": 0.62039087705068,
+          "minFDE": 1.166183381416047,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6488852211790351,
+          "scene_weighted_minFDE": 1.1772644431001638
+        },
+        {
+          "JADE": 0.6385929259730821,
+          "JFDE": 1.1610026944362277,
+          "K": 16,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.03702065207831495,
+          "coordination_gap_FDE": 0.09216609187990521,
+          "minADE": 0.5824259047545751,
+          "minFDE": 1.073372884367699,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6015722738947672,
+          "scene_weighted_minFDE": 1.0688366025563225
+        },
+        {
+          "JADE": 0.6130582866678052,
+          "JFDE": 1.1013585018157694,
+          "K": 20,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.0388209805728269,
+          "coordination_gap_FDE": 0.0972682000531171,
+          "minADE": 0.5566714023065644,
+          "minFDE": 1.0050160552579988,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.5742373060949783,
+          "scene_weighted_minFDE": 1.0040903017626523
+        }
+      ],
+      "metrics": {
+        "JADE": 0.6130582866678052,
+        "JFDE": 1.1013585018157694,
+        "agent_count": 364,
+        "coordination_gap_ADE": 0.0388209805728269,
+        "coordination_gap_FDE": 0.0972682000531171,
+        "minADE": 0.5566714023065644,
+        "minFDE": 1.0050160552579988,
+        "scene_count": 253,
+        "scene_weighted_minADE": 0.5742373060949783,
+        "scene_weighted_minFDE": 1.0040903017626523
+      },
+      "strata": {
+        "N=1": {
+          "JADE": 0.5845363515006065,
+          "JFDE": 0.9830535136329247,
+          "agent_count": 183,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 0.5845363515006065,
+          "minFDE": 0.9830535136329247,
+          "scene_count": 183,
+          "scene_weighted_minADE": 0.5845363515006065,
+          "scene_weighted_minFDE": 0.9830535136329247
+        },
+        "N>=2": {
+          "JADE": 0.6876227743191964,
+          "JFDE": 1.4106415423509204,
+          "agent_count": 181,
+          "coordination_gap_ADE": 0.1403101154989318,
+          "coordination_gap_FDE": 0.3515550659062665,
+          "minADE": 0.5284985531214281,
+          "minFDE": 1.0272212769010296,
+          "scene_count": 70,
+          "scene_weighted_minADE": 0.5473126588202646,
+          "scene_weighted_minFDE": 1.059086476444654
+        }
+      }
+    },
+    {
+      "comparison": {
+        "all_four_improve_vs_original": true,
+        "all_four_reach_matched_GDTS": false,
+        "delta_vs_matched_GDTS_m": {
+          "JADE": 0.11075251053203561,
+          "JFDE": 0.32772702969673306,
+          "minADE": 0.12277555602757495,
+          "minFDE": 0.38620350149619465
+        },
+        "delta_vs_original_m": {
+          "JADE": -0.03895534316666638,
+          "JFDE": -0.07872219064438357,
+          "minADE": -0.050487413528744196,
+          "minFDE": -0.10102899400565113
+        }
+      },
+      "coverage": {
+        "endpoint_center_bias_mean_m": 2.1475627498011884,
+        "endpoint_center_bias_rms_m": 2.7154766807180115,
+        "endpoint_pairwise_distance_mean_m": 2.431672202814512,
+        "endpoint_rms_radius_m": 2.0804676902561257,
+        "single_candidate_FDE_mean_m": 2.791239269009772
+      },
+      "factor": 1.5,
+      "invariants": {
+        "agent_order_preserved": true,
+        "bridge_residual_max_abs_m": 3.552713678800501e-15,
+        "candidate_mean_max_abs_m": 7.105427357601002e-15,
+        "endpoint_rms_radius_expected_ratio": 1.5,
+        "endpoint_rms_radius_ratio": 1.5000000000000002,
+        "endpoint_rms_radius_ratio_abs_error": 2.220446049250313e-16,
+        "world_order_preserved": true
+      },
+      "k_curve": [
+        {
+          "JADE": 1.3516052892258712,
+          "JFDE": 2.7741366436530877,
+          "K": 1,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 1.329627243996224,
+          "minFDE": 2.794138627185601,
+          "scene_count": 253,
+          "scene_weighted_minADE": 1.3516052892258712,
+          "scene_weighted_minFDE": 2.7741366436530877
+        },
+        {
+          "JADE": 1.079391957242286,
+          "JFDE": 2.171314785537873,
+          "K": 2,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.016643688337048435,
+          "coordination_gap_FDE": 0.044517130527025106,
+          "minADE": 1.025312752332546,
+          "minFDE": 2.1191393488358354,
+          "scene_count": 253,
+          "scene_weighted_minADE": 1.0627482689052377,
+          "scene_weighted_minFDE": 2.126797655010848
+        },
+        {
+          "JADE": 0.8700668840355784,
+          "JFDE": 1.6975829427066669,
+          "K": 4,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.028357022874200388,
+          "coordination_gap_FDE": 0.06288971120357867,
+          "minADE": 0.8106320513929306,
+          "minFDE": 1.619622053581628,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.841709861161378,
+          "scene_weighted_minFDE": 1.6346932315030882
+        },
+        {
+          "JADE": 0.7311631083991452,
+          "JFDE": 1.3635447747532685,
+          "K": 8,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.03705943610666773,
+          "coordination_gap_FDE": 0.08622306037458904,
+          "minADE": 0.6668565310390158,
+          "minFDE": 1.276970687640339,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6941036722924775,
+          "scene_weighted_minFDE": 1.2773217143786795
+        },
+        {
+          "JADE": 0.6754871455399547,
+          "JFDE": 1.2420632816183899,
+          "K": 12,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.04022532382832933,
+          "coordination_gap_FDE": 0.09532109337175387,
+          "minADE": 0.6075946831291003,
+          "minFDE": 1.1356713575054587,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6352618217116254,
+          "scene_weighted_minFDE": 1.146742188246636
+        },
+        {
+          "JADE": 0.6242006815435999,
+          "JFDE": 1.1279371649942642,
+          "K": 16,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.04052694171807891,
+          "coordination_gap_FDE": 0.09988078118153854,
+          "minADE": 0.5652959925141119,
+          "minFDE": 1.033633912704853,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.583673739825521,
+          "scene_weighted_minFDE": 1.0280563838127257
+        },
+        {
+          "JADE": 0.6006592775320356,
+          "JFDE": 1.071138821696733,
+          "K": 20,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.0424964489668892,
+          "coordination_gap_FDE": 0.1051608823164939,
+          "minADE": 0.539828415027575,
+          "minFDE": 0.9662358054961947,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.5581628285651464,
+          "scene_weighted_minFDE": 0.9659779393802391
+        }
+      ],
+      "metrics": {
+        "JADE": 0.6006592775320356,
+        "JFDE": 1.071138821696733,
+        "agent_count": 364,
+        "coordination_gap_ADE": 0.0424964489668892,
+        "coordination_gap_FDE": 0.1051608823164939,
+        "minADE": 0.539828415027575,
+        "minFDE": 0.9662358054961947,
+        "scene_count": 253,
+        "scene_weighted_minADE": 0.5581628285651464,
+        "scene_weighted_minFDE": 0.9659779393802391
+      },
+      "strata": {
+        "N=1": {
+          "JADE": 0.5706279458826548,
+          "JFDE": 0.9461469545861644,
+          "agent_count": 183,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 0.5706279458826548,
+          "minFDE": 0.9461469545861644,
+          "scene_count": 183,
+          "scene_weighted_minADE": 0.5706279458826548,
+          "scene_weighted_minFDE": 0.9461469545861644
+        },
+        "N>=2": {
+          "JADE": 0.6791697588439886,
+          "JFDE": 1.3979032742857915,
+          "agent_count": 181,
+          "coordination_gap_ADE": 0.15359430840889976,
+          "coordination_gap_FDE": 0.38008147465818576,
+          "minADE": 0.5086885578647041,
+          "minFDE": 0.9865466326593748,
+          "scene_count": 70,
+          "scene_weighted_minADE": 0.5255754504350888,
+          "scene_weighted_minFDE": 1.0178217996276058
+        }
+      }
+    },
+    {
+      "comparison": {
+        "all_four_improve_vs_original": true,
+        "all_four_reach_matched_GDTS": false,
+        "delta_vs_matched_GDTS_m": {
+          "JADE": 0.10731678520060928,
+          "JFDE": 0.33243446972270696,
+          "minADE": 0.11492998258176179,
+          "minFDE": 0.3714757864031317
+        },
+        "delta_vs_original_m": {
+          "JADE": -0.04239106849809271,
+          "JFDE": -0.07401475061840967,
+          "minADE": -0.058332986974557355,
+          "minFDE": -0.11575670909871405
+        }
+      },
+      "coverage": {
+        "endpoint_center_bias_mean_m": 2.1475627498011884,
+        "endpoint_center_bias_rms_m": 2.715476680718012,
+        "endpoint_pairwise_distance_mean_m": 3.242229603752683,
+        "endpoint_rms_radius_m": 2.7739569203415004,
+        "single_candidate_FDE_mean_m": 3.1775241487475716
+      },
+      "factor": 2.0,
+      "invariants": {
+        "agent_order_preserved": true,
+        "bridge_residual_max_abs_m": 7.105427357601002e-15,
+        "candidate_mean_max_abs_m": 1.0658141036401503e-14,
+        "endpoint_rms_radius_expected_ratio": 2.0,
+        "endpoint_rms_radius_ratio": 2.0,
+        "endpoint_rms_radius_ratio_abs_error": 0.0,
+        "world_order_preserved": true
+      },
+      "k_curve": [
+        {
+          "JADE": 1.5557774555257013,
+          "JFDE": 3.1619511250586143,
+          "K": 1,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 1.5388360725896861,
+          "minFDE": 3.1885181269176677,
+          "scene_count": 253,
+          "scene_weighted_minADE": 1.5557774555257013,
+          "scene_weighted_minFDE": 3.1619511250586143
+        },
+        {
+          "JADE": 1.1909565084295275,
+          "JFDE": 2.3785092802782875,
+          "K": 2,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.021602190745859895,
+          "coordination_gap_FDE": 0.05146457633329904,
+          "minADE": 1.13004876212453,
+          "minFDE": 2.315080444090115,
+          "scene_count": 253,
+          "scene_weighted_minADE": 1.1693543176836676,
+          "scene_weighted_minFDE": 2.3270447039449884
+        },
+        {
+          "JADE": 0.918690612237794,
+          "JFDE": 1.7950356472099522,
+          "K": 4,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.03471957464348818,
+          "coordination_gap_FDE": 0.07667096023453812,
+          "minADE": 0.8551095125674348,
+          "minFDE": 1.7002748823929092,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.8839710375943058,
+          "scene_weighted_minFDE": 1.7183646869754141
+        },
+        {
+          "JADE": 0.7554691285231755,
+          "JFDE": 1.412172840309392,
+          "K": 8,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.04607947791023781,
+          "coordination_gap_FDE": 0.10312988207935714,
+          "minADE": 0.6849129598716487,
+          "minFDE": 1.3055006348948144,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.7093896506129377,
+          "scene_weighted_minFDE": 1.309042958230035
+        },
+        {
+          "JADE": 0.6841490212722396,
+          "JFDE": 1.2688770521483574,
+          "K": 12,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.04957355706818589,
+          "coordination_gap_FDE": 0.11467176751704766,
+          "minADE": 0.6122825746891735,
+          "minFDE": 1.1431529093858785,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.6345754642040538,
+          "scene_weighted_minFDE": 1.1542052846313098
+        },
+        {
+          "JADE": 0.6245490056226606,
+          "JFDE": 1.140045426022317,
+          "K": 16,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.04964658278844869,
+          "coordination_gap_FDE": 0.11557472757778475,
+          "minADE": 0.5623800385868403,
+          "minFDE": 1.030828961610317,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.5749024228342119,
+          "scene_weighted_minFDE": 1.0244706984445322
+        },
+        {
+          "JADE": 0.5972235522006093,
+          "JFDE": 1.075846261722707,
+          "K": 20,
+          "agent_count": 364,
+          "coordination_gap_ADE": 0.05173471693427778,
+          "coordination_gap_FDE": 0.12096404388407633,
+          "minADE": 0.5319828415817618,
+          "minFDE": 0.9515080904031318,
+          "scene_count": 253,
+          "scene_weighted_minADE": 0.5454888352663315,
+          "scene_weighted_minFDE": 0.9548822178386306
+        }
+      ],
+      "metrics": {
+        "JADE": 0.5972235522006093,
+        "JFDE": 1.075846261722707,
+        "agent_count": 364,
+        "coordination_gap_ADE": 0.05173471693427778,
+        "coordination_gap_FDE": 0.12096404388407633,
+        "minADE": 0.5319828415817618,
+        "minFDE": 0.9515080904031318,
+        "scene_count": 253,
+        "scene_weighted_minADE": 0.5454888352663315,
+        "scene_weighted_minFDE": 0.9548822178386306
+      },
+      "strata": {
+        "N=1": {
+          "JADE": 0.556705632532415,
+          "JFDE": 0.9428314769052628,
+          "agent_count": 183,
+          "coordination_gap_ADE": 0.0,
+          "coordination_gap_FDE": 0.0,
+          "minADE": 0.556705632532415,
+          "minFDE": 0.9428314769052628,
+          "scene_count": 183,
+          "scene_weighted_minADE": 0.556705632532415,
+          "scene_weighted_minFDE": 0.9428314769052628
+        },
+        "N>=2": {
+          "JADE": 0.7031489707617455,
+          "JFDE": 1.4235849134597398,
+          "agent_count": 181,
+          "coordination_gap_ADE": 0.1869840483481756,
+          "coordination_gap_FDE": 0.43719861575244756,
+          "minADE": 0.5069868706206038,
+          "minFDE": 0.9602805780832977,
+          "scene_count": 70,
+          "scene_weighted_minADE": 0.5161649224135699,
+          "scene_weighted_minFDE": 0.9863862977072922
+        }
+      }
+    }
+  ],
+  "runtime": {
+    "device": "cpu",
+    "elapsed_seconds": 2.029820680618286,
+    "numpy": "1.26.4",
+    "platform": "Linux-5.15.0-139-generic-x86_64-with-glibc2.31",
+    "python": "3.10.21 (main, Aug 27 2026, 14:42:07) [GCC 14.3.0]"
+  },
+  "schema": "ebjd-endpoint-calibration-audit-v1",
+  "status": "PARTIAL_RECOVERY"
+}
