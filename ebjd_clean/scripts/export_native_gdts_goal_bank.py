@@ -77,11 +77,6 @@ def main() -> None:
         raise RuntimeError("formal native goal export requires CUDA")
     device = torch.device(args.device)
     torch.cuda.set_device(device)
-    random.seed(args.seed)
-    np.random.seed(args.seed)
-    torch.manual_seed(args.seed)
-    torch.cuda.manual_seed_all(args.seed)
-
     gdts_root = Path(args.gdts_root).resolve()
     sys.path.insert(0, str(gdts_root))
     from src.data_src.dataset_src.dataset_create import create_dataset
@@ -112,6 +107,12 @@ def main() -> None:
         key[len("goal_module."):]: value for key, value in state.items()
         if key.startswith("goal_module.")}, strict=True)
     module = module.to(device).float().eval()
+    # Match the certified route-A boundary exactly: module construction may
+    # consume RNG, so reset all streams only after the frozen provider loads.
+    random.seed(args.seed)
+    np.random.seed(args.seed)
+    torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
     started = time.monotonic()
     rows, files, calls = [], [], 0
     with torch.inference_mode():
