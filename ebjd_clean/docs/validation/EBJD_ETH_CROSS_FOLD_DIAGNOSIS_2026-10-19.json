@@ -1,0 +1,260 @@
+{
+  "schema": "ebjd-eth-cross-fold-diagnosis-v1",
+  "status": "COMPLETE_READ_ONLY_DIAGNOSIS",
+  "generated_at": "2026-10-19T10:06:46+08:00",
+  "pre_report_branch_head": "ebbbe189a258ed161be97e26e29fecb53acf467f",
+  "optimizer_updates_during_diagnosis": 0,
+  "jmm_protocol": {
+    "split": "leave-one-scene-out: train on four ETH/UCY scenes and evaluate on the left-out scene",
+    "eth_1_4_meaning": "mean number of agents per 20-frame sequence in the left-out ETH evaluation population",
+    "paper_separate_inner_validation_specified": false,
+    "local_validation_test_window_keys_identical": true,
+    "local_eth_evaluation_mean_agents": 1.4387351778656126
+  },
+  "folds": {
+    "hotel": {
+      "training_population": {
+        "scenes": 4249,
+        "agent_occurrences": 37702,
+        "mean_agents_per_scene": 8.873146622734762
+      },
+      "evaluation_population": {
+        "scenes": 445,
+        "agent_occurrences": 1197,
+        "mean_agents_per_scene": 2.689887640449438,
+        "single_agent_scene_fraction": 0.32359550561797755
+      },
+      "representation_scale": {
+        "train_goal_rms_m": 1.0634789626022958,
+        "evaluation_goal_rms_m": 0.5854482651937268,
+        "evaluation_over_train_goal_ratio": 0.5505029114644219,
+        "train_bridge_rms_m": 0.2174295544191598,
+        "evaluation_bridge_rms_m": 0.16560493086421574,
+        "evaluation_over_train_bridge_ratio": 0.7616486696420453
+      },
+      "selected_checkpoint": {
+        "epoch": 45,
+        "role": "least_violation_not_best_eligible"
+      },
+      "seed_2035_metrics": {
+        "gdts": {
+          "minADE": 0.1352196876519829,
+          "minFDE": 0.19338157261354552,
+          "JADE": 0.21118598435953093,
+          "JFDE": 0.35985399696222514
+        },
+        "ebjd": {
+          "minADE": 0.13863019940599725,
+          "minFDE": 0.20478341841293682,
+          "JADE": 0.16882872052616282,
+          "JFDE": 0.2789008148079947
+        },
+        "relative_change_percent_ebjd_minus_gdts": {
+          "minADE": 2.5222005857549634,
+          "minFDE": 5.8960353074472005,
+          "JADE": -20.05685365997466,
+          "JFDE": -22.496118658570385
+        }
+      }
+    },
+    "univ": {
+      "training_population": {
+        "scenes": 4067,
+        "agent_occurrences": 15186,
+        "mean_agents_per_scene": 3.7339562330956477
+      },
+      "evaluation_population": {
+        "scenes": 947,
+        "agent_occurrences": 24334,
+        "mean_agents_per_scene": 25.69588173178458,
+        "single_agent_scene_fraction": 0.0
+      },
+      "representation_scale": {
+        "train_goal_rms_m": 0.9640424419456078,
+        "evaluation_goal_rms_m": 1.1135085346163434,
+        "evaluation_over_train_goal_ratio": 1.1550409879974646,
+        "train_bridge_rms_m": 0.21518939220485941,
+        "evaluation_bridge_rms_m": 0.21782571444271287,
+        "evaluation_over_train_bridge_ratio": 1.0122511719134542
+      },
+      "selected_checkpoint": {
+        "epoch": 73,
+        "role": "best_eligible"
+      },
+      "seed_2035_metrics": {
+        "gdts": {
+          "minADE": 0.2875914513856816,
+          "minFDE": 0.5213610204515161,
+          "JADE": 0.6542967933819186,
+          "JFDE": 1.3185818239401361
+        },
+        "ebjd": {
+          "minADE": 0.27496127319530467,
+          "minFDE": 0.5169729463119975,
+          "JADE": 0.5323923815203065,
+          "JFDE": 1.1343175890327382
+        },
+        "relative_change_percent_ebjd_minus_gdts": {
+          "minADE": -4.391708491167535,
+          "minFDE": -0.8416575016901628,
+          "JADE": -18.631363181762595,
+          "JFDE": -13.974425520047484
+        }
+      }
+    },
+    "eth": {
+      "training_population": {
+        "scenes": 4110,
+        "agent_occurrences": 36906,
+        "mean_agents_per_scene": 8.979562043795621
+      },
+      "evaluation_population": {
+        "scenes": 253,
+        "agent_occurrences": 364,
+        "mean_agents_per_scene": 1.4387351778656126,
+        "single_agent_scenes": 183,
+        "single_agent_scene_fraction": 0.7233201581027668
+      },
+      "representation_scale": {
+        "train_goal_rms_m": 1.0596676835064214,
+        "evaluation_goal_rms_m": 2.0714570612216843,
+        "evaluation_over_train_goal_ratio": 1.9548176220371938,
+        "train_bridge_rms_m": 0.20777413132170952,
+        "evaluation_bridge_rms_m": 0.5000102827622581,
+        "evaluation_over_train_bridge_ratio": 2.40650883525082
+      },
+      "selected_checkpoint": {
+        "epoch": 5,
+        "role": "least_violation_no_best_eligible"
+      },
+      "seed_2035_metrics": {
+        "gdts": {
+          "minADE": 0.41705285937904,
+          "minFDE": 0.5800323037873278,
+          "JADE": 0.4899067671402641,
+          "JFDE": 0.7434117917354282
+        },
+        "ebjd": {
+          "minADE": 0.5820308021157161,
+          "minFDE": 1.0154023757639372,
+          "JADE": 0.6476116295270768,
+          "JFDE": 1.121817012166553
+        },
+        "relative_change_percent_ebjd_minus_gdts": {
+          "minADE": 39.55804139127967,
+          "minFDE": 75.05962497844607,
+          "JADE": 32.19079077175937,
+          "JFDE": 50.901159308728715
+        }
+      }
+    }
+  },
+  "eth_fixed_bank": {
+    "contract": {
+      "scenes": 253,
+      "agent_occurrences": 364,
+      "inference_seed": 2035,
+      "worlds": 20,
+      "steps": 20,
+      "optimizer_updates": 0,
+      "replay_parity": "exact"
+    },
+    "models": {
+      "gdts": {
+        "mean_single_world_FDE_m": 2.2424954192123816,
+        "minFDE_20_m": 0.5800323079290313,
+        "endpoint_center_offset_m": 1.62271,
+        "endpoint_rms_radius_m": 1.69962,
+        "mean_pairwise_endpoint_m": 2.19237
+      },
+      "ebjd_epoch005": {
+        "mean_single_world_FDE_m": 2.513357080405133,
+        "minFDE_20_m": 1.0154023716517597,
+        "endpoint_center_offset_m": 2.12684,
+        "endpoint_rms_radius_m": 1.44378,
+        "mean_pairwise_endpoint_m": 1.80558
+      },
+      "ebjd_epoch022": {
+        "mean_single_world_FDE_m": 2.466136862466262,
+        "minFDE_20_m": 1.0672647995018458,
+        "endpoint_center_offset_m": 2.14756,
+        "endpoint_rms_radius_m": 1.32437,
+        "mean_pairwise_endpoint_m": 1.62111
+      },
+      "ebjd_epoch023": {
+        "mean_single_world_FDE_m": 2.2613517729935086,
+        "minFDE_20_m": 1.2620082554828063,
+        "endpoint_center_offset_m": 2.11759,
+        "endpoint_rms_radius_m": 0.826846,
+        "mean_pairwise_endpoint_m": 1.00983
+      },
+      "ebjd_epoch065": {
+        "mean_single_world_FDE_m": 2.2399112025819137,
+        "minFDE_20_m": 1.1803055260607784,
+        "endpoint_center_offset_m": 2.05661,
+        "endpoint_rms_radius_m": 0.932621,
+        "mean_pairwise_endpoint_m": 1.12469
+      },
+      "ebjd_epoch066": {
+        "mean_single_world_FDE_m": 2.203629951491859,
+        "minFDE_20_m": 1.3709425380073226,
+        "endpoint_center_offset_m": 2.07566,
+        "endpoint_rms_radius_m": 0.714159,
+        "mean_pairwise_endpoint_m": 0.860328
+      },
+      "ebjd_epoch100": {
+        "mean_single_world_FDE_m": 2.1881156016933,
+        "minFDE_20_m": 1.2713182537023595,
+        "endpoint_center_offset_m": 2.03391,
+        "endpoint_rms_radius_m": 0.798037,
+        "mean_pairwise_endpoint_m": 0.96047
+      }
+    },
+    "adjacent_transitions": {
+      "epoch022_to_epoch023": {
+        "mean_single_world_FDE_relative_change_percent": -8.303851201470363,
+        "minFDE_20_relative_change_percent": 18.24695001227538,
+        "endpoint_rms_radius_relative_change_percent": -37.56533446371523,
+        "pairwise_endpoint_relative_change_percent": -37.70729333308634,
+        "agent_fraction_with_worse_minFDE": 0.6510989010989011,
+        "top_5_percent_share_of_net_minFDE_deterioration": 0.38442257848872885
+      },
+      "epoch065_to_epoch066": {
+        "mean_single_world_FDE_relative_change_percent": -1.6197655787568724,
+        "minFDE_20_relative_change_percent": 16.15149586451648,
+        "endpoint_rms_radius_relative_change_percent": -23.423434897315133,
+        "pairwise_endpoint_relative_change_percent": -23.50443488472175,
+        "agent_fraction_with_worse_minFDE": 0.6208791208791209,
+        "top_5_percent_share_of_net_minFDE_deterioration": 0.41532738700577937
+      }
+    }
+  },
+  "findings": {
+    "confirmed": [
+      "ETH (1.4) is an evaluation-population density, not a training-population density",
+      "ETH has a uniquely large held-out representation-scale shift",
+      "ETH candidate banks become under-dispersed while mean single-world FDE improves",
+      "single-agent and multi-agent ETH groups both deteriorate",
+      "the degradation is not explained by OOM, NaN, resume discontinuity, manifest drift, or inference seed variance"
+    ],
+    "strongly_supported": [
+      "ETH representation-scale shift and Gaussian/DDIM candidate under-dispersion jointly dominate the marginal gap",
+      "UNIV benefits from dense interaction structure and matched representation scale",
+      "HOTEL joint gains coexist with mild marginal degradation and should not be described as a four-metric win"
+    ],
+    "open": [
+      "which model submodule first contracts latent-to-output sensitivity",
+      "whether training seed 3101 amplifies the ETH failure",
+      "the exact file-level inner-validation/model-selection procedure used by the JMM implementation"
+    ]
+  },
+  "source_sha256": {
+    "jmm_pdf": "f7db01c348729f7d4e53d0ebb13cb215e764de07d7e73c3a1f283d39e8c39e90",
+    "hotel_epoch45_evaluation": "5e0f13ab4cb272aebe9ea19e6f0307a9eb3213301256c2f6c826cf449bab800f",
+    "univ_final_comparison": "978b6a33d45921d11f53e1f4eeb77571e13819c8983e09550c1f1727308c36a9",
+    "eth_final_comparison": "b4891cb9601431bd2e3b80b90d47afd68b224521b595a9eccdb9791aa6169020",
+    "eth_cpu_diagnostic": "e323018a7ef457e3f5fd94b4c34384bb902abf9e2433e5112f425aef1636599b",
+    "eth_bank_analysis": "3e06a676c686d20b690911ff84f63e8f01916f2241adbdf796b49524e84b8d04"
+  },
+  "evidence_boundary": "One independent training seed per fold. Five inference seeds measure inference randomness only. Current local validation/test populations are mirrored and are not an independent final test. The bank analysis confirms output under-dispersion but does not attribute it to a single network submodule."
+}
