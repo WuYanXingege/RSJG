@@ -692,6 +692,7 @@ def validate_native_goal_fork_payload(
     allowed.update(".".join(path) for path in SEMANTIC_CONFIG_EXCLUSIONS)
     allowed.update(
         name for name in differences if name.startswith("native_goal_conditioning."))
+    allowed.add("native_goal_conditioning")
     disallowed = sorted(set(differences) - allowed)
     if disallowed or "native_goal_conditioning" not in config:
         raise ValueError(f"native-goal fork has disallowed changes: {disallowed}")
