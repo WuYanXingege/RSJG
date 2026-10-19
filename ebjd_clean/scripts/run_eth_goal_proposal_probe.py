@@ -223,9 +223,10 @@ def run_gdts_route(
             argmax = torch.from_numpy(argmax[:, 0, :]).to(device).float()
             scale = float(config["down_factor"])
             world = torch.stack([
-                geometry.make_world_coord_torch(value * scale)
+                geometry.make_world_coord_torch((value * scale).unsqueeze(0))[0]
                 for value in clusters]).cpu().numpy()
-            argmax_world = geometry.make_world_coord_torch(argmax * scale).cpu().numpy()
+            argmax_world = geometry.make_world_coord_torch(
+                (argmax * scale).unsqueeze(0))[0].cpu().numpy()
             centers = item["observed"][:, -1].numpy()
             key = window_key(item)
             for agent, agent_id in enumerate(item["agent_ids"]):
