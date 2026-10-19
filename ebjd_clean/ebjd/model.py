@@ -20,6 +20,7 @@ class EBJDModel(nn.Module):
         representation: str = "endpoint_bridge",
         future_social: bool = True,
         clean_geometry: bool = True,
+        native_goal_conditioning: bool = False,
     ) -> None:
         super().__init__()
         if representation == "endpoint_bridge":
@@ -31,12 +32,15 @@ class EBJDModel(nn.Module):
         self.encoder = HistoryMapEncoder(
             goal_scale, crop_width_m, map_agent_chunk=map_agent_chunk)
         self.denoiser = JointEndpointBridgeDenoiser(
-            self.representation, future_social=future_social, clean_geometry=clean_geometry)
+            self.representation, future_social=future_social,
+            clean_geometry=clean_geometry,
+            native_goal_conditioning=native_goal_conditioning)
 
     def encode_context(
-        self, observed: torch.Tensor, semantic_maps: torch.Tensor, valid: torch.Tensor
+        self, observed: torch.Tensor, semantic_maps: torch.Tensor, valid: torch.Tensor,
+        native_goals: torch.Tensor | None = None,
     ) -> EBJDContext:
-        return self.encoder(observed, semantic_maps, valid)
+        return self.encoder(observed, semantic_maps, valid, native_goals)
 
     def forward(
         self,
@@ -45,5 +49,8 @@ class EBJDModel(nn.Module):
         valid: torch.Tensor,
         latent: torch.Tensor,
         time: torch.Tensor | float,
+        native_goals: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
-        return self.denoiser(latent, time, self.encode_context(observed, semantic_maps, valid))
+        return self.denoiser(
+            latent, time,
+            self.encode_context(observed, semantic_maps, valid, native_goals))

@@ -312,7 +312,8 @@ class EBJDTrainer:
                 device_type=autocast_device, dtype=torch.bfloat16,
                 enabled=self.use_bf16):
                 context = self.model.encode_context(
-                    batch.observed, batch.semantic_maps, batch.valid)
+                    batch.observed, batch.semantic_maps, batch.valid,
+                    batch.native_goals)
         with record_function("ebjd.base_diffusion_and_losses"):
             latent_clean = self.model.representation.encode_target(
                 batch.future.detach(), context.baseline)[:, None]
@@ -564,10 +565,15 @@ class EBJDTrainer:
         grad_f = zeros_for(self.parameters)
         aggregate: dict[str, float] = {}
         input_digest = hashlib.sha256()
+        augmentation_digest = hashlib.sha256()
         random_draw_digest = hashlib.sha256()
         scale = 1 / len(microbatches)
         for batch in microbatches:
             input_digest.update("\0".join(batch.scene_ids).encode("utf-8"))
+            for identities in batch.agent_ids:
+                input_digest.update("\0".join(identities).encode("utf-8"))
+            augmentation_digest.update(
+                (batch.augmentation_sha256 or "NONE").encode("ascii"))
             if self.options.scene_forward_chunk:
                 gradients_total, gradients_a, gradients_f, logs = (
                     self._scene_chunked_batch_gradients(batch, epoch, do_rollout))
@@ -588,6 +594,11 @@ class EBJDTrainer:
             del gradients_total, gradients_a, gradients_f, logs
         with record_function("ebjd.adamw_proposal"):
             total_gradient_norm_before_clip = float(list_norm(total_grad))
+            gate_gradient = 0.0
+            gate_name = "denoiser.native_goal_conditioner.gate"
+            parameter_names = [name for name, _ in self.optimizer.named_parameters]
+            if gate_name in parameter_names:
+                gate_gradient = float(total_grad[parameter_names.index(gate_name)].float())
             candidate, pending = self.optimizer.propose(
                 clip_global_norm(total_grad, self.options.gradient_clip_norm))
         candidate_dot_a = float(list_dot(grad_a, candidate)) if do_rollout else 0.0
@@ -622,6 +633,9 @@ class EBJDTrainer:
             "unet_learning_rate": self.optimizer.unet_lr,
             "total_gradient_norm_before_clip": total_gradient_norm_before_clip,
             "logical_scene_id_sha256": input_digest.hexdigest(),
+            "logical_scene_agent_identity_sha256": input_digest.hexdigest(),
+            "augmentation_sha256": augmentation_digest.hexdigest(),
+            "native_goal_gate_gradient": gate_gradient,
             "random_draw_sha256": random_draw_digest.hexdigest()
             if self.options.scene_forward_chunk else "not-recorded-legacy-path",
             "scene_forward_chunk": float(self.options.scene_forward_chunk),
@@ -631,6 +645,13 @@ class EBJDTrainer:
             "rollout_block_checkpointing": float(
                 self.options.rollout_block_checkpointing),
         })
+        conditioner = self.model.denoiser.native_goal_conditioner
+        aggregate["native_goal_gate"] = (
+            float(conditioner.gate.detach().float().cpu())
+            if conditioner is not None else 0.0)
+        aggregate["native_goal_condition_norm_ratio"] = (
+            float(conditioner.last_condition_norm_ratio or 0.0)
+            if conditioner is not None else 0.0)
         return aggregate
 
     @staticmethod
@@ -717,3 +738,59 @@ class EBJDTrainer:
         self.optimizer.load_state_dict(payload["optimizer"])
         self.update_index = int(payload["update_index"])
         self._restore_rng(payload["rng"], loader_generator)
+
+    def restore_model_extension_payload(
+        self, payload: dict, loader_generator: torch.Generator | None = None,
+        prefix: str = "denoiser.native_goal_conditioner.",
+    ) -> dict:
+        """Restore a legacy checkpoint by name, leaving only new-module state empty."""
+        if payload.get("schema") != "ebjd-checkpoint-v2" or \
+                payload.get("epoch_boundary_only") is not True:
+            raise ValueError("model extension requires an epoch-boundary v2 checkpoint")
+        current = self.model.state_dict()
+        saved = payload.get("model")
+        if not isinstance(saved, dict):
+            raise ValueError("model extension checkpoint lacks model state")
+        old_names = [name for name in current if not name.startswith(prefix)]
+        new_names = [name for name in current if name.startswith(prefix)]
+        if list(saved) != old_names or not new_names:
+            raise ValueError("model extension differs by more than the new conditioner")
+        for name in old_names:
+            if saved[name].shape != current[name].shape:
+                raise ValueError(f"model extension shape mismatch: {name}")
+        missing, unexpected = self.model.load_state_dict(saved, strict=False)
+        if list(missing) != new_names or unexpected:
+            raise ValueError("model extension load produced unexpected state differences")
+
+        optimizer = payload.get("optimizer", {})
+        saved_names = list(optimizer.get("parameter_names", []))
+        saved_states = list(optimizer.get("states", []))
+        if len(saved_names) != len(saved_states):
+            raise ValueError("origin optimizer name/state lengths differ")
+        by_name = dict(zip(saved_names, saved_states, strict=True))
+        current_names = [name for name, _ in self.optimizer.named_parameters]
+        if [name for name in current_names if not name.startswith(prefix)] != saved_names:
+            raise ValueError("origin optimizer parameters do not match legacy model")
+        extended_optimizer = {
+            "lr": optimizer["lr"], "unet_lr": optimizer["unet_lr"],
+            "parameter_names": current_names,
+            "states": [by_name.get(name, {}) for name in current_names],
+        }
+        self.optimizer.load_state_dict(extended_optimizer)
+        self.update_index = int(payload["update_index"])
+        self._restore_rng(payload["rng"], loader_generator)
+        exact = all(torch.equal(
+            self.model.state_dict()[name].detach().cpu(), saved[name].detach().cpu())
+            for name in old_names)
+        if not exact:
+            raise ValueError("legacy tensors changed during model-extension migration")
+        return {
+            "old_model_state_exact": True,
+            "old_optimizer_state_by_name_exact": True,
+            "new_model_state_names": new_names,
+            "new_optimizer_state_empty": all(
+                extended_optimizer["states"][current_names.index(name)] == {}
+                for name in current_names if name.startswith(prefix)),
+            "rng_state_restored": True,
+            "update_index_restored": self.update_index,
+        }

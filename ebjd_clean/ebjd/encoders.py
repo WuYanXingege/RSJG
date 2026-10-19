@@ -27,6 +27,7 @@ class EBJDContext:
     valid: torch.Tensor
     observed: torch.Tensor
     crop_width_m: float
+    native_goals: torch.Tensor | None = None
 
 
 def _safe_norm(x: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
@@ -123,7 +124,8 @@ class HistoryMapEncoder(nn.Module):
         return torch.cat((semantic_maps.float(), heatmaps), dim=2)
 
     def forward(
-        self, observed: torch.Tensor, semantic_maps: torch.Tensor, valid: torch.Tensor
+        self, observed: torch.Tensor, semantic_maps: torch.Tensor, valid: torch.Tensor,
+        native_goals: torch.Tensor | None = None,
     ) -> EBJDContext:
         if observed.ndim != 4 or observed.shape[-2:] != (8, 2):
             raise ValueError("observed must be [B,N,8,2]")
@@ -132,6 +134,12 @@ class HistoryMapEncoder(nn.Module):
             raise ValueError("valid must be [B,N] with at least one agent per scene")
         observed = observed.float()
         valid = valid.bool()
+        if native_goals is not None:
+            if native_goals.shape != (batch, agents, 20, 2):
+                raise ValueError("native_goals must have shape [B,N,20,2]")
+            if not torch.isfinite(native_goals).all():
+                raise ValueError("native_goals contain NaN or Inf")
+            native_goals = native_goals.float()
         baseline, mean_velocity = cv_baseline(observed)
         velocity = torch.zeros_like(observed)
         velocity[..., 1:, :] = (observed[..., 1:, :] - observed[..., :-1, :]) / 0.4
@@ -193,4 +201,5 @@ class HistoryMapEncoder(nn.Module):
             valid=valid,
             observed=observed,
             crop_width_m=self.crop_width_m,
+            native_goals=native_goals,
         )

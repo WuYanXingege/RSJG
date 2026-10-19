@@ -13,6 +13,63 @@ from .layers import BiasedMultiheadAttention, sinusoidal_embedding
 from .representation import cosine_vp
 
 
+class NativeGoalConditioner(nn.Module):
+    """Cross-attend future tokens to frozen GDTS endpoint proposals."""
+
+    def __init__(self, dim: int = 128, heads: int = 4) -> None:
+        super().__init__()
+        self.candidate_mlp = nn.Sequential(
+            nn.Linear(4, 64), nn.SiLU(), nn.Linear(64, dim))
+        self.query_norm = nn.LayerNorm(dim)
+        self.attention = nn.MultiheadAttention(
+            dim, heads, dropout=0.0, batch_first=True)
+        self.gate = nn.Parameter(torch.zeros(()))
+        self.enabled = True
+        self.last_condition_norm_ratio: float | None = None
+
+    def forward(
+        self,
+        hidden: torch.Tensor,
+        context: EBJDContext,
+        goal_scale: torch.Tensor,
+    ) -> torch.Tensor:
+        if not self.enabled:
+            self.last_condition_norm_ratio = 0.0
+            return hidden
+        goals = context.native_goals
+        if goals is None:
+            raise ValueError("native goal conditioning requires native_goals")
+        if goals.ndim != 4 or goals.shape[:2] != hidden.shape[:1] + hidden.shape[2:3]:
+            raise ValueError("native_goals must have shape [B,N,K,2]")
+        if goals.shape[-2:] != (20, 2):
+            raise ValueError("native_goals must contain exactly 20 endpoint proposals")
+        if not torch.isfinite(goals).all():
+            raise ValueError("native_goals contain nonfinite values")
+
+        with torch.autocast(device_type=hidden.device.type, enabled=False):
+            origin = context.observed.float()[..., -1, :]
+            centre = context.baseline.float()[..., -1, :]
+            scale = goal_scale.float().clamp_min(0.5)
+            features = torch.cat((
+                (goals.float() - origin[:, :, None]) / scale,
+                (goals.float() - centre[:, :, None]) / scale,
+            ), dim=-1).clamp(-20, 20)
+        candidates = self.candidate_mlp(features.to(hidden.dtype))
+        batch, worlds, agents, times, dim = hidden.shape
+        query = self.query_norm(hidden).reshape(batch * worlds * agents, times, dim)
+        keys = candidates[:, None].expand(batch, worlds, agents, 20, dim).reshape(
+            batch * worlds * agents, 20, dim)
+        delta = self.attention(query, keys, keys, need_weights=False)[0].reshape_as(hidden)
+        valid = context.valid[:, None, :, None, None].to(hidden.dtype)
+        delta = delta * valid
+        gated = torch.tanh(self.gate).to(hidden.dtype) * delta
+        with torch.no_grad():
+            denominator = hidden.detach().float().norm().clamp_min(1e-12)
+            self.last_condition_norm_ratio = float(
+                gated.detach().float().norm().div(denominator).cpu())
+        return (hidden + gated) * valid
+
+
 class FactorizedFutureBlock(nn.Module):
     """Temporal, social, per-agent context, then FFN; never mixes worlds."""
 
@@ -128,6 +185,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
         future_social: bool = True,
         clean_geometry: bool = True,
         activation_checkpointing: bool = True,
+        native_goal_conditioning: bool = False,
     ) -> None:
         super().__init__()
         self.representation = representation
@@ -148,6 +206,11 @@ class JointEndpointBridgeDenoiser(nn.Module):
         self.map_injection = nn.Sequential(nn.Linear(33, dim), nn.LayerNorm(dim))
         self.future_geometry_mlp = nn.Sequential(
             nn.Linear(12, 64), nn.SiLU(), nn.Linear(64, 4))
+        # Registered last so legacy parameter/state ordering remains an exact
+        # prefix during the explicit model-extension migration.
+        self.native_goal_conditioner = (
+            NativeGoalConditioner(dim=dim, heads=4)
+            if native_goal_conditioning else None)
         for head in (
             self.pre_bridge_head, self.pre_goal_head,
             self.final_bridge_head, self.final_goal_head,
@@ -227,6 +290,9 @@ class JointEndpointBridgeDenoiser(nn.Module):
             + self.token_type[types].view(1, 1, 1, 12, 128)
             + context.social_h[:, None, :, None, :]
         )
+        if self.native_goal_conditioner is not None:
+            hidden = self.native_goal_conditioner(
+                hidden, context, self.representation.goal_scale)
         observed = context.observed_bias[:, None, None].expand(
             batch, worlds, 12, 4, agents, agents)
         for block in self.blocks[:3]:

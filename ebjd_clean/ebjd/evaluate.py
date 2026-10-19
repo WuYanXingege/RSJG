@@ -51,19 +51,24 @@ def main() -> None:
     parser.add_argument("--ablation", default="none")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--output", required=True)
+    parser.add_argument(
+        "--disable-native-goal-conditioner", action="store_true",
+        help="registered intervention: retain weights/cache but bypass conditioning")
     args = parser.parse_args()
     config = load_config(args.config)
     path = config.get("paths", {}).get(f"{args.split}_manifest")
     if not path:
         raise ValueError(f"paths.{args.split}_manifest is required")
-    dataset = SceneManifestDataset(path)
-    loader = DataLoader(dataset, batch_size=1, shuffle=False,
-                        collate_fn=collate_scenes, num_workers=0)
     device = torch.device(args.device)
     model = build_model(config, args.ablation).to(device).float()
     checkpoint_sha256_before = sha256(args.checkpoint)
     payload = torch.load(args.checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(payload["model"])
+    if args.disable_native_goal_conditioner:
+        conditioner = model.denoiser.native_goal_conditioner
+        if conditioner is None:
+            raise ValueError("checkpoint has no native-goal conditioner to disable")
+        conditioner.enabled = False
     model.eval()
     evaluation = config.get("evaluation", {})
     worlds, steps = int(evaluation.get("worlds", 20)), int(evaluation.get("steps", 20))
@@ -71,14 +76,69 @@ def main() -> None:
     with torch.no_grad(), torch.autocast(
             device_type=device.type, enabled=False):
         for seed in evaluation.get("inference_seeds", [2035, 2036, 2037, 2038, 2039]):
+            cache = None
+            if "native_goal_conditioning" in config:
+                cache = config["native_goal_conditioning"][
+                    "validation_cache_by_seed"].get(str(seed))
+                if cache is None:
+                    raise ValueError(f"native-goal cache missing inference seed {seed}")
+            dataset = SceneManifestDataset(path, native_goal_bank=cache)
+            loader = DataLoader(dataset, batch_size=1, shuffle=False,
+                                collate_fn=collate_scenes, num_workers=0)
             generator = torch.Generator(device=device).manual_seed(int(seed))
             accumulator = MetricAccumulator()
+            k_values = (1, 4, 8, 12, 16, 20)
+            k_accumulators = {value: MetricAccumulator() for value in k_values}
+            stratum_accumulators = {
+                "N=1": MetricAccumulator(), "N>=2": MetricAccumulator()}
+            endpoint_sums = {
+                "agents": 0, "native_oracle_fde": 0.0,
+                "diffusion_oracle_fde": 0.0, "native_to_diffusion_nn": 0.0,
+                "native_recall_0p5": 0.0, "diffusion_recall_0p5": 0.0,
+                "native_recall_1p0": 0.0, "diffusion_recall_1p0": 0.0,
+                "native_cv_relative_radius": 0.0,
+                "diffusion_cv_relative_radius": 0.0,
+            }
             for batch in loader:
                 batch = batch.to(device)
-                prediction, _ = predict(
+                prediction, predicted_goal = predict(
                     model, batch.observed, batch.semantic_maps, batch.valid,
-                    worlds, steps, generator)
+                    worlds, steps, generator, batch.native_goals)
                 accumulator.update(prediction, batch.future, batch.valid)
+                for value in k_values:
+                    k_accumulators[value].update(
+                        prediction[:, :value], batch.future, batch.valid)
+                group = "N=1" if int(batch.valid.sum()) == 1 else "N>=2"
+                stratum_accumulators[group].update(
+                    prediction, batch.future, batch.valid)
+                if batch.native_goals is not None:
+                    mask = batch.valid
+                    target = batch.future[..., -1, :][mask]
+                    native = batch.native_goals[mask]
+                    diffuse = predicted_goal.permute(0, 2, 1, 3)[mask]
+                    native_error = torch.linalg.vector_norm(
+                        native - target[:, None], dim=-1).min(-1).values
+                    diffuse_error = torch.linalg.vector_norm(
+                        diffuse - target[:, None], dim=-1).min(-1).values
+                    cross = torch.cdist(native, diffuse).min(-1).values.mean(-1)
+                    cv = batch.observed[..., -1, :][mask] + 12 * 0.4 * (
+                        batch.observed[..., -1, :][mask]
+                        - batch.observed[..., -2, :][mask]) / 0.4
+                    native_radius = torch.linalg.vector_norm(
+                        native - cv[:, None], dim=-1).mean(-1)
+                    diffuse_radius = torch.linalg.vector_norm(
+                        diffuse - cv[:, None], dim=-1).mean(-1)
+                    count = int(mask.sum())
+                    endpoint_sums["agents"] += count
+                    endpoint_sums["native_oracle_fde"] += float(native_error.sum())
+                    endpoint_sums["diffusion_oracle_fde"] += float(diffuse_error.sum())
+                    endpoint_sums["native_to_diffusion_nn"] += float(cross.sum())
+                    endpoint_sums["native_recall_0p5"] += float((native_error <= .5).sum())
+                    endpoint_sums["diffusion_recall_0p5"] += float((diffuse_error <= .5).sum())
+                    endpoint_sums["native_recall_1p0"] += float((native_error <= 1).sum())
+                    endpoint_sums["diffusion_recall_1p0"] += float((diffuse_error <= 1).sum())
+                    endpoint_sums["native_cv_relative_radius"] += float(native_radius.sum())
+                    endpoint_sums["diffusion_cv_relative_radius"] += float(diffuse_radius.sum())
             means = accumulator.as_dict()
             nonfinite = {
                 name: value for name, value in means.items()
@@ -95,7 +155,27 @@ def main() -> None:
                 raise RuntimeError(
                     f"formal evaluation skipped agent occurrences for seed {seed}: "
                     f"{means['agent_count']} != {expected_agents}")
-            results.append({"seed": int(seed), "metrics": means})
+            k_curves = {str(value): k_accumulators[value].as_dict()
+                        for value in k_values}
+            strata = {
+                name: value.as_dict() for name, value in stratum_accumulators.items()
+                if value.scene_count > 0}
+            count = max(1, int(endpoint_sums["agents"]))
+            endpoint = {
+                name: (value if name == "agents" else float(value) / count)
+                for name, value in endpoint_sums.items()}
+            conditioner = model.denoiser.native_goal_conditioner
+            results.append({
+                "seed": int(seed), "metrics": means, "k_curves": k_curves,
+                "strata": strata, "endpoint_diagnostics": endpoint,
+                "conditioner": None if conditioner is None else {
+                    "gate_raw": float(conditioner.gate.detach().float().cpu()),
+                    "gate_tanh": float(torch.tanh(
+                        conditioner.gate.detach().float()).cpu()),
+                    "last_condition_norm_ratio": float(
+                        conditioner.last_condition_norm_ratio or 0.0),
+                },
+            })
     metric_names = (
         "minADE", "minFDE", "JADE", "JFDE",
         "scene_weighted_minADE", "scene_weighted_minFDE",
@@ -124,6 +204,8 @@ def main() -> None:
         "inference_batch_size": 1, "model_dtype": "fp32",
         "autocast_enabled": False, "ddim_eta": float(config["diffusion"]["ddim_eta"]),
         "per_agent_reordering": bool(evaluation["per_agent_reordering"]),
+        "native_goal_conditioner_disabled": bool(
+            args.disable_native_goal_conditioner),
         "worlds": worlds, "steps": steps, "per_seed": results,
         "mean": means, "sample_standard_deviation": sample_standard_deviation,
     }

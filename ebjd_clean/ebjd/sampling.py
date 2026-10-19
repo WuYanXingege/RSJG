@@ -64,8 +64,9 @@ def predict(
     worlds: int = 20,
     steps: int = 20,
     generator: torch.Generator | None = None,
+    native_goals: torch.Tensor | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
-    context = model.encode_context(observed, semantic_maps, valid)
+    context = model.encode_context(observed, semantic_maps, valid, native_goals)
     noise = torch.randn(
         observed.shape[0], worlds, observed.shape[1], 12, 2,
         device=observed.device, dtype=torch.float32, generator=generator)

@@ -25,13 +25,17 @@ class SceneBatch:
     timestamps: list[list[float]]
     source_sequences: list[str]
     metadata: dict
+    native_goals: torch.Tensor | None = None
+    augmentation_sha256: str | None = None
 
     def to(self, device: torch.device | str) -> "SceneBatch":
         return SceneBatch(
             self.observed.to(device), self.future.to(device),
             self.semantic_maps.to(device), self.valid.to(device), self.scene_ids,
             self.agent_ids, self.frame_ids, self.timestamps,
-            self.source_sequences, self.metadata)
+            self.source_sequences, self.metadata,
+            None if self.native_goals is None else self.native_goals.to(device),
+            self.augmentation_sha256)
 
     def slice_scenes(self, start: int, stop: int) -> "SceneBatch":
         """Slice only the scene dimension while retaining the original N padding."""
@@ -44,7 +48,9 @@ class SceneBatch:
             self.semantic_maps[start:stop], self.valid[start:stop],
             list(self.scene_ids[start:stop]), list(self.agent_ids[start:stop]),
             list(self.frame_ids[start:stop]), list(self.timestamps[start:stop]),
-            list(self.source_sequences[start:stop]), self.metadata)
+            list(self.source_sequences[start:stop]), self.metadata,
+            None if self.native_goals is None else self.native_goals[start:stop],
+            self.augmentation_sha256)
 
     def compact_scenes(self, start: int, stop: int) -> "SceneBatch":
         """Pack valid agents of contiguous scenes without changing their order.
@@ -92,7 +98,9 @@ class SceneBatch:
             pack(self.observed), pack(self.future), pack(self.semantic_maps), valid,
             list(self.scene_ids[start:stop]), agent_ids,
             list(self.frame_ids[start:stop]), list(self.timestamps[start:stop]),
-            list(self.source_sequences[start:stop]), self.metadata)
+            list(self.source_sequences[start:stop]), self.metadata,
+            None if self.native_goals is None else pack(self.native_goals),
+            self.augmentation_sha256)
 
 
 def _sha256(path: Path) -> str:
@@ -103,10 +111,78 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+class NativeGoalBank:
+    """Strict identity-bound frozen native-GDTS goal candidate bank."""
+
+    SCHEMA = "ebjd-native-goal-bank-v1"
+
+    def __init__(
+        self, manifest_path: str | Path, source_manifest: str | Path,
+        verify_hashes: bool = True,
+    ) -> None:
+        self.path = Path(manifest_path).resolve()
+        payload = json.loads(self.path.read_text(encoding="utf-8"))
+        if payload.get("schema") != self.SCHEMA or payload.get("status") != "COMPLETED":
+            raise ValueError("native goal bank is not a completed supported bank")
+        source = Path(source_manifest).resolve()
+        if payload.get("source_manifest_sha256") != _sha256(source):
+            raise ValueError("native goal bank source manifest SHA256 mismatch")
+        if payload.get("unit") != "m" or int(payload.get("candidates", -1)) != 20:
+            raise ValueError("native goal bank must contain K=20 world-metre candidates")
+        self.payload = payload
+        self.items: dict[str, dict] = {}
+        for descriptor in payload.get("files", []):
+            path = (self.path.parent / descriptor["path"]).resolve()
+            if verify_hashes and _sha256(path) != descriptor["sha256"]:
+                raise ValueError(f"native goal cache shard SHA256 mismatch: {path}")
+            with np.load(path, allow_pickle=True) as archive:
+                count = len(archive["window_keys"])
+                for index in range(count):
+                    key = str(archive["window_keys"][index])
+                    if key in self.items:
+                        raise ValueError(f"duplicate native goal window: {key}")
+                    self.items[key] = {
+                        "scene_id": str(archive["scene_ids"][index]),
+                        "source_sequence": str(archive["source_sequences"][index]),
+                        "frame_ids": [int(x) for x in archive["frame_ids"][index]],
+                        "agent_ids": [str(x) for x in archive["agent_ids"][index]],
+                        "observed_sha256": str(archive["observed_sha256"][index]),
+                        "candidates": np.asarray(
+                            archive["candidates"][index], dtype=np.float32),
+                    }
+        if len(self.items) != int(payload.get("scene_count", -1)):
+            raise ValueError("native goal bank scene count mismatch")
+
+    def get(
+        self, window_key: str, scene_id: str, source_sequence: str,
+        frame_ids: list[int], agent_ids: list[str], observed: torch.Tensor,
+    ) -> torch.Tensor:
+        if window_key not in self.items:
+            raise KeyError(f"native goal bank misses {window_key}")
+        item = self.items[window_key]
+        checks = {
+            "scene_id": item["scene_id"] == scene_id,
+            "source_sequence": item["source_sequence"] == source_sequence,
+            "frame_ids": item["frame_ids"] == frame_ids,
+            "agent_ids": item["agent_ids"] == agent_ids,
+            "observed_sha256": item["observed_sha256"] == hashlib.sha256(
+                observed.contiguous().numpy().tobytes()).hexdigest(),
+        }
+        if not all(checks.values()):
+            raise ValueError(f"native goal identity mismatch for {window_key}: {checks}")
+        candidates = torch.from_numpy(item["candidates"].copy())
+        if candidates.shape != (len(agent_ids), 20, 2) or not torch.isfinite(candidates).all():
+            raise ValueError(f"native goals have invalid shape/content for {window_key}")
+        return candidates
+
+
 class SceneManifestDataset(Dataset):
     """Bounded shard reader with mandatory unit/crop/identity metadata."""
 
-    def __init__(self, manifest_path: str | Path, verify_hashes: bool = True) -> None:
+    def __init__(
+        self, manifest_path: str | Path, verify_hashes: bool = True,
+        native_goal_bank: str | Path | None = None,
+    ) -> None:
         self.manifest_path = Path(manifest_path).resolve()
         self.manifest = json.loads(self.manifest_path.read_text(encoding="utf-8"))
         if self.manifest.get("schema") != "ebjd-scene-manifest-v1":
@@ -147,6 +223,9 @@ class SceneManifestDataset(Dataset):
             raise ValueError("manifest window keys are missing or duplicated")
         self._cached_index = -1
         self._cached_payload = None
+        self.native_goal_bank = (
+            NativeGoalBank(native_goal_bank, self.manifest_path, verify_hashes)
+            if native_goal_bank is not None else None)
 
     def __len__(self) -> int:
         return len(self.index)
@@ -172,6 +251,9 @@ class SceneManifestDataset(Dataset):
         agent_ids = [str(item) for item in payload["agent_ids"][local]]
         frame_ids = [int(item) for item in payload["frame_ids"][local]]
         timestamps = [float(item) for item in payload["timestamps"][local]]
+        scene_id = str(payload["scene_ids"][local])
+        source_sequence = str(payload["source_sequences"][local])
+        window_key = str(payload["window_keys"][local])
         if observed.ndim != 3 or observed.shape[-2:] != (8, 2):
             raise ValueError("observed must be finite [N,8,2]")
         if future.shape != (observed.shape[0], 12, 2):
@@ -190,13 +272,17 @@ class SceneManifestDataset(Dataset):
             raise ValueError("categorical semantic crop must be one-hot or all-zero out of bounds")
         if not np.allclose(np.diff(timestamps), 0.4, atol=1e-7):
             raise ValueError("timestamps are not a synchronized 0.4 s horizon")
-        return {
+        item = {
             "observed": observed, "future": future, "semantic_maps": maps,
-            "scene_id": str(payload["scene_ids"][local]), "agent_ids": agent_ids,
+            "scene_id": scene_id, "agent_ids": agent_ids,
             "frame_ids": frame_ids, "timestamps": timestamps,
-            "source_sequence": str(payload["source_sequences"][local]),
+            "source_sequence": source_sequence, "window_key": window_key,
             "metadata": self.metadata,
         }
+        if self.native_goal_bank is not None:
+            item["native_goals"] = self.native_goal_bank.get(
+                window_key, scene_id, source_sequence, frame_ids, agent_ids, observed)
+        return item
 
 
 # Backward-compatible name, but the input is now a manifest rather than an ad-hoc NPZ.
@@ -216,6 +302,10 @@ def collate_scenes(samples: list[dict]) -> SceneBatch:
     future = torch.zeros(batch, maximum, 12, 2)
     maps = torch.zeros(batch, maximum, channels, height, width)
     valid = torch.zeros(batch, maximum, dtype=torch.bool)
+    has_native = all("native_goals" in item for item in samples)
+    if has_native != any("native_goals" in item for item in samples):
+        raise ValueError("native goals are present for only part of a batch")
+    native_goals = torch.zeros(batch, maximum, 20, 2) if has_native else None
     for index, item in enumerate(samples):
         agents = item["observed"].shape[0]
         if item["semantic_maps"].shape[1:] != (channels, height, width):
@@ -224,13 +314,16 @@ def collate_scenes(samples: list[dict]) -> SceneBatch:
         future[index, :agents] = item["future"]
         maps[index, :agents] = item["semantic_maps"]
         valid[index, :agents] = True
+        if native_goals is not None:
+            native_goals[index, :agents] = item["native_goals"]
     return SceneBatch(
         observed, future, maps, valid,
         [item["scene_id"] for item in samples],
         [item["agent_ids"] for item in samples],
         [item["frame_ids"] for item in samples],
         [item["timestamps"] for item in samples],
-        [item["source_sequence"] for item in samples], metadata)
+        [item["source_sequence"] for item in samples], metadata,
+        native_goals, None)
 
 
 class SyntheticSceneDataset(Dataset):
@@ -274,6 +367,7 @@ def augment_batch(batch: SceneBatch, generator: torch.Generator | None = None) -
     angles = 2 * torch.pi * torch.rand(batch_size, generator=generator)
     reflected = torch.rand(batch_size, generator=generator) < 0.5
     observed, future, maps = batch.observed.clone(), batch.future.clone(), batch.semantic_maps.clone()
+    native_goals = None if batch.native_goals is None else batch.native_goals.clone()
     for scene in range(batch_size):
         center = observed[scene, batch.valid[scene], -1].mean(0)
         cosine, sine = angles[scene].cos(), angles[scene].sin()
@@ -283,13 +377,21 @@ def augment_batch(batch: SceneBatch, generator: torch.Generator | None = None) -
             rotation = rotation @ torch.diag(torch.tensor([-1.0, 1.0]))
         observed[scene] = (observed[scene] - center) @ rotation.T + center
         future[scene] = (future[scene] - center) @ rotation.T + center
+        if native_goals is not None:
+            native_goals[scene] = (
+                native_goals[scene] - center.view(1, 1, 2)) @ rotation.T + center
         inverse = rotation.T
         theta = torch.zeros(maps.shape[1], 2, 3, dtype=maps.dtype)
         theta[:, :, :2] = inverse
         grid = F.affine_grid(theta, maps[scene].shape, align_corners=False)
         maps[scene] = F.grid_sample(
             maps[scene], grid, mode="bilinear", padding_mode="zeros", align_corners=False)
+    augmentation = hashlib.sha256()
+    augmentation.update(angles.contiguous().numpy().tobytes())
+    augmentation.update(reflected.contiguous().numpy().tobytes())
+    augmentation.update("\0".join(batch.scene_ids).encode("utf-8"))
     return SceneBatch(
         observed, future, maps, batch.valid.clone(), list(batch.scene_ids),
         batch.agent_ids, batch.frame_ids, batch.timestamps,
-        batch.source_sequences, batch.metadata)
+        batch.source_sequences, batch.metadata, native_goals,
+        augmentation.hexdigest())

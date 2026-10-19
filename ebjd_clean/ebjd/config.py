@@ -92,6 +92,12 @@ ALLOWED_KEYS = {
         "validation_test_identity", "marginal_tolerance", "matched_gdts_validation",
     },
     "ablations": {"available"},
+    "native_goal_conditioning": {
+        "enabled", "variant", "candidates", "train_cache_manifest",
+        "train_cache_sha256", "validation_cache_by_seed",
+        "provider_checkpoint_sha256", "provider_code_commit",
+        "goal_scale_source",
+    },
 }
 
 # Added execution-only settings must remain optional so archived v2 configs and
@@ -102,6 +108,7 @@ OPTIONAL_KEYS = {"training": {
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
     "rollout_uncheckpointed_max_agent_slots",
 }}
+OPTIONAL_SECTIONS = {"native_goal_conditioning"}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
     ("experiment", "source_commit"),
@@ -179,7 +186,7 @@ def _require(config: dict, section: str, key: str, expected) -> None:
 
 
 def validate_supported_config(config: dict) -> None:
-    expected_root = {"seed", *ALLOWED_KEYS}
+    expected_root = {"seed", *(set(ALLOWED_KEYS) - OPTIONAL_SECTIONS)}
     unknown_root = set(config) - expected_root
     missing_root = expected_root - set(config)
     if unknown_root or missing_root:
@@ -187,6 +194,8 @@ def validate_supported_config(config: dict) -> None:
             f"configuration root fields differ: unknown={sorted(unknown_root)}, "
             f"missing={sorted(missing_root)}")
     for section, allowed in ALLOWED_KEYS.items():
+        if section in OPTIONAL_SECTIONS and section not in config:
+            continue
         value = config.get(section)
         if not isinstance(value, dict):
             raise ValueError(f"configuration section {section} must be a mapping")
@@ -279,6 +288,21 @@ def validate_supported_config(config: dict) -> None:
         raise ValueError(f"unsupported training.mixed_precision={precision!r}")
     if int(config["map_encoder"].get("crop_pixels", 0)) != 256:
         raise ValueError("formal EBJD config requires 256x256 map crops")
+    conditioning = config.get("native_goal_conditioning")
+    if conditioning is not None:
+        if conditioning.get("enabled") is not True:
+            raise ValueError("native_goal_conditioning.enabled must be true when present")
+        required = {
+            "variant": "native_gdts_ttst20_cross_attention_v1",
+            "candidates": 20,
+            "goal_scale_source": "representation_goal_scale",
+        }
+        for key, expected in required.items():
+            if conditioning.get(key) != expected:
+                raise ValueError(
+                    f"native_goal_conditioning.{key} must be {expected!r}")
+        if not isinstance(conditioning.get("validation_cache_by_seed"), dict):
+            raise ValueError("validation_cache_by_seed must be a seed-to-manifest mapping")
     if "scene_forward_chunk" in config["training"]:
         chunk = config["training"]["scene_forward_chunk"]
         if isinstance(chunk, bool) or int(chunk) != chunk or int(chunk) != 1:
@@ -385,6 +409,8 @@ def build_model(config: dict, ablation: str = "none") -> EBJDModel:
         representation="cartesian_velocity" if ablation == "cartesian_velocity" else "endpoint_bridge",
         future_social=ablation != "future_social_off",
         clean_geometry=ablation != "noisy_geometry",
+        native_goal_conditioning=bool(
+            config.get("native_goal_conditioning", {}).get("enabled", False)),
     )
     model.denoiser.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])

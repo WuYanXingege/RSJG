@@ -85,12 +85,18 @@ def parse_args() -> argparse.Namespace:
     resumes.add_argument(
         "--objective-fork-from",
         help="new experiment identity restored exactly from a bound checkpoint")
+    resumes.add_argument(
+        "--native-goal-fork-from",
+        help="explicit model-extension fork adding only NativeGoalConditioner")
     parser.add_argument(
         "--resume-from-sha256",
         help="mandatory expected SHA256 for --resume-from")
     parser.add_argument(
         "--objective-fork-from-sha256",
         help="mandatory expected SHA256 for --objective-fork-from")
+    parser.add_argument(
+        "--native-goal-fork-from-sha256",
+        help="mandatory expected SHA256 for --native-goal-fork-from")
     parser.add_argument(
         "--objective-fork-contract", choices=(
             "goal_v_weight_2", "rollout_weight_end_005"),
@@ -233,19 +239,40 @@ def _tensor_audit(payload: dict) -> dict[str, int]:
     return result
 
 
-def _dataset(config: dict, split: str, smoke: bool):
+def _native_goal_cache(config: dict, split: str, seed: int) -> str | None:
+    section = config.get("native_goal_conditioning")
+    if not section:
+        return None
+    if split == "train":
+        path = section["train_cache_manifest"]
+        if file_sha256(path) != section["train_cache_sha256"]:
+            raise ValueError("training native-goal cache manifest SHA256 mismatch")
+        return path
+    mapping = section["validation_cache_by_seed"]
+    path = mapping.get(str(seed))
+    if not path:
+        raise ValueError(f"native-goal cache is missing {split} seed {seed}")
+    return path
+
+
+def _dataset(config: dict, split: str, smoke: bool, seed: int | None = None):
     if smoke:
         return SyntheticSceneDataset(scenes=2, agents=2, pixels=32)
     path = config["paths"].get(f"{split}_manifest")
     if not path:
         raise ValueError(f"paths.{split}_manifest is required outside --smoke")
-    return SceneManifestDataset(path)
+    return SceneManifestDataset(
+        path, native_goal_bank=_native_goal_cache(
+            config, split, int(config["seed"] if seed is None else seed)))
 
 
 def _loader(config: dict, split: str, smoke: bool, generator: torch.Generator) -> DataLoader:
     batch_size = 1 if smoke else int(config["training"]["batch_scenes"])
+    bank_seed = (
+        int(config["seed"]) if split == "train"
+        else int(config["evaluation"]["selection_seed"]))
     return DataLoader(
-        _dataset(config, split, smoke), batch_size=batch_size,
+        _dataset(config, split, smoke, bank_seed), batch_size=batch_size,
         shuffle=split == "train", collate_fn=collate_scenes,
         num_workers=0, generator=generator)
 
@@ -284,7 +311,8 @@ def validate(
         batch = batch.to(device)
         trajectory, _ = predict(
             model, batch.observed, batch.semantic_maps, batch.valid,
-            worlds=worlds, steps=steps, generator=generator)
+            worlds=worlds, steps=steps, generator=generator,
+            native_goals=batch.native_goals)
         accumulator.update(trajectory, batch.future, batch.valid)
     return accumulator.as_dict()
 
@@ -312,6 +340,25 @@ def _identity(config: dict, ablation: str, run_id: str, smoke: bool) -> dict:
         raise ValueError("experiment.source_commit does not match checked-out HEAD")
     if dirty and not smoke:
         raise ValueError("formal training refuses a dirty ebjd_clean source tree")
+    conditioning = config.get("native_goal_conditioning")
+    goal_bank_identity = None
+    if conditioning and not smoke:
+        validation_banks = {
+            str(seed): {
+                "path": str(Path(path).resolve()), "sha256": file_sha256(path),
+            }
+            for seed, path in conditioning["validation_cache_by_seed"].items()
+        }
+        goal_bank_identity = {
+            "provider_checkpoint_sha256": conditioning[
+                "provider_checkpoint_sha256"],
+            "provider_code_commit": conditioning["provider_code_commit"],
+            "train": {
+                "path": str(Path(conditioning["train_cache_manifest"]).resolve()),
+                "sha256": file_sha256(conditioning["train_cache_manifest"]),
+            },
+            "validation_by_seed": validation_banks,
+        }
     return {
         "source_commit": git_head, "working_tree_dirty": dirty,
         "implementation_base": config["experiment"]["implementation_base"],
@@ -343,6 +390,7 @@ def _identity(config: dict, ablation: str, run_id: str, smoke: bool) -> dict:
                 "PYTORCH_CUDA_ALLOC_CONF", ""),
         },
         "data": data_identity,
+        "native_goal_banks": goal_bank_identity,
         "initialization": {
             "path": str(Path(source).resolve()) if source else None,
             "sha256": paths.get("accepted_fold_matched_gdts_unet_sha256"),
@@ -625,6 +673,41 @@ def audit_restored_state(
     return result
 
 
+def validate_native_goal_fork_payload(
+    payload: dict, checkpoint: Path, expected_sha256: str,
+    config: dict, execution_identity: dict,
+) -> dict:
+    """Validate the sole architecture extension and its frozen cache binding."""
+    actual = file_sha256(checkpoint)
+    if actual != expected_sha256:
+        raise ValueError("native-goal fork checkpoint SHA256 mismatch")
+    if payload.get("schema") != "ebjd-checkpoint-v2" or \
+            payload.get("epoch_boundary_only") is not True:
+        raise ValueError("native-goal fork requires an epoch-boundary v2 checkpoint")
+    origin = payload.get("resolved_config")
+    if not isinstance(origin, dict) or "native_goal_conditioning" in origin:
+        raise ValueError("native-goal fork origin is not the unconditioned legacy model")
+    differences = config_differences(origin, config)
+    allowed = {"experiment.source_commit", "paths.output_root"}
+    allowed.update(".".join(path) for path in SEMANTIC_CONFIG_EXCLUSIONS)
+    allowed.update(
+        name for name in differences if name.startswith("native_goal_conditioning."))
+    disallowed = sorted(set(differences) - allowed)
+    if disallowed or "native_goal_conditioning" not in config:
+        raise ValueError(f"native-goal fork has disallowed changes: {disallowed}")
+    return {
+        "schema": "ebjd-native-goal-model-extension-v1",
+        "origin_checkpoint_absolute_path": str(checkpoint.resolve()),
+        "origin_checkpoint_sha256": actual,
+        "origin_epoch": int(payload["epoch"]),
+        "origin_update_index": int(payload["update_index"]),
+        "checked_config_diff": differences,
+        "extension_prefix": "denoiser.native_goal_conditioner.",
+        "cache_binding": config["native_goal_conditioning"],
+        "execution_run_identity": execution_identity,
+    }
+
+
 def main() -> None:
     args = parse_args()
     if bool(args.resume_from) != bool(args.resume_from_sha256):
@@ -638,11 +721,15 @@ def main() -> None:
         raise ValueError(
             "--objective-fork-contract is mandatory only for "
             "--objective-fork-from")
+    if bool(args.native_goal_fork_from) != bool(args.native_goal_fork_from_sha256):
+        raise ValueError(
+            "--native-goal-fork-from and its SHA256 must be provided together")
     if args.max_epochs_this_run is not None and args.max_epochs_this_run < 1:
         raise ValueError("--max-epochs-this-run must be positive")
     if args.absolute_stop_epoch is not None and args.absolute_stop_epoch < 1:
         raise ValueError("--absolute-stop-epoch must be positive")
-    if args.migration_only and not (args.resume_from or args.objective_fork_from):
+    if args.migration_only and not (
+            args.resume_from or args.objective_fork_from or args.native_goal_fork_from):
         raise ValueError(
             "--migration-only requires --resume-from or --objective-fork-from")
     config = load_config(args.config)
@@ -662,9 +749,11 @@ def main() -> None:
     checkpoint_payload = None
     migration_receipt = None
     objective_fork_receipt = None
-    if args.resume or args.resume_from or args.objective_fork_from:
+    native_fork_receipt = None
+    if args.resume or args.resume_from or args.objective_fork_from or args.native_goal_fork_from:
         checkpoint_path = Path(
-            args.resume or args.resume_from or args.objective_fork_from).resolve()
+            args.resume or args.resume_from or args.objective_fork_from
+            or args.native_goal_fork_from).resolve()
         checkpoint_payload = torch.load(
             checkpoint_path, map_location="cpu", weights_only=False)
         if args.resume:
@@ -684,7 +773,7 @@ def main() -> None:
                     "source_commit"),
                 "run_id": checkpoint_payload["run_identity"].get("run_id"),
             }
-        else:
+        elif args.objective_fork_from:
             objective_fork_receipt = validate_objective_fork_payload(
                 checkpoint_payload, checkpoint_path,
                 args.objective_fork_from_sha256, config, identity,
@@ -698,6 +787,17 @@ def main() -> None:
                     "source_commit"),
                 "run_id": checkpoint_payload["run_identity"].get("run_id"),
                 "objective_fork_contract": args.objective_fork_contract,
+            }
+        else:
+            native_fork_receipt = validate_native_goal_fork_payload(
+                checkpoint_payload, checkpoint_path,
+                args.native_goal_fork_from_sha256, config, identity)
+            identity["resume_origin"] = {
+                "checkpoint_absolute_path": str(checkpoint_path),
+                "checkpoint_sha256": args.native_goal_fork_from_sha256,
+                "epoch": int(checkpoint_payload["epoch"]),
+                "update_index": int(checkpoint_payload["update_index"]),
+                "fork_contract": "native_goal_conditioner_v1",
             }
     if args.absolute_stop_epoch is not None:
         if checkpoint_payload is None:
@@ -741,7 +841,8 @@ def main() -> None:
     validation_loader = _loader(config, "validation", args.smoke, loader_generator)
     fitted_scales = (
         fit_training_scales(model, train_loader)
-        if not (args.resume or args.resume_from or args.objective_fork_from)
+        if not (args.resume or args.resume_from or args.objective_fork_from
+                or args.native_goal_fork_from)
         else None)
     trainer = EBJDTrainer(model, options, config, identity)
     baseline = config["evaluation"]["matched_gdts_validation"]
@@ -800,6 +901,26 @@ def main() -> None:
             selector.state_dict(), loader_generator,
             {"fork_or_migration_receipt": active_receipt})
         del migrated_payload
+    elif args.native_goal_fork_from:
+        if checkpoint_payload is None or native_fork_receipt is None:
+            raise AssertionError("native-goal fork payload was not validated")
+        restoration = trainer.restore_model_extension_payload(
+            checkpoint_payload, loader_generator)
+        selector = ConstrainedSelector.from_state_dict(
+            checkpoint_payload["selection_state"])
+        start_epoch = int(checkpoint_payload["epoch"]) + 1
+        native_fork_receipt["restoration_checks"] = restoration
+        _atomic_json(output / "MODEL_EXTENSION_RECEIPT.json", native_fork_receipt)
+        trainer.save_checkpoint(
+            output / "last.pt", int(checkpoint_payload["epoch"]),
+            selector.state_dict(), loader_generator,
+            {"model_extension_receipt": native_fork_receipt})
+        migrated_payload = torch.load(
+            output / "last.pt", map_location="cpu", weights_only=False)
+        trainer.restore_checkpoint_payload(
+            migrated_payload, loader_generator, require_identity=True)
+        native_fork_receipt["strict_secondary_reload"] = True
+        _atomic_json(output / "MODEL_EXTENSION_RECEIPT.json", native_fork_receipt)
     if checkpoint_payload is not None:
         del checkpoint_payload
     if fitted_scales:
