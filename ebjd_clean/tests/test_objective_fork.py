@@ -96,6 +96,21 @@ def test_rollout_weight_fork_rejects_a_second_semantic_change(tmp_path):
             "rollout_weight_end_005")
 
 
+def test_rollout_mechanism_off_fork_changes_only_explicit_ablation(tmp_path):
+    payload, path, config, identity = fixture_payload(tmp_path)
+    config["objectives"]["goal_v_weight"] = 1.0
+    identity["config_hash"] = config_hash(config)
+    identity["ablation"] = "rollout_mechanism_off"
+    receipt = validate_objective_fork_payload(
+        payload, path, file_sha256(path), config, identity,
+        "rollout_mechanism_off", "rollout_mechanism_off")
+    assert receipt["checked_config_diff"] == {
+        "experiment.source_commit": {"old": "old", "new": "new"},
+        "paths.output_root": {"old": "/old", "new": "/new"},
+    }
+    assert "actual-step projection" in receipt["intervention"]
+
+
 @pytest.mark.parametrize(
     ("section", "key", "value"),
     [

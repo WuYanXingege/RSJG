@@ -104,6 +104,8 @@ def test_checkpoint_restores_rng_identity_and_selection(tmp_path):
     restored = EBJDTrainer(
         EBJDModel(), resolved_config={"unit": True}, run_identity=identity)
     payload = restored.load_checkpoint(checkpoint, generator)
+    assert torch.equal(
+        restored.rollout_generator.get_state(), payload["rollout_rng"])
     actual = (
         random.random(), float(np.random.rand()), float(torch.rand(())),
         float(torch.rand((), generator=generator)),
@@ -122,7 +124,8 @@ def test_all_ablations_keep_distinct_identity_values():
     for ablation in (
         "none", "future_social_off", "noisy_geometry", "cartesian_velocity",
         "geometry_loss_off", "rollout_loss_off", "actual_step_constraint_off",
+        "rollout_mechanism_off",
     ):
         build_model(config, ablation)
         identities.add((config["experiment"]["fold"], config["seed"], ablation, "unit"))
-    assert len(identities) == 7
+    assert len(identities) == 8

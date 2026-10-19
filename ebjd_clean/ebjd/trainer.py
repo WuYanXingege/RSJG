@@ -210,6 +210,14 @@ class EBJDTrainer:
             wants_bf16 and next(model.parameters()).is_cuda
             and torch.cuda.is_bf16_supported())
         self._last_random_draw_sha256: str | None = None
+        self._last_base_random_draw_sha256: str | None = None
+        self._last_rollout_random_draw_sha256: str | None = None
+        # Rollout draws are deliberately isolated from the base diffusion RNG.
+        # This permits a paired ON/OFF intervention without shifting the next
+        # update's time/noise draws when OFF skips the expensive rollout graph.
+        self.rollout_generator = torch.Generator(device=self.device)
+        self.rollout_generator.manual_seed(
+            int(self.resolved_config.get("seed", 0)) + 2_000_003)
 
     @staticmethod
     def _random_draw_digest(draws: BatchRandomDraws) -> str:
@@ -228,6 +236,22 @@ class EBJDTrainer:
             digest.update(str(cpu.dtype).encode("ascii"))
             digest.update(str(tuple(cpu.shape)).encode("ascii"))
             digest.update(cpu.numpy().tobytes())
+        return digest.hexdigest()
+
+    @staticmethod
+    def _base_random_draw_digest(draws: BatchRandomDraws) -> str:
+        return EBJDTrainer._random_draw_digest(BatchRandomDraws(
+            draws.time, draws.diffusion_noise, None))
+
+    @staticmethod
+    def _rollout_random_draw_digest(draws: BatchRandomDraws) -> str:
+        if draws.rollout_initial is None:
+            return "NONE"
+        digest = hashlib.sha256()
+        value = draws.rollout_initial.detach().to(device="cpu").contiguous()
+        digest.update(str(value.dtype).encode("ascii"))
+        digest.update(str(tuple(value.shape)).encode("ascii"))
+        digest.update(value.numpy().tobytes())
         return digest.hexdigest()
 
     def _rollout_weight(self, epoch: int) -> float:
@@ -285,7 +309,7 @@ class EBJDTrainer:
         if do_rollout:
             rollout_initial = torch.randn(
                 batch_size, self.options.rollout_worlds, padded_agents, 12, 2,
-                device=self.device)
+                device=self.device, generator=self.rollout_generator)
         return BatchRandomDraws(time, diffusion_noise, rollout_initial)
 
     def _batch_gradients(
@@ -465,6 +489,8 @@ class EBJDTrainer:
         agent_weights, scene_weights = logical_scene_weights(logical_batch.valid)
         draws = self._prepare_batch_draws(logical_batch, do_rollout)
         self._last_random_draw_sha256 = self._random_draw_digest(draws)
+        self._last_base_random_draw_sha256 = self._base_random_draw_digest(draws)
+        self._last_rollout_random_draw_sha256 = self._rollout_random_draw_digest(draws)
         if self.options.scene_compaction:
             groups = contiguous_scene_groups(
                 logical_batch.valid,
@@ -567,6 +593,8 @@ class EBJDTrainer:
         input_digest = hashlib.sha256()
         augmentation_digest = hashlib.sha256()
         random_draw_digest = hashlib.sha256()
+        base_random_draw_digest = hashlib.sha256()
+        rollout_random_draw_digest = hashlib.sha256()
         scale = 1 / len(microbatches)
         for batch in microbatches:
             input_digest.update("\0".join(batch.scene_ids).encode("utf-8"))
@@ -581,11 +609,29 @@ class EBJDTrainer:
                     raise AssertionError("formal scene-chunked draw digest is missing")
                 random_draw_digest.update(bytes.fromhex(
                     self._last_random_draw_sha256))
+                if self._last_base_random_draw_sha256 is None or \
+                        self._last_rollout_random_draw_sha256 is None:
+                    raise AssertionError("paired draw digests are missing")
+                base_random_draw_digest.update(bytes.fromhex(
+                    self._last_base_random_draw_sha256))
+                rollout_random_draw_digest.update(
+                    b"NONE" if self._last_rollout_random_draw_sha256 == "NONE"
+                    else bytes.fromhex(self._last_rollout_random_draw_sha256))
             else:
                 physical_batch = (
                     batch if batch.observed.device == self.device else batch.to(self.device))
+                physical_draws = self._prepare_batch_draws(
+                    physical_batch, do_rollout)
+                random_draw_digest.update(bytes.fromhex(
+                    self._random_draw_digest(physical_draws)))
+                base_random_draw_digest.update(bytes.fromhex(
+                    self._base_random_draw_digest(physical_draws)))
+                rollout_digest = self._rollout_random_draw_digest(physical_draws)
+                rollout_random_draw_digest.update(
+                    b"NONE" if rollout_digest == "NONE"
+                    else bytes.fromhex(rollout_digest))
                 gradients_total, gradients_a, gradients_f, logs = self._batch_gradients(
-                    physical_batch, epoch, do_rollout)
+                    physical_batch, epoch, do_rollout, physical_draws)
             total_grad = [a + scale * b for a, b in zip(total_grad, gradients_total, strict=True)]
             grad_a = [a + scale * b for a, b in zip(grad_a, gradients_a, strict=True)]
             grad_f = [a + scale * b for a, b in zip(grad_f, gradients_f, strict=True)]
@@ -619,6 +665,8 @@ class EBJDTrainer:
         self.update_index += 1
         aggregate.update({
             "rollout_update": float(do_rollout),
+            "projection_executed": float(
+                do_rollout and self.options.use_actual_step_constraint),
             "projection_active": float(stats.active_constraints),
             "projection_changed_fraction": stats.changed_fraction,
             "candidate_dot_marginal_ade": candidate_dot_a,
@@ -636,8 +684,10 @@ class EBJDTrainer:
             "logical_scene_agent_identity_sha256": input_digest.hexdigest(),
             "augmentation_sha256": augmentation_digest.hexdigest(),
             "native_goal_gate_gradient": gate_gradient,
-            "random_draw_sha256": random_draw_digest.hexdigest()
-            if self.options.scene_forward_chunk else "not-recorded-legacy-path",
+            "random_draw_sha256": random_draw_digest.hexdigest(),
+            "base_random_draw_sha256": base_random_draw_digest.hexdigest(),
+            "rollout_random_draw_sha256": rollout_random_draw_digest.hexdigest()
+            if do_rollout else "NONE",
             "scene_forward_chunk": float(self.options.scene_forward_chunk),
             "scene_compaction": float(self.options.scene_compaction),
             "physical_group_max_scenes": float(
@@ -695,6 +745,7 @@ class EBJDTrainer:
                     torch.tensor(float("nan"))).detach().cpu().item()),
             },
             "rng": self._rng_state(loader_generator), "extra": extra or {},
+            "rollout_rng": self.rollout_generator.get_state().cpu(),
         }, temporary)
         os.replace(temporary, path)
 
@@ -738,6 +789,8 @@ class EBJDTrainer:
         self.optimizer.load_state_dict(payload["optimizer"])
         self.update_index = int(payload["update_index"])
         self._restore_rng(payload["rng"], loader_generator)
+        if payload.get("rollout_rng") is not None:
+            self.rollout_generator.set_state(payload["rollout_rng"].cpu())
 
     def restore_model_extension_payload(
         self, payload: dict, loader_generator: torch.Generator | None = None,
@@ -779,6 +832,8 @@ class EBJDTrainer:
         self.optimizer.load_state_dict(extended_optimizer)
         self.update_index = int(payload["update_index"])
         self._restore_rng(payload["rng"], loader_generator)
+        if payload.get("rollout_rng") is not None:
+            self.rollout_generator.set_state(payload["rollout_rng"].cpu())
         exact = all(torch.equal(
             self.model.state_dict()[name].detach().cpu(), saved[name].detach().cpu())
             for name in old_names)

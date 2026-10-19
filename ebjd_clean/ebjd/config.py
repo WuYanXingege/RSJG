@@ -18,6 +18,7 @@ from .trainer import TrainerOptions
 ABLATIONS = {
     "none", "future_social_off", "noisy_geometry", "cartesian_velocity",
     "geometry_loss_off", "rollout_loss_off", "actual_step_constraint_off",
+    "rollout_mechanism_off",
 }
 
 ALLOWED_KEYS = {
@@ -483,9 +484,11 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
         rollout_steps=int(training["rollout_steps"]),
         softmin_temperature_start=float(training["softmin_temperature_start_m"]),
         softmin_temperature_end=float(training["softmin_temperature_end_m"]),
-        use_rollout_loss=ablation != "rollout_loss_off",
+        use_rollout_loss=ablation not in {
+            "rollout_loss_off", "rollout_mechanism_off"},
         use_geometry_loss=ablation != "geometry_loss_off",
-        use_actual_step_constraint=ablation != "actual_step_constraint_off",
+        use_actual_step_constraint=ablation not in {
+            "actual_step_constraint_off", "rollout_mechanism_off"},
         activation_checkpointing=bool(training["activation_checkpointing"]),
         precision=str(training["mixed_precision"]),
         scene_forward_chunk=int(training.get("scene_forward_chunk", 0)),

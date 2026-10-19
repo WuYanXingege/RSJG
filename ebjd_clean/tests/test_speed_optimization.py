@@ -185,6 +185,29 @@ def test_architecture_identity_and_rollout_off_path_are_preserved():
     assert sum(parameter.numel() for parameter in model.parameters()) == 3_612_764
 
 
+def test_rollout_draws_do_not_shift_base_diffusion_rng():
+    batch = _fix_identities(make_batch((1, 2), pixels=8))
+    on = EBJDTrainer(
+        EBJDModel(), _options(), resolved_config={"seed": 3101})
+    off = EBJDTrainer(
+        EBJDModel(), _options(), resolved_config={"seed": 3101})
+
+    torch.manual_seed(901)
+    on_first = on._prepare_batch_draws(batch, do_rollout=True)
+    on_second = on._prepare_batch_draws(batch, do_rollout=False)
+    torch.manual_seed(901)
+    off_first = off._prepare_batch_draws(batch, do_rollout=False)
+    off_second = off._prepare_batch_draws(batch, do_rollout=False)
+
+    assert on_first.rollout_initial is not None
+    assert off_first.rollout_initial is None
+    for left, right in ((on_first, off_first), (on_second, off_second)):
+        torch.testing.assert_close(left.time, right.time, atol=0, rtol=0)
+        torch.testing.assert_close(
+            left.diffusion_noise, right.diffusion_noise, atol=0, rtol=0)
+        assert (
+            EBJDTrainer._base_random_draw_digest(left)
+            == EBJDTrainer._base_random_draw_digest(right))
 def test_denoiser_checkpoint_policy_is_explicit_per_call(monkeypatch):
     import ebjd.denoiser as denoiser_module
 

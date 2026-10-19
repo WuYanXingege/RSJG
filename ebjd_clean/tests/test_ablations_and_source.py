@@ -16,6 +16,7 @@ def test_all_registered_ablations_build_and_source_loads():
     for ablation in (
         "future_social_off", "noisy_geometry", "cartesian_velocity",
         "geometry_loss_off", "rollout_loss_off", "actual_step_constraint_off",
+        "rollout_mechanism_off",
     ):
         model = build_model(config, ablation)
         if ablation == "cartesian_velocity":

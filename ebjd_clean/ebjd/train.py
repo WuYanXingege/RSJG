@@ -99,7 +99,8 @@ def parse_args() -> argparse.Namespace:
         help="mandatory expected SHA256 for --native-goal-fork-from")
     parser.add_argument(
         "--objective-fork-contract", choices=(
-            "goal_v_weight_2", "rollout_weight_end_005"),
+            "goal_v_weight_2", "rollout_weight_end_005",
+            "rollout_mechanism_off"),
         help="strictly allow one preregistered semantic change")
     parser.add_argument(
         "--max-epochs-this-run", type=int,
@@ -586,6 +587,7 @@ def validate_objective_fork_payload(
         "rollout_weight_end_005": {
             "training.rollout_weight_end": {"old": 0.2, "new": 0.05},
         },
+        "rollout_mechanism_off": {},
     }
     if contract not in contracts:
         raise ValueError(f"unsupported objective fork contract: {contract!r}")
@@ -596,10 +598,13 @@ def validate_objective_fork_payload(
     semantic_changes = set(contracts[contract])
     actual = set(differences)
     allowed = identity_changes | execution_fields | semantic_changes
-    if not identity_changes.issubset(actual) or actual - allowed:
+    required_identity = (
+        {"paths.output_root"} if contract == "rollout_mechanism_off"
+        else identity_changes)
+    if not required_identity.issubset(actual) or actual - allowed:
         raise ValueError(
             "objective fork differences violate the categorized frozen contract: "
-            f"required_identity={sorted(identity_changes)}, "
+            f"required_identity={sorted(required_identity)}, "
             f"allowed_execution={sorted(execution_fields)}, "
             f"allowed_semantic={sorted(semantic_changes)}, "
             f"actual={sorted(differences)}")
@@ -616,7 +621,11 @@ def validate_objective_fork_payload(
     mismatched = [
         field for field in identity_fields
         if origin_identity.get(field) != execution_identity.get(field)]
-    if origin_identity.get("ablation") != ablation:
+    origin_ablation = origin_identity.get("ablation")
+    if contract == "rollout_mechanism_off":
+        if origin_ablation != "none" or ablation != "rollout_mechanism_off":
+            mismatched.append("ablation_transition")
+    elif origin_ablation != ablation:
         mismatched.append("ablation")
     if mismatched:
         raise ValueError(
@@ -643,6 +652,9 @@ def validate_objective_fork_payload(
         "validated_execution_migration_profile": migration_profile,
         "semantic_config_hash": semantic_config_hash(config),
         "full_state_policy": "model+optimizer+RNG+update+selection exact",
+        "intervention": (
+            "disable rollout loss and its paired actual-step projection"
+            if contract == "rollout_mechanism_off" else contract),
         "origin_tensor_audit": audit,
     }
 
@@ -662,10 +674,16 @@ def audit_restored_state(
     )
     rng_exact = _tree_equal(
         trainer._rng_state(loader_generator), payload["rng"])
+    rollout_rng_exact = (
+        payload.get("rollout_rng") is None
+        or torch.equal(
+            trainer.rollout_generator.get_state().cpu(),
+            payload["rollout_rng"].cpu()))
     result = {
         "model_state_exact": model_exact,
         "optimizer_state_exact": optimizer_exact,
         "rng_state_exact": rng_exact,
+        "rollout_rng_state_exact": rollout_rng_exact,
         "update_index_exact": trainer.update_index == int(payload["update_index"]),
     }
     if not all(result.values()):
@@ -990,6 +1008,7 @@ def main() -> None:
         normal_step_seconds = 0.0
         rollout_step_seconds = 0.0
         projection_updates = 0
+        projection_executions = 0
         rollout_updates = 0
         if device.type == "cuda":
             torch.cuda.reset_peak_memory_stats(device)
@@ -1018,6 +1037,7 @@ def main() -> None:
                 else:
                     normal_step_seconds += step_seconds
                 projection_updates += int(record["projection_active"] > 0)
+                projection_executions += int(record["projection_executed"] > 0)
                 nonfinite = [
                     name for name, value in record.items()
                     if isinstance(value, (int, float)) and not math.isfinite(float(value))]
@@ -1039,6 +1059,7 @@ def main() -> None:
             else:
                 normal_step_seconds += step_seconds
             projection_updates += int(record["projection_active"] > 0)
+            projection_executions += int(record["projection_executed"] > 0)
             nonfinite = [
                 name for name, value in record.items()
                 if isinstance(value, (int, float)) and not math.isfinite(float(value))]
@@ -1105,6 +1126,7 @@ def main() -> None:
             "rollout_step_seconds": rollout_step_seconds,
             "validation_seconds": validation_seconds,
             "rollout_updates": rollout_updates,
+            "projection_executions": projection_executions,
             "projection_active_updates": projection_updates,
             "peak_cuda_allocated_bytes": (
                 int(torch.cuda.max_memory_allocated(device))
