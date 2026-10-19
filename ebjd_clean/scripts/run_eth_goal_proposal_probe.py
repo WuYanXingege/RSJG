@@ -499,6 +499,10 @@ def main() -> None:
         "raw_artifacts_local_only": {
             route: str(raw_output / f"route_{route}.npz") for route in raw},
     }
+    if args.run_b0:
+        parent_path = Path(args.parent_goal_checkpoint).resolve()
+        result["identity"]["b0_parent_goal_checkpoint"] = str(parent_path)
+        result["identity"]["b0_parent_goal_checkpoint_sha256"] = sha256(parent_path)
     atomic_json(result, output / "summary.json")
     print(json.dumps(result, indent=2, sort_keys=True), flush=True)
 
