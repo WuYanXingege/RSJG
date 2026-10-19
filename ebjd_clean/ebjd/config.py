@@ -186,8 +186,9 @@ def _require(config: dict, section: str, key: str, expected) -> None:
 
 
 def validate_supported_config(config: dict) -> None:
+    allowed_root = {"seed", *ALLOWED_KEYS}
     expected_root = {"seed", *(set(ALLOWED_KEYS) - OPTIONAL_SECTIONS)}
-    unknown_root = set(config) - expected_root
+    unknown_root = set(config) - allowed_root
     missing_root = expected_root - set(config)
     if unknown_root or missing_root:
         raise ValueError(
