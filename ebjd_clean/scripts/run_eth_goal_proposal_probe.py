@@ -277,13 +277,18 @@ def route_c_records(dataset, bank, limit=None):
 
 def save_raw(raw: list[dict], path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
+    agents = np.empty(len(raw), dtype=object)
+    candidates = np.empty(len(raw), dtype=object)
+    argmax = np.empty(len(raw), dtype=object)
+    for index, item in enumerate(raw):
+        agents[index] = np.asarray(item["agent_ids"])
+        candidates[index] = item["candidates_m"]
+        argmax[index] = item.get("argmax_m")
     np.savez_compressed(
         path,
         window_keys=np.asarray([x["window_key"] for x in raw]),
         scene_ids=np.asarray([x["scene_id"] for x in raw]),
-        agent_ids=np.asarray([np.asarray(x["agent_ids"]) for x in raw], dtype=object),
-        candidates=np.asarray([x["candidates_m"] for x in raw], dtype=object),
-        argmax=np.asarray([x.get("argmax_m") for x in raw], dtype=object),
+        agent_ids=agents, candidates=candidates, argmax=argmax,
     )
 
 
