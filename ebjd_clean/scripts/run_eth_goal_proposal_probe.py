@@ -402,7 +402,8 @@ def main() -> None:
     if not torch.cuda.is_available() or not args.device.startswith("cuda"):
         raise RuntimeError("this audited probe requires an available CUDA device")
     device = torch.device(args.device)
-    torch.cuda.reset_peak_memory_stats(device)
+    torch.cuda.set_device(device)
+    torch.cuda.reset_peak_memory_stats(device.index or 0)
     dataset = SceneManifestDataset(paths["manifest"])
     sys.path.insert(0, str(Path(args.gdts_root).resolve()))
     from src.models.model_utils.sampling_2D_map import TTST_test_time_sampling_trick
@@ -486,7 +487,7 @@ def main() -> None:
             "gdts_code_commit": git_head(Path(args.gdts_root).resolve()),
         },
         "execution": execution,
-        "cuda_peak_memory_bytes": int(torch.cuda.max_memory_allocated(device)),
+        "cuda_peak_memory_bytes": int(torch.cuda.max_memory_allocated(device.index or 0)),
         "summaries": summaries, "strata": strata,
         "paired_deltas": deltas, "cases": cases,
         "raw_artifacts_local_only": {
