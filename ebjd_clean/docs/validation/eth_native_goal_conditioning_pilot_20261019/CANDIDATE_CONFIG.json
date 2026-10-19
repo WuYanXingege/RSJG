@@ -1,0 +1,236 @@
+{
+  "ablations": {
+    "available": [
+      "future_social_off",
+      "noisy_geometry",
+      "cartesian_velocity",
+      "geometry_loss_off",
+      "rollout_loss_off",
+      "actual_step_constraint_off"
+    ]
+  },
+  "data": {
+    "complete_horizon_required": true,
+    "coordinates": "metres",
+    "do_not_truncate_scene_agents": true,
+    "dt_seconds": 0.4,
+    "obs_length": 8,
+    "pred_length": 12,
+    "scene_agent_padding": true
+  },
+  "denoiser": {
+    "clean_future_detach": false,
+    "coarse_blocks": 3,
+    "cross_world_attention": false,
+    "ff_dim": 512,
+    "geometry_gate": "alpha_squared",
+    "heads": 4,
+    "hidden_dim": 128,
+    "memory_tokens_per_agent": 72,
+    "refinement_blocks": 3,
+    "sublayers": [
+      "temporal_attention",
+      "social_attention",
+      "context_cross_attention",
+      "ffn"
+    ],
+    "target_parameterization": "v"
+  },
+  "diffusion": {
+    "ddim_eta": 0.0,
+    "exact_terminal_snr_zero": true,
+    "sampler": "ddim",
+    "schedule": "cosine_vp_alpha_cos_sigma_sin",
+    "shared_time_within_scene": true,
+    "training_noise_bins": 100
+  },
+  "evaluation": {
+    "final_test_used_for_checkpoint_selection": false,
+    "inference_seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "marginal_tolerance": 0.0,
+    "matched_gdts_validation": {
+      "agent_occurrence_count": 364,
+      "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+      "ebjd_initialization_sha256": "d130f47a3e13f457920a724465cc02d55bdb22e4827f7889bc49331d6c3bfec6",
+      "evaluation_seed": 2035,
+      "fold": "eth",
+      "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+      "minADE": 0.41705285937904,
+      "minFDE": 0.5800323037873278,
+      "reference_limitation": "comparator_full_checkpoint_differs_from_fold_matched_goal_pretrain_initialization",
+      "result_sha256": "05309b80a2eabd7c52fcd36e09e299e8d8c4d37079fb1b2e369f449d1f2d3a10",
+      "scene_count": 253,
+      "source": "GDTS_ETH_best_seed2035_on_exact_JMM_official_scene_manifest",
+      "status": "bound_to_manifest",
+      "steps": 20,
+      "unit": "m",
+      "worlds": 20
+    },
+    "metrics": [
+      "minADE",
+      "minFDE",
+      "JADE",
+      "JFDE"
+    ],
+    "minimum_training_seeds": 3,
+    "per_agent_reordering": false,
+    "selection_seed": 2035,
+    "steps": 20,
+    "validation_test_identity": "mirrored_official_package_internal_only",
+    "worlds": 20
+  },
+  "experiment": {
+    "fold": "eth",
+    "implementation_base": "01faa633162a2b73794a40184e8d64e4d44964bc",
+    "source_commit": "6f7a05f718accf322dc0dedb6d024111a115e6f8"
+  },
+  "history_encoder": {
+    "dropout": 0.0,
+    "hidden_dim": 128,
+    "input_dim": 6,
+    "observed_bias_bound": 2.0,
+    "observed_geometry_dim": 10,
+    "social_blocks": 2,
+    "social_ff_dim": 512,
+    "social_heads": 4
+  },
+  "map_encoder": {
+    "agent_chunk": 8,
+    "crop_pixels": 256,
+    "crop_width_m": 32.0,
+    "dec_channels": [
+      64,
+      64,
+      64,
+      32,
+      32
+    ],
+    "enc_channels": [
+      14,
+      32,
+      32,
+      64,
+      64,
+      64
+    ],
+    "future_heatmap_channels": 12,
+    "heatmap_sigma_m": 0.5,
+    "history_heatmap_channels": 8,
+    "memory_grid": [
+      8,
+      8
+    ],
+    "semantic_channels": 6,
+    "trainable": true
+  },
+  "native_goal_conditioning": {
+    "candidates": 20,
+    "enabled": true,
+    "goal_scale_source": "representation_goal_scale",
+    "provider_checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "provider_code_commit": "092ed91f1f4117f50aa835ec8e47cd2c9ce74a98",
+    "train_cache_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/train_seed3101_provider092_rngfix/manifest.json",
+    "train_cache_sha256": "55fc2fb18546592b5652eab97fff5fa05106f20df1630773c859c5148d67cc78",
+    "validation_cache_by_seed": {
+      "2035": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/validation_seed2035_provider092_rngfix/manifest.json",
+      "2036": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/validation_seed2036_provider092_rngfix/manifest.json",
+      "2037": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/validation_seed2037_provider092_rngfix/manifest.json",
+      "2038": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/validation_seed2038_provider092_rngfix/manifest.json",
+      "2039": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/validation_seed2039_provider092_rngfix/manifest.json"
+    },
+    "variant": "native_gdts_ttst20_cross_attention_v1"
+  },
+  "objectives": {
+    "bridge_v_weight": 1.0,
+    "coarse_v_weight": 0.25,
+    "goal_v_weight": 1.0,
+    "map_bce_weight": 0.1,
+    "relative_motion_weight": 0.05,
+    "relative_velocity_factor": 0.5,
+    "rollout_joint_ade_weight": 1.0,
+    "rollout_joint_fde_weight": 0.5,
+    "rollout_marginal_ade_weight": 1.0,
+    "rollout_marginal_fde_weight": 0.5,
+    "supervision_edge_cv_cpa_radius_m": 2.0,
+    "supervision_edge_cv_horizon_s": 4.8,
+    "supervision_edge_radius_m": 6.0
+  },
+  "paths": {
+    "accepted_fold_matched_gdts_unet": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/eth/runs/eth_goal_pretrain_seed3101_20261015/saved_models/goal_pretrain_best_model.pt",
+    "accepted_fold_matched_gdts_unet_sha256": "d130f47a3e13f457920a724465cc02d55bdb22e4827f7889bc49331d6c3bfec6",
+    "initialization_role": "trainable_goal_unet_only",
+    "matched_gdts_validation_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/eth/saved_models/best_model.pt",
+    "matched_gdts_validation_checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "matched_gdts_validation_result": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_eth_worktree/ebjd_clean/docs/validation/EBJD_ETH_MATCHED_GDTS_SELECTION_2026-10-15.json",
+    "matched_gdts_validation_result_sha256": "05309b80a2eabd7c52fcd36e09e299e8d8c4d37079fb1b2e369f449d1f2d3a10",
+    "output_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/runs_v4",
+    "test_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/test/test_manifest.json",
+    "train_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/train/train_manifest.json",
+    "validation_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json"
+  },
+  "representation": {
+    "bridge_rms_floor_m": 0.1,
+    "bridge_scale_m": 1.0,
+    "bridge_tokens": 11,
+    "goal_rms_floor_m": 0.5,
+    "goal_scale_m": 1.0,
+    "goal_tokens": 1,
+    "literal_endpoint_concatenation": true,
+    "train_fold_rms_scaling": true,
+    "type": "invertible_endpoint_brownian_bridge"
+  },
+  "seed": 3101,
+  "training": {
+    "activation_checkpointing": true,
+    "batch_scenes": 4,
+    "checkpoint_use_reentrant": false,
+    "ema": false,
+    "epochs": 100,
+    "exclude_bias_and_layernorm_from_decay": true,
+    "execution_strategy": "small_group_uncheckpoint_v1",
+    "gradient_accumulation": 4,
+    "gradient_constraint_uses_unclipped_marginal_gradients": true,
+    "lr_final_fraction": 0.01,
+    "lr_warmup_epochs": 5,
+    "mixed_precision": "bf16_with_fp32_geometry_loss_optimizer",
+    "new_module_lr": 0.0001,
+    "optimizer": "adamw_actual_step_projection",
+    "optimizer_betas": [
+      0.9,
+      0.999
+    ],
+    "optimizer_eps": 1e-08,
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "physical_group_max_scenes": 4,
+    "protected_losses": [
+      "soft_marginal_ade",
+      "soft_marginal_fde"
+    ],
+    "rollout_block_checkpointing": false,
+    "rollout_detach_between_steps": false,
+    "rollout_every_optimizer_updates": 4,
+    "rollout_frequency_loss_compensation": 4.0,
+    "rollout_ramp_end_epoch": 40,
+    "rollout_start_epoch": 21,
+    "rollout_steps": 20,
+    "rollout_uncheckpointed_max_agent_slots": 32,
+    "rollout_weight_end": 0.2,
+    "rollout_weight_start": 0.01,
+    "rollout_worlds": 4,
+    "scene_compaction": true,
+    "scene_forward_chunk": 1,
+    "softmin_temperature_end_m": 0.05,
+    "softmin_temperature_start_m": 0.1,
+    "total_gradient_clip_norm": 5.0,
+    "train_all_modules": true,
+    "unet_lr": 1e-05,
+    "weight_decay": 0.0001
+  }
+}

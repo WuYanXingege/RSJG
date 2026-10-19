@@ -1,0 +1,24 @@
+{
+  "checks": [
+    {
+      "candidate_permutation_atol": 2e-06,
+      "candidate_permutation_max_abs_error": 4.190951585769653e-09,
+      "candidate_permutation_rtol": 2e-06,
+      "device": "cuda",
+      "precision": "FP32",
+      "zero_gate_bitwise_equal": true,
+      "zero_gate_max_abs_error": 0.0
+    },
+    {
+      "candidate_permutation_atol": 0.002,
+      "candidate_permutation_max_abs_error": 0.0,
+      "candidate_permutation_rtol": 0.002,
+      "device": "cuda",
+      "precision": "CUDA BF16 autocast",
+      "zero_gate_bitwise_equal": true,
+      "zero_gate_max_abs_error": 0.0
+    }
+  ],
+  "schema": "ebjd-native-goal-compatibility-v1",
+  "status": "PASS"
+}

@@ -1,0 +1,63 @@
+{
+  "arms": {
+    "candidate": {
+      "config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/pilot_protocol_v4/CANDIDATE_CONFIG.json",
+      "config_sha256": "27cff7824dedd59fada4749cc75c28ce257accd7aa29fdf81f10cbf0824d3b41"
+    },
+    "control": {
+      "config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/eth_native_goal_conditioning_20261019/pilot_protocol_v4/CONTROL_CONFIG.json",
+      "config_sha256": "e1a625fb31d128919ad36b8db735d65079a90c5fa93602a51d2956ab109761f5"
+    }
+  },
+  "continuation_signal": {
+    "candidate_vs_control_minFDE_relative_improvement_minimum": 0.05,
+    "minADE_JADE_JFDE_must_not_worsen": true,
+    "minFDE_seed_improvements_minimum": 4
+  },
+  "contract": {
+    "candidate_JADE_JFDE_strictly_below_matched_GDTS": true,
+    "candidate_minADE_minFDE_not_above_matched_GDTS": true
+  },
+  "evaluation": {
+    "independent_test": false,
+    "manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+    "precision": "FP32",
+    "seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "steps": 20,
+    "worlds": 20
+  },
+  "implementation_commit": "6f7a05f718accf322dc0dedb6d024111a115e6f8",
+  "parent": {
+    "epoch": 5,
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/formal_training/eth/3101/none/eth_main_seed3101_d266681_20261015/epoch_005.pt",
+    "sha256": "a5f45606329b80754567cf86381ceff0d19e68c8eaddf999c74f71ef1bdde525",
+    "update_index": 1285
+  },
+  "provider": {
+    "checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+    "code_commit": "092ed91f1f4117f50aa835ec8e47cd2c9ce74a98"
+  },
+  "schema": "ebjd-native-goal-conditioning-pilot-plan-v1",
+  "sole_arm_difference": "candidate adds native_goal_conditioning section and parameters",
+  "status": "FROZEN_BEFORE_FORMAL_UPDATES",
+  "training": {
+    "epochs": [
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "formal_comparison_checkpoint": "epoch_010.pt",
+    "gpu_budget_hours": 10,
+    "rollout_active": false,
+    "runtime_decision": "five epochs per arm; historical ~12.5 min/epoch",
+    "seed": 3101
+  }
+}

@@ -129,3 +129,8 @@ Choose one preregistered ablation with `--ablation`: `future_social_off`,
 
 See `docs/DESIGN.md`, `docs/IMPLEMENTATION_RECEIPT.md` and
 `docs/CORRECTION_RECEIPT_2026-10-08.md` for the frozen design and evidence.
+
+The completed ETH native-GDTS goal-conditioning paired pilot, including the
+five-seed metrics, fixed failure cases, cost accounting and reproducibility
+receipts, is archived in
+`docs/EBJD_ETH_NATIVE_GOAL_CONDITIONING_PILOT_2026-10-19.md`.
