@@ -991,8 +991,17 @@ class EBJDTrainer:
         self.optimizer.load_state_dict(extended)
         self.update_index = int(payload["update_index"])
         self._restore_rng(payload["rng"], loader_generator)
+        rollout_rng_restored = True
         if payload.get("rollout_rng") is not None:
-            self.rollout_generator.set_state(payload["rollout_rng"].cpu())
+            try:
+                self.rollout_generator.set_state(payload["rollout_rng"].cpu())
+            except RuntimeError:
+                # CUDA Philox states cannot be installed into a CPU generator.
+                # CPU-only migration audits defer this one local stream; the
+                # formal CUDA migration must and will restore it exactly.
+                if self.device.type != "cpu":
+                    raise
+                rollout_rng_restored = False
         shared_exact = all(torch.equal(
             self.model.state_dict()[name].detach().cpu(), value.detach().cpu())
             for name, value in saved.items())
@@ -1008,6 +1017,8 @@ class EBJDTrainer:
                 extended["states"][current_names.index(name)] == {}
                 for name in new_parameters),
             "rng_state_restored": True,
+            "rollout_rng_restored": rollout_rng_restored,
+            "rollout_rng_restore_deferred_to_cuda": not rollout_rng_restored,
             "pairing_rng_initialized_from_frozen_offset": True,
             "update_index_restored": self.update_index,
         }
