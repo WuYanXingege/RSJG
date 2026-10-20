@@ -7,6 +7,7 @@ from torch.nn import functional as F
 
 from .encoders import EBJDContext
 from .metrics import scene_soft_metrics
+from .representation import fixed_endpoint_trajectory
 
 
 def _masked_mean(value: torch.Tensor, valid: torch.Tensor) -> torch.Tensor:
@@ -54,6 +55,42 @@ def diffusion_loss(
         "goal_coarse_unweighted": coarse_goal,
         "bridge_coarse_unweighted": coarse_bridge,
     }
+
+
+def fixed_anchor_path_loss(
+    final_trajectory: torch.Tensor,
+    coarse_trajectory: torch.Tensor,
+    target: torch.Tensor,
+    anchors: torch.Tensor,
+    valid: torch.Tensor,
+    alpha: torch.Tensor,
+) -> torch.Tensor:
+    """Return alpha-squared, valid-agent mean path loss after endpoint fixation."""
+    if final_trajectory.shape != coarse_trajectory.shape:
+        raise ValueError("final and coarse trajectories must have identical shape")
+    if final_trajectory.ndim != 5 or final_trajectory.shape[1] != 1:
+        raise ValueError("fixed-anchor path training requires [B,1,N,12,2]")
+    if target.shape != final_trajectory.shape[:1] + final_trajectory.shape[2:]:
+        raise ValueError("target must have shape [B,N,12,2]")
+    if anchors.shape != final_trajectory.shape[:-2] + (2,):
+        raise ValueError("anchors must have shape [B,1,N,2]")
+    if valid.shape != target.shape[:2]:
+        raise ValueError("valid must have shape [B,N]")
+    alpha_scene = alpha.reshape(alpha.shape[0], -1)
+    if alpha_scene.shape != (target.shape[0], 1):
+        raise ValueError("alpha must contain exactly one scalar per scene")
+    fixed_final = fixed_endpoint_trajectory(final_trajectory, anchors)
+    fixed_coarse = fixed_endpoint_trajectory(coarse_trajectory, anchors)
+    with torch.autocast(device_type=target.device.type, enabled=False):
+        truth = target.float()[:, None, :, :11, :]
+        fine = F.smooth_l1_loss(
+            fixed_final[..., :11, :], truth, beta=1.0, reduction="none")
+        coarse = F.smooth_l1_loss(
+            fixed_coarse[..., :11, :], truth, beta=1.0, reduction="none")
+        per_agent = (fine + 0.25 * coarse).mean(dim=(-1, -2)).squeeze(1)
+        mask = valid.to(per_agent.dtype)
+        gated = alpha_scene[:, 0].float().square()[:, None] * per_agent.float()
+        return (gated * mask).sum() / mask.sum().clamp_min(1)
 
 
 def supervision_edges(

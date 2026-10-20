@@ -68,7 +68,7 @@ ALLOWED_KEYS = {
         "rollout_joint_ade_weight", "rollout_joint_fde_weight",
         "rollout_marginal_ade_weight", "rollout_marginal_fde_weight",
         "supervision_edge_radius_m", "supervision_edge_cv_cpa_radius_m",
-        "supervision_edge_cv_horizon_s",
+        "supervision_edge_cv_horizon_s", "fixed_anchor_path_weight",
     },
     "training": {
         "epochs", "batch_scenes", "gradient_accumulation", "new_module_lr",
@@ -111,13 +111,16 @@ ALLOWED_KEYS = {
 
 # Added execution-only settings must remain optional so archived v2 configs and
 # their historical config hashes continue to validate unchanged.
-OPTIONAL_KEYS = {"training": {
-    "scene_forward_chunk", "execution_strategy", "scene_compaction",
-    "physical_group_max_scenes", "physical_group_max_agent_slots",
-    "physical_group_max_padding_ratio", "rollout_block_checkpointing",
-    "rollout_uncheckpointed_max_agent_slots",
-    "lazy_off_projection_gradients", "static_conditioning_cache",
-}}
+OPTIONAL_KEYS = {
+    "objectives": {"fixed_anchor_path_weight"},
+    "training": {
+        "scene_forward_chunk", "execution_strategy", "scene_compaction",
+        "physical_group_max_scenes", "physical_group_max_agent_slots",
+        "physical_group_max_padding_ratio", "rollout_block_checkpointing",
+        "rollout_uncheckpointed_max_agent_slots",
+        "lazy_off_projection_gradients", "static_conditioning_cache",
+    },
+}
 OPTIONAL_SECTIONS = {"native_goal_conditioning", "v2"}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
@@ -294,6 +297,15 @@ def validate_supported_config(config: dict) -> None:
         raise ValueError(
             "objectives.goal_v_weight must be the certified numeric value "
             "1.0 or 2.0")
+    path_weight = config["objectives"].get("fixed_anchor_path_weight", 0.0)
+    if (
+        isinstance(path_weight, bool)
+        or not isinstance(path_weight, (int, float))
+        or not math.isfinite(float(path_weight))
+        or float(path_weight) < 0
+    ):
+        raise ValueError(
+            "objectives.fixed_anchor_path_weight must be finite and non-negative")
     precision = config["training"].get("mixed_precision")
     if precision not in ("fp32", "bf16_with_fp32_geometry_loss_optimizer"):
         raise ValueError(f"unsupported training.mixed_precision={precision!r}")
@@ -586,6 +598,8 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
         association_weight=float(v2.get("association_weight", 0.0)) if v2 else 0.0,
         rollout_keep_weight=float(v2.get("rollout_keep_weight", 0.0)) if v2 else 0.0,
         pairing_seed_offset=int(v2.get("pairing_seed_offset", 3_000_007)) if v2 else 3_000_007,
+        fixed_anchor_path_weight=float(
+            objective.get("fixed_anchor_path_weight", 0.0)),
         lazy_off_projection_gradients=bool(
             training.get("lazy_off_projection_gradients", False)),
         activation_checkpointing=bool(training["activation_checkpointing"]),

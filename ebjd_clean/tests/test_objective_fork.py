@@ -111,6 +111,41 @@ def test_rollout_mechanism_off_fork_changes_only_explicit_ablation(tmp_path):
     assert "actual-step projection" in receipt["intervention"]
 
 
+@pytest.mark.parametrize("weight", [0.0, 0.10])
+def test_fixed_anchor_path_fork_accepts_only_epoch25_parent_and_weight(tmp_path, weight):
+    payload, path, config, identity = fixture_payload(tmp_path)
+    payload["epoch"] = 25
+    payload["update_index"] = 6425
+    torch.save(payload, path)
+    config["objectives"]["goal_v_weight"] = 1.0
+    config["objectives"]["fixed_anchor_path_weight"] = weight
+    identity["config_hash"] = config_hash(config)
+    receipt = validate_objective_fork_payload(
+        payload, path, file_sha256(path), config, identity, "none",
+        "fixed_anchor_path_weight")
+    assert receipt["origin_epoch"] == 25
+    assert receipt["resume_start_epoch"] == 26
+    assert receipt["checked_config_diff"]["objectives.fixed_anchor_path_weight"] == {
+        "old": "<MISSING>", "new": weight}
+
+
+def test_fixed_anchor_path_fork_rejects_wrong_weight_or_parent(tmp_path):
+    payload, path, config, identity = fixture_payload(tmp_path)
+    config["objectives"]["goal_v_weight"] = 1.0
+    config["objectives"]["fixed_anchor_path_weight"] = 0.2
+    identity["config_hash"] = config_hash(config)
+    with pytest.raises(ValueError, match="epoch25/update6425"):
+        validate_objective_fork_payload(
+            payload, path, file_sha256(path), config, identity, "none",
+            "fixed_anchor_path_weight")
+    payload["epoch"], payload["update_index"] = 25, 6425
+    torch.save(payload, path)
+    with pytest.raises(ValueError, match="missing->0"):
+        validate_objective_fork_payload(
+            payload, path, file_sha256(path), config, identity, "none",
+            "fixed_anchor_path_weight")
+
+
 @pytest.mark.parametrize(
     ("section", "key", "value"),
     [

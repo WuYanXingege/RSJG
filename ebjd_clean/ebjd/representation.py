@@ -18,6 +18,27 @@ def cosine_vp(t: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
     return alpha, sigma
 
 
+def fixed_endpoint_trajectory(
+    trajectory: torch.Tensor, endpoint: torch.Tensor,
+) -> torch.Tensor:
+    """Linearly move all future points so the final point equals ``endpoint``.
+
+    This pure FP32 tensor operation is differentiable and preserves the bridge
+    residual around the trajectory's start-to-end line.
+    """
+    if trajectory.shape[-2:] != (12, 2):
+        raise ValueError("trajectory must end in [12,2]")
+    if endpoint.shape != trajectory.shape[:-2] + (2,):
+        raise ValueError("endpoint must match trajectory leading dimensions")
+    with torch.autocast(device_type=trajectory.device.type, enabled=False):
+        value = trajectory.float()
+        delta = endpoint.float() - value[..., -1, :]
+        fraction = torch.arange(
+            1, 13, device=value.device, dtype=torch.float32) / 12
+        shape = (1,) * (value.ndim - 2) + (12, 1)
+        return value + fraction.view(shape) * delta[..., None, :]
+
+
 def cv_baseline(observed: torch.Tensor, dt: float = 0.4) -> tuple[torch.Tensor, torch.Tensor]:
     """Return the 12-frame constant-velocity baseline and recent mean velocity."""
     if observed.ndim != 4 or observed.shape[-2:] != (8, 2):

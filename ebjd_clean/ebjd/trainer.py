@@ -17,8 +17,8 @@ from torch.profiler import record_function
 from .data import SceneBatch
 from .model import EBJDModel
 from .objectives import (
-    diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss,
-    rollout_loss,
+    diffusion_loss, fixed_anchor_path_loss, gated_geometry_mean, map_loss,
+    relative_motion_loss, rollout_loss,
 )
 from .optimizer import (
     ActualStepAdamW, ProjectionStats, clip_global_norm, gradients, list_dot,
@@ -83,6 +83,7 @@ class TrainerOptions:
     rollout_keep_weight: float = 0.0
     pairing_seed_offset: int = 3_000_007
     lazy_off_projection_gradients: bool = False
+    fixed_anchor_path_weight: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -413,6 +414,7 @@ class EBJDTrainer:
                     batch.future, base_context, self.options.heatmap_sigma_m)
                 loss_keep = loss_diff.new_zeros(())
                 loss_assoc = loss_diff.new_zeros(())
+                loss_fixed_path = loss_diff.new_zeros(())
                 if base_context.world_anchors is not None:
                     coarse_clean = alpha * latent_noisy.float() - sigma * coarse.float()
                     correction = torch.stack((
@@ -428,9 +430,14 @@ class EBJDTrainer:
                     if self.model.joint_goal_assembler is not None:
                         loss_assoc = self.model.joint_goal_assembler.association_loss(
                             context, batch.future.detach(), self.pairing_generator)
+                    if self.options.fixed_anchor_path_weight != 0:
+                        loss_fixed_path = fixed_anchor_path_loss(
+                            final_trajectory, coarse_trajectory, batch.future,
+                            base_context.world_anchors, batch.valid, alpha)
                 total = (
                     float(agent_weight) * (
-                        loss_diff + self.options.map_weight * loss_map)
+                        loss_diff + self.options.map_weight * loss_map
+                        + self.options.fixed_anchor_path_weight * loss_fixed_path)
                     + float(scene_weight) * (
                         self.options.geometry_weight * loss_geo
                         + self.options.keep_weight * loss_keep
@@ -533,6 +540,9 @@ class EBJDTrainer:
             "geometry": float(loss_geo.detach()), "map": float(loss_map.detach()),
             "keep": float(loss_keep.detach()),
             "association": float(loss_assoc.detach()),
+            "fixed_anchor_path": float(loss_fixed_path.detach()),
+            "active_fixed_anchor_path_weight": float(
+                self.options.fixed_anchor_path_weight),
             "rollout": float(loss_roll.detach()),
             "rollout_keep": float(loss_roll_keep.detach()) if do_rollout else 0.0,
             "soft_marginal_ade": float(marginal_a.detach()),
@@ -582,6 +592,8 @@ class EBJDTrainer:
         aggregate = {
             "loss": 0.0, "diffusion": 0.0, "geometry": 0.0, "map": 0.0,
             "keep": 0.0, "association": 0.0, "rollout_keep": 0.0,
+            "fixed_anchor_path": 0.0,
+            "active_fixed_anchor_path_weight": 0.0,
             "weighted_diffusion": 0.0,
             "diffusion_goal_fine_unweighted": 0.0,
             "diffusion_bridge_fine_unweighted": 0.0,
@@ -632,6 +644,7 @@ class EBJDTrainer:
                 "diffusion_goal_coarse_unweighted",
                 "diffusion_bridge_coarse_unweighted",
                 "active_goal_v_weight",
+                "fixed_anchor_path", "active_fixed_anchor_path_weight",
                 "active_rollout_weight",
                 "rollout_frequency_compensation",
                 "effective_rollout_coefficient",

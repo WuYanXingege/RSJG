@@ -106,7 +106,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--objective-fork-contract", choices=(
             "goal_v_weight_2", "rollout_weight_end_005",
-            "rollout_mechanism_off"),
+            "rollout_mechanism_off", "fixed_anchor_path_weight"),
         help="strictly allow one preregistered semantic change")
     parser.add_argument(
         "--max-epochs-this-run", type=int,
@@ -595,9 +595,26 @@ def validate_objective_fork_payload(
             "training.rollout_weight_end": {"old": 0.2, "new": 0.05},
         },
         "rollout_mechanism_off": {},
+        "fixed_anchor_path_weight": {
+            "objectives.fixed_anchor_path_weight": None,
+        },
     }
     if contract not in contracts:
         raise ValueError(f"unsupported objective fork contract: {contract!r}")
+    if contract == "fixed_anchor_path_weight":
+        if (int(payload.get("epoch", -1)), int(payload.get("update_index", -1))) != (
+                25, 6425):
+            raise ValueError(
+                "fixed-anchor path fork requires the certified epoch25/update6425 parent")
+        path_change = config_differences(origin_config, config).get(
+            "objectives.fixed_anchor_path_weight")
+        if path_change not in (
+            {"old": "<MISSING>", "new": 0},
+            {"old": "<MISSING>", "new": 0.0},
+            {"old": "<MISSING>", "new": 0.1},
+        ):
+            raise ValueError(
+                "fixed-anchor path fork permits only missing->0 or missing->0.10")
     differences = config_differences(origin_config, config)
     identity_changes = {"experiment.source_commit", "paths.output_root"}
     execution_fields = {".".join(path) for path in SEMANTIC_CONFIG_EXCLUSIONS}
@@ -618,7 +635,7 @@ def validate_objective_fork_payload(
     if actual & semantic_changes != semantic_changes:
         raise ValueError("objective fork is missing its sole semantic goal-weight change")
     for name, expected in contracts[contract].items():
-        if differences[name] != expected:
+        if expected is not None and differences[name] != expected:
             raise ValueError(
                 f"objective fork value mismatch for {name}: {differences[name]}")
     identity_fields = (
@@ -686,11 +703,17 @@ def audit_restored_state(
         or torch.equal(
             trainer.rollout_generator.get_state().cpu(),
             payload["rollout_rng"].cpu()))
+    pairing_rng_exact = (
+        payload.get("pairing_rng") is None
+        or torch.equal(
+            trainer.pairing_generator.get_state().cpu(),
+            payload["pairing_rng"].cpu()))
     result = {
         "model_state_exact": model_exact,
         "optimizer_state_exact": optimizer_exact,
         "rng_state_exact": rng_exact,
         "rollout_rng_state_exact": rollout_rng_exact,
+        "pairing_rng_state_exact": pairing_rng_exact,
         "update_index_exact": trainer.update_index == int(payload["update_index"]),
     }
     if not all(result.values()):

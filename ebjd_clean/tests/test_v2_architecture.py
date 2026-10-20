@@ -4,6 +4,8 @@ import torch
 
 from conftest import make_batch
 from ebjd.model import EBJDModel
+from ebjd.objectives import fixed_anchor_path_loss
+from ebjd.representation import fixed_endpoint_trajectory
 from ebjd.sampling import differentiable_sample, predict
 from ebjd.trainer import EBJDTrainer, TrainerOptions
 
@@ -205,3 +207,47 @@ def test_read_only_zero_radius_projection_preserves_bridge_residual():
     torch.testing.assert_close(goal, context.world_anchors[:, :4], atol=1e-6, rtol=0)
     assert trajectory.shape == (1, 4, 2, 12, 2)
     torch.testing.assert_close(trajectory[..., -1, :], goal, atol=1e-6, rtol=0)
+
+
+def test_fixed_endpoint_helper_is_differentiable_and_preserves_bridge():
+    torch.manual_seed(79)
+    trajectory = torch.randn(2, 1, 3, 12, 2, requires_grad=True)
+    anchor = torch.randn(2, 1, 3, 2)
+    fixed = fixed_endpoint_trajectory(trajectory, anchor)
+    torch.testing.assert_close(fixed[..., -1, :], anchor, atol=1e-6, rtol=0)
+    fraction = torch.arange(1, 13, dtype=torch.float32) / 12
+    old_line = trajectory[..., :1, :] + fraction.view(1, 1, 1, 12, 1) * (
+        trajectory[..., -1:, :] - trajectory[..., :1, :])
+    new_line = trajectory[..., :1, :] + fraction.view(1, 1, 1, 12, 1) * (
+        anchor[..., None, :] - trajectory[..., :1, :])
+    torch.testing.assert_close(
+        trajectory - old_line, fixed - new_line, atol=1e-5, rtol=0)
+    fixed[..., :11, :].square().mean().backward()
+    assert trajectory.grad is not None
+    assert float(trajectory.grad[..., :11, :].abs().sum()) > 0
+
+
+def test_fixed_anchor_path_loss_masks_padding_excludes_terminal_and_normalizes_agents():
+    torch.manual_seed(80)
+    final = torch.randn(2, 1, 3, 12, 2, requires_grad=True)
+    coarse = torch.randn(2, 1, 3, 12, 2, requires_grad=True)
+    target = torch.randn(2, 3, 12, 2)
+    anchors = torch.randn(2, 1, 3, 2)
+    valid = torch.tensor([[True, True, False], [True, False, False]])
+    alpha = torch.tensor([0.25, 0.5]).view(2, 1, 1, 1, 1)
+    loss = fixed_anchor_path_loss(
+        final, coarse, target, anchors, valid, alpha)
+    assert torch.isfinite(loss) and float(loss.detach()) > 0
+    loss.backward()
+    assert float(final.grad[..., :11, :].abs().sum()) > 0
+    assert float(coarse.grad[..., :11, :].abs().sum()) > 0
+
+    changed_target = target.clone()
+    changed_target[..., -1, :] += 1000
+    changed_final = final.detach().clone()
+    changed_coarse = coarse.detach().clone()
+    changed_final[:, :, 2] += 1000
+    changed_coarse[:, :, 2] -= 1000
+    replay = fixed_anchor_path_loss(
+        changed_final, changed_coarse, changed_target, anchors, valid, alpha)
+    torch.testing.assert_close(loss.detach(), replay, atol=0, rtol=0)

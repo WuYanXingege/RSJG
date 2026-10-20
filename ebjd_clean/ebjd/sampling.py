@@ -10,7 +10,7 @@ from torch.utils.checkpoint import checkpoint
 
 from .encoders import EBJDContext
 from .model import EBJDModel
-from .representation import cosine_vp
+from .representation import cosine_vp, fixed_endpoint_trajectory
 
 
 def differentiable_sample(
@@ -118,9 +118,6 @@ def predict(
             torch.as_tensor(radius, device=norm.device) / norm.clamp_min(1e-12),
             max=1.0)
         projected_goal = context.world_anchors.float() + clipped
-        delta = projected_goal - goal.float()
-        time = torch.arange(
-            1, 13, device=trajectory.device, dtype=torch.float32) / 12
-        trajectory = trajectory.float() + time.view(1, 1, 1, 12, 1) * delta[..., None, :]
+        trajectory = fixed_endpoint_trajectory(trajectory, projected_goal)
         goal = projected_goal
     return trajectory, goal
