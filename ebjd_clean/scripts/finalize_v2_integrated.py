@@ -146,13 +146,18 @@ def main() -> None:
         "full_projection_rho0": evaluation / "v2_full_projection_rho0_seeds2035_2039.json",
         "full_projection_train_p95": evaluation / "v2_full_projection_train_p95_seeds2035_2039.json",
     }
-    missing = [str(path) for path in paths.values() if not path.is_file()]
+    endpoint_adjustment_path = evaluation / "parent_epoch20_endpoint_adjustment.json"
+    attention_path = evaluation / "v2_full_attention_observer.json"
+    paths["parent_endpoint_adjustment"] = endpoint_adjustment_path
+    missing = [str(path) for path in (*paths.values(), attention_path)
+               if not path.is_file()]
     if missing:
         raise FileNotFoundError(f"finalization inputs missing: {missing}")
     payloads = {name: read(path) for name, path in paths.items()}
     manifest = "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b"
     for name, payload in payloads.items():
-        if name != "matched_GDTS" and payload.get("manifest_sha256") != manifest:
+        if name not in {"matched_GDTS", "parent_endpoint_adjustment"} \
+                and payload.get("manifest_sha256") != manifest:
             raise ValueError(f"{name} manifest identity differs")
     summaries = {name: summarize(payload) for name, payload in payloads.items()}
     comparisons = {
@@ -205,6 +210,8 @@ def main() -> None:
         "endpoint_diagnostics": {
             name: payloads[name]["per_seed"] for name in
             ("V2_FULL", "V2_NO_TOKEN", "V2_NO_ANCHOR")},
+        "parent_endpoint_adjustment": payloads["parent_endpoint_adjustment"],
+        "attention_observer": read(attention_path),
         "trust_region": {
             "rho0": summaries["full_projection_rho0"],
             "train_p95": summaries["full_projection_train_p95"],

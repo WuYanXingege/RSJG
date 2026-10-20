@@ -5,7 +5,7 @@ project_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 workspace_root="$(cd "$project_root/../.." && pwd)"
 python_bin="$workspace_root/.conda/rsjg/bin/python"
 assets="$workspace_root/RSJG_EBJD_diagnostic_assets/eth_v2_integrated_20261020"
-protocol="$assets/protocol_v2"
+protocol="$assets/protocol_v3"
 run_root="$assets/runs_v1"
 evaluation="$assets/evaluation_v1"
 parent="$workspace_root/RSJG_EBJD_diagnostic_assets/eth_rollout_boundary_20261019/runs_v1/shared_runs/eth/3101/none/eth_rollout_shared_20261019/epoch_020.pt"
@@ -119,6 +119,12 @@ evaluate_arm "$protocol/V2_NO_TOKEN_CONFIG.json" "$no_token_run/epoch_025.pt" v2
 evaluate_arm "$protocol/V2_NO_ANCHOR_CONFIG.json" "$no_anchor_run/epoch_025.pt" v2_no_anchor \
   "$evaluation/v2_no_anchor_epoch025_seeds2035_2039.json" "$evaluation/banks_v2_no_anchor"
 
+if [[ ! -f "$evaluation/parent_epoch20_endpoint_adjustment.json" ]]; then
+  "$python_bin" scripts/diagnose_endpoint_adjustment.py \
+    --bank-root "$workspace_root/RSJG_EBJD_diagnostic_assets/eth_rollout_boundary_20261019/evaluation_v1/banks_epoch020" \
+    --output "$evaluation/parent_epoch20_endpoint_adjustment.json"
+fi
+
 if [[ ! -f "$evaluation/v2_full_initial_pairing_seeds2035_2039.json" ]]; then
   "$python_bin" -u -B -m ebjd.evaluate \
     --config "$protocol/V2_FULL_CONFIG.json" --checkpoint "$full_run/epoch_025.pt" \
@@ -146,6 +152,13 @@ if [[ ! -f "$evaluation/v2_full_projection_train_p95_seeds2035_2039.json" ]]; th
     --ablation v2_full --split validation --device cuda:0 \
     --endpoint-projection-radius "$p95" \
     --output "$evaluation/v2_full_projection_train_p95_seeds2035_2039.json"
+fi
+
+if [[ ! -f "$evaluation/v2_full_attention_observer.json" ]]; then
+  "$python_bin" scripts/diagnose_v2_attention.py \
+    --config "$protocol/V2_FULL_CONFIG.json" \
+    --checkpoint "$full_run/epoch_025.pt" --device cuda:0 \
+    --output "$evaluation/v2_full_attention_observer.json"
 fi
 
 "$python_bin" scripts/finalize_v2_integrated.py \
