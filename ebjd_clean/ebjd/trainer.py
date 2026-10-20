@@ -11,6 +11,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+from torch.nn import functional as F
 from torch.profiler import record_function
 
 from .data import SceneBatch
@@ -77,6 +78,11 @@ class TrainerOptions:
     # Execution-only threshold measured in padded physical agent slots.  Zero
     # preserves step checkpointing for every differentiable DDIM rollout.
     rollout_uncheckpointed_max_agent_slots: int = 0
+    keep_weight: float = 0.0
+    association_weight: float = 0.0
+    rollout_keep_weight: float = 0.0
+    pairing_seed_offset: int = 3_000_007
+    lazy_off_projection_gradients: bool = False
 
 
 @dataclass(frozen=True)
@@ -218,6 +224,10 @@ class EBJDTrainer:
         self.rollout_generator = torch.Generator(device=self.device)
         self.rollout_generator.manual_seed(
             int(self.resolved_config.get("seed", 0)) + 2_000_003)
+        self.pairing_generator = torch.Generator(device="cpu")
+        self.pairing_generator.manual_seed(
+            int(self.resolved_config.get("seed", 0))
+            + int(self.options.pairing_seed_offset))
 
     @staticmethod
     def _random_draw_digest(draws: BatchRandomDraws) -> str:
@@ -320,7 +330,10 @@ class EBJDTrainer:
         draws: BatchRandomDraws | None = None,
         agent_weight: float = 1.0,
         scene_weight: float = 1.0,
-    ) -> tuple[list[torch.Tensor], list[torch.Tensor], list[torch.Tensor], dict[str, float]]:
+    ) -> tuple[
+        list[torch.Tensor], list[torch.Tensor] | None,
+        list[torch.Tensor] | None, dict[str, float],
+    ]:
         """Build one physical graph and return detached gradients/scalars.
 
         Whole-batch legacy execution uses unit weights because its objective
@@ -338,9 +351,15 @@ class EBJDTrainer:
                 context = self.model.encode_context(
                     batch.observed, batch.semantic_maps, batch.valid,
                     batch.native_goals)
+                base_context = context
+                if getattr(self.model.representation, "anchor_residual", False):
+                    base_context, _ = self.model.assign_training_anchors(
+                        context, batch.future.detach())
         with record_function("ebjd.base_diffusion_and_losses"):
             latent_clean = self.model.representation.encode_target(
-                batch.future.detach(), context.baseline)[:, None]
+                batch.future.detach(), base_context.baseline,
+                None if base_context.world_anchors is None
+                else base_context.world_anchors[:, 0])[:, None]
             if draws is None:
                 time = torch.randint(
                     1, self.options.noise_bins + 1, (batch.observed.shape[0],),
@@ -365,11 +384,12 @@ class EBJDTrainer:
                 device_type=autocast_device, dtype=torch.bfloat16,
                 enabled=self.use_bf16):
                 final, coarse, coarse_trajectory, _ = self.model.denoiser(
-                    latent_noisy, time, context)
+                    latent_noisy, time, base_context)
             with torch.autocast(device_type=autocast_device, enabled=False):
                 final_clean = alpha * latent_noisy.float() - sigma * final.float()
                 final_trajectory, _ = self.model.representation.decode(
-                    final_clean, context.baseline)
+                    final_clean, base_context.baseline,
+                    base_context.world_anchors)
                 loss_diff, diffusion_components = diffusion_loss(
                     final, coarse, velocity_target, batch.valid,
                     coarse_weight=self.options.coarse_v_weight,
@@ -379,22 +399,42 @@ class EBJDTrainer:
                 if self.options.use_geometry_loss:
                     per_scene_geo = 0.5 * (
                         relative_motion_loss(
-                            coarse_trajectory, batch.future, context,
+                            coarse_trajectory, batch.future, base_context,
                             self.options.supervision_edge_radius_m,
                             self.options.supervision_edge_cpa_radius_m,
                             self.options.supervision_edge_cpa_horizon_s)
                         + relative_motion_loss(
-                            final_trajectory, batch.future, context,
+                            final_trajectory, batch.future, base_context,
                             self.options.supervision_edge_radius_m,
                             self.options.supervision_edge_cpa_radius_m,
                             self.options.supervision_edge_cpa_horizon_s))
                     loss_geo = gated_geometry_mean(per_scene_geo, alpha)
                 loss_map = map_loss(
-                    batch.future, context, self.options.heatmap_sigma_m)
+                    batch.future, base_context, self.options.heatmap_sigma_m)
+                loss_keep = loss_diff.new_zeros(())
+                loss_assoc = loss_diff.new_zeros(())
+                if base_context.world_anchors is not None:
+                    coarse_clean = alpha * latent_noisy.float() - sigma * coarse.float()
+                    correction = torch.stack((
+                        coarse_clean[..., 11, :], final_clean[..., 11, :]), dim=0)
+                    keep_raw = F.smooth_l1_loss(
+                        correction, torch.zeros_like(correction), reduction="none")
+                    keep_agent = keep_raw.mean(dim=(0, 2, 4))
+                    keep_scene = (
+                        (keep_agent * batch.valid).sum(-1)
+                        / batch.valid.sum(-1).clamp_min(1))
+                    loss_keep = (
+                        keep_scene * alpha[:, 0, 0, 0, 0].square()).mean()
+                    if self.model.joint_goal_assembler is not None:
+                        loss_assoc = self.model.joint_goal_assembler.association_loss(
+                            context, batch.future.detach(), self.pairing_generator)
                 total = (
                     float(agent_weight) * (
                         loss_diff + self.options.map_weight * loss_map)
-                    + float(scene_weight) * self.options.geometry_weight * loss_geo)
+                    + float(scene_weight) * (
+                        self.options.geometry_weight * loss_geo
+                        + self.options.keep_weight * loss_keep
+                        + self.options.association_weight * loss_assoc))
         marginal_a = total.new_zeros(())
         marginal_f = total.new_zeros(())
         loss_roll = total.new_zeros(())
@@ -412,6 +452,18 @@ class EBJDTrainer:
                 if initial is None or tuple(initial.shape) != expected_initial:
                     raise ValueError("prepared rollout noise does not match physical scene batch")
             with record_function("ebjd.rollout_forward"):
+                rollout_context = context
+                if self.model.joint_goal_assembler is not None:
+                    rollout_context, _, _ = self.model.assemble_world_anchors(
+                        context, batch.scene_ids, batch.agent_ids,
+                        int(self.resolved_config.get("seed", 0)))
+                    selections = torch.stack([
+                        torch.randperm(20, generator=self.pairing_generator)[
+                            :self.options.rollout_worlds]
+                        for _ in range(batch.observed.shape[0])
+                    ]).to(batch.observed.device)
+                    rollout_context = self.model.select_world_anchors(
+                        rollout_context, selections)
                 physical_agent_slots = int(
                     batch.observed.shape[0] * batch.observed.shape[1])
                 threshold = int(
@@ -423,11 +475,21 @@ class EBJDTrainer:
                     device_type=autocast_device, dtype=torch.bfloat16,
                     enabled=self.use_bf16):
                     free, goals, _ = differentiable_sample(
-                        self.model, context, initial, self.options.rollout_steps,
+                        self.model, rollout_context, initial, self.options.rollout_steps,
                         checkpoint_steps=checkpoint_steps,
                         checkpoint_blocks=self.options.rollout_block_checkpointing)
                 loss_roll, values = rollout_loss(
                     free, goals, batch.future, batch.valid, self._temperature(epoch))
+                loss_roll_keep = loss_roll.new_zeros(())
+                if rollout_context.world_anchors is not None:
+                    correction = (
+                        (goals.float() - rollout_context.world_anchors.float())
+                        / self.model.representation.goal_scale.float().clamp_min(0.5)
+                    )
+                    loss_roll_keep = F.smooth_l1_loss(
+                        correction, torch.zeros_like(correction))
+                    loss_roll = loss_roll + (
+                        self.options.rollout_keep_weight * loss_roll_keep)
             marginal_a, marginal_f, _, _ = values
             total = total + (
                 float(scene_weight) * self.options.rollout_compensation
@@ -441,8 +503,14 @@ class EBJDTrainer:
                     float(scene_weight) * marginal_f, self.parameters,
                     retain_graph=True)
         else:
-            grad_a = zeros_for(self.parameters)
-            grad_f = zeros_for(self.parameters)
+            # OFF updates have no projection consumer.  Avoid allocating two
+            # complete all-zero gradient trees for every physical group.
+            grad_a = (
+                None if self.options.lazy_off_projection_gradients
+                else zeros_for(self.parameters))
+            grad_f = (
+                None if self.options.lazy_off_projection_gradients
+                else zeros_for(self.parameters))
         with record_function("ebjd.grad_total"):
             total_gradient = gradients(total, self.parameters)
         logs = {
@@ -463,7 +531,10 @@ class EBJDTrainer:
             "effective_rollout_coefficient": float(
                 self.options.rollout_compensation * self._rollout_weight(epoch)),
             "geometry": float(loss_geo.detach()), "map": float(loss_map.detach()),
+            "keep": float(loss_keep.detach()),
+            "association": float(loss_assoc.detach()),
             "rollout": float(loss_roll.detach()),
+            "rollout_keep": float(loss_roll_keep.detach()) if do_rollout else 0.0,
             "soft_marginal_ade": float(marginal_a.detach()),
             "soft_marginal_fde": float(marginal_f.detach()),
             "minimum_time": float(time.min()), "maximum_time": float(time.max()),
@@ -480,7 +551,10 @@ class EBJDTrainer:
 
     def _scene_chunked_batch_gradients(
         self, logical_batch: SceneBatch, epoch: int, do_rollout: bool,
-    ) -> tuple[list[torch.Tensor], list[torch.Tensor], list[torch.Tensor], dict[str, float]]:
+    ) -> tuple[
+        list[torch.Tensor], list[torch.Tensor] | None,
+        list[torch.Tensor] | None, dict[str, float],
+    ]:
         """Evaluate one logical batch as bounded contiguous physical groups."""
         if self.options.scene_forward_chunk != 1:
             raise ValueError(
@@ -502,10 +576,12 @@ class EBJDTrainer:
                 raise ValueError("physical grouping requires scene_compaction=true")
             groups = [(index, index + 1) for index in range(batch_size)]
         total_grad = zeros_for(self.parameters)
-        grad_a = zeros_for(self.parameters)
-        grad_f = zeros_for(self.parameters)
+        materialize_off = not self.options.lazy_off_projection_gradients
+        grad_a = zeros_for(self.parameters) if do_rollout or materialize_off else None
+        grad_f = zeros_for(self.parameters) if do_rollout or materialize_off else None
         aggregate = {
             "loss": 0.0, "diffusion": 0.0, "geometry": 0.0, "map": 0.0,
+            "keep": 0.0, "association": 0.0, "rollout_keep": 0.0,
             "weighted_diffusion": 0.0,
             "diffusion_goal_fine_unweighted": 0.0,
             "diffusion_bridge_fine_unweighted": 0.0,
@@ -542,8 +618,12 @@ class EBJDTrainer:
                 agent_weight=agent_weight, scene_weight=scene_weight)
             with record_function("ebjd.gradient_accumulation"):
                 self._add_gradients_(total_grad, gradients_total)
-                self._add_gradients_(grad_a, gradients_a)
-                self._add_gradients_(grad_f, gradients_f)
+                if do_rollout or materialize_off:
+                    if grad_a is None or grad_f is None or \
+                            gradients_a is None or gradients_f is None:
+                        raise AssertionError("rollout gradients are missing")
+                    self._add_gradients_(grad_a, gradients_a)
+                    self._add_gradients_(grad_f, gradients_f)
             aggregate["loss"] += logs["loss"]
             for name in (
                 "diffusion", "weighted_diffusion",
@@ -559,7 +639,8 @@ class EBJDTrainer:
                 aggregate[name] += agent_weight * logs[name]
             aggregate["map"] += agent_weight * logs["map"]
             for name in (
-                "geometry", "rollout", "soft_marginal_ade",
+                "geometry", "keep", "association", "rollout",
+                "rollout_keep", "soft_marginal_ade",
                 "soft_marginal_fde",
             ):
                 aggregate[name] += scene_weight * logs[name]
@@ -587,8 +668,9 @@ class EBJDTrainer:
             self.options.use_rollout_loss and epoch >= self.options.rollout_start_epoch
             and self.update_index % self.options.rollout_every == 0)
         total_grad = zeros_for(self.parameters)
-        grad_a = zeros_for(self.parameters)
-        grad_f = zeros_for(self.parameters)
+        materialize_off = not self.options.lazy_off_projection_gradients
+        grad_a = zeros_for(self.parameters) if do_rollout or materialize_off else None
+        grad_f = zeros_for(self.parameters) if do_rollout or materialize_off else None
         aggregate: dict[str, float] = {}
         input_digest = hashlib.sha256()
         augmentation_digest = hashlib.sha256()
@@ -633,8 +715,16 @@ class EBJDTrainer:
                 gradients_total, gradients_a, gradients_f, logs = self._batch_gradients(
                     physical_batch, epoch, do_rollout, physical_draws)
             total_grad = [a + scale * b for a, b in zip(total_grad, gradients_total, strict=True)]
-            grad_a = [a + scale * b for a, b in zip(grad_a, gradients_a, strict=True)]
-            grad_f = [a + scale * b for a, b in zip(grad_f, gradients_f, strict=True)]
+            if do_rollout or materialize_off:
+                if grad_a is None or grad_f is None or \
+                        gradients_a is None or gradients_f is None:
+                    raise AssertionError("rollout gradients are missing")
+                grad_a = [
+                    a + scale * b
+                    for a, b in zip(grad_a, gradients_a, strict=True)]
+                grad_f = [
+                    a + scale * b
+                    for a, b in zip(grad_f, gradients_f, strict=True)]
             for name, value in logs.items():
                 aggregate[name] = aggregate.get(name, 0) + scale * value
             del gradients_total, gradients_a, gradients_f, logs
@@ -647,6 +737,8 @@ class EBJDTrainer:
                 gate_gradient = float(total_grad[parameter_names.index(gate_name)].float())
             candidate, pending = self.optimizer.propose(
                 clip_global_norm(total_grad, self.options.gradient_clip_norm))
+        if do_rollout and (grad_a is None or grad_f is None):
+            raise AssertionError("rollout gradients are missing before projection")
         candidate_dot_a = float(list_dot(grad_a, candidate)) if do_rollout else 0.0
         candidate_dot_f = float(list_dot(grad_f, candidate)) if do_rollout else 0.0
         stats = ProjectionStats(0, float(list_norm(candidate)), float(list_norm(candidate)), 0, False)
@@ -746,6 +838,7 @@ class EBJDTrainer:
             },
             "rng": self._rng_state(loader_generator), "extra": extra or {},
             "rollout_rng": self.rollout_generator.get_state().cpu(),
+            "pairing_rng": self.pairing_generator.get_state().cpu(),
         }, temporary)
         os.replace(temporary, path)
 
@@ -791,6 +884,8 @@ class EBJDTrainer:
         self._restore_rng(payload["rng"], loader_generator)
         if payload.get("rollout_rng") is not None:
             self.rollout_generator.set_state(payload["rollout_rng"].cpu())
+        if payload.get("pairing_rng") is not None:
+            self.pairing_generator.set_state(payload["pairing_rng"].cpu())
 
     def restore_model_extension_payload(
         self, payload: dict, loader_generator: torch.Generator | None = None,
@@ -834,6 +929,8 @@ class EBJDTrainer:
         self._restore_rng(payload["rng"], loader_generator)
         if payload.get("rollout_rng") is not None:
             self.rollout_generator.set_state(payload["rollout_rng"].cpu())
+        if payload.get("pairing_rng") is not None:
+            self.pairing_generator.set_state(payload["pairing_rng"].cpu())
         exact = all(torch.equal(
             self.model.state_dict()[name].detach().cpu(), saved[name].detach().cpu())
             for name in old_names)
@@ -847,5 +944,70 @@ class EBJDTrainer:
                 extended_optimizer["states"][current_names.index(name)] == {}
                 for name in current_names if name.startswith(prefix)),
             "rng_state_restored": True,
+            "update_index_restored": self.update_index,
+        }
+
+    def restore_named_extension_payload(
+        self, payload: dict, loader_generator: torch.Generator | None = None,
+    ) -> dict:
+        """Warm-start a declared V2 extension by exact shared state names.
+
+        Shared parameters and optimizer moments are restored byte-for-byte;
+        parameters absent from the parent receive empty optimizer state.  A
+        missing or shape-changed parent tensor is never silently accepted.
+        """
+        if payload.get("schema") != "ebjd-checkpoint-v2" or \
+                payload.get("epoch_boundary_only") is not True:
+            raise ValueError("V2 extension requires an epoch-boundary v2 checkpoint")
+        current = self.model.state_dict()
+        saved = payload.get("model")
+        if not isinstance(saved, dict) or not set(saved).issubset(current):
+            raise ValueError("V2 extension parent state is not a subset of the model")
+        for name, value in saved.items():
+            if value.shape != current[name].shape:
+                raise ValueError(f"V2 shared state shape mismatch: {name}")
+        missing, unexpected = self.model.load_state_dict(saved, strict=False)
+        expected_new = [name for name in current if name not in saved]
+        if list(missing) != expected_new or unexpected:
+            raise ValueError("V2 extension load produced undeclared state differences")
+
+        optimizer = payload.get("optimizer", {})
+        saved_names = list(optimizer.get("parameter_names", []))
+        saved_states = list(optimizer.get("states", []))
+        if len(saved_names) != len(saved_states):
+            raise ValueError("V2 parent optimizer state is malformed")
+        by_name = dict(zip(saved_names, saved_states, strict=True))
+        current_names = [name for name, _ in self.optimizer.named_parameters]
+        if [name for name in current_names if name in by_name] != saved_names:
+            raise ValueError("V2 shared optimizer parameter ordering differs")
+        unknown = set(saved_names) - set(current_names)
+        if unknown:
+            raise ValueError(f"V2 parent optimizer has unknown parameters: {sorted(unknown)}")
+        extended = {
+            "lr": optimizer["lr"], "unet_lr": optimizer["unet_lr"],
+            "parameter_names": current_names,
+            "states": [by_name.get(name, {}) for name in current_names],
+        }
+        self.optimizer.load_state_dict(extended)
+        self.update_index = int(payload["update_index"])
+        self._restore_rng(payload["rng"], loader_generator)
+        if payload.get("rollout_rng") is not None:
+            self.rollout_generator.set_state(payload["rollout_rng"].cpu())
+        shared_exact = all(torch.equal(
+            self.model.state_dict()[name].detach().cpu(), value.detach().cpu())
+            for name, value in saved.items())
+        if not shared_exact:
+            raise ValueError("V2 shared tensors changed during named migration")
+        new_parameters = [name for name in current_names if name not in by_name]
+        return {
+            "shared_model_state_exact": True,
+            "shared_optimizer_state_by_name_exact": True,
+            "new_model_state_names": expected_new,
+            "new_parameter_names": new_parameters,
+            "new_optimizer_state_empty": all(
+                extended["states"][current_names.index(name)] == {}
+                for name in new_parameters),
+            "rng_state_restored": True,
+            "pairing_rng_initialized_from_frozen_offset": True,
             "update_index_restored": self.update_index,
         }

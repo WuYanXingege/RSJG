@@ -19,6 +19,7 @@ ABLATIONS = {
     "none", "future_social_off", "noisy_geometry", "cartesian_velocity",
     "geometry_loss_off", "rollout_loss_off", "actual_step_constraint_off",
     "rollout_mechanism_off",
+    "v2_full", "v2_no_token", "v2_no_anchor",
 }
 
 ALLOWED_KEYS = {
@@ -85,6 +86,7 @@ ALLOWED_KEYS = {
         "physical_group_max_scenes", "physical_group_max_agent_slots",
         "physical_group_max_padding_ratio", "rollout_block_checkpointing",
         "rollout_uncheckpointed_max_agent_slots",
+        "lazy_off_projection_gradients", "static_conditioning_cache",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -99,6 +101,12 @@ ALLOWED_KEYS = {
         "provider_checkpoint_sha256", "provider_code_commit",
         "goal_scale_source",
     },
+    "v2": {
+        "enabled", "variant", "memory_mode", "motion_summaries",
+        "map_memory_grid", "anchor_residual", "joint_goal_assembly",
+        "geometry_mapping", "keep_weight", "association_weight",
+        "rollout_keep_weight", "pairing_seed_offset", "pairing_rounds",
+    },
 }
 
 # Added execution-only settings must remain optional so archived v2 configs and
@@ -108,8 +116,9 @@ OPTIONAL_KEYS = {"training": {
     "physical_group_max_scenes", "physical_group_max_agent_slots",
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
     "rollout_uncheckpointed_max_agent_slots",
+    "lazy_off_projection_gradients", "static_conditioning_cache",
 }}
-OPTIONAL_SECTIONS = {"native_goal_conditioning"}
+OPTIONAL_SECTIONS = {"native_goal_conditioning", "v2"}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
     ("experiment", "source_commit"),
@@ -122,6 +131,8 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "physical_group_max_padding_ratio"),
     ("training", "rollout_block_checkpointing"),
     ("training", "rollout_uncheckpointed_max_agent_slots"),
+    ("training", "lazy_off_projection_gradients"),
+    ("training", "static_conditioning_cache"),
 }
 
 
@@ -219,7 +230,6 @@ def validate_supported_config(config: dict) -> None:
         ("map_encoder", "enc_channels", [14, 32, 32, 64, 64, 64]),
         ("map_encoder", "dec_channels", [64, 64, 64, 32, 32]),
         ("map_encoder", "future_heatmap_channels", 12),
-        ("map_encoder", "memory_grid", [8, 8]),
         ("map_encoder", "trainable", True),
         ("map_encoder", "crop_width_m", 32.0),
         ("history_encoder", "input_dim", 6),
@@ -240,7 +250,6 @@ def validate_supported_config(config: dict) -> None:
         ("denoiser", "hidden_dim", 128), ("denoiser", "heads", 4),
         ("denoiser", "ff_dim", 512), ("denoiser", "coarse_blocks", 3),
         ("denoiser", "refinement_blocks", 3),
-        ("denoiser", "memory_tokens_per_agent", 72),
         ("denoiser", "cross_world_attention", False),
         ("denoiser", "target_parameterization", "v"),
         ("denoiser", "geometry_gate", "alpha_squared"),
@@ -305,6 +314,67 @@ def validate_supported_config(config: dict) -> None:
                     f"native_goal_conditioning.{key} must be {expected!r}")
         if not isinstance(conditioning.get("validation_cache_by_seed"), dict):
             raise ValueError("validation_cache_by_seed must be a seed-to-manifest mapping")
+    v2 = config.get("v2")
+    if v2 is None:
+        _require(config, "map_encoder", "memory_grid", [8, 8])
+        _require(config, "denoiser", "memory_tokens_per_agent", 72)
+    else:
+        if v2.get("enabled") is not True:
+            raise ValueError("v2.enabled must be true when the section is present")
+        variants = {
+            "full": {
+                "memory_mode": "split_gated", "motion_summaries": True,
+                "map_memory_grid": 4, "anchor_residual": True,
+                "joint_goal_assembly": True,
+                "geometry_mapping": "decoder_jacobian",
+            },
+            "no_token": {
+                "memory_mode": "legacy_joint", "motion_summaries": False,
+                "map_memory_grid": 8, "anchor_residual": True,
+                "joint_goal_assembly": True,
+                "geometry_mapping": "decoder_jacobian",
+            },
+            "no_anchor": {
+                "memory_mode": "split_gated", "motion_summaries": True,
+                "map_memory_grid": 4, "anchor_residual": False,
+                "joint_goal_assembly": False,
+                "geometry_mapping": "decoder_jacobian",
+            },
+        }
+        variant = v2.get("variant")
+        if variant not in variants:
+            raise ValueError(f"unsupported v2.variant={variant!r}")
+        mismatch = {
+            key: {"expected": expected, "actual": v2.get(key)}
+            for key, expected in variants[variant].items()
+            if v2.get(key) != expected}
+        if mismatch:
+            raise ValueError(f"V2 variant fields differ: {mismatch}")
+        if config["map_encoder"]["memory_grid"] != [v2["map_memory_grid"]] * 2:
+            raise ValueError("map_encoder.memory_grid differs from V2 grid")
+        expected_tokens = (
+            (12 if v2["motion_summaries"] else 8)
+            + int(v2["map_memory_grid"]) ** 2)
+        if config["denoiser"]["memory_tokens_per_agent"] != expected_tokens:
+            raise ValueError("denoiser memory count differs from V2 token layout")
+        for key in ("keep_weight", "association_weight", "rollout_keep_weight"):
+            value = v2.get(key)
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
+                raise ValueError(f"v2.{key} must be non-negative numeric")
+        expected_weights = (
+            {"keep_weight": 0.0, "association_weight": 0.0,
+             "rollout_keep_weight": 0.0}
+            if variant == "no_anchor" else
+            {"keep_weight": 0.01, "association_weight": 0.05,
+             "rollout_keep_weight": 0.01})
+        weight_mismatch = {
+            key: {"expected": expected, "actual": v2.get(key)}
+            for key, expected in expected_weights.items()
+            if float(v2.get(key, -1)) != expected}
+        if weight_mismatch:
+            raise ValueError(f"V2 variant loss weights differ: {weight_mismatch}")
+        if int(v2.get("pairing_rounds", -1)) != 2:
+            raise ValueError("v2.pairing_rounds must be 2")
     if "scene_forward_chunk" in config["training"]:
         chunk = config["training"]["scene_forward_chunk"]
         if isinstance(chunk, bool) or int(chunk) != chunk or int(chunk) != 1:
@@ -319,6 +389,7 @@ def validate_supported_config(config: dict) -> None:
         raise ValueError(f"unsupported training.execution_strategy={strategy!r}")
     for key in (
         "scene_compaction", "rollout_block_checkpointing",
+        "lazy_off_projection_gradients", "static_conditioning_cache",
     ):
         if key in training and not isinstance(training[key], bool):
             raise ValueError(f"training.{key} must be boolean")
@@ -403,6 +474,14 @@ def build_model(config: dict, ablation: str = "none") -> EBJDModel:
     validate_supported_config(config)
     rep = config["representation"]
     map_config = config["map_encoder"]
+    v2 = config.get("v2")
+    if ablation.startswith("v2_"):
+        expected_variant = ablation.removeprefix("v2_")
+        if v2 is None or v2.get("variant") != expected_variant:
+            raise ValueError(
+                f"ablation {ablation!r} requires matching V2 config variant")
+    elif v2 is not None:
+        raise ValueError("V2 configuration requires an explicit v2_* ablation identity")
     model = EBJDModel(
         goal_scale=float(rep["goal_scale_m"]),
         bridge_scale=float(rep["bridge_scale_m"]),
@@ -413,9 +492,20 @@ def build_model(config: dict, ablation: str = "none") -> EBJDModel:
         clean_geometry=ablation != "noisy_geometry",
         native_goal_conditioning=bool(
             config.get("native_goal_conditioning", {}).get("enabled", False)),
+        memory_mode="legacy_joint" if v2 is None else str(v2["memory_mode"]),
+        motion_summaries=False if v2 is None else bool(v2["motion_summaries"]),
+        map_memory_grid=8 if v2 is None else int(v2["map_memory_grid"]),
+        anchor_residual=False if v2 is None else bool(v2["anchor_residual"]),
+        joint_goal_assembly=False if v2 is None else bool(v2["joint_goal_assembly"]),
+        joint_goal_init_seed=(
+            int(config["seed"]) + int(v2.get("pairing_seed_offset", 3_000_007))
+            if v2 else 3_003_108),
+        geometry_mapping="direct_index" if v2 is None else str(v2["geometry_mapping"]),
     )
     model.denoiser.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])
+    model.denoiser.static_context_cache_enabled = bool(
+        config["training"].get("static_conditioning_cache", False))
     model.encoder.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])
     source = config["paths"].get("accepted_fold_matched_gdts_unet")
@@ -454,6 +544,7 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
     validate_supported_config(config)
     training, objective, diffusion = (
         config["training"], config["objectives"], config["diffusion"])
+    v2 = config.get("v2")
     return TrainerOptions(
         epochs=int(training["epochs"]),
         accumulation=int(training["gradient_accumulation"]),
@@ -485,10 +576,18 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
         softmin_temperature_start=float(training["softmin_temperature_start_m"]),
         softmin_temperature_end=float(training["softmin_temperature_end_m"]),
         use_rollout_loss=ablation not in {
-            "rollout_loss_off", "rollout_mechanism_off"},
+            "rollout_loss_off", "rollout_mechanism_off",
+            "v2_full", "v2_no_token", "v2_no_anchor"},
         use_geometry_loss=ablation != "geometry_loss_off",
         use_actual_step_constraint=ablation not in {
-            "actual_step_constraint_off", "rollout_mechanism_off"},
+            "actual_step_constraint_off", "rollout_mechanism_off",
+            "v2_full", "v2_no_token", "v2_no_anchor"},
+        keep_weight=float(v2.get("keep_weight", 0.0)) if v2 else 0.0,
+        association_weight=float(v2.get("association_weight", 0.0)) if v2 else 0.0,
+        rollout_keep_weight=float(v2.get("rollout_keep_weight", 0.0)) if v2 else 0.0,
+        pairing_seed_offset=int(v2.get("pairing_seed_offset", 3_000_007)) if v2 else 3_000_007,
+        lazy_off_projection_gradients=bool(
+            training.get("lazy_off_projection_gradients", False)),
         activation_checkpointing=bool(training["activation_checkpointing"]),
         precision=str(training["mixed_precision"]),
         scene_forward_chunk=int(training.get("scene_forward_chunk", 0)),

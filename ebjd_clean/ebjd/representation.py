@@ -40,6 +40,7 @@ class EndpointBridgeRepresentation(nn.Module):
         goal_scale: float = 1.0,
         bridge_scale: float = 1.0,
         pred_length: int = 12,
+        anchor_residual: bool = False,
     ) -> None:
         super().__init__()
         if pred_length != 12:
@@ -53,6 +54,7 @@ class EndpointBridgeRepresentation(nn.Module):
         self.register_buffer("bridge_cholesky", cholesky.float())
         self.register_buffer("goal_scale", torch.tensor(float(goal_scale)))
         self.register_buffer("bridge_scale", torch.tensor(float(bridge_scale)))
+        self.anchor_residual = bool(anchor_residual)
 
     def set_scales(self, goal_scale: float, bridge_scale: float) -> None:
         if goal_scale <= 0 or bridge_scale <= 0:
@@ -62,10 +64,13 @@ class EndpointBridgeRepresentation(nn.Module):
 
     @torch.no_grad()
     def fit_scales(
-        self, targets: torch.Tensor, baseline: torch.Tensor, valid: torch.Tensor
+        self, targets: torch.Tensor, baseline: torch.Tensor, valid: torch.Tensor,
+        anchors: torch.Tensor | None = None,
     ) -> tuple[float, float]:
         """Fit fold-only scalar RMS values in FP64 and apply configured floors."""
-        encoded_unscaled = self._encode_unscaled(targets.double(), baseline.double())
+        encoded_unscaled = self._encode_unscaled(
+            targets.double(), baseline.double(),
+            None if anchors is None else anchors.double())
         mask = valid.bool()[..., None, None]
         goal = encoded_unscaled[..., -1:, :]
         bridge = encoded_unscaled[..., :11, :]
@@ -77,15 +82,31 @@ class EndpointBridgeRepresentation(nn.Module):
         return sg, sr
 
     def _encode_unscaled(
-        self, targets: torch.Tensor, baseline: torch.Tensor
+        self, targets: torch.Tensor, baseline: torch.Tensor,
+        anchors: torch.Tensor | None = None,
     ) -> torch.Tensor:
         with torch.autocast(device_type=targets.device.type, enabled=False):
-            goal_delta = targets[..., -1, :] - baseline[..., -1, :]
-            residual = (
-                targets[..., :11, :] - baseline[..., :11, :]
-                - self.a.to(targets).view(*([1] * (targets.ndim - 2)), 11, 1)
-                * goal_delta.unsqueeze(-2)
-            )
+            if self.anchor_residual:
+                if anchors is None:
+                    raise ValueError("anchor-residual encoding requires world anchors")
+                if anchors.shape != targets.shape[:-2] + (2,):
+                    raise ValueError("anchors must match targets leading dimensions and end in 2")
+                goal = targets[..., -1, :]
+                goal_delta = goal - anchors
+                step = baseline[..., 1, :] - baseline[..., 0, :]
+                origin = baseline[..., 0, :] - step
+                a = self.a.to(targets).view(
+                    *([1] * (targets.ndim - 2)), 11, 1)
+                centreline = origin.unsqueeze(-2) + a * (
+                    goal - origin).unsqueeze(-2)
+                residual = targets[..., :11, :] - centreline
+            else:
+                goal_delta = targets[..., -1, :] - baseline[..., -1, :]
+                residual = (
+                    targets[..., :11, :] - baseline[..., :11, :]
+                    - self.a.to(targets).view(*([1] * (targets.ndim - 2)), 11, 1)
+                    * goal_delta.unsqueeze(-2)
+                )
             flat = residual.movedim(-2, 0).reshape(11, -1)
             whitened = torch.linalg.solve_triangular(
                 self.bridge_cholesky.to(flat), flat, upper=False)
@@ -94,18 +115,22 @@ class EndpointBridgeRepresentation(nn.Module):
             return torch.cat((whitened, goal_delta.unsqueeze(-2)), dim=-2)
 
     def encode_target(
-        self, targets: torch.Tensor, baseline: torch.Tensor
+        self, targets: torch.Tensor, baseline: torch.Tensor,
+        anchors: torch.Tensor | None = None,
     ) -> torch.Tensor:
         if targets.shape != baseline.shape or targets.shape[-2:] != (12, 2):
             raise ValueError("targets and baseline must have shape [...,12,2]")
         with torch.autocast(device_type=targets.device.type, enabled=False):
-            unscaled = self._encode_unscaled(targets.float(), baseline.float())
+            unscaled = self._encode_unscaled(
+                targets.float(), baseline.float(),
+                None if anchors is None else anchors.float())
             bridge = unscaled[..., :11, :] / self.bridge_scale.float()
             goal = unscaled[..., 11:, :] / self.goal_scale.float()
             return torch.cat((bridge, goal), dim=-2)
 
     def decode(
-        self, latent: torch.Tensor, baseline: torch.Tensor
+        self, latent: torch.Tensor, baseline: torch.Tensor,
+        anchors: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor]:
         """Decode ``[...,N,12,2]`` latent with baseline ``[B,N,12,2]``."""
         if latent.shape[-2:] != (12, 2) or baseline.shape[-2:] != (12, 2):
@@ -117,16 +142,46 @@ class EndpointBridgeRepresentation(nn.Module):
             bridge_z = latent.float()[..., :11, :]
             goal_z = latent.float()[..., 11, :]
             goal_delta = self.goal_scale.float() * goal_z
-            goal = baseline[..., -1, :] + goal_delta
+            if self.anchor_residual:
+                if anchors is None:
+                    raise ValueError("anchor-residual decoding requires world anchors")
+                anchors = anchors.float()
+                if anchors.shape != latent.shape[:-2] + (2,):
+                    raise ValueError("anchors must match latent leading dimensions and end in 2")
+                goal = anchors + goal_delta
+            else:
+                goal = baseline[..., -1, :] + goal_delta
             flat = bridge_z.movedim(-2, 0).reshape(11, -1)
             residual = torch.matmul(
                 self.bridge_cholesky.float(), flat).reshape(
                     11, *bridge_z.movedim(-2, 0).shape[1:]).movedim(0, -2)
             residual = self.bridge_scale.float() * residual
             a = self.a.float().view(*([1] * (latent.ndim - 2)), 11, 1)
-            first = baseline[..., :11, :] + a * goal_delta.unsqueeze(-2) + residual
+            if self.anchor_residual:
+                step = baseline[..., 1, :] - baseline[..., 0, :]
+                origin = baseline[..., 0, :] - step
+                first = origin.unsqueeze(-2) + a * (
+                    goal - origin).unsqueeze(-2) + residual
+            else:
+                first = baseline[..., :11, :] + a * goal_delta.unsqueeze(-2) + residual
             trajectory = torch.cat((first, goal.unsqueeze(-2)), dim=-2)
             return trajectory, goal
+
+    def decoder_jacobian_weights(self) -> torch.Tensor:
+        """Return latent-token by physical-time squared-Jacobian weights.
+
+        The fixed matrix is a sensitivity-based aggregation heuristic for
+        social-attention bias.  It is not a coordinate-change identity.
+        """
+        jacobian = torch.zeros(
+            12, 12, dtype=self.bridge_cholesky.dtype,
+            device=self.bridge_cholesky.device)
+        jacobian[:11, :11] = (
+            self.bridge_scale * self.bridge_cholesky)
+        jacobian[:, 11] = self.goal_scale * torch.arange(
+            1, 13, dtype=jacobian.dtype, device=jacobian.device) / 12
+        squared = jacobian.square().transpose(0, 1)
+        return squared / squared.sum(dim=-1, keepdim=True).clamp_min(1e-12)
 
 
 class CartesianVelocityRepresentation(nn.Module):

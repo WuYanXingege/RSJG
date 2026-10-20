@@ -28,6 +28,13 @@ class EBJDContext:
     observed: torch.Tensor
     crop_width_m: float
     native_goals: torch.Tensor | None = None
+    motion_memory: torch.Tensor | None = None
+    map_memory: torch.Tensor | None = None
+    memory_mode: str = "legacy_joint"
+    world_anchors: torch.Tensor | None = None
+    goal_scale: torch.Tensor | None = None
+    native_candidate_embeddings: torch.Tensor | None = None
+    world_anchor_embeddings: torch.Tensor | None = None
 
 
 def _safe_norm(x: torch.Tensor, eps: float = 1e-6) -> torch.Tensor:
@@ -76,6 +83,9 @@ class HistoryMapEncoder(nn.Module):
         map_input_channels: int = 14,
         dim: int = 128,
         map_agent_chunk: int = 8,
+        memory_mode: str = "legacy_joint",
+        motion_summaries: bool = False,
+        map_memory_grid: int = 8,
     ) -> None:
         super().__init__()
         self.crop_width_m = float(crop_width_m)
@@ -83,11 +93,29 @@ class HistoryMapEncoder(nn.Module):
         if map_agent_chunk <= 0:
             raise ValueError("map_agent_chunk must be positive")
         self.map_agent_chunk = int(map_agent_chunk)
+        if memory_mode not in {
+                "legacy_joint", "count_normalized_joint", "split_gated"}:
+            raise ValueError(f"unsupported memory mode: {memory_mode}")
+        if map_memory_grid not in {4, 8}:
+            raise ValueError("map memory grid must be 4 or 8")
+        self.memory_mode = memory_mode
+        self.motion_summaries = bool(motion_summaries)
+        self.map_memory_grid = int(map_memory_grid)
         self.activation_checkpointing = True
         self.map_unet = TrainableMapUNet(map_input_channels)
         self.history_stem = nn.Sequential(
             nn.Linear(6, dim), nn.LayerNorm(dim), nn.SiLU())
         self.history_gru = nn.GRU(dim, dim, batch_first=True)
+        if self.motion_summaries:
+            self.motion_summary_mlp = nn.Sequential(
+                nn.Linear(6, 64), nn.SiLU(), nn.Linear(64, dim))
+            self.motion_summary_type = nn.Parameter(torch.zeros(dim))
+            self.register_buffer(
+                "motion_summary_window_encoding",
+                sinusoidal_embedding(torch.tensor([0., 1., 2., 3.]), dim))
+        else:
+            self.motion_summary_mlp = None
+            self.motion_summary_type = None
         self.observed_geometry_mlp = nn.Sequential(
             nn.Linear(10, 64), nn.SiLU(), nn.Linear(64, 4))
         self.history_social = nn.ModuleList([
@@ -151,6 +179,7 @@ class HistoryMapEncoder(nn.Module):
             velocity,
             acceleration,
         ), dim=-1)
+        motion_features = features
         hist_tokens, hidden = self.history_gru(
             self.history_stem(features).reshape(batch * agents, 8, -1))
         hist_tokens = hist_tokens.reshape(batch, agents, 8, -1)
@@ -166,7 +195,7 @@ class HistoryMapEncoder(nn.Module):
         map_input = self._map_input(observed, semantic_maps)
         height, width = map_input.shape[-2:]
         flat_map = map_input.reshape(batch * agents, 14, height, width)
-        features, logits_parts = [], []
+        map_feature_parts, logits_parts = [], []
         for offset in range(0, len(flat_map), self.map_agent_chunk):
             part = flat_map[offset:offset + self.map_agent_chunk]
             if self.activation_checkpointing and self.training and torch.is_grad_enabled():
@@ -174,21 +203,43 @@ class HistoryMapEncoder(nn.Module):
                     self.map_unet, part, use_reentrant=False)
             else:
                 f32_part, logits_part = self.map_unet(part)
-            features.append(f32_part)
+            map_feature_parts.append(f32_part)
             logits_parts.append(logits_part)
-        f32, logits = torch.cat(features), torch.cat(logits_parts)
-        pooled = F.adaptive_avg_pool2d(f32, (8, 8))
-        pooled = pooled.flatten(2).transpose(1, 2).reshape(batch, agents, 64, 32)
-        axis = torch.linspace(-1, 1, 8, device=observed.device)
+        f32, logits = torch.cat(map_feature_parts), torch.cat(logits_parts)
+        grid_size = self.map_memory_grid
+        pooled = F.adaptive_avg_pool2d(f32, (grid_size, grid_size))
+        map_count = grid_size * grid_size
+        pooled = pooled.flatten(2).transpose(1, 2).reshape(
+            batch, agents, map_count, 32)
+        # Actual cell centres in normalized crop coordinates.
+        axis = ((torch.arange(
+            grid_size, device=observed.device, dtype=torch.float32) + 0.5)
+            * (2.0 / grid_size) - 1.0)
         yy, xx = torch.meshgrid(axis, axis, indexing="ij")
-        coords = torch.stack((xx, yy), -1).reshape(1, 1, 64, 2)
+        coords = torch.stack((xx, yy), -1).reshape(1, 1, map_count, 2)
         map_tokens = self.map_projection(pooled) + self.map_coordinate_mlp(coords)
         history_time = sinusoidal_embedding(
             torch.arange(8, device=observed.device, dtype=torch.float32), 128)
         history_tokens = hist_tokens + history_time.view(1, 1, 8, 128) + self.history_type
+        motion_tokens = history_tokens
+        if self.motion_summaries:
+            windows = (1, 2, 4, 8)
+            summaries = torch.stack([
+                motion_features[..., -window:, :].mean(dim=-2)
+                for window in windows
+            ], dim=-2)
+            summary_tokens = self.motion_summary_mlp(summaries)
+            summary_tokens = (
+                summary_tokens
+                + self.motion_summary_window_encoding.view(1, 1, 4, 128)
+                + self.motion_summary_type)
+            motion_tokens = torch.cat((history_tokens, summary_tokens), dim=2)
         map_tokens = map_tokens + self.map_type
-        memory = self.memory_norm(torch.cat((history_tokens, map_tokens), dim=2))
+        memory = self.memory_norm(torch.cat((motion_tokens, map_tokens), dim=2))
         mask = valid[..., None, None].to(memory.dtype)
+        motion_count = motion_tokens.shape[2]
+        normalized_motion = memory[:, :, :motion_count] * mask
+        normalized_map = memory[:, :, motion_count:] * mask
         return EBJDContext(
             memory=memory * mask,
             social_h=social_h * valid[..., None],
@@ -202,4 +253,8 @@ class HistoryMapEncoder(nn.Module):
             observed=observed,
             crop_width_m=self.crop_width_m,
             native_goals=native_goals,
+            motion_memory=normalized_motion,
+            map_memory=normalized_map,
+            memory_mode=self.memory_mode,
+            goal_scale=self.goal_scale,
         )

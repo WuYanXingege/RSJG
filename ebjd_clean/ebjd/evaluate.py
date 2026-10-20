@@ -57,6 +57,15 @@ def main() -> None:
     parser.add_argument(
         "--disable-native-goal-conditioner", action="store_true",
         help="registered intervention: retain weights/cache but bypass conditioning")
+    parser.add_argument(
+        "--pairing-rounds", type=int, choices=(0, 2), default=2,
+        help="2 for learned coordinate updates; 0 for frozen initial random pairing")
+    parser.add_argument(
+        "--geometry-mapping", choices=("configured", "direct_index"),
+        default="configured", help="frozen-model geometry sensitivity intervention")
+    parser.add_argument(
+        "--endpoint-projection-radius", type=float,
+        help="read-only L2 endpoint correction radius around assigned anchors")
     args = parser.parse_args()
     config = load_config(args.config)
     path = config.get("paths", {}).get(f"{args.split}_manifest")
@@ -72,6 +81,8 @@ def main() -> None:
         if conditioner is None:
             raise ValueError("checkpoint has no native-goal conditioner to disable")
         conditioner.enabled = False
+    if args.geometry_mapping == "direct_index":
+        model.denoiser.geometry_mapping = "direct_index"
     model.eval()
     evaluation = config.get("evaluation", {})
     worlds, steps = int(evaluation.get("worlds", 20)), int(evaluation.get("steps", 20))
@@ -103,12 +114,19 @@ def main() -> None:
                 "native_cv_relative_radius": 0.0,
                 "diffusion_cv_relative_radius": 0.0,
             }
+            endpoint_errors: list[float] = []
+            endpoint_single_errors: list[float] = []
+            endpoint_center_errors: list[float] = []
+            endpoint_centered_rms: list[float] = []
             prediction_rows = []
             for batch in loader:
                 batch = batch.to(device)
                 prediction, predicted_goal = predict(
                     model, batch.observed, batch.semantic_maps, batch.valid,
-                    worlds, steps, generator, batch.native_goals)
+                    worlds, steps, generator, batch.native_goals,
+                    batch.scene_ids, batch.agent_ids, int(seed),
+                    pairing_rounds=args.pairing_rounds,
+                    endpoint_projection_radius=args.endpoint_projection_radius)
                 accumulator.update(prediction, batch.future, batch.valid)
                 if args.prediction_bank_root:
                     count = int(batch.valid.sum())
@@ -136,6 +154,12 @@ def main() -> None:
                         native - target[:, None], dim=-1).min(-1).values
                     diffuse_error = torch.linalg.vector_norm(
                         diffuse - target[:, None], dim=-1).min(-1).values
+                    single_error = torch.linalg.vector_norm(
+                        diffuse - target[:, None], dim=-1)
+                    centre = diffuse.mean(1)
+                    centre_error = torch.linalg.vector_norm(centre - target, dim=-1)
+                    centred_rms = torch.sqrt(
+                        (diffuse - centre[:, None]).square().sum(-1).mean(-1))
                     cross = torch.cdist(native, diffuse).min(-1).values.mean(-1)
                     cv = batch.observed[..., -1, :][mask] + 12 * 0.4 * (
                         batch.observed[..., -1, :][mask]
@@ -155,6 +179,10 @@ def main() -> None:
                     endpoint_sums["diffusion_recall_1p0"] += float((diffuse_error <= 1).sum())
                     endpoint_sums["native_cv_relative_radius"] += float(native_radius.sum())
                     endpoint_sums["diffusion_cv_relative_radius"] += float(diffuse_radius.sum())
+                    endpoint_errors.extend(diffuse_error.detach().cpu().tolist())
+                    endpoint_single_errors.extend(single_error.detach().cpu().flatten().tolist())
+                    endpoint_center_errors.extend(centre_error.detach().cpu().tolist())
+                    endpoint_centered_rms.extend(centred_rms.detach().cpu().tolist())
             means = accumulator.as_dict()
             nonfinite = {
                 name: value for name, value in means.items()
@@ -180,6 +208,13 @@ def main() -> None:
             endpoint = {
                 name: (value if name == "agents" else float(value) / count)
                 for name, value in endpoint_sums.items()}
+            endpoint.update({
+                "diffusion_minFDE_p90": float(np.quantile(endpoint_errors, 0.90)),
+                "diffusion_minFDE_p95": float(np.quantile(endpoint_errors, 0.95)),
+                "average_single_candidate_FDE": float(np.mean(endpoint_single_errors)),
+                "endpoint_center_error": float(np.mean(endpoint_center_errors)),
+                "endpoint_centered_RMS": float(np.mean(endpoint_centered_rms)),
+            })
             conditioner = model.denoiser.native_goal_conditioner
             results.append({
                 "seed": int(seed), "metrics": means, "k_curves": k_curves,
@@ -242,6 +277,9 @@ def main() -> None:
         "per_agent_reordering": bool(evaluation["per_agent_reordering"]),
         "native_goal_conditioner_disabled": bool(
             args.disable_native_goal_conditioner),
+        "pairing_rounds": int(args.pairing_rounds),
+        "geometry_mapping_intervention": args.geometry_mapping,
+        "endpoint_projection_radius": args.endpoint_projection_radius,
         "worlds": worlds, "steps": steps, "per_seed": results,
         "prediction_bank_index_local_only": bank_index,
         "mean": means, "sample_standard_deviation": sample_standard_deviation,

@@ -88,6 +88,9 @@ def parse_args() -> argparse.Namespace:
     resumes.add_argument(
         "--native-goal-fork-from",
         help="explicit model-extension fork adding only NativeGoalConditioner")
+    resumes.add_argument(
+        "--v2-fork-from",
+        help="explicit named-state warm start for a preregistered V2 arm")
     parser.add_argument(
         "--resume-from-sha256",
         help="mandatory expected SHA256 for --resume-from")
@@ -97,6 +100,9 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--native-goal-fork-from-sha256",
         help="mandatory expected SHA256 for --native-goal-fork-from")
+    parser.add_argument(
+        "--v2-fork-from-sha256",
+        help="mandatory expected SHA256 for --v2-fork-from")
     parser.add_argument(
         "--objective-fork-contract", choices=(
             "goal_v_weight_2", "rollout_weight_end_005",
@@ -313,7 +319,8 @@ def validate(
         trajectory, _ = predict(
             model, batch.observed, batch.semantic_maps, batch.valid,
             worlds=worlds, steps=steps, generator=generator,
-            native_goals=batch.native_goals)
+            native_goals=batch.native_goals, scene_ids=batch.scene_ids,
+            agent_ids=batch.agent_ids, inference_seed=seed)
         accumulator.update(trajectory, batch.future, batch.valid)
     return accumulator.as_dict()
 
@@ -727,6 +734,58 @@ def validate_native_goal_fork_payload(
     }
 
 
+def validate_v2_fork_payload(
+    payload: dict, checkpoint: Path, expected_sha256: str,
+    config: dict, execution_identity: dict, ablation: str,
+) -> dict:
+    """Validate the fixed epoch-20 parent and declared V2 architecture fork."""
+    actual = file_sha256(checkpoint)
+    if actual != expected_sha256:
+        raise ValueError("V2 fork checkpoint SHA256 mismatch")
+    if payload.get("schema") != "ebjd-checkpoint-v2" or \
+            payload.get("epoch_boundary_only") is not True:
+        raise ValueError("V2 fork requires an epoch-boundary v2 checkpoint")
+    if int(payload.get("epoch", -1)) != 20 or int(payload.get("update_index", -1)) != 5140:
+        raise ValueError("V2 fork requires the certified shared epoch20/update5140 parent")
+    origin = payload.get("resolved_config")
+    identity = payload.get("run_identity")
+    if not isinstance(origin, dict) or not isinstance(identity, dict):
+        raise ValueError("V2 fork parent lacks config or run identity")
+    if "native_goal_conditioning" not in origin or "v2" not in config:
+        raise ValueError("V2 fork requires native-goal parent and V2 child config")
+    differences = config_differences(origin, config)
+    allowed = {
+        "experiment.source_commit", "experiment.implementation_base",
+        "paths.output_root",
+        "map_encoder.memory_grid", "denoiser.memory_tokens_per_agent", "v2",
+    }
+    allowed.update(name for name in differences if name.startswith("v2."))
+    allowed.update(".".join(path) for path in SEMANTIC_CONFIG_EXCLUSIONS)
+    disallowed = sorted(set(differences) - allowed)
+    if disallowed:
+        raise ValueError(f"V2 fork has disallowed config changes: {disallowed}")
+    if ablation not in {"v2_full", "v2_no_token", "v2_no_anchor"}:
+        raise ValueError("V2 fork requires an explicit V2 arm identity")
+    required_rng = {"python", "numpy", "torch_cpu", "torch_cuda", "loader_generator"}
+    if set(payload.get("rng", {})) != required_rng:
+        raise ValueError("V2 fork parent RNG state is incomplete")
+    return {
+        "schema": "ebjd-v2-named-model-extension-v1",
+        "origin_checkpoint_absolute_path": str(checkpoint.resolve()),
+        "origin_checkpoint_sha256": actual,
+        "origin_epoch": 20, "origin_update_index": 5140,
+        "origin_source_commit": identity.get("source_commit"),
+        "execution_source_commit": execution_identity["source_commit"],
+        "ablation": ablation,
+        "v2_variant": config["v2"]["variant"],
+        "checked_config_diff": differences,
+        "allowed_changes": sorted(allowed),
+        "parent_model_optimizer_rng_policy": (
+            "shared model and optimizer by name exact; global RNG exact; "
+            "new parameters empty optimizer state; isolated pairing RNG"),
+    }
+
+
 def main() -> None:
     args = parse_args()
     if bool(args.resume_from) != bool(args.resume_from_sha256):
@@ -743,12 +802,15 @@ def main() -> None:
     if bool(args.native_goal_fork_from) != bool(args.native_goal_fork_from_sha256):
         raise ValueError(
             "--native-goal-fork-from and its SHA256 must be provided together")
+    if bool(args.v2_fork_from) != bool(args.v2_fork_from_sha256):
+        raise ValueError("--v2-fork-from and its SHA256 must be provided together")
     if args.max_epochs_this_run is not None and args.max_epochs_this_run < 1:
         raise ValueError("--max-epochs-this-run must be positive")
     if args.absolute_stop_epoch is not None and args.absolute_stop_epoch < 1:
         raise ValueError("--absolute-stop-epoch must be positive")
     if args.migration_only and not (
-            args.resume_from or args.objective_fork_from or args.native_goal_fork_from):
+            args.resume_from or args.objective_fork_from or args.native_goal_fork_from
+            or args.v2_fork_from):
         raise ValueError(
             "--migration-only requires --resume-from or --objective-fork-from")
     config = load_config(args.config)
@@ -769,10 +831,12 @@ def main() -> None:
     migration_receipt = None
     objective_fork_receipt = None
     native_fork_receipt = None
-    if args.resume or args.resume_from or args.objective_fork_from or args.native_goal_fork_from:
+    v2_fork_receipt = None
+    if (args.resume or args.resume_from or args.objective_fork_from
+            or args.native_goal_fork_from or args.v2_fork_from):
         checkpoint_path = Path(
             args.resume or args.resume_from or args.objective_fork_from
-            or args.native_goal_fork_from).resolve()
+            or args.native_goal_fork_from or args.v2_fork_from).resolve()
         checkpoint_payload = torch.load(
             checkpoint_path, map_location="cpu", weights_only=False)
         if args.resume:
@@ -807,7 +871,7 @@ def main() -> None:
                 "run_id": checkpoint_payload["run_identity"].get("run_id"),
                 "objective_fork_contract": args.objective_fork_contract,
             }
-        else:
+        elif args.native_goal_fork_from:
             native_fork_receipt = validate_native_goal_fork_payload(
                 checkpoint_payload, checkpoint_path,
                 args.native_goal_fork_from_sha256, config, identity)
@@ -817,6 +881,17 @@ def main() -> None:
                 "epoch": int(checkpoint_payload["epoch"]),
                 "update_index": int(checkpoint_payload["update_index"]),
                 "fork_contract": "native_goal_conditioner_v1",
+            }
+        else:
+            v2_fork_receipt = validate_v2_fork_payload(
+                checkpoint_payload, checkpoint_path,
+                args.v2_fork_from_sha256, config, identity, args.ablation)
+            identity["resume_origin"] = {
+                "checkpoint_absolute_path": str(checkpoint_path),
+                "checkpoint_sha256": args.v2_fork_from_sha256,
+                "epoch": int(checkpoint_payload["epoch"]),
+                "update_index": int(checkpoint_payload["update_index"]),
+                "fork_contract": "v2_named_model_extension_v1",
             }
     if args.absolute_stop_epoch is not None:
         if checkpoint_payload is None:
@@ -861,7 +936,7 @@ def main() -> None:
     fitted_scales = (
         fit_training_scales(model, train_loader)
         if not (args.resume or args.resume_from or args.objective_fork_from
-                or args.native_goal_fork_from)
+                or args.native_goal_fork_from or args.v2_fork_from)
         else None)
     trainer = EBJDTrainer(model, options, config, identity)
     baseline = config["evaluation"]["matched_gdts_validation"]
@@ -940,6 +1015,26 @@ def main() -> None:
             migrated_payload, loader_generator, require_identity=True)
         native_fork_receipt["strict_secondary_reload"] = True
         _atomic_json(output / "MODEL_EXTENSION_RECEIPT.json", native_fork_receipt)
+    elif args.v2_fork_from:
+        if checkpoint_payload is None or v2_fork_receipt is None:
+            raise AssertionError("V2 fork payload was not validated")
+        restoration = trainer.restore_named_extension_payload(
+            checkpoint_payload, loader_generator)
+        selector = ConstrainedSelector.from_state_dict(
+            checkpoint_payload["selection_state"])
+        start_epoch = int(checkpoint_payload["epoch"]) + 1
+        v2_fork_receipt["restoration_checks"] = restoration
+        _atomic_json(output / "V2_MODEL_EXTENSION_RECEIPT.json", v2_fork_receipt)
+        trainer.save_checkpoint(
+            output / "last.pt", int(checkpoint_payload["epoch"]),
+            selector.state_dict(), loader_generator,
+            {"v2_model_extension_receipt": v2_fork_receipt})
+        migrated_payload = torch.load(
+            output / "last.pt", map_location="cpu", weights_only=False)
+        trainer.restore_checkpoint_payload(
+            migrated_payload, loader_generator, require_identity=True)
+        v2_fork_receipt["strict_secondary_reload"] = True
+        _atomic_json(output / "V2_MODEL_EXTENSION_RECEIPT.json", v2_fork_receipt)
     if checkpoint_payload is not None:
         del checkpoint_payload
     if fitted_scales:

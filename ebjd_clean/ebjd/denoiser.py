@@ -16,7 +16,10 @@ from .representation import cosine_vp
 class NativeGoalConditioner(nn.Module):
     """Cross-attend future tokens to frozen GDTS endpoint proposals."""
 
-    def __init__(self, dim: int = 128, heads: int = 4) -> None:
+    def __init__(
+        self, dim: int = 128, heads: int = 4,
+        anchor_conditioning: bool = False,
+    ) -> None:
         super().__init__()
         self.candidate_mlp = nn.Sequential(
             nn.Linear(4, 64), nn.SiLU(), nn.Linear(64, dim))
@@ -24,8 +27,54 @@ class NativeGoalConditioner(nn.Module):
         self.attention = nn.MultiheadAttention(
             dim, heads, dropout=0.0, batch_first=True)
         self.gate = nn.Parameter(torch.zeros(()))
+        self.goal_anchor_gate = (
+            nn.Parameter(torch.zeros(())) if anchor_conditioning else None)
+        self.bridge_anchor_gate = (
+            nn.Parameter(torch.zeros(())) if anchor_conditioning else None)
         self.enabled = True
-        self.last_condition_norm_ratio: float | None = None
+        self.last_condition_norm_ratio: torch.Tensor | None = None
+
+    def candidate_features(
+        self, context: EBJDContext, goals: torch.Tensor,
+        goal_scale: torch.Tensor,
+    ) -> torch.Tensor:
+        origin = context.observed.float()[..., -1, :]
+        centre = context.baseline.float()[..., -1, :]
+        if goals.ndim != 4:
+            raise ValueError("candidate or anchor goals must have four dimensions")
+        if goals.shape[1] == origin.shape[1]:
+            # Candidate set [B,N,K,2].
+            origin, centre = origin[:, :, None], centre[:, :, None]
+        elif goals.shape[2] == origin.shape[1]:
+            # Assigned anchors [B,P,N,2].
+            origin, centre = origin[:, None], centre[:, None]
+        else:
+            raise ValueError("goal axes do not match the context agent dimension")
+        scale = goal_scale.float().clamp_min(0.5)
+        return torch.cat((
+            (goals.float() - origin) / scale,
+            (goals.float() - centre) / scale,
+        ), dim=-1).clamp(-20, 20)
+
+    def encode_candidates(
+        self, context: EBJDContext, goal_scale: torch.Tensor,
+    ) -> torch.Tensor:
+        if context.native_goals is None:
+            raise ValueError("native goal conditioning requires native_goals")
+        with torch.autocast(device_type=context.native_goals.device.type, enabled=False):
+            features = self.candidate_features(
+                context, context.native_goals, goal_scale)
+        return self.candidate_mlp(features.to(self.candidate_mlp[0].weight.dtype))
+
+    def encode_anchors(
+        self, context: EBJDContext, goal_scale: torch.Tensor,
+    ) -> torch.Tensor:
+        if context.world_anchors is None:
+            raise ValueError("world-anchor conditioning requires assigned anchors")
+        with torch.autocast(device_type=context.world_anchors.device.type, enabled=False):
+            features = self.candidate_features(
+                context, context.world_anchors, goal_scale)
+        return self.candidate_mlp(features.to(self.candidate_mlp[0].weight.dtype))
 
     def forward(
         self,
@@ -34,7 +83,7 @@ class NativeGoalConditioner(nn.Module):
         goal_scale: torch.Tensor,
     ) -> torch.Tensor:
         if not self.enabled:
-            self.last_condition_norm_ratio = 0.0
+            self.last_condition_norm_ratio = hidden.new_zeros(())
             return hidden
         goals = context.native_goals
         if goals is None:
@@ -43,18 +92,13 @@ class NativeGoalConditioner(nn.Module):
             raise ValueError("native_goals must have shape [B,N,K,2]")
         if goals.shape[-2:] != (20, 2):
             raise ValueError("native_goals must contain exactly 20 endpoint proposals")
-        if not torch.isfinite(goals).all():
-            raise ValueError("native_goals contain nonfinite values")
-
-        with torch.autocast(device_type=hidden.device.type, enabled=False):
-            origin = context.observed.float()[..., -1, :]
-            centre = context.baseline.float()[..., -1, :]
-            scale = goal_scale.float().clamp_min(0.5)
-            features = torch.cat((
-                (goals.float() - origin[:, :, None]) / scale,
-                (goals.float() - centre[:, :, None]) / scale,
-            ), dim=-1).clamp(-20, 20)
-        candidates = self.candidate_mlp(features.to(hidden.dtype))
+        candidates = context.native_candidate_embeddings
+        if candidates is None:
+            with torch.autocast(device_type=hidden.device.type, enabled=False):
+                features = self.candidate_features(context, goals, goal_scale)
+            candidates = self.candidate_mlp(features.to(hidden.dtype))
+        else:
+            candidates = candidates.to(hidden.dtype)
         batch, worlds, agents, times, dim = hidden.shape
         query = self.query_norm(hidden).reshape(batch * worlds * agents, times, dim)
         keys = candidates[:, None].expand(batch, worlds, agents, 20, dim).reshape(
@@ -65,8 +109,10 @@ class NativeGoalConditioner(nn.Module):
         gated = torch.tanh(self.gate).to(hidden.dtype) * delta
         with torch.no_grad():
             denominator = hidden.detach().float().norm().clamp_min(1e-12)
-            self.last_condition_norm_ratio = float(
-                gated.detach().float().norm().div(denominator).cpu())
+            # Keep diagnostics on device; the trainer transfers all update
+            # scalars together after the graph is complete.
+            self.last_condition_norm_ratio = (
+                gated.detach().float().norm().div(denominator))
         return (hidden + gated) * valid
 
 
@@ -98,6 +144,10 @@ class FactorizedFutureBlock(nn.Module):
         bias: torch.Tensor,
         valid: torch.Tensor,
         social_enabled: bool = True,
+        memory_mode: str = "legacy_joint",
+        motion_memory: torch.Tensor | None = None,
+        map_memory: torch.Tensor | None = None,
+        memory_gate: torch.Tensor | None = None,
     ) -> torch.Tensor:
         batch, worlds, agents, times, dim = hidden.shape
         condition = torch.cat((
@@ -120,9 +170,40 @@ class FactorizedFutureBlock(nn.Module):
 
         query = self._modulate(self.norms[2](hidden), condition)
         flat_query = query.reshape(batch * worlds * agents, times, dim)
-        flat_memory = memory[:, None].expand(batch, worlds, agents, 72, dim).reshape(
-            batch * worlds * agents, 72, dim)
-        cross = self.cross(flat_query, flat_memory, flat_memory, need_weights=False)[0]
+        def flatten(source: torch.Tensor) -> torch.Tensor:
+            count = source.shape[-2]
+            return source[:, None].expand(
+                batch, worlds, agents, count, dim).reshape(
+                    batch * worlds * agents, count, dim)
+
+        if memory_mode == "split_gated":
+            if motion_memory is None or map_memory is None or memory_gate is None:
+                raise ValueError("split-gated attention requires both memories and gate")
+            motion = flatten(motion_memory)
+            map_value = flatten(map_memory)
+            cross_h = self.cross(
+                flat_query, motion, motion, need_weights=False)[0]
+            cross_m = self.cross(
+                flat_query, map_value, map_value, need_weights=False)[0]
+            flat_gate = memory_gate.reshape(batch * worlds * agents, 2)
+            cross = (
+                flat_gate[:, 0, None, None] * cross_h
+                + flat_gate[:, 1, None, None] * cross_m)
+        else:
+            flat_memory = flatten(memory)
+            attention_mask = None
+            if memory_mode == "count_normalized_joint":
+                if motion_memory is None or map_memory is None:
+                    raise ValueError("count-normalized attention requires memory boundaries")
+                motion_count, map_count = (
+                    motion_memory.shape[-2], map_memory.shape[-2])
+                attention_mask = flat_query.new_zeros(times, motion_count + map_count)
+                attention_mask[:, :motion_count] = torch.log(torch.as_tensor(
+                    map_count / motion_count, device=flat_query.device,
+                    dtype=flat_query.dtype))
+            cross = self.cross(
+                flat_query, flat_memory, flat_memory,
+                attn_mask=attention_mask, need_weights=False)[0]
         hidden = hidden + cross.reshape_as(hidden)
         query = self._modulate(self.norms[3](hidden), condition)
         hidden = hidden + self.ff(query)
@@ -186,12 +267,21 @@ class JointEndpointBridgeDenoiser(nn.Module):
         clean_geometry: bool = True,
         activation_checkpointing: bool = True,
         native_goal_conditioning: bool = False,
+        memory_mode: str = "legacy_joint",
+        anchor_conditioning: bool = False,
+        geometry_mapping: str = "direct_index",
     ) -> None:
         super().__init__()
         self.representation = representation
         self.future_social = bool(future_social)
         self.clean_geometry = bool(clean_geometry)
         self.activation_checkpointing = bool(activation_checkpointing)
+        self.memory_mode = str(memory_mode)
+        self.anchor_conditioning = bool(anchor_conditioning)
+        if geometry_mapping not in {"direct_index", "decoder_jacobian"}:
+            raise ValueError(f"unsupported geometry mapping: {geometry_mapping}")
+        self.geometry_mapping = geometry_mapping
+        self.static_context_cache_enabled = False
         self.state_stem = nn.Sequential(nn.Linear(2, dim), nn.LayerNorm(dim))
         self.time_mlp = nn.Sequential(nn.Linear(dim, 256), nn.SiLU(), nn.Linear(256, dim))
         self.token_type = nn.Parameter(torch.zeros(2, dim))
@@ -206,10 +296,24 @@ class JointEndpointBridgeDenoiser(nn.Module):
         self.map_injection = nn.Sequential(nn.Linear(33, dim), nn.LayerNorm(dim))
         self.future_geometry_mlp = nn.Sequential(
             nn.Linear(12, 64), nn.SiLU(), nn.Linear(64, 4))
+        if self.memory_mode == "split_gated":
+            self.memory_group_gate = nn.Sequential(
+                nn.Linear(3 * dim, 64), nn.SiLU(), nn.Linear(64, 2))
+            nn.init.zeros_(self.memory_group_gate[-1].weight)
+            nn.init.zeros_(self.memory_group_gate[-1].bias)
+        else:
+            self.memory_group_gate = None
+        self.register_buffer(
+            "future_geometry_weights",
+            representation.decoder_jacobian_weights()
+            if hasattr(representation, "decoder_jacobian_weights")
+            else torch.eye(12), persistent=False)
         # Registered last so legacy parameter/state ordering remains an exact
         # prefix during the explicit model-extension migration.
         self.native_goal_conditioner = (
-            NativeGoalConditioner(dim=dim, heads=4)
+            NativeGoalConditioner(
+                dim=dim, heads=4,
+                anchor_conditioning=self.anchor_conditioning)
             if native_goal_conditioning else None)
         for head in (
             self.pre_bridge_head, self.pre_goal_head,
@@ -225,6 +329,23 @@ class JointEndpointBridgeDenoiser(nn.Module):
     @staticmethod
     def _combine(bridge: torch.Tensor, goal: torch.Tensor) -> torch.Tensor:
         return torch.cat((bridge, goal.unsqueeze(-2)), dim=-2)
+
+    def prepare_static_context(self, context: EBJDContext) -> EBJDContext:
+        """Cache time/latent-independent trainable encodings for one graph."""
+        from dataclasses import replace
+        if self.native_goal_conditioner is None or not self.static_context_cache_enabled:
+            return context
+        candidates = context.native_candidate_embeddings
+        if candidates is None:
+            candidates = self.native_goal_conditioner.encode_candidates(
+                context, self.representation.goal_scale)
+        anchors = context.world_anchor_embeddings
+        if self.anchor_conditioning and anchors is None:
+            anchors = self.native_goal_conditioner.encode_anchors(
+                context, self.representation.goal_scale)
+        return replace(
+            context, native_candidate_embeddings=candidates,
+            world_anchor_embeddings=anchors)
 
     def _sample_map(self, context: EBJDContext, trajectory: torch.Tensor) -> torch.Tensor:
         with torch.autocast(device_type=trajectory.device.type, enabled=False):
@@ -290,54 +411,120 @@ class JointEndpointBridgeDenoiser(nn.Module):
             + self.token_type[types].view(1, 1, 1, 12, 128)
             + context.social_h[:, None, :, None, :]
         )
+        anchor_embedding = None
         if self.native_goal_conditioner is not None:
             hidden = self.native_goal_conditioner(
                 hidden, context, self.representation.goal_scale)
+            if self.anchor_conditioning:
+                if context.world_anchors is None or context.world_anchors.shape != (
+                        batch, worlds, agents, 2):
+                    raise ValueError(
+                        "assigned world anchors must match latent [B,P,N,2]")
+                anchor_embedding = context.world_anchor_embeddings
+                if anchor_embedding is None:
+                    anchor_embedding = self.native_goal_conditioner.encode_anchors(
+                        context, self.representation.goal_scale)
+                anchor_embedding = anchor_embedding.to(hidden.dtype)
+                if self.native_goal_conditioner.goal_anchor_gate is None or \
+                        self.native_goal_conditioner.bridge_anchor_gate is None:
+                    raise RuntimeError("anchor gates were not constructed")
+                valid_anchor = context.valid[:, None, :, None].to(hidden.dtype)
+                anchor_embedding = anchor_embedding * valid_anchor
+                hidden[..., :11, :] = hidden[..., :11, :] + (
+                    torch.tanh(self.native_goal_conditioner.bridge_anchor_gate)
+                    .to(hidden.dtype) * anchor_embedding[..., None, :])
+                hidden[..., 11, :] = hidden[..., 11, :] + (
+                    torch.tanh(self.native_goal_conditioner.goal_anchor_gate)
+                    .to(hidden.dtype) * anchor_embedding)
+        memory_gate = None
+        if self.memory_group_gate is not None:
+            if anchor_embedding is None:
+                anchor_embedding = hidden.new_zeros(batch, worlds, agents, 128)
+            gate_input = torch.cat((
+                context.social_h[:, None].expand(batch, worlds, agents, 128),
+                time_embedding[:, None, None].expand(batch, worlds, agents, 128),
+                anchor_embedding,
+            ), dim=-1)
+            memory_gate = torch.softmax(self.memory_group_gate(gate_input), dim=-1)
+        checkpoint_motion = (
+            context.motion_memory if context.motion_memory is not None
+            else context.memory[..., :0, :])
+        checkpoint_map = (
+            context.map_memory if context.map_memory is not None
+            else context.memory[..., :0, :])
+        checkpoint_gate = (
+            memory_gate if memory_gate is not None
+            else hidden.new_zeros(batch, worlds, agents, 2))
+
+        def checkpointed_block(
+            module: FactorizedFutureBlock, value: torch.Tensor,
+            block_bias: torch.Tensor,
+        ) -> torch.Tensor:
+            # Cached/static context tensors are explicit checkpoint inputs.
+            # This prevents recomputation from observing a mutated closure and
+            # keeps gradient edges to trainable memory/gate encoders visible.
+            return checkpoint(
+                lambda h, memory, social, time_value, bias_value, valid_value,
+                       motion, map_value, group_gate: module(
+                           h, memory, social, time_value, bias_value, valid_value,
+                           social_enabled=self.future_social,
+                           memory_mode=self.memory_mode,
+                           motion_memory=motion, map_memory=map_value,
+                           memory_gate=group_gate),
+                value, context.memory, context.social_h, time_embedding,
+                block_bias, context.valid, checkpoint_motion, checkpoint_map,
+                checkpoint_gate, use_reentrant=False)
         observed = context.observed_bias[:, None, None].expand(
             batch, worlds, 12, 4, agents, agents)
         for block in self.blocks[:3]:
             if use_block_checkpoints and self.training and torch.is_grad_enabled():
                 with record_function("ebjd.denoiser_block_checkpoint"):
-                    hidden = checkpoint(
-                        lambda value, module=block: module(
-                            value, context.memory, context.social_h, time_embedding,
-                            observed, context.valid, social_enabled=self.future_social),
-                        hidden, use_reentrant=False)
+                    hidden = checkpointed_block(block, hidden, observed)
             else:
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
-                    observed, context.valid, social_enabled=self.future_social)
+                    observed, context.valid, social_enabled=self.future_social,
+                    memory_mode=self.memory_mode,
+                    motion_memory=context.motion_memory,
+                    map_memory=context.map_memory,
+                    memory_gate=memory_gate)
         pre = self._combine(
             self.pre_bridge_head(hidden[..., :11, :]),
             self.pre_goal_head(hidden[..., 11, :]),
         )
         with torch.autocast(device_type=latent.device.type, enabled=False):
             clean_latent = alpha.float() * latent.float() - sigma.float() * pre.float()
-        trajectory, goal = self.representation.decode(clean_latent, context.baseline)
+        trajectory, goal = self.representation.decode(
+            clean_latent, context.baseline, context.world_anchors)
         gate = alpha.square()
         hidden = hidden + gate * (
             self.clean_injection(self._clean_features(trajectory, goal, context))
             + self.map_injection(self._sample_map(context, trajectory)))
-        geometry_source = trajectory if self.clean_geometry else self.representation.decode(latent, context.baseline)[0]
+        geometry_source = trajectory if self.clean_geometry else self.representation.decode(
+            latent, context.baseline, context.world_anchors)[0]
         geometry_goal = goal if self.clean_geometry else geometry_source[..., -1, :]
         future = 2 * torch.tanh(self.future_geometry_mlp(
             future_pair_geometry(
                 geometry_source, geometry_goal, self.representation.goal_scale,
                 context.observed[..., -1, :])))
         future = future.permute(0, 1, 2, 5, 3, 4).contiguous()
+        if self.geometry_mapping == "decoder_jacobian":
+            future = torch.einsum(
+                "lt,bpthij->bplhij",
+                self.future_geometry_weights.to(future), future)
         combined = observed + gate.view(batch, 1, 1, 1, 1, 1) * future
         for block in self.blocks[3:]:
             if use_block_checkpoints and self.training and torch.is_grad_enabled():
                 with record_function("ebjd.denoiser_block_checkpoint"):
-                    hidden = checkpoint(
-                        lambda value, module=block: module(
-                            value, context.memory, context.social_h, time_embedding,
-                            combined, context.valid, social_enabled=self.future_social),
-                        hidden, use_reentrant=False)
+                    hidden = checkpointed_block(block, hidden, combined)
             else:
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
-                    combined, context.valid, social_enabled=self.future_social)
+                    combined, context.valid, social_enabled=self.future_social,
+                    memory_mode=self.memory_mode,
+                    motion_memory=context.motion_memory,
+                    map_memory=context.map_memory,
+                    memory_gate=memory_gate)
         final = self._combine(
             self.final_bridge_head(hidden[..., :11, :]),
             self.final_goal_head(hidden[..., 11, :]),

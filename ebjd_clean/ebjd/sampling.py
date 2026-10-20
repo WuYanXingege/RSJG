@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
+
 import torch
 from torch.profiler import record_function
 from torch.utils.checkpoint import checkpoint
@@ -22,6 +24,7 @@ def differentiable_sample(
     """Return trajectory, literal goal and final latent without detaching steps."""
     if steps <= 0:
         raise ValueError("steps must be positive")
+    context = model.denoiser.prepare_static_context(context)
     latent = initial_noise.float()
     batch = latent.shape[0]
     for index in range(steps, 0, -1):
@@ -33,11 +36,24 @@ def differentiable_sample(
             # outer DDIM-step checkpoint is sufficient; nesting six block
             # checkpoints inside each recomputation only adds overhead.
             block_policy = checkpoint_blocks
+            candidate_cache = context.native_candidate_embeddings
+            if candidate_cache is None:
+                candidate_cache = latent.new_empty(0)
+            anchor_cache = context.world_anchor_embeddings
+            if anchor_cache is None:
+                anchor_cache = latent.new_empty(0)
             with record_function("ebjd.ddim_step_checkpoint"):
                 velocity = checkpoint(
-                    lambda z, t, policy=block_policy: model.denoiser(
-                        z, t, context, checkpoint_blocks=policy)[0],
-                    latent, time, use_reentrant=False)
+                    lambda z, t, candidates, anchors, policy=block_policy: model.denoiser(
+                        z, t, replace(
+                            context,
+                            native_candidate_embeddings=(
+                                None if candidates.numel() == 0 else candidates),
+                            world_anchor_embeddings=(
+                                None if anchors.numel() == 0 else anchors)),
+                        checkpoint_blocks=policy)[0],
+                    latent, time, candidate_cache, anchor_cache,
+                    use_reentrant=False)
         else:
             velocity = model.denoiser(
                 latent, time, context, checkpoint_blocks=checkpoint_blocks)[0]
@@ -51,7 +67,8 @@ def differentiable_sample(
             clean = alpha * latent.float() - sigma * velocity.float()
             noise = sigma * latent.float() + alpha * velocity.float()
             latent = next_alpha * clean + next_sigma * noise
-    trajectory, goal = model.representation.decode(latent, context.baseline)
+    trajectory, goal = model.representation.decode(
+        latent, context.baseline, context.world_anchors)
     return trajectory, goal, latent
 
 
@@ -65,10 +82,45 @@ def predict(
     steps: int = 20,
     generator: torch.Generator | None = None,
     native_goals: torch.Tensor | None = None,
+    scene_ids: list[str] | None = None,
+    agent_ids: list[list[str]] | None = None,
+    inference_seed: int | None = None,
+    pairing_rounds: int = 2,
+    endpoint_projection_radius: float | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     context = model.encode_context(observed, semantic_maps, valid, native_goals)
+    if model.joint_goal_assembler is not None:
+        if scene_ids is None or agent_ids is None or inference_seed is None:
+            raise ValueError(
+                "V2 prediction requires scene/agent identities and inference seed")
+        context, _, _ = model.assemble_world_anchors(
+            context, scene_ids, agent_ids, int(inference_seed),
+            rounds=int(pairing_rounds))
+        if worlds > context.world_anchors.shape[1]:
+            raise ValueError("requested worlds exceed the 20 native anchors")
+        if worlds < context.world_anchors.shape[1]:
+            index = torch.arange(worlds, device=observed.device)[None].expand(
+                observed.shape[0], worlds)
+            context = model.select_world_anchors(context, index)
     noise = torch.randn(
         observed.shape[0], worlds, observed.shape[1], 12, 2,
         device=observed.device, dtype=torch.float32, generator=generator)
     trajectory, goal, _ = differentiable_sample(model, context, noise, steps)
+    if endpoint_projection_radius is not None:
+        if context.world_anchors is None:
+            raise ValueError("endpoint projection requires assigned world anchors")
+        radius = float(endpoint_projection_radius)
+        if radius < 0:
+            raise ValueError("endpoint projection radius must be non-negative")
+        correction = goal.float() - context.world_anchors.float()
+        norm = torch.linalg.vector_norm(correction, dim=-1, keepdim=True)
+        clipped = correction * torch.clamp(
+            torch.as_tensor(radius, device=norm.device) / norm.clamp_min(1e-12),
+            max=1.0)
+        projected_goal = context.world_anchors.float() + clipped
+        delta = projected_goal - goal.float()
+        time = torch.arange(
+            1, 13, device=trajectory.device, dtype=torch.float32) / 12
+        trajectory = trajectory.float() + time.view(1, 1, 1, 12, 1) * delta[..., None, :]
+        goal = projected_goal
     return trajectory, goal
