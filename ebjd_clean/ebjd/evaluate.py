@@ -136,6 +136,7 @@ def main() -> None:
                         "observed": batch.observed[0, :count].cpu().numpy(),
                         "future": batch.future[0, :count].cpu().numpy(),
                         "predictions": prediction[0, :, :count].cpu().numpy(),
+                        "output_goals": predicted_goal[0, :, :count].cpu().numpy(),
                         "native_goals": None if batch.native_goals is None else
                             batch.native_goals[0, :count].cpu().numpy(),
                     })
@@ -241,6 +242,7 @@ def main() -> None:
                     scene_ids=np.asarray([x["scene_id"] for x in prediction_rows]),
                     agent_ids=objects("agent_ids"), observed=objects("observed"),
                     future=objects("future"), predictions=objects("predictions"),
+                    output_goals=objects("output_goals"),
                     native_goals=objects("native_goals"),
                 )
                 bank_index.append({
