@@ -1,0 +1,276 @@
+{
+  "candidate_improves_control_seed_count": {
+    "JADE": 0,
+    "JFDE": 0,
+    "minADE": 0,
+    "minFDE": 0
+  },
+  "candidate_minus_control": {
+    "JADE": 1.3694137688147201e-05,
+    "JFDE": 0.0,
+    "minADE": 2.8610108727178396e-05,
+    "minFDE": 0.0
+  },
+  "candidate_minus_matched_GDTS": {
+    "JADE": -0.027752314890797436,
+    "JFDE": -0.03958651814462533,
+    "minADE": -0.003934669015663084,
+    "minFDE": 0.001809494832151981
+  },
+  "candidate_minus_parent": {
+    "JADE": -0.021257928755914812,
+    "JFDE": 0.0019057719721623512,
+    "minADE": -0.02039791495017307,
+    "minFDE": 1.0643685932620883e-10
+  },
+  "candidate_screen": "FAIL",
+  "checkpoint_headers": {
+    "candidate": {
+      "epoch": 28,
+      "epoch_boundary_only": true,
+      "path_weight": 0.1,
+      "schema": "ebjd-checkpoint-v2",
+      "update_index": 7196
+    },
+    "control": {
+      "epoch": 28,
+      "epoch_boundary_only": true,
+      "path_weight": 0.0,
+      "schema": "ebjd-checkpoint-v2",
+      "update_index": 7196
+    }
+  },
+  "checkpoint_sha256": {
+    "candidate": "fbabcff0cd73eddf6cefbb3045bc9bc697bd45d40b92aaf70bcbd0205cda1c3d",
+    "control": "755a346bd8797c52945c519909bf7689430df10d79d7f23e0e9c4e2f425ad0ac"
+  },
+  "checks": {
+    "771_updates_each": true,
+    "all_training_values_finite": true,
+    "candidate_weight_point_one": true,
+    "control_weight_zero": true,
+    "cuda_preflight_pass": true,
+    "eval_checkpoint_binding": true,
+    "formal_eval_identity": true,
+    "paired_inputs_all_updates": true,
+    "rho0_minfde_preserved": true,
+    "rollout_projection_off": true,
+    "terminal_update_7196": true,
+    "three_epochs_each": true
+  },
+  "cost": {
+    "formal_evaluation_wall_seconds": 825.8199999999999,
+    "peak_cuda_allocated_bytes": 3517715968,
+    "preflight_seconds": 21.093196731060743,
+    "total_gpu_wall_seconds": 5496.463239054596,
+    "training_and_validation_wall_seconds": 4649.550042323535,
+    "validation_wall_seconds_included": 139.1618204768747
+  },
+  "independent_test": false,
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "metrics": {
+    "candidate": {
+      "JADE": {
+        "mean": 0.46496958469920474,
+        "per_seed": [
+          0.46880298587880115,
+          0.4680594135473368,
+          0.4657712515752777,
+          0.4601805087311466,
+          0.46203376376346167
+        ],
+        "sample_standard_deviation": 0.003756293714862182
+      },
+      "JFDE": {
+        "mean": 0.7095782334073317,
+        "per_seed": [
+          0.7081233968575422,
+          0.715581816094725,
+          0.711795513028566,
+          0.716921128870058,
+          0.6954693121857676
+        ],
+        "sample_standard_deviation": 0.008603133952266208
+      },
+      "minADE": {
+        "mean": 0.4118156890906802,
+        "per_seed": [
+          0.41031261860996815,
+          0.41168830954152474,
+          0.4103850379668094,
+          0.4113686543551611,
+          0.41532382497993797
+        ],
+        "sample_standard_deviation": 0.0020511622638167103
+      },
+      "minFDE": {
+        "mean": 0.5789001856557001,
+        "per_seed": [
+          0.5747143882966427,
+          0.5714194240140636,
+          0.5764074758728864,
+          0.5949378103237845,
+          0.5770218297711236
+        ],
+        "sample_standard_deviation": 0.009225371566431313
+      }
+    },
+    "control": {
+      "JADE": {
+        "mean": 0.4649558905615166,
+        "per_seed": [
+          0.46879291858362115,
+          0.4680447696814895,
+          0.46575749256158533,
+          0.4601599081408365,
+          0.46202436384005036
+        ],
+        "sample_standard_deviation": 0.003758384637210426
+      },
+      "JFDE": {
+        "mean": 0.7095782334073317,
+        "per_seed": [
+          0.7081233968575422,
+          0.715581816094725,
+          0.711795513028566,
+          0.716921128870058,
+          0.6954693121857676
+        ],
+        "sample_standard_deviation": 0.008603133952266208
+      },
+      "minADE": {
+        "mean": 0.41178707898195305,
+        "per_seed": [
+          0.41028048210664764,
+          0.411637403797563,
+          0.4103615789438833,
+          0.411353064209714,
+          0.4153028658519571
+        ],
+        "sample_standard_deviation": 0.002053863025000299
+      },
+      "minFDE": {
+        "mean": 0.5789001856557001,
+        "per_seed": [
+          0.5747143882966427,
+          0.5714194240140636,
+          0.5764074758728864,
+          0.5949378103237845,
+          0.5770218297711236
+        ],
+        "sample_standard_deviation": 0.009225371566431313
+      }
+    },
+    "matched_GDTS": {
+      "JADE": {
+        "mean": 0.4927218995900022,
+        "per_seed": [
+          0.4899067671402641,
+          0.49201604252747394,
+          0.4957222890241344,
+          0.49915543764005066,
+          0.48680896161808795
+        ],
+        "sample_standard_deviation": 0.004841972453449841
+      },
+      "JFDE": {
+        "mean": 0.749164751551957,
+        "per_seed": [
+          0.7434117917354282,
+          0.7487080934137224,
+          0.7541116256369904,
+          0.7606855026287995,
+          0.7389067443448446
+        ],
+        "sample_standard_deviation": 0.008598416478554713
+      },
+      "minADE": {
+        "mean": 0.4157503581063433,
+        "per_seed": [
+          0.41705285937904,
+          0.40774962148414207,
+          0.41424887700026836,
+          0.42137177294672845,
+          0.4183286597215376
+        ],
+        "sample_standard_deviation": 0.0051529284295855635
+      },
+      "minFDE": {
+        "mean": 0.5770906908235481,
+        "per_seed": [
+          0.5800323037873278,
+          0.5596334293924763,
+          0.5781578150690421,
+          0.58357331024708,
+          0.5840565956218148
+        ],
+        "sample_standard_deviation": 0.010063498421345006
+      }
+    },
+    "parent_fixed_anchor": {
+      "JADE": {
+        "mean": 0.48622751345511955,
+        "per_seed": [
+          0.48217647820122156,
+          0.4911923666480973,
+          0.4874114400666693,
+          0.4835678459156172,
+          0.4867894364439923
+        ],
+        "sample_standard_deviation": 0.003530294780318902
+      },
+      "JFDE": {
+        "mean": 0.7076724614351694,
+        "per_seed": [
+          0.7074412126278159,
+          0.7066869068184035,
+          0.7127680254165127,
+          0.7163517034940216,
+          0.695114458819093
+        ],
+        "sample_standard_deviation": 0.008062602536139085
+      },
+      "minADE": {
+        "mean": 0.4322136040408533,
+        "per_seed": [
+          0.42414020534072605,
+          0.43303062391191066,
+          0.433498880181175,
+          0.4320134612230154,
+          0.4383848495474392
+        ],
+        "sample_standard_deviation": 0.0051386659515843276
+      },
+      "minFDE": {
+        "mean": 0.5789001855492633,
+        "per_seed": [
+          0.5747143878053955,
+          0.5714194240140636,
+          0.5764074758728864,
+          0.5949378106512825,
+          0.5770218294026883
+        ],
+        "sample_standard_deviation": 0.009225371783241123
+      }
+    }
+  },
+  "original_contract": "FAIL",
+  "original_contract_checks": {
+    "JADE_strictly_better": true,
+    "JFDE_strictly_better": true,
+    "minADE_not_worse": true,
+    "minFDE_not_worse": false
+  },
+  "paired_update_mismatches": 0,
+  "rho0_minfde_max_abs_delta": 4.912471540663432e-10,
+  "schema": "ebjd-no-token-fixed-anchor-path-pilot-results-v1",
+  "source_commit": "d471b8cf8fe9612e55927b8ca58b4741ff1bef72",
+  "status": "COMPLETE",
+  "training_seed": 3101
+}

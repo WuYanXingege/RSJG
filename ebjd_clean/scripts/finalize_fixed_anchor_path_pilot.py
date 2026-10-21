@@ -103,7 +103,7 @@ def main() -> None:
         "control_weight_zero": all(row["active_fixed_anchor_path_weight"] == 0
                                    and row["fixed_anchor_path"] == 0 for row in control_rows),
         "candidate_weight_point_one": all(
-            row["active_fixed_anchor_path_weight"] == 0.1
+            abs(row["active_fixed_anchor_path_weight"] - 0.1) <= 1e-12
             and row["fixed_anchor_path"] > 0 for row in candidate_rows),
         "rollout_projection_off": all(
             row["rollout_update"] == 0 and row["projection_executed"] == 0
