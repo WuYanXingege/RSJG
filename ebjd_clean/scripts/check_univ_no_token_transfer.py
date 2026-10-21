@@ -160,7 +160,7 @@ def main() -> None:
         "native_p20_finite": native_shape_ok,
         "anchor_residual_roundtrip": representation_error <= 2e-5 and goal_error <= 2e-5,
         "joint_assembly_uses_native_set": anchor_set_error <= 1e-6,
-        "joint_permutation_shape": permutations.shape[1] == 20,
+        "joint_permutation_shape": permutations.shape[-1] == 20,
         "one_accum4_update_each": (
             control.update_index == 18616 and candidate.update_index == 18616),
         "formal_random_inputs_paired": records_paired,
