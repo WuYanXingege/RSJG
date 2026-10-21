@@ -1,0 +1,46 @@
+{
+  "schema": "ebjd-univ-epoch81-frozen-eval-plan-v1",
+  "status": "FROZEN_BEFORE_GPU",
+  "source_branch": "research/ebjd-univ-epoch81-frozen-eval-v1",
+  "source_fixed_commit": "f2af16cafbf050f3c7216107357ddcd872d1690b",
+  "evaluator_implementation_commit": "79d5479711e8618ef459484556984ea1a1e7e055",
+  "evaluator_sha256": "77c5080c97808388b44237199c5b447131dac1e757dcba6420bd8d30832ce1eb",
+  "gpu_budget_seconds": 7200,
+  "training_allowed": false,
+  "inference_seeds": [2035, 2036, 2037, 2038, 2039],
+  "worlds": 20,
+  "ddim_steps": 20,
+  "ddim_eta": 0.0,
+  "manifest_sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+  "control": {
+    "checkpoint_epoch": 81,
+    "checkpoint_update_index": 20655,
+    "checkpoint_sha256": "e9fd76be585fef0d9cf6ab82422e5a5775392030c59283054a5247a6f47eafdd",
+    "config_sha256": "1f17db5dbff104bc2cb62e7a410a6092e01813f1592dad30029e3fe8e2d6d142",
+    "output": "Raw"
+  },
+  "candidate": {
+    "checkpoint_epoch": 81,
+    "checkpoint_update_index": 20655,
+    "checkpoint_sha256": "8d695b9e494674610cc51a6719ee6227363ddc158846cb3309d1fabe32624a0e",
+    "config_sha256": "8f831cdb3f685a4d616a8cd1793fe909e573fd0a4de99dcdfefe828f34f018e8",
+    "primary_output": "Fixed-anchor",
+    "secondary_output": "Raw",
+    "same_forward_required": true
+  },
+  "execution_order": [
+    "candidate:2035",
+    "control:2035",
+    "candidate:2036",
+    "candidate:2037",
+    "candidate:2038",
+    "candidate:2039",
+    "control:2036",
+    "control:2037",
+    "control:2038",
+    "control:2039"
+  ],
+  "per_seed_atomic_receipts": true,
+  "resume_policy": "reuse only exact identity COMPLETE receipts",
+  "large_artifacts_uploaded": false
+}
