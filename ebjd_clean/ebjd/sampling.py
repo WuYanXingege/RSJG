@@ -87,7 +87,9 @@ def predict(
     inference_seed: int | None = None,
     pairing_rounds: int = 2,
     endpoint_projection_radius: float | None = None,
-) -> tuple[torch.Tensor, torch.Tensor]:
+    return_assigned_world_anchors: bool = False,
+) -> tuple[torch.Tensor, torch.Tensor] | tuple[
+        torch.Tensor, torch.Tensor, torch.Tensor | None]:
     context = model.encode_context(observed, semantic_maps, valid, native_goals)
     if model.joint_goal_assembler is not None:
         if scene_ids is None or agent_ids is None or inference_seed is None:
@@ -120,4 +122,6 @@ def predict(
         projected_goal = context.world_anchors.float() + clipped
         trajectory = fixed_endpoint_trajectory(trajectory, projected_goal)
         goal = projected_goal
+    if return_assigned_world_anchors:
+        return trajectory, goal, context.world_anchors
     return trajectory, goal

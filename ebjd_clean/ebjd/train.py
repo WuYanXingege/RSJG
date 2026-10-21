@@ -104,6 +104,11 @@ def parse_args() -> argparse.Namespace:
         "--v2-fork-from-sha256",
         help="mandatory expected SHA256 for --v2-fork-from")
     parser.add_argument(
+        "--v2-fork-contract", choices=(
+            "eth_epoch20_native_v1", "univ_epoch73_legacy_v1"),
+        default="eth_epoch20_native_v1",
+        help="explicit certified parent/extension contract for --v2-fork-from")
+    parser.add_argument(
         "--objective-fork-contract", choices=(
             "goal_v_weight_2", "rollout_weight_end_005",
             "rollout_mechanism_off", "fixed_anchor_path_weight"),
@@ -760,22 +765,61 @@ def validate_native_goal_fork_payload(
 def validate_v2_fork_payload(
     payload: dict, checkpoint: Path, expected_sha256: str,
     config: dict, execution_identity: dict, ablation: str,
+    contract: str = "eth_epoch20_native_v1",
 ) -> dict:
-    """Validate the fixed epoch-20 parent and declared V2 architecture fork."""
+    """Validate one exact parent and its declared V2 architecture fork."""
     actual = file_sha256(checkpoint)
     if actual != expected_sha256:
         raise ValueError("V2 fork checkpoint SHA256 mismatch")
     if payload.get("schema") != "ebjd-checkpoint-v2" or \
             payload.get("epoch_boundary_only") is not True:
         raise ValueError("V2 fork requires an epoch-boundary v2 checkpoint")
-    if int(payload.get("epoch", -1)) != 20 or int(payload.get("update_index", -1)) != 5140:
-        raise ValueError("V2 fork requires the certified shared epoch20/update5140 parent")
     origin = payload.get("resolved_config")
     identity = payload.get("run_identity")
     if not isinstance(origin, dict) or not isinstance(identity, dict):
         raise ValueError("V2 fork parent lacks config or run identity")
-    if "native_goal_conditioning" not in origin or "v2" not in config:
-        raise ValueError("V2 fork requires native-goal parent and V2 child config")
+    if "v2" not in config:
+        raise ValueError("V2 fork requires a V2 child config")
+    if contract == "eth_epoch20_native_v1":
+        if (int(payload.get("epoch", -1)), int(payload.get("update_index", -1))) != (
+                20, 5140):
+            raise ValueError(
+                "ETH V2 fork requires the certified shared epoch20/update5140 parent")
+        if "native_goal_conditioning" not in origin:
+            raise ValueError("ETH V2 fork requires the native-goal parent")
+    elif contract == "univ_epoch73_legacy_v1":
+        certified_sha = (
+            "f526506055f346513b7c57994f9935d40e624162d74e110104073312cfc4bbe9")
+        if actual != certified_sha or expected_sha256 != certified_sha:
+            raise ValueError("UNIV V2 fork requires the certified epoch73 checkpoint SHA256")
+        if (int(payload.get("epoch", -1)), int(payload.get("update_index", -1))) != (
+                73, 18615):
+            raise ValueError("UNIV V2 fork requires epoch73/update18615")
+        if identity.get("fold") != "univ" or config["experiment"]["fold"] != "univ":
+            raise ValueError("UNIV V2 fork is restricted to the UNIV fold")
+        if "native_goal_conditioning" in origin or "native_goal_conditioning" not in config:
+            raise ValueError("UNIV V2 fork must extend the legacy parent with native goals")
+        native = config["native_goal_conditioning"]
+        if native.get("provider_checkpoint_sha256") != (
+                "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e"):
+            raise ValueError("UNIV V2 fork provider checkpoint identity differs")
+        if file_sha256(config["paths"]["validation_manifest"]) != (
+                "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e"):
+            raise ValueError("UNIV V2 fork held-out manifest identity differs")
+        expected_v2 = {
+            "enabled": True, "variant": "no_token", "memory_mode": "legacy_joint",
+            "motion_summaries": False, "map_memory_grid": 8,
+            "anchor_residual": True, "joint_goal_assembly": True,
+            "geometry_mapping": "decoder_jacobian", "keep_weight": 0.01,
+            "association_weight": 0.05, "rollout_keep_weight": 0.01,
+            "pairing_seed_offset": 3_000_007, "pairing_rounds": 2,
+        }
+        if config["v2"] != expected_v2 or ablation != "v2_no_token":
+            raise ValueError("UNIV V2 fork requires the frozen NO_TOKEN definition")
+        if float(config["objectives"].get("fixed_anchor_path_weight", -1)) != 0:
+            raise ValueError("UNIV V2 fork requires fixed_anchor_path_weight=0")
+    else:
+        raise ValueError(f"unsupported V2 fork contract: {contract!r}")
     differences = config_differences(origin, config)
     allowed = {
         "experiment.source_commit", "experiment.implementation_base",
@@ -783,6 +827,12 @@ def validate_v2_fork_payload(
         "map_encoder.memory_grid", "denoiser.memory_tokens_per_agent", "v2",
     }
     allowed.update(name for name in differences if name.startswith("v2."))
+    if contract == "univ_epoch73_legacy_v1":
+        allowed.update(
+            name for name in differences
+            if name == "native_goal_conditioning"
+            or name.startswith("native_goal_conditioning."))
+        allowed.add("objectives.fixed_anchor_path_weight")
     allowed.update(".".join(path) for path in SEMANTIC_CONFIG_EXCLUSIONS)
     disallowed = sorted(set(differences) - allowed)
     if disallowed:
@@ -796,7 +846,9 @@ def validate_v2_fork_payload(
         "schema": "ebjd-v2-named-model-extension-v1",
         "origin_checkpoint_absolute_path": str(checkpoint.resolve()),
         "origin_checkpoint_sha256": actual,
-        "origin_epoch": 20, "origin_update_index": 5140,
+        "origin_epoch": int(payload["epoch"]),
+        "origin_update_index": int(payload["update_index"]),
+        "fork_contract": contract,
         "origin_source_commit": identity.get("source_commit"),
         "execution_source_commit": execution_identity["source_commit"],
         "ablation": ablation,
@@ -908,13 +960,14 @@ def main() -> None:
         else:
             v2_fork_receipt = validate_v2_fork_payload(
                 checkpoint_payload, checkpoint_path,
-                args.v2_fork_from_sha256, config, identity, args.ablation)
+                args.v2_fork_from_sha256, config, identity, args.ablation,
+                args.v2_fork_contract)
             identity["resume_origin"] = {
                 "checkpoint_absolute_path": str(checkpoint_path),
                 "checkpoint_sha256": args.v2_fork_from_sha256,
                 "epoch": int(checkpoint_payload["epoch"]),
                 "update_index": int(checkpoint_payload["update_index"]),
-                "fork_contract": "v2_named_model_extension_v1",
+                "fork_contract": args.v2_fork_contract,
             }
     if args.absolute_stop_epoch is not None:
         if checkpoint_payload is None:

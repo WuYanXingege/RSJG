@@ -18,6 +18,7 @@ from torch.utils.data import DataLoader
 from .config import build_model, load_config
 from .data import SceneManifestDataset, collate_scenes
 from .metrics import MetricAccumulator
+from .representation import fixed_endpoint_trajectory
 from .sampling import predict
 
 
@@ -52,6 +53,10 @@ def main() -> None:
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--output", required=True)
     parser.add_argument(
+        "--fixed-anchor-output",
+        help=("optional companion summary computed from the same raw forward by "
+              "fixing every trajectory to its assigned world anchor"))
+    parser.add_argument(
         "--prediction-bank-root",
         help="optional local-only directory for compressed per-seed predictions")
     parser.add_argument(
@@ -67,6 +72,9 @@ def main() -> None:
         "--endpoint-projection-radius", type=float,
         help="read-only L2 endpoint correction radius around assigned anchors")
     args = parser.parse_args()
+    if args.fixed_anchor_output and args.endpoint_projection_radius is not None:
+        raise ValueError(
+            "--fixed-anchor-output requires an unmodified Raw primary output")
     config = load_config(args.config)
     path = config.get("paths", {}).get(f"{args.split}_manifest")
     if not path:
@@ -87,6 +95,7 @@ def main() -> None:
     evaluation = config.get("evaluation", {})
     worlds, steps = int(evaluation.get("worlds", 20)), int(evaluation.get("steps", 20))
     results = []
+    fixed_results = []
     bank_index = []
     with torch.no_grad(), torch.autocast(
             device_type=device.type, enabled=False):
@@ -102,6 +111,8 @@ def main() -> None:
                                 collate_fn=collate_scenes, num_workers=0)
             generator = torch.Generator(device=device).manual_seed(int(seed))
             accumulator = MetricAccumulator()
+            fixed_accumulator = (
+                MetricAccumulator() if args.fixed_anchor_output else None)
             k_values = (1, 4, 8, 12, 16, 20)
             k_accumulators = {value: MetricAccumulator() for value in k_values}
             stratum_accumulators = {
@@ -121,12 +132,24 @@ def main() -> None:
             prediction_rows = []
             for batch in loader:
                 batch = batch.to(device)
-                prediction, predicted_goal = predict(
+                predicted = predict(
                     model, batch.observed, batch.semantic_maps, batch.valid,
                     worlds, steps, generator, batch.native_goals,
                     batch.scene_ids, batch.agent_ids, int(seed),
                     pairing_rounds=args.pairing_rounds,
-                    endpoint_projection_radius=args.endpoint_projection_radius)
+                    endpoint_projection_radius=args.endpoint_projection_radius,
+                    return_assigned_world_anchors=bool(args.fixed_anchor_output))
+                if args.fixed_anchor_output:
+                    prediction, predicted_goal, assigned_anchors = predicted
+                    if assigned_anchors is None or fixed_accumulator is None:
+                        raise ValueError(
+                            "fixed-anchor companion requires assigned world anchors")
+                    fixed_prediction = fixed_endpoint_trajectory(
+                        prediction, assigned_anchors)
+                    fixed_accumulator.update(
+                        fixed_prediction, batch.future, batch.valid)
+                else:
+                    prediction, predicted_goal = predicted
                 accumulator.update(prediction, batch.future, batch.valid)
                 if args.prediction_bank_root:
                     count = int(batch.valid.sum())
@@ -228,6 +251,17 @@ def main() -> None:
                         conditioner.last_condition_norm_ratio or 0.0),
                 },
             })
+            if fixed_accumulator is not None:
+                fixed_means = fixed_accumulator.as_dict()
+                if fixed_means["scene_count"] != len(dataset) or \
+                        fixed_means["agent_count"] != expected_agents:
+                    raise RuntimeError(
+                        "fixed-anchor companion skipped held-out scenes or agents")
+                fixed_results.append({
+                    "seed": int(seed), "metrics": fixed_means,
+                    "derived_from_same_forward_as_raw": True,
+                    "native_goal_oracle_FDE": endpoint["native_oracle_fde"],
+                })
             if args.prediction_bank_root:
                 root = Path(args.prediction_bank_root).resolve()
                 root.mkdir(parents=True, exist_ok=True)
@@ -288,6 +322,25 @@ def main() -> None:
     }
     output = Path(args.output)
     atomic_json(summary, output)
+    if args.fixed_anchor_output:
+        fixed_means = {
+            name: float(np.mean([x["metrics"][name] for x in fixed_results]))
+            for name in metric_names}
+        fixed_standard_deviation = {
+            name: float(statistics.stdev(
+                [x["metrics"][name] for x in fixed_results]))
+            for name in metric_names}
+        fixed_summary = {
+            **summary,
+            "endpoint_projection_radius": 0.0,
+            "derived_from_same_forward_as_raw": True,
+            "raw_output": str(output.resolve()),
+            "prediction_bank_index_local_only": [],
+            "per_seed": fixed_results,
+            "mean": fixed_means,
+            "sample_standard_deviation": fixed_standard_deviation,
+        }
+        atomic_json(fixed_summary, Path(args.fixed_anchor_output))
     print(json.dumps(summary["mean"], sort_keys=True))
 
 
