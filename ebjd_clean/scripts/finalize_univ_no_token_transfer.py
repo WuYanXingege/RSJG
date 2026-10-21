@@ -8,6 +8,7 @@ import hashlib
 import json
 import math
 import os
+import shutil
 import statistics
 from pathlib import Path
 
@@ -105,13 +106,21 @@ def main() -> None:
     all_rows = train_rows["control"] + train_rows["candidate"]
     finite = all(math.isfinite(float(value)) for row in all_rows
                  for value in row.values() if isinstance(value, (int, float)))
-    eval_identity = all(
+    formal_eval_identity = all(
         payload["manifest_sha256"] == plan["assets"]["heldout_manifest_sha256"]
         and payload["scene_count"] == 947
         and payload["agent_occurrence_count"] == 24334
         and payload["worlds"] == 20 and payload["steps"] == 20
         and payload["ddim_eta"] == 0 and payload["model_dtype"] == "fp32"
-        for payload in sources.values())
+        for name, payload in sources.items() if name != "parent_raw")
+    parent_mirror_identity = all([
+        sources["parent_raw"]["scene_count"] == 947,
+        sources["parent_raw"]["agent_occurrence_count"] == 24334,
+        sources["parent_raw"]["worlds"] == 20,
+        sources["parent_raw"]["steps"] == 20,
+        sources["parent_raw"]["ddim_eta"] == 0,
+        sources["parent_raw"]["model_dtype"] == "fp32",
+    ])
     fixed_oracle_error = max(abs(
         row["metrics"]["minFDE"] - row["native_goal_oracle_FDE"])
         for row in sources["candidate_fixed"]["per_seed"])
@@ -132,7 +141,8 @@ def main() -> None:
             row["fixed_anchor_path"] == 0
             and row["active_fixed_anchor_path_weight"] == 0 for row in all_rows),
         "finite_training": finite,
-        "formal_eval_identity": eval_identity,
+        "formal_eval_identity": formal_eval_identity,
+        "parent_test_mirror_identity": parent_mirror_identity,
         "evaluation_checkpoint_binding": (
             sources["control_raw"]["checkpoint_sha256"] == checkpoints["control"]
             and sources["candidate_raw"]["checkpoint_sha256"] == checkpoints["candidate"]
@@ -167,7 +177,20 @@ def main() -> None:
                            for arm in summaries for row in summaries[arm])
     eval_seconds = sum(float((args.assets / name).read_text()) for name in (
         "control_evaluation_seconds.txt", "candidate_evaluation_seconds.txt"))
-    total = bank_seconds + float(preflight["wall_seconds"]) + training_seconds + eval_seconds
+    failed_eval_path = args.assets / "failed_control_evaluation_seconds.txt"
+    failed_evaluation_seconds = (
+        float(failed_eval_path.read_text()) if failed_eval_path.exists() else 0.0)
+    failed_preflight_path = args.assets / "CUDA_PREFLIGHT_RECEIPT_failed_9f0eb7c.json"
+    failed_preflight_seconds = (
+        float(read(failed_preflight_path)["wall_seconds"])
+        if failed_preflight_path.exists() else 0.0)
+    discarded_path = args.assets / "recovery_discarded_gpu_seconds.txt"
+    discarded_training_seconds = (
+        float(discarded_path.read_text()) if discarded_path.exists() else 0.0)
+    total = (bank_seconds + float(preflight["wall_seconds"])
+             + failed_preflight_seconds + training_seconds
+             + discarded_training_seconds + failed_evaluation_seconds
+             + eval_seconds)
     checks["gpu_budget_not_exceeded"] = total <= plan["protocol"]["gpu_budget_seconds"]
     status = "COMPLETE" if all(checks.values()) else "INVALID"
     result = {
@@ -185,7 +208,10 @@ def main() -> None:
         "checkpoint_sha256": checkpoints, "checkpoint_headers": headers,
         "cost": {"bank_export_seconds": bank_seconds,
                  "preflight_seconds": float(preflight["wall_seconds"]),
+                 "failed_preflight_seconds": failed_preflight_seconds,
                  "training_and_validation_seconds": training_seconds,
+                 "discarded_recovery_training_seconds": discarded_training_seconds,
+                 "failed_formal_evaluation_seconds": failed_evaluation_seconds,
                  "formal_evaluation_seconds": eval_seconds,
                  "total_gpu_wall_seconds": total,
                  "peak_cuda_allocated_bytes": max(
@@ -194,6 +220,13 @@ def main() -> None:
                         for arm in summaries for row in summaries[arm]])},
     }
     args.archive.mkdir(parents=True, exist_ok=True)
+    for source, target in (
+        (args.protocol / "PLAN.json", "PLAN.json"),
+        (args.protocol / "CONTROL_CONFIG.json", "CONTROL_CONFIG.json"),
+        (args.protocol / "CANDIDATE_CONFIG.json", "CANDIDATE_CONFIG.json"),
+        (args.assets / "CUDA_PREFLIGHT_RECEIPT.json", "CUDA_PREFLIGHT_RECEIPT.json"),
+    ):
+        shutil.copy2(source, args.archive / target)
     atomic_text(args.archive / "RESULTS.json", json.dumps(result, indent=2, sort_keys=True) + "\n")
 
     def cell(block: dict, name: str) -> str:
@@ -220,6 +253,13 @@ def main() -> None:
               f"实际 GPU 计费口径墙钟：{total:.1f} 秒（上限 {plan['protocol']['gpu_budget_seconds']} 秒）。",
               "", f"唯一建议：{recommendation}", ""]
     atomic_text(args.archive / "REPORT_ZH.md", "\n".join(lines))
+    atomic_text(args.archive / "COMMANDS_AND_RECOVERY.md", "\n".join([
+        "# 执行与恢复", "",
+        "固定串行入口：", "",
+        "```bash", "bash scripts/run_univ_no_token_transfer.sh", "```", "",
+        "本轮正式顺序为 Control epoch74–81、Candidate epoch74–81、五种子评估和最终审计。",
+        "检查点只允许从各臂最近完整 epoch 边界恢复；禁止采用中断 epoch 的 update 日志。", "",
+    ]))
     print(json.dumps({"status": status, "upgrade": upgrade,
                       "original": original, "recommendation": recommendation},
                      ensure_ascii=False, sort_keys=True))

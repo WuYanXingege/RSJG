@@ -232,13 +232,22 @@ def main() -> None:
             endpoint = {
                 name: (value if name == "agents" else float(value) / count)
                 for name, value in endpoint_sums.items()}
-            endpoint.update({
-                "diffusion_minFDE_p90": float(np.quantile(endpoint_errors, 0.90)),
-                "diffusion_minFDE_p95": float(np.quantile(endpoint_errors, 0.95)),
-                "average_single_candidate_FDE": float(np.mean(endpoint_single_errors)),
-                "endpoint_center_error": float(np.mean(endpoint_center_errors)),
-                "endpoint_centered_RMS": float(np.mean(endpoint_centered_rms)),
-            })
+            if endpoint_errors:
+                endpoint.update({
+                    "diffusion_minFDE_p90": float(np.quantile(endpoint_errors, 0.90)),
+                    "diffusion_minFDE_p95": float(np.quantile(endpoint_errors, 0.95)),
+                    "average_single_candidate_FDE": float(np.mean(endpoint_single_errors)),
+                    "endpoint_center_error": float(np.mean(endpoint_center_errors)),
+                    "endpoint_centered_RMS": float(np.mean(endpoint_centered_rms)),
+                })
+            else:
+                endpoint.update({
+                    "diffusion_minFDE_p90": None,
+                    "diffusion_minFDE_p95": None,
+                    "average_single_candidate_FDE": None,
+                    "endpoint_center_error": None,
+                    "endpoint_centered_RMS": None,
+                })
             conditioner = model.denoiser.native_goal_conditioner
             results.append({
                 "seed": int(seed), "metrics": means, "k_curves": k_curves,

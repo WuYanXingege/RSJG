@@ -1,0 +1,149 @@
+{
+  "assets": {
+    "bank_export_elapsed_seconds": 2804.853432137519,
+    "heldout_bank_manifest_sha256_by_seed": {
+      "2035": "10285268073eed90eb83755502c47802f6fff59c520fcaa949c63c3bd6ac13a5",
+      "2036": "41559eaa03345ea68cb209b642899bb89c3c052b15cac2974070be40a578e89d",
+      "2037": "58f8709eb97445914222323abf4d45aa230ab9dd0ea2c0326832fe56e9e5552f",
+      "2038": "2a4fe8df8b30ff8c72bd05bf789d5729acb6572afdd888154d623e95b0eb4caa",
+      "2039": "fcd2ac5521bb8fc66162b9ae6c00e6f3ba7df3723b08bb2cb16e96a6ed486894"
+    },
+    "heldout_manifest_sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+    "provider_checkpoint_sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+    "provider_code_commit": "a812765d6f6d0a315e04298ed9276043a129ae3c",
+    "train_bank_manifest_sha256": "ae673e89e6b3dcbfc062b82fe1d781aa5fabd2313b496ed64b1aaaf3908922ee",
+    "train_manifest_sha256": "6f6fca362ec1e591bf9a79c9b1a0204123947a0c7b754992f131432af40dfd5d"
+  },
+  "config_differences_from_parent": {
+    "candidate": {
+      "experiment.implementation_base": {
+        "new": "ebjd-v2-integrated-network-v1",
+        "old": "01faa633162a2b73794a40184e8d64e4d44964bc"
+      },
+      "experiment.source_commit": {
+        "new": "5c8579628ca689839641097ea83aabc9e059ccff",
+        "old": "1ef0c76e495d5f18d31cbe9b69912dc78410dfc1"
+      },
+      "native_goal_conditioning": {
+        "new": {
+          "candidates": 20,
+          "enabled": true,
+          "goal_scale_source": "representation_goal_scale",
+          "provider_checkpoint_sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+          "provider_code_commit": "a812765d6f6d0a315e04298ed9276043a129ae3c",
+          "train_cache_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/native_banks/train_seed3101/manifest.json",
+          "train_cache_sha256": "ae673e89e6b3dcbfc062b82fe1d781aa5fabd2313b496ed64b1aaaf3908922ee",
+          "validation_cache_by_seed": {
+            "2035": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/native_banks/validation_seed2035/manifest.json",
+            "2036": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/native_banks/validation_seed2036/manifest.json",
+            "2037": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/native_banks/validation_seed2037/manifest.json",
+            "2038": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/native_banks/validation_seed2038/manifest.json",
+            "2039": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/native_banks/validation_seed2039/manifest.json"
+          },
+          "variant": "native_gdts_ttst20_cross_attention_v1"
+        },
+        "old": "<MISSING>"
+      },
+      "objectives.fixed_anchor_path_weight": {
+        "new": 0.0,
+        "old": "<MISSING>"
+      },
+      "paths.output_root": {
+        "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/runs",
+        "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/formal_training"
+      },
+      "training.lazy_off_projection_gradients": {
+        "new": true,
+        "old": "<MISSING>"
+      },
+      "training.static_conditioning_cache": {
+        "new": true,
+        "old": "<MISSING>"
+      },
+      "v2": {
+        "new": {
+          "anchor_residual": true,
+          "association_weight": 0.05,
+          "enabled": true,
+          "geometry_mapping": "decoder_jacobian",
+          "joint_goal_assembly": true,
+          "keep_weight": 0.01,
+          "map_memory_grid": 8,
+          "memory_mode": "legacy_joint",
+          "motion_summaries": false,
+          "pairing_rounds": 2,
+          "pairing_seed_offset": 3000007,
+          "rollout_keep_weight": 0.01,
+          "variant": "no_token"
+        },
+        "old": "<MISSING>"
+      }
+    },
+    "control": {
+      "experiment.source_commit": {
+        "new": "5c8579628ca689839641097ea83aabc9e059ccff",
+        "old": "1ef0c76e495d5f18d31cbe9b69912dc78410dfc1"
+      },
+      "paths.output_root": {
+        "new": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/runs",
+        "old": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/formal_training"
+      }
+    }
+  },
+  "configs": {
+    "candidate": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/protocol/CANDIDATE_CONFIG.json",
+      "sha256": "8f831cdb3f685a4d616a8cd1793fe909e573fd0a4de99dcdfefe828f34f018e8"
+    },
+    "control": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_diagnostic_assets/univ_no_token_transfer_20261021/protocol/CONTROL_CONFIG.json",
+      "sha256": "1f17db5dbff104bc2cb62e7a410a6092e01813f1592dad30029e3fe8e2d6d142"
+    }
+  },
+  "parent": {
+    "epoch": 73,
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_univ_main_20261013_seed3101/formal_training/univ/3101/none/univ_main_seed3101_1ef0c76_20261013/selected_formal.pt",
+    "representation_scales": {
+      "bridge": 0.2151893973350525,
+      "encoder_goal": 0.9640424847602844,
+      "representation_goal": 0.9640424847602844
+    },
+    "sha256": "f526506055f346513b7c57994f9935d40e624162d74e110104073312cfc4bbe9",
+    "update_index": 18615
+  },
+  "protocol": {
+    "actual_step_projection": false,
+    "candidate_fixed_anchor_path_weight": 0.0,
+    "ddim_steps": 20,
+    "epochs": [
+      74,
+      75,
+      76,
+      77,
+      78,
+      79,
+      80,
+      81
+    ],
+    "eta": 0.0,
+    "formal_epoch": 81,
+    "gpu_budget_seconds": 21600,
+    "inference_seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "rollout": false,
+    "terminal_update_index": 20655,
+    "training_seed": 3101,
+    "updates_per_arm": 2040,
+    "updates_per_epoch": 255,
+    "worlds": 20
+  },
+  "schema": "ebjd-univ-no-token-transfer-plan-v1",
+  "sole_comparison": "legacy UNIV network Raw versus transferred NO_TOKEN network Fixed-anchor",
+  "source_commit": "5c8579628ca689839641097ea83aabc9e059ccff",
+  "status": "FROZEN_BEFORE_FORMAL_UPDATES"
+}

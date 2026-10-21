@@ -1,0 +1,69 @@
+{
+  "schema": "ebjd-univ-no-token-transfer-partial-v1",
+  "status": "PARTIAL_GPU_BUDGET_EXHAUSTED",
+  "source_commit_used_for_training": "5c8579628ca689839641097ea83aabc9e059ccff",
+  "training_seed": 3101,
+  "planned_inference_seeds": [2035, 2036, 2037, 2038, 2039],
+  "training_complete": true,
+  "formal_five_seed_evaluation_complete": false,
+  "independent_test": false,
+  "checkpoints": {
+    "control_epoch081_sha256": "e9fd76be585fef0d9cf6ab82422e5a5775392030c59283054a5247a6f47eafdd",
+    "candidate_epoch081_sha256": "8d695b9e494674610cc51a6719ee6227363ddc158846cb3309d1fabe32624a0e"
+  },
+  "training_integrity": {
+    "epochs_each": 8,
+    "updates_each": 2040,
+    "terminal_epoch": 81,
+    "terminal_update_index": 20655,
+    "paired_update_mismatches": 0,
+    "nonfinite_values": 0,
+    "rollout_or_projection_active_updates": 0,
+    "candidate_nonzero_gate_gradient_updates": 2040
+  },
+  "epoch081_single_validation_not_formal_five_seed": {
+    "control_raw": {
+      "minADE": 0.26969488027981475,
+      "minFDE": 0.5072987959598646,
+      "JADE": 0.5284200439735098,
+      "JFDE": 1.1264441426855205
+    },
+    "candidate_raw": {
+      "minADE": 0.2846853486650823,
+      "minFDE": 0.5055231973648463,
+      "JADE": 0.6186064091346836,
+      "JFDE": 1.2393901853211453
+    }
+  },
+  "evaluation_failures": [
+    {
+      "arm": "control_raw",
+      "elapsed_gpu_seconds": 371.6,
+      "cause": "empty native-goal endpoint diagnostic quantile",
+      "code_fix_tested": true,
+      "formal_output_written": false
+    },
+    {
+      "arm": "candidate_raw_and_fixed_anchor",
+      "elapsed_gpu_seconds": 3400.0,
+      "cause": "pre-registered remaining-budget hard timeout before five seeds completed",
+      "formal_output_written": false
+    }
+  ],
+  "cost_seconds": {
+    "native_bank_export": 2804.853432137519,
+    "successful_preflight": 17.10703491093591,
+    "failed_preflight": 17.273247895063832,
+    "completed_training_and_validation": 14028.665152893169,
+    "discarded_recovery_training": 636.0297278736253,
+    "failed_control_formal_evaluation": 371.6,
+    "timed_out_candidate_formal_evaluation": 3400.0,
+    "total_gpu_wall": 21275.52859571031,
+    "hard_limit": 21600.0,
+    "unused_budget": 324.4714042896885
+  },
+  "old_univ_advantage_retained": "NOT_EVALUABLE_FOR_TRANSFER; original epoch73 artifact remains unchanged",
+  "upgrade_contract": "NOT_EVALUABLE",
+  "original_contract": "NOT_EVALUABLE",
+  "unique_recommendation": "Keep the original UNIV epoch73 model; do not upgrade this transfer branch. If a new budget is explicitly authorized, evaluate the two frozen epoch81 checkpoints only, without retraining, tuning, or extending epochs."
+}
