@@ -9,6 +9,7 @@ import math
 import os
 import statistics
 import tempfile
+import time
 from pathlib import Path
 
 import numpy as np
@@ -44,6 +45,31 @@ def atomic_json(payload: dict, path: Path) -> None:
             os.unlink(temporary)
 
 
+def sample_stdev(values: list[float]) -> float:
+    """Return ddof=1 for repeated seeds and a neutral value for one seed."""
+    return float(statistics.stdev(values)) if len(values) > 1 else 0.0
+
+
+def valid_seed_receipt(receipt: dict, expected: dict, require_fixed: bool) -> bool:
+    """Accept only a complete seed receipt with the exact frozen identity."""
+    keys = (
+        "checkpoint_sha256", "config_sha256", "manifest_sha256",
+        "evaluator_sha256", "seed",
+        "worlds", "steps", "ddim_eta", "scene_count", "agent_occurrence_count",
+    )
+    if receipt.get("schema") != "ebjd-evaluation-seed-receipt-v1" or \
+            receipt.get("status") != "COMPLETE":
+        return False
+    if any(receipt.get(key) != expected[key] for key in keys):
+        return False
+    if not isinstance(receipt.get("raw_record"), dict):
+        return False
+    fixed = receipt.get("fixed_record")
+    return (isinstance(fixed, dict) and
+            fixed.get("derived_from_same_forward_as_raw") is True) \
+        if require_fixed else fixed is None
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Evaluate independent EBJD")
     parser.add_argument("--config", required=True)
@@ -52,6 +78,13 @@ def main() -> None:
     parser.add_argument("--ablation", default="none")
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--output", required=True)
+    parser.add_argument(
+        "--inference-seeds", nargs="+", type=int,
+        help="optional exact seed subset; defaults to evaluation.inference_seeds")
+    parser.add_argument(
+        "--seed-receipt-dir",
+        help=("optional directory for atomic per-seed receipts; exact matching "
+              "complete receipts are reused without another forward"))
     parser.add_argument(
         "--fixed-anchor-output",
         help=("optional companion summary computed from the same raw forward by "
@@ -80,6 +113,10 @@ def main() -> None:
     if not path:
         raise ValueError(f"paths.{args.split}_manifest is required")
     device = torch.device(args.device)
+    config_sha256 = sha256(args.config)
+    manifest_sha256 = sha256(path)
+    evaluator_sha256 = sha256(__file__)
+    manifest_payload = json.loads(Path(path).read_text())
     model = build_model(config, args.ablation).to(device).float()
     checkpoint_sha256_before = sha256(args.checkpoint)
     payload = torch.load(args.checkpoint, map_location=device, weights_only=False)
@@ -94,12 +131,43 @@ def main() -> None:
     model.eval()
     evaluation = config.get("evaluation", {})
     worlds, steps = int(evaluation.get("worlds", 20)), int(evaluation.get("steps", 20))
+    inference_seeds = (
+        list(args.inference_seeds) if args.inference_seeds is not None
+        else list(evaluation.get("inference_seeds", [2035, 2036, 2037, 2038, 2039])))
+    if len(inference_seeds) != len(set(inference_seeds)):
+        raise ValueError("inference seeds must be unique")
+    receipt_root = Path(args.seed_receipt_dir).resolve() \
+        if args.seed_receipt_dir else None
+    if receipt_root is not None:
+        receipt_root.mkdir(parents=True, exist_ok=True)
     results = []
     fixed_results = []
     bank_index = []
     with torch.no_grad(), torch.autocast(
             device_type=device.type, enabled=False):
-        for seed in evaluation.get("inference_seeds", [2035, 2036, 2037, 2038, 2039]):
+        for seed in inference_seeds:
+            expected_receipt = {
+                "checkpoint_sha256": checkpoint_sha256_before,
+                "config_sha256": config_sha256,
+                "manifest_sha256": manifest_sha256,
+                "evaluator_sha256": evaluator_sha256,
+                "seed": int(seed), "worlds": worlds, "steps": steps,
+                "ddim_eta": float(config["diffusion"]["ddim_eta"]),
+                "scene_count": int(manifest_payload["statistics"]["scenes"]),
+                "agent_occurrence_count": int(
+                    manifest_payload["statistics"]["agents"]),
+            }
+            receipt_path = None if receipt_root is None else \
+                receipt_root / f"seed_{int(seed)}.json"
+            if receipt_path is not None and receipt_path.exists():
+                receipt = json.loads(receipt_path.read_text())
+                if valid_seed_receipt(
+                        receipt, expected_receipt, bool(args.fixed_anchor_output)):
+                    results.append(receipt["raw_record"])
+                    if args.fixed_anchor_output:
+                        fixed_results.append(receipt["fixed_record"])
+                    continue
+            seed_started = time.perf_counter()
             cache = None
             if "native_goal_conditioning" in config:
                 cache = config["native_goal_conditioning"][
@@ -249,7 +317,7 @@ def main() -> None:
                     "endpoint_centered_RMS": None,
                 })
             conditioner = model.denoiser.native_goal_conditioner
-            results.append({
+            raw_record = {
                 "seed": int(seed), "metrics": means, "k_curves": k_curves,
                 "strata": strata, "endpoint_diagnostics": endpoint,
                 "conditioner": None if conditioner is None else {
@@ -259,18 +327,21 @@ def main() -> None:
                     "last_condition_norm_ratio": float(
                         conditioner.last_condition_norm_ratio or 0.0),
                 },
-            })
+            }
+            results.append(raw_record)
+            fixed_record = None
             if fixed_accumulator is not None:
                 fixed_means = fixed_accumulator.as_dict()
                 if fixed_means["scene_count"] != len(dataset) or \
                         fixed_means["agent_count"] != expected_agents:
                     raise RuntimeError(
                         "fixed-anchor companion skipped held-out scenes or agents")
-                fixed_results.append({
+                fixed_record = {
                     "seed": int(seed), "metrics": fixed_means,
                     "derived_from_same_forward_as_raw": True,
                     "native_goal_oracle_FDE": endpoint["native_oracle_fde"],
-                })
+                }
+                fixed_results.append(fixed_record)
             if args.prediction_bank_root:
                 root = Path(args.prediction_bank_root).resolve()
                 root.mkdir(parents=True, exist_ok=True)
@@ -292,6 +363,16 @@ def main() -> None:
                     "seed": int(seed), "path": str(bank_path),
                     "sha256": sha256(bank_path), "scenes": len(prediction_rows),
                 })
+            if receipt_path is not None:
+                receipt = {
+                    "schema": "ebjd-evaluation-seed-receipt-v1",
+                    "status": "COMPLETE", **expected_receipt,
+                    "checkpoint_epoch": int(payload["epoch"]),
+                    "model_dtype": "fp32", "autocast_enabled": False,
+                    "inference_elapsed_seconds": time.perf_counter() - seed_started,
+                    "raw_record": raw_record, "fixed_record": fixed_record,
+                }
+                atomic_json(receipt, receipt_path)
     metric_names = (
         "minADE", "minFDE", "JADE", "JFDE",
         "scene_weighted_minADE", "scene_weighted_minFDE",
@@ -300,9 +381,9 @@ def main() -> None:
         name: float(np.mean([x["metrics"][name] for x in results]))
         for name in metric_names}
     sample_standard_deviation = {
-        name: float(statistics.stdev([x["metrics"][name] for x in results]))
+        name: sample_stdev(
+            [x["metrics"][name] for x in results])
         for name in metric_names}
-    manifest_payload = dataset.manifest
     checkpoint_sha256_after = sha256(args.checkpoint)
     if checkpoint_sha256_after != checkpoint_sha256_before:
         raise RuntimeError("checkpoint bytes changed during formal evaluation")
@@ -312,7 +393,7 @@ def main() -> None:
         "checkpoint_unchanged_during_evaluation": True,
         "checkpoint_epoch": int(payload["epoch"]),
         "manifest": str(Path(path).resolve()),
-        "manifest_sha256": sha256(path),
+        "manifest_sha256": manifest_sha256,
         "scene_count": int(manifest_payload["statistics"]["scenes"]),
         "agent_occurrence_count": int(manifest_payload["statistics"]["agents"]),
         "validation_test_identity": evaluation["validation_test_identity"],
@@ -326,6 +407,8 @@ def main() -> None:
         "geometry_mapping_intervention": args.geometry_mapping,
         "endpoint_projection_radius": args.endpoint_projection_radius,
         "worlds": worlds, "steps": steps, "per_seed": results,
+        "requested_inference_seeds": inference_seeds,
+        "seed_receipt_dir": None if receipt_root is None else str(receipt_root),
         "prediction_bank_index_local_only": bank_index,
         "mean": means, "sample_standard_deviation": sample_standard_deviation,
     }
@@ -336,8 +419,8 @@ def main() -> None:
             name: float(np.mean([x["metrics"][name] for x in fixed_results]))
             for name in metric_names}
         fixed_standard_deviation = {
-            name: float(statistics.stdev(
-                [x["metrics"][name] for x in fixed_results]))
+            name: sample_stdev(
+                [x["metrics"][name] for x in fixed_results])
             for name in metric_names}
         fixed_summary = {
             **summary,
