@@ -135,6 +135,17 @@ class FactorizedFutureBlock(nn.Module):
         gamma, beta = self.modulation(condition).chunk(2, dim=-1)
         return (1 + gamma) * x + beta
 
+    @staticmethod
+    def _self_only_bias(bias: torch.Tensor) -> torch.Tensor:
+        """Retain only each valid agent's self-attention connection."""
+        agents = bias.shape[-1]
+        if bias.shape[-2] != agents:
+            raise ValueError("social attention bias must be square")
+        diagonal = torch.eye(
+            agents, dtype=torch.bool, device=bias.device).view(
+                *((1,) * (bias.ndim - 2)), agents, agents)
+        return bias.masked_fill(~diagonal, -torch.inf)
+
     def forward(
         self,
         hidden: torch.Tensor,
@@ -144,6 +155,7 @@ class FactorizedFutureBlock(nn.Module):
         bias: torch.Tensor,
         valid: torch.Tensor,
         social_enabled: bool = True,
+        social_self_only: bool = False,
         memory_mode: str = "legacy_joint",
         motion_memory: torch.Tensor | None = None,
         map_memory: torch.Tensor | None = None,
@@ -163,6 +175,8 @@ class FactorizedFutureBlock(nn.Module):
             query = self._modulate(self.norms[1](hidden), condition)
             social = query.permute(0, 1, 3, 2, 4).reshape(batch * worlds * times, agents, dim)
             flat_bias = bias.reshape(batch * worlds * times, 4, agents, agents)
+            if social_self_only:
+                flat_bias = self._self_only_bias(flat_bias)
             flat_valid = valid[:, None, None, :].expand(batch, worlds, times, agents)
             social = self.social(
                 social, flat_bias, flat_valid.reshape(batch * worlds * times, agents))
@@ -274,6 +288,9 @@ class JointEndpointBridgeDenoiser(nn.Module):
         super().__init__()
         self.representation = representation
         self.future_social = bool(future_social)
+        # Inference-only mechanism intervention. This is deliberately runtime
+        # state rather than a parameter/buffer so checkpoint identity is unchanged.
+        self.future_social_self_only = False
         self.clean_geometry = bool(clean_geometry)
         self.activation_checkpointing = bool(activation_checkpointing)
         self.memory_mode = str(memory_mode)
@@ -468,6 +485,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
                        motion, map_value, group_gate: module(
                            h, memory, social, time_value, bias_value, valid_value,
                            social_enabled=self.future_social,
+                           social_self_only=self.future_social_self_only,
                            memory_mode=self.memory_mode,
                            motion_memory=motion, map_memory=map_value,
                            memory_gate=group_gate),
@@ -484,6 +502,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
                     observed, context.valid, social_enabled=self.future_social,
+                    social_self_only=self.future_social_self_only,
                     memory_mode=self.memory_mode,
                     motion_memory=context.motion_memory,
                     map_memory=context.map_memory,
@@ -521,6 +540,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
                     combined, context.valid, social_enabled=self.future_social,
+                    social_self_only=self.future_social_self_only,
                     memory_mode=self.memory_mode,
                     motion_memory=context.motion_memory,
                     map_memory=context.map_memory,

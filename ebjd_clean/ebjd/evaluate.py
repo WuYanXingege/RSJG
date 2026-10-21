@@ -52,12 +52,16 @@ def sample_stdev(values: list[float]) -> float:
 
 def valid_seed_receipt(receipt: dict, expected: dict, require_fixed: bool) -> bool:
     """Accept only a complete seed receipt with the exact frozen identity."""
-    keys = (
+    keys = [
         "checkpoint_sha256", "config_sha256", "manifest_sha256",
         "evaluator_sha256", "seed",
         "worlds", "steps", "ddim_eta", "scene_count", "agent_occurrence_count",
-    )
-    if receipt.get("schema") != "ebjd-evaluation-seed-receipt-v1" or \
+    ]
+    expected_schema = "ebjd-evaluation-seed-receipt-v1"
+    if "future_social_mode" in expected:
+        keys.append("future_social_mode")
+        expected_schema = "ebjd-evaluation-seed-receipt-v2"
+    if receipt.get("schema") != expected_schema or \
             receipt.get("status") != "COMPLETE":
         return False
     if any(receipt.get(key) != expected[key] for key in keys):
@@ -104,6 +108,10 @@ def main() -> None:
     parser.add_argument(
         "--endpoint-projection-radius", type=float,
         help="read-only L2 endpoint correction radius around assigned anchors")
+    parser.add_argument(
+        "--future-social-mode", choices=("full", "self_only"), default="full",
+        help=("inference-only future Social Attention connectivity; self_only "
+              "keeps the complete sublayer but masks all cross-agent keys"))
     args = parser.parse_args()
     if args.fixed_anchor_output and args.endpoint_projection_radius is not None:
         raise ValueError(
@@ -121,6 +129,10 @@ def main() -> None:
     checkpoint_sha256_before = sha256(args.checkpoint)
     payload = torch.load(args.checkpoint, map_location=device, weights_only=False)
     model.load_state_dict(payload["model"])
+    if args.future_social_mode == "self_only":
+        if not model.denoiser.future_social:
+            raise ValueError("self_only requires an enabled future Social Attention sublayer")
+        model.denoiser.future_social_self_only = True
     if args.disable_native_goal_conditioner:
         conditioner = model.denoiser.native_goal_conditioner
         if conditioner is None:
@@ -151,6 +163,7 @@ def main() -> None:
                 "config_sha256": config_sha256,
                 "manifest_sha256": manifest_sha256,
                 "evaluator_sha256": evaluator_sha256,
+                "future_social_mode": args.future_social_mode,
                 "seed": int(seed), "worlds": worlds, "steps": steps,
                 "ddim_eta": float(config["diffusion"]["ddim_eta"]),
                 "scene_count": int(manifest_payload["statistics"]["scenes"]),
@@ -365,7 +378,7 @@ def main() -> None:
                 })
             if receipt_path is not None:
                 receipt = {
-                    "schema": "ebjd-evaluation-seed-receipt-v1",
+                    "schema": "ebjd-evaluation-seed-receipt-v2",
                     "status": "COMPLETE", **expected_receipt,
                     "checkpoint_epoch": int(payload["epoch"]),
                     "model_dtype": "fp32", "autocast_enabled": False,
@@ -390,6 +403,8 @@ def main() -> None:
     summary = {
         "checkpoint": str(Path(args.checkpoint).resolve()), "split": args.split,
         "checkpoint_sha256": checkpoint_sha256_before,
+        "config_sha256": config_sha256,
+        "future_social_mode": args.future_social_mode,
         "checkpoint_unchanged_during_evaluation": True,
         "checkpoint_epoch": int(payload["epoch"]),
         "manifest": str(Path(path).resolve()),
