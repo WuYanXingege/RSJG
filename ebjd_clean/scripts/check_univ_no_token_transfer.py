@@ -67,6 +67,7 @@ def main() -> None:
     control_config = load_config(args.control_config)
     candidate_config = load_config(args.candidate_config)
     device = torch.device(args.device)
+    torch.cuda.set_device(device)
 
     control_batches = make_batches(control_config, payload)
     candidate_batches = make_batches(candidate_config, payload)
@@ -85,7 +86,7 @@ def main() -> None:
             and right.native_goals.shape[-1] == 2
             and bool(torch.isfinite(right.native_goals).all()))
 
-    torch.cuda.reset_peak_memory_stats(device)
+    torch.cuda.reset_peak_memory_stats()
     control_gen = torch.Generator().manual_seed(0)
     control_model = build_model(control_config, "rollout_mechanism_off").to(device)
     control = EBJDTrainer(
@@ -186,8 +187,8 @@ def main() -> None:
         "goal_max_abs_error": goal_error,
         "native_anchor_set_max_error": anchor_set_error,
         "formal_update_records": records,
-        "peak_cuda_allocated_bytes": int(torch.cuda.max_memory_allocated(device)),
-        "peak_cuda_reserved_bytes": int(torch.cuda.max_memory_reserved(device)),
+        "peak_cuda_allocated_bytes": int(torch.cuda.max_memory_allocated()),
+        "peak_cuda_reserved_bytes": int(torch.cuda.max_memory_reserved()),
         "wall_seconds": time.perf_counter() - started,
     }
     atomic_json(Path(args.output), receipt)
