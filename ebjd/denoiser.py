@@ -137,6 +137,7 @@ class GeometryConditionedJointDenoiser(nn.Module):
         super().__init__()
         self.representation = representation
         self.activation_checkpointing = bool(activation_checkpointing)
+        self.checkpoint_preserve_rng_state = True
         self.state_stem = nn.Sequential(nn.Linear(2, dim), nn.LayerNorm(dim))
         self.time_mlp = nn.Sequential(nn.Linear(dim, 256), nn.SiLU(), nn.Linear(256, dim))
         self.token_type = nn.Parameter(torch.zeros(2, dim))
@@ -240,7 +241,8 @@ class GeometryConditionedJointDenoiser(nn.Module):
                         lambda value, module=block: module(
                             value, context.memory, context.social_h, time_embedding,
                             observed, context.valid),
-                        hidden, use_reentrant=False)
+                        hidden, use_reentrant=False,
+                        preserve_rng_state=self.checkpoint_preserve_rng_state)
             else:
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
@@ -271,7 +273,8 @@ class GeometryConditionedJointDenoiser(nn.Module):
                         lambda value, module=block: module(
                             value, context.memory, context.social_h, time_embedding,
                             combined, context.valid),
-                        hidden, use_reentrant=False)
+                        hidden, use_reentrant=False,
+                        preserve_rng_state=self.checkpoint_preserve_rng_state)
             else:
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,

@@ -1,0 +1,41 @@
+{
+  "schema": "ebjd-paper-training-performance-decision-v1",
+  "date": "2026-10-22",
+  "decision": "NO_DEFAULT_CHANGE_ACCEPTED",
+  "formal_checkpoint_sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+  "formal_window": {
+    "dataset": "hotel",
+    "epoch_schedule": 46,
+    "measured_optimizer_updates": 16,
+    "rollout_updates": 4,
+    "warmup_updates_excluded": 1,
+    "mixed_speedup": 1.0097558185413085,
+    "off_speedup": 1.158963226213888,
+    "on_speedup": 0.9930370506669902,
+    "end_to_end_speedup": 1.0076314763411638,
+    "baseline_peak_allocated_bytes": 5085664768,
+    "candidate_peak_allocated_bytes": 8254147584,
+    "correctness_pass": false,
+    "model_max_abs_delta": 0.0006876185070723295,
+    "optimizer_max_abs_delta": 0.0019962862133979797,
+    "gpu_wall_seconds": 438.7323208050001,
+    "artifact": "REJECTED_UNCHECKPOINTED_MAP_BENCHMARK.json"
+  },
+  "accepted_default": {
+    "execution_strategy": "compact_grouped_v1",
+    "activation_checkpointing": true,
+    "training_runtime_optimizations": false,
+    "speedup": 1.0,
+    "reason": "No tested candidate passed both the fixed multi-update numerical gate and the mixed-path performance target."
+  },
+  "experimental_runtime_candidate": {
+    "default_enabled": false,
+    "execution_strategy": "paper_training_v1",
+    "map_activation_checkpointing_unchanged": true,
+    "fixed_four_update_gate_correctness_pass": true,
+    "fixed_four_update_gate_off_speedup": 1.147,
+    "fixed_four_update_gate_on_speedup": 0.995,
+    "fixed_four_update_gate_mixed_speedup": 1.011,
+    "status": "INSUFFICIENT_MIXED_GAIN"
+  }
+}

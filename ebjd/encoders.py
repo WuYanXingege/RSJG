@@ -89,6 +89,7 @@ class MotionSceneContextEncoder(nn.Module):
             raise ValueError("map_agent_chunk must be positive")
         self.map_agent_chunk = int(map_agent_chunk)
         self.activation_checkpointing = True
+        self.checkpoint_preserve_rng_state = True
         self.map_unet = TrainableMapUNet(map_input_channels)
         self.history_stem = nn.Sequential(
             nn.Linear(6, dim), nn.LayerNorm(dim), nn.SiLU())
@@ -169,7 +170,8 @@ class MotionSceneContextEncoder(nn.Module):
             part = flat_map[offset:offset + self.map_agent_chunk]
             if self.activation_checkpointing and self.training and torch.is_grad_enabled():
                 f32_part, logits_part = checkpoint(
-                    self.map_unet, part, use_reentrant=False)
+                    self.map_unet, part, use_reentrant=False,
+                    preserve_rng_state=self.checkpoint_preserve_rng_state)
             else:
                 f32_part, logits_part = self.map_unet(part)
             features.append(f32_part)

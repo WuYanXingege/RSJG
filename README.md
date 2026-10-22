@@ -104,3 +104,14 @@ native-goal/anchor variants and cannot be placed in the unified FULL table.
 ZARA1/ZARA2 are also unprepared here. Missing folds are reported, not guessed.
 
 See `docs/FINALIZATION_REPORT.md` for the validation receipt and limitations.
+
+## Training-performance status
+
+The 2026-10-22 real-data optimizer-update audit did not accept a new default:
+the best tested mixed-path candidate reached only 1.010x and failed the fixed
+multi-update numerical tolerance. `configs/training.yaml` therefore remains on
+the certified `compact_grouped_v1` path. The paired benchmark entry point and
+full negative result are documented in
+`docs/performance/20261022_training_speed_v1/REPORT_ZH.md`; an experimental,
+default-off runtime synchronization candidate remains available for further
+reproducibility work but is not a paper-training speed claim.

@@ -75,6 +75,10 @@ class TrainerOptions:
     # Execution-only threshold measured in padded physical agent slots.  Zero
     # preserves step checkpointing for every differentiable DDIM rollout.
     rollout_uncheckpointed_max_agent_slots: int = 0
+    # Execution-only optimizations.  They do not alter the model, objective,
+    # random draws, or optimizer update.  The disabled default keeps archived
+    # configurations on their original execution path.
+    training_runtime_optimizations: bool = False
 
 
 @dataclass(frozen=True)
@@ -274,7 +278,10 @@ class EBJDTrainer:
         draws: BatchRandomDraws | None = None,
         agent_weight: float = 1.0,
         scene_weight: float = 1.0,
-    ) -> tuple[list[torch.Tensor], list[torch.Tensor], list[torch.Tensor], dict[str, float]]:
+    ) -> tuple[
+        list[torch.Tensor], list[torch.Tensor] | None,
+        list[torch.Tensor] | None, dict[str, float | torch.Tensor],
+    ]:
         """Build one physical graph and return detached gradients/scalars.
 
         Whole-batch legacy execution uses unit weights because its objective
@@ -376,7 +383,9 @@ class EBJDTrainer:
                     free, goals, _ = differentiable_sample(
                         self.model, context, initial, self.options.rollout_steps,
                         checkpoint_steps=checkpoint_steps,
-                        checkpoint_blocks=self.options.rollout_block_checkpointing)
+                        checkpoint_blocks=self.options.rollout_block_checkpointing,
+                        checkpoint_preserve_rng_state=(
+                            not self.options.training_runtime_optimizations))
                 loss_roll, values = rollout_loss(
                     free, goals, batch.future, batch.valid, self._temperature(epoch))
             marginal_a, marginal_f, _, _ = values
@@ -392,17 +401,25 @@ class EBJDTrainer:
                     float(scene_weight) * marginal_f, self.parameters,
                     retain_graph=True)
         else:
-            grad_a = zeros_for(self.parameters)
-            grad_f = zeros_for(self.parameters)
+            if self.options.training_runtime_optimizations:
+                # These buffers are only consumed by rollout constraints.
+                # Avoid allocating two model-sized zero lists on OFF updates.
+                grad_a = None
+                grad_f = None
+            else:
+                grad_a = zeros_for(self.parameters)
+                grad_f = zeros_for(self.parameters)
         with record_function("ebjd.grad_total"):
             total_gradient = gradients(total, self.parameters)
+        defer = self.options.training_runtime_optimizations
+        scalar = (lambda value: value.detach()) if defer else (lambda value: float(value.detach()))
         logs = {
-            "loss": float(total.detach()), "diffusion": float(loss_diff.detach()),
-            "geometry": float(loss_geo.detach()), "map": float(loss_map.detach()),
-            "rollout": float(loss_roll.detach()),
-            "soft_marginal_ade": float(marginal_a.detach()),
-            "soft_marginal_fde": float(marginal_f.detach()),
-            "minimum_time": float(time.min()), "maximum_time": float(time.max()),
+            "loss": scalar(total), "diffusion": scalar(loss_diff),
+            "geometry": scalar(loss_geo), "map": scalar(loss_map),
+            "rollout": scalar(loss_roll),
+            "soft_marginal_ade": scalar(marginal_a),
+            "soft_marginal_fde": scalar(marginal_f),
+            "minimum_time": scalar(time.min()), "maximum_time": scalar(time.max()),
             "rollout_step_checkpointing": float(
                 do_rollout and checkpoint_steps),
         }
@@ -416,7 +433,10 @@ class EBJDTrainer:
 
     def _scene_chunked_batch_gradients(
         self, logical_batch: SceneBatch, epoch: int, do_rollout: bool,
-    ) -> tuple[list[torch.Tensor], list[torch.Tensor], list[torch.Tensor], dict[str, float]]:
+    ) -> tuple[
+        list[torch.Tensor], list[torch.Tensor] | None,
+        list[torch.Tensor] | None, dict[str, float | torch.Tensor],
+    ]:
         """Evaluate one logical batch as bounded contiguous physical groups."""
         if self.options.scene_forward_chunk != 1:
             raise ValueError(
@@ -435,15 +455,17 @@ class EBJDTrainer:
                 raise ValueError("physical grouping requires scene_compaction=true")
             groups = [(index, index + 1) for index in range(batch_size)]
         total_grad = zeros_for(self.parameters)
-        grad_a = zeros_for(self.parameters)
-        grad_f = zeros_for(self.parameters)
+        constraint_buffers = (
+            do_rollout or not self.options.training_runtime_optimizations)
+        grad_a = zeros_for(self.parameters) if constraint_buffers else None
+        grad_f = zeros_for(self.parameters) if constraint_buffers else None
         aggregate = {
             "loss": 0.0, "diffusion": 0.0, "geometry": 0.0, "map": 0.0,
             "rollout": 0.0, "soft_marginal_ade": 0.0,
             "soft_marginal_fde": 0.0,
         }
-        minimum_time = float("inf")
-        maximum_time = -float("inf")
+        minimum_time = None
+        maximum_time = None
         maximum_group_scenes = 0
         maximum_group_slots = 0
         checkpointed_rollout_groups = 0
@@ -466,8 +488,11 @@ class EBJDTrainer:
                 agent_weight=agent_weight, scene_weight=scene_weight)
             with record_function("ebjd.gradient_accumulation"):
                 self._add_gradients_(total_grad, gradients_total)
-                self._add_gradients_(grad_a, gradients_a)
-                self._add_gradients_(grad_f, gradients_f)
+                if constraint_buffers:
+                    assert grad_a is not None and gradients_a is not None
+                    assert grad_f is not None and gradients_f is not None
+                    self._add_gradients_(grad_a, gradients_a)
+                    self._add_gradients_(grad_f, gradients_f)
             aggregate["loss"] += logs["loss"]
             aggregate["diffusion"] += agent_weight * logs["diffusion"]
             aggregate["map"] += agent_weight * logs["map"]
@@ -476,13 +501,26 @@ class EBJDTrainer:
                 "soft_marginal_fde",
             ):
                 aggregate[name] += scene_weight * logs[name]
-            minimum_time = min(minimum_time, logs["minimum_time"])
-            maximum_time = max(maximum_time, logs["maximum_time"])
+            if self.options.training_runtime_optimizations:
+                minimum_time = (
+                    logs["minimum_time"] if minimum_time is None else
+                    torch.minimum(minimum_time, logs["minimum_time"]))
+                maximum_time = (
+                    logs["maximum_time"] if maximum_time is None else
+                    torch.maximum(maximum_time, logs["maximum_time"]))
+            else:
+                minimum_time = min(
+                    float("inf") if minimum_time is None else minimum_time,
+                    logs["minimum_time"])
+                maximum_time = max(
+                    -float("inf") if maximum_time is None else maximum_time,
+                    logs["maximum_time"])
             checkpointed_rollout_groups += int(
                 logs["rollout_step_checkpointing"])
             del (
                 physical_batch, physical_draws, gradients_total,
                 gradients_a, gradients_f, logs)
+        assert minimum_time is not None and maximum_time is not None
         aggregate["minimum_time"] = minimum_time
         aggregate["maximum_time"] = maximum_time
         aggregate["physical_group_count"] = float(len(groups))
@@ -500,9 +538,11 @@ class EBJDTrainer:
             self.options.use_rollout_loss and epoch >= self.options.rollout_start_epoch
             and self.update_index % self.options.rollout_every == 0)
         total_grad = zeros_for(self.parameters)
-        grad_a = zeros_for(self.parameters)
-        grad_f = zeros_for(self.parameters)
-        aggregate: dict[str, float] = {}
+        constraint_buffers = (
+            do_rollout or not self.options.training_runtime_optimizations)
+        grad_a = zeros_for(self.parameters) if constraint_buffers else None
+        grad_f = zeros_for(self.parameters) if constraint_buffers else None
+        aggregate: dict[str, float | torch.Tensor] = {}
         scale = 1 / len(microbatches)
         for batch in microbatches:
             if self.options.scene_forward_chunk:
@@ -514,29 +554,47 @@ class EBJDTrainer:
                 gradients_total, gradients_a, gradients_f, logs = self._batch_gradients(
                     physical_batch, epoch, do_rollout)
             total_grad = [a + scale * b for a, b in zip(total_grad, gradients_total, strict=True)]
-            grad_a = [a + scale * b for a, b in zip(grad_a, gradients_a, strict=True)]
-            grad_f = [a + scale * b for a, b in zip(grad_f, gradients_f, strict=True)]
+            if constraint_buffers:
+                assert grad_a is not None and gradients_a is not None
+                assert grad_f is not None and gradients_f is not None
+                grad_a = [a + scale * b for a, b in zip(grad_a, gradients_a, strict=True)]
+                grad_f = [a + scale * b for a, b in zip(grad_f, gradients_f, strict=True)]
             for name, value in logs.items():
                 aggregate[name] = aggregate.get(name, 0) + scale * value
             del gradients_total, gradients_a, gradients_f, logs
         with record_function("ebjd.adamw_proposal"):
             candidate, pending = self.optimizer.propose(
                 clip_global_norm(total_grad, self.options.gradient_clip_norm))
-        candidate_dot_a = float(list_dot(grad_a, candidate)) if do_rollout else 0.0
-        candidate_dot_f = float(list_dot(grad_f, candidate)) if do_rollout else 0.0
-        stats = ProjectionStats(0, float(list_norm(candidate)), float(list_norm(candidate)), 0, False)
+        if do_rollout:
+            assert grad_a is not None and grad_f is not None
+        deferred = self.options.training_runtime_optimizations
+        candidate_dot_a = list_dot(grad_a, candidate) if do_rollout else 0.0
+        candidate_dot_f = list_dot(grad_f, candidate) if do_rollout else 0.0
+        if do_rollout or not deferred:
+            candidate_dot_a = float(candidate_dot_a) if do_rollout else 0.0
+            candidate_dot_f = float(candidate_dot_f) if do_rollout else 0.0
+        candidate_norm = list_norm(candidate)
+        stats = ProjectionStats(
+            0,
+            candidate_norm if deferred else float(candidate_norm),
+            candidate_norm if deferred else float(candidate_norm),
+            0, False)
         decrement = candidate
         if do_rollout and self.options.use_actual_step_constraint:
             with record_function("ebjd.fp64_qp_projection"):
                 decrement, stats = project_two_halfspaces(candidate, grad_a, grad_f)
         applied_dot_a = float(list_dot(grad_a, decrement)) if do_rollout else 0.0
         applied_dot_f = float(list_dot(grad_f, decrement)) if do_rollout else 0.0
-        parameter_norm_before = float(torch.sqrt(sum(
-            parameter.detach().double().square().sum() for parameter in self.parameters)))
+        parameter_norm_before = torch.sqrt(sum(
+            parameter.detach().double().square().sum() for parameter in self.parameters))
+        if not deferred:
+            parameter_norm_before = float(parameter_norm_before)
         with record_function("ebjd.optimizer_apply"):
             self.optimizer.apply(decrement, pending)
-        parameter_norm_after = float(torch.sqrt(sum(
-            parameter.detach().double().square().sum() for parameter in self.parameters)))
+        parameter_norm_after = torch.sqrt(sum(
+            parameter.detach().double().square().sum() for parameter in self.parameters))
+        if not deferred:
+            parameter_norm_after = float(parameter_norm_after)
         self.update_index += 1
         aggregate.update({
             "rollout_update": float(do_rollout),
@@ -559,7 +617,20 @@ class EBJDTrainer:
             "rollout_block_checkpointing": float(
                 self.options.rollout_block_checkpointing),
         })
-        return aggregate
+        if deferred:
+            tensor_names = [
+                name for name, value in aggregate.items()
+                if torch.is_tensor(value)
+            ]
+            if tensor_names:
+                # One synchronization per update replaces repeated item/float
+                # synchronizations in every physical graph.
+                values = torch.stack([
+                    aggregate[name].detach().double().reshape(())
+                    for name in tensor_names
+                ]).cpu().tolist()
+                aggregate.update(dict(zip(tensor_names, values, strict=True)))
+        return {name: float(value) for name, value in aggregate.items()}
 
     @staticmethod
     def _rng_state(loader_generator: torch.Generator | None = None) -> dict:

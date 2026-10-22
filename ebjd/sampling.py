@@ -18,6 +18,7 @@ def differentiable_sample(
     steps: int = 20,
     checkpoint_steps: bool = False,
     checkpoint_blocks: bool | None = None,
+    checkpoint_preserve_rng_state: bool = True,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Return trajectory, literal goal and final latent without detaching steps."""
     if steps <= 0:
@@ -37,7 +38,8 @@ def differentiable_sample(
                 velocity = checkpoint(
                     lambda z, t, policy=block_policy: model.denoiser(
                         z, t, context, checkpoint_blocks=policy)[0],
-                    latent, time, use_reentrant=False)
+                    latent, time, use_reentrant=False,
+                    preserve_rng_state=checkpoint_preserve_rng_state)
         else:
             velocity = model.denoiser(
                 latent, time, context, checkpoint_blocks=checkpoint_blocks)[0]

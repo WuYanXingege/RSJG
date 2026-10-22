@@ -153,6 +153,17 @@ def test_speed_runtime_config_is_semantic_hash_neutral_and_migration_exact():
     else:
         raise AssertionError("an uncertified rollout threshold was accepted")
 
+    paper = copy.deepcopy(optimized)
+    paper["training"].update({
+        "execution_strategy": "paper_training_v1",
+        "rollout_uncheckpointed_max_agent_slots": 0,
+        "training_runtime_optimizations": True,
+    })
+    validate_supported_config(paper)
+    assert semantic_config_hash(paper) == semantic_config_hash(archived)
+    profile = validate_execution_migration_settings(paper)
+    assert profile["training_runtime_optimizations"] is True
+
 
 def test_small_group_rollout_checkpoint_policy_has_dense_fallback():
     assert rollout_step_checkpoint_policy(True, 1, 32) is False
@@ -183,6 +194,24 @@ def test_architecture_identity_and_rollout_off_path_are_preserved():
     assert record["physical_group_count"] == 1
     assert list(model.state_dict()) == state_names
     assert sum(parameter.numel() for parameter in model.parameters()) == 3_612_764
+
+
+def test_deferred_runtime_logs_preserve_off_optimizer_update():
+    torch.manual_seed(91)
+    base = EBJDModel()
+    batch = _fix_identities(make_batch((1, 3), pixels=16))
+    reference = EBJDTrainer(copy.deepcopy(base), _options())
+    optimized = EBJDTrainer(copy.deepcopy(base), _options(
+        training_runtime_optimizations=True))
+
+    torch.manual_seed(1234)
+    expected = reference.train_step([batch], epoch=1)
+    torch.manual_seed(1234)
+    actual = optimized.train_step([batch], epoch=1)
+    for name in expected:
+        assert abs(expected[name] - actual[name]) < 2e-6, name
+    for left, right in zip(reference.parameters, optimized.parameters, strict=True):
+        torch.testing.assert_close(left, right, atol=2e-6, rtol=2e-6)
 
 
 def test_denoiser_checkpoint_policy_is_explicit_per_call(monkeypatch):

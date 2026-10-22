@@ -80,6 +80,7 @@ ALLOWED_KEYS = {
         "physical_group_max_scenes", "physical_group_max_agent_slots",
         "physical_group_max_padding_ratio", "rollout_block_checkpointing",
         "rollout_uncheckpointed_max_agent_slots",
+        "training_runtime_optimizations",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -97,6 +98,7 @@ OPTIONAL_KEYS = {"training": {
     "physical_group_max_scenes", "physical_group_max_agent_slots",
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
     "rollout_uncheckpointed_max_agent_slots",
+    "training_runtime_optimizations",
 }}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
@@ -110,6 +112,7 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "physical_group_max_padding_ratio"),
     ("training", "rollout_block_checkpointing"),
     ("training", "rollout_uncheckpointed_max_agent_slots"),
+    ("training", "training_runtime_optimizations"),
 }
 
 
@@ -265,11 +268,12 @@ def validate_supported_config(config: dict) -> None:
     strategy = training.get("execution_strategy", "legacy_or_oom_safe_v1")
     if strategy not in {
         "legacy_or_oom_safe_v1", "compact_grouped_v1",
-        "small_group_uncheckpoint_v1",
+        "small_group_uncheckpoint_v1", "paper_training_v1",
     }:
         raise ValueError(f"unsupported training.execution_strategy={strategy!r}")
     for key in (
         "scene_compaction", "rollout_block_checkpointing",
+        "training_runtime_optimizations",
     ):
         if key in training and not isinstance(training[key], bool):
             raise ValueError(f"training.{key} must be boolean")
@@ -289,7 +293,9 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(
                 "training.rollout_uncheckpointed_max_agent_slots must be a "
                 "non-negative integer")
-    if strategy in {"compact_grouped_v1", "small_group_uncheckpoint_v1"}:
+    if strategy in {
+        "compact_grouped_v1", "small_group_uncheckpoint_v1", "paper_training_v1",
+    }:
         required_execution = {
             "scene_forward_chunk", "scene_compaction",
             "physical_group_max_scenes", "physical_group_max_agent_slots",
@@ -308,6 +314,13 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(
                 "small_group_uncheckpoint_v1 requires "
                 "rollout_uncheckpointed_max_agent_slots=32")
+    if strategy == "paper_training_v1":
+        if training.get("rollout_uncheckpointed_max_agent_slots") != 0:
+            raise ValueError(
+                "paper_training_v1 requires rollout_uncheckpointed_max_agent_slots=0")
+        if training.get("training_runtime_optimizations") is not True:
+            raise ValueError(
+                "paper_training_v1 requires training_runtime_optimizations=true")
     if config["paths"].get("initialization_role") != "trainable_goal_unet_only":
         raise ValueError("paths.initialization_role must be trainable_goal_unet_only")
     baseline = config["evaluation"].get("matched_gdts_validation")
@@ -364,6 +377,10 @@ def build_model(config: dict, ablation: str = "none") -> EBJDModel:
         config["training"]["activation_checkpointing"])
     model.encoder.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])
+    preserve_checkpoint_rng = not bool(
+        config["training"].get("training_runtime_optimizations", False))
+    model.encoder.checkpoint_preserve_rng_state = preserve_checkpoint_rng
+    model.denoiser.checkpoint_preserve_rng_state = preserve_checkpoint_rng
     source = config["paths"].get("accepted_fold_matched_gdts_unet")
     if source:
         source_path = Path(source)
@@ -446,4 +463,6 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
             training.get("rollout_block_checkpointing", True)),
         rollout_uncheckpointed_max_agent_slots=int(
             training.get("rollout_uncheckpointed_max_agent_slots", 0)),
+        training_runtime_optimizations=bool(
+            training.get("training_runtime_optimizations", False)),
     )

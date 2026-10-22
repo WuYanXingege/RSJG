@@ -46,6 +46,16 @@ CERTIFIED_EXECUTION_MIGRATIONS = {
         "rollout_block_checkpointing": False,
         "rollout_uncheckpointed_max_agent_slots": 32,
     },
+    "paper_training_v1": {
+        "scene_forward_chunk": 1,
+        "scene_compaction": True,
+        "physical_group_max_scenes": 4,
+        "physical_group_max_agent_slots": 96,
+        "physical_group_max_padding_ratio": 1.5,
+        "rollout_block_checkpointing": False,
+        "rollout_uncheckpointed_max_agent_slots": 0,
+        "training_runtime_optimizations": True,
+    },
 }
 
 
@@ -248,6 +258,9 @@ def _identity(config: dict, ablation: str, run_id: str, smoke: bool) -> dict:
             "rollout_uncheckpointed_max_agent_slots": int(
                 config["training"].get(
                     "rollout_uncheckpointed_max_agent_slots", 0)),
+            "training_runtime_optimizations": bool(
+                config["training"].get(
+                    "training_runtime_optimizations", False)),
             "cpu_scene_staging": bool(
                 config["training"].get("scene_forward_chunk", 0)),
             "pytorch_cuda_alloc_conf": os.environ.get(
