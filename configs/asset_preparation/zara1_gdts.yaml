@@ -1,0 +1,64 @@
+schema: ebjd-zara1-gdts-asset-recipe-v1
+fold: zara1
+seed: 3101
+legacy_gdts:
+  root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean
+  commit: 092ed91f1f4117f50aa835ec8e47cd2c9ce74a98
+  role: read_only_asset_preparation_dependency
+  official_recipe_reference: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/train.sh
+source_data_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data
+asset_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets
+pipeline_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/zara1_full_pipeline_v1
+paper_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper
+python: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python
+manifests:
+  train: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/zara1_official/train/train_manifest.json
+  validation: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/zara1_official/validation/validation_manifest.json
+  test: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/zara1_official/test/test_manifest.json
+goal_pretrain:
+  run_name: zara1_goal_pretrain_seed3101_v1
+  epochs: 150
+  batch_size: 64
+  learning_rate: 0.001
+  optimizer: Adam
+  scheduler: ExponentialLR
+  scheduler_gamma: 0.99
+  validate_every: 1
+  start_validation: 1
+  save_every: 10
+  data_augmentation: false
+  shuffle_train_batches: false
+  shuffle_validation_batches: false
+  selection: minimum_validation_goal_BCE_strict_earlier_tie
+gdts_baseline:
+  run_name: zara1_matched_gdts_seed3101_v1
+  epochs: 250
+  batch_size: 64
+  learning_rate: 0.001
+  optimizer: Adam
+  scheduler: ExponentialLR
+  scheduler_gamma: 0.99
+  validate_every: 10
+  start_validation: 1
+  save_every: 10
+  data_augmentation: true
+  shuffle_train_batches: true
+  shuffle_validation_batches: false
+  loss: diffusion_loss_plus_20_goal_BCE_loss
+  selection: minimum_native_validation_ADE_strict_earlier_tie
+  initialization: goal_pretrain_best_model_only_fresh_optimizer_scheduler_rng
+matched_evaluation:
+  split: validation
+  selection_seed: 2035
+  final_seeds: [2035, 2036, 2037, 2038, 2039]
+  worlds: 20
+  ddim_steps: 20
+  output: native_GDTS_candidates_on_exact_synchronized_scene_windows
+ebjd:
+  epochs: 100
+  training_seed: 3101
+  architecture: FULL
+  output: Raw
+  ablation: none
+  execution_strategy: small_group_uncheckpoint_v1
+  rollout_uncheckpointed_max_agent_slots: 32
