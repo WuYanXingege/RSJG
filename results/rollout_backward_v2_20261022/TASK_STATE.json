@@ -1,0 +1,65 @@
+{
+  "gpu_budget_seconds": 1800.0,
+  "gpu_calls": [
+    {
+      "failure": null,
+      "name": "baseline_repeatability_16_updates",
+      "outcome": "PASS",
+      "output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/results/rollout_backward_v2_20261022/BASELINE_REPEATABILITY.json",
+      "started_unix": 1792673567.733238,
+      "wall_seconds": 445.4010696979999
+    },
+    {
+      "failure": "KeyboardInterrupt: ",
+      "name": "single_rollout_update_low_overhead_profile",
+      "outcome": "FAILED",
+      "output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/results/rollout_backward_v2_20261022/ROLLOUT_TIMING.json",
+      "started_unix": 1792674075.8009863,
+      "wall_seconds": 342.18679145600026
+    },
+    {
+      "failure": null,
+      "name": "single_rollout_update_low_overhead_profile",
+      "outcome": "PASS",
+      "output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/results/rollout_backward_v2_20261022/ROLLOUT_TIMING.json",
+      "started_unix": 1792674486.0339763,
+      "wall_seconds": 65.97456950099968
+    },
+    {
+      "failure": null,
+      "name": "candidate_small-group_4_updates",
+      "outcome": "PASS",
+      "output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/results/rollout_backward_v2_20261022/SMALL_GROUP_GATE4.json",
+      "started_unix": 1792674645.6509738,
+      "wall_seconds": 91.01302131300008
+    },
+    {
+      "failure": null,
+      "name": "candidate_small-group_16_updates",
+      "outcome": "PASS",
+      "output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/results/rollout_backward_v2_20261022/SMALL_GROUP_FORMAL16.json",
+      "started_unix": 1792674764.680668,
+      "wall_seconds": 387.0261927490001
+    },
+    {
+      "failure": null,
+      "name": "univ_dense_real_update",
+      "outcome": "PASS",
+      "output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/results/rollout_backward_v2_20261022/UNIV_DENSE_UPDATE.json",
+      "started_unix": 1792675294.3148541,
+      "wall_seconds": 26.631145139000182
+    },
+    {
+      "failure": null,
+      "name": "univ_dense_real_update",
+      "outcome": "PASS",
+      "output": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/results/rollout_backward_v2_20261022/UNIV_DENSE_UPDATE.json",
+      "started_unix": 1792675345.8094997,
+      "wall_seconds": 26.186426762000337
+    }
+  ],
+  "note": "Written before the first GPU call. Every benchmark appends a receipt in a finally block.",
+  "recorded_gpu_wall_seconds": 1384.4192166180005,
+  "schema": "ebjd-rollout-backward-budget-v1",
+  "status": "COMPLETE"
+}

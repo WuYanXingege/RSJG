@@ -1,0 +1,60 @@
+{
+  "schema": "ebjd-rollout-backward-v2-summary",
+  "date": "2026-10-22",
+  "decision": "ACCEPTED_SPEEDUP",
+  "accepted_execution_strategy": "small_group_uncheckpoint_v1",
+  "uncheckpointed_max_physical_agent_slots": 32,
+  "baseline_repeatability": {
+    "pass": true,
+    "atol": 0.00002,
+    "rtol": 0.00002,
+    "model_max_abs_delta": 4.470348358154297e-08,
+    "optimizer_max_abs_delta": 1.5259720385074615e-06,
+    "rng_exact": true
+  },
+  "hotel_formal_16_update": {
+    "updates": 16,
+    "rollout_updates": 4,
+    "baseline_seconds_per_update": {
+      "off": 1.8112427805833704,
+      "on": 42.22633914700009,
+      "mixed": 11.91501687218755,
+      "end_to_end": 12.696035412062486
+    },
+    "optimized_seconds_per_update": {
+      "off": 1.7932096505833215,
+      "on": 27.146795454499966,
+      "mixed": 8.131606101562483,
+      "end_to_end": 8.915829318687742
+    },
+    "speedup": {
+      "off": 1.0100563422654918,
+      "on": 1.5554815380612623,
+      "mixed": 1.4652722627450052,
+      "end_to_end": 1.4239881628791797
+    },
+    "baseline_peak_allocated_bytes": 5085664768,
+    "optimized_peak_allocated_bytes": 10163870208,
+    "baseline_peak_reserved_bytes": 9493807104,
+    "optimized_peak_reserved_bytes": 15357444096,
+    "correctness_pass": true,
+    "model_max_abs_delta": 0.0,
+    "optimizer_max_abs_delta": 0.0,
+    "maximum_constraint_log_abs_delta": 7.92845736979908e-12
+  },
+  "univ_dense_real_update": {
+    "pass": true,
+    "maximum_scene_agents": 16,
+    "maximum_physical_agent_slots": 59,
+    "checkpointed_group_fraction": 1.0,
+    "peak_allocated_bytes": 4087243264,
+    "peak_reserved_bytes": 5951717376,
+    "finite": true
+  },
+  "gpu_budget": {
+    "limit_seconds": 1800.0,
+    "consumed_seconds": 1384.4192166180005,
+    "remaining_seconds": 415.5807833819995,
+    "includes_failed_profiler_call": true
+  }
+}

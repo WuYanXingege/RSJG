@@ -1,0 +1,76 @@
+{
+  "audit_hash_seconds_excluded": 0.7421390239996981,
+  "batch_sha256": "893a4ecb868eb4e3f6ace04989bce5319da6b98e474ba0c23caeb193e5a82d1d",
+  "data_seconds_excluded": 0.6968567270000676,
+  "formal_training_artifact": false,
+  "interpretation": {
+    "ddim_step_checkpoint_active": true,
+    "block_event_scope": "base diffusion denoiser only when rollout_block_checkpointing=false",
+    "denoiser_block_checkpoint_event_present": true,
+    "nested_step_and_block_checkpoint": false,
+    "rollout_block_checkpointing": false
+  },
+  "peak_allocated_bytes": 2377179136,
+  "peak_reserved_bytes": 4693426176,
+  "profiled_wall_seconds_high_overhead_excluded_from_speed_claims": 40.43123619000016,
+  "regions": [
+    {
+      "calls": 9,
+      "cuda_total_ms": 11609.655151367188,
+      "region": "ebjd.grad_total"
+    },
+    {
+      "calls": 9,
+      "cuda_total_ms": 11154.836547851562,
+      "region": "ebjd.grad_marginal_ade"
+    },
+    {
+      "calls": 9,
+      "cuda_total_ms": 11145.044067382812,
+      "region": "ebjd.grad_marginal_fde"
+    },
+    {
+      "calls": 9,
+      "cuda_total_ms": 4882.537170410156,
+      "region": "ebjd.rollout_forward"
+    },
+    {
+      "calls": 180,
+      "cuda_total_ms": 4716.639125823975,
+      "region": "ebjd.ddim_step_checkpoint"
+    },
+    {
+      "calls": 1,
+      "cuda_total_ms": 569.655029296875,
+      "region": "ebjd.fp64_qp_projection"
+    },
+    {
+      "calls": 9,
+      "cuda_total_ms": 288.9737892150879,
+      "region": "ebjd.base_diffusion_and_losses"
+    },
+    {
+      "calls": 54,
+      "cuda_total_ms": 196.21619296073914,
+      "region": "ebjd.denoiser_block_checkpoint"
+    },
+    {
+      "calls": 9,
+      "cuda_total_ms": 144.99545669555664,
+      "region": "ebjd.context_encoder"
+    },
+    {
+      "calls": 1,
+      "cuda_total_ms": 59.61958312988281,
+      "region": "ebjd.adamw_proposal"
+    },
+    {
+      "calls": 1,
+      "cuda_total_ms": 2.6033599376678467,
+      "region": "ebjd.optimizer_apply"
+    }
+  ],
+  "rollout_update": true,
+  "schema": "ebjd-rollout-low-overhead-profile-v1",
+  "source_update_index": 11972
+}

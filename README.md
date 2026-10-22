@@ -107,11 +107,13 @@ See `docs/FINALIZATION_REPORT.md` for the validation receipt and limitations.
 
 ## Training-performance status
 
-The 2026-10-22 real-data optimizer-update audit did not accept a new default:
-the best tested mixed-path candidate reached only 1.010x and failed the fixed
-multi-update numerical tolerance. `configs/training.yaml` therefore remains on
-the certified `compact_grouped_v1` path. The paired benchmark entry point and
-full negative result are documented in
-`docs/performance/20261022_training_speed_v1/REPORT_ZH.md`; an experimental,
-default-off runtime synchronization candidate remains available for further
-reproducibility work but is not a paper-training speed claim.
+The 2026-10-22 rollout-backward audit accepted the bounded
+`small_group_uncheckpoint_v1` execution profile. Physical groups with at most
+32 padded agent slots retain the complete 20-step differentiable DDIM graph
+for the three required VJPs; denser groups keep DDIM-step checkpointing. A
+paired 16-update HOTEL window was value-identical and measured 1.465x mixed
+compute / 1.424x end-to-end speedup. A dense real UNIV update exercised the
+checkpointed fallback. See
+`docs/performance/20261022_rollout_backward_v2/REPORT_ZH.md` for the exact
+scope, memory tradeoff and receipts. No model, objective, optimizer, sampling,
+validation or checkpoint schema changed.

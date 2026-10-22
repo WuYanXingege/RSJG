@@ -19,12 +19,16 @@ training:
   batch_scenes: 4
   gradient_accumulation: 4
   scene_forward_chunk: 1
-  execution_strategy: compact_grouped_v1
+  # Reuse a single differentiable 20-step rollout graph across the three VJPs
+  # only for physical groups whose padded B*N is at most 32.  Dense groups keep
+  # DDIM-step checkpointing, preserving the bounded-memory fallback.
+  execution_strategy: small_group_uncheckpoint_v1
   scene_compaction: true
   physical_group_max_scenes: 4
   physical_group_max_agent_slots: 96
   physical_group_max_padding_ratio: 1.5
   rollout_block_checkpointing: false
+  rollout_uncheckpointed_max_agent_slots: 32
   new_module_lr: 0.0001
   unet_lr: 0.00001
   lr_warmup_epochs: 5
