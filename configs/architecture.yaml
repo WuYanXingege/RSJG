@@ -1,0 +1,64 @@
+# The single authoritative EBJD FULL architecture.
+data:
+  obs_length: 8
+  pred_length: 12
+  dt_seconds: 0.4
+  coordinates: metres
+  complete_horizon_required: true
+  scene_agent_padding: true
+  do_not_truncate_scene_agents: true
+
+map_encoder:
+  semantic_channels: 6
+  history_heatmap_channels: 8
+  crop_width_m: 32.0
+  crop_pixels: 256
+  enc_channels: [14, 32, 32, 64, 64, 64]
+  dec_channels: [64, 64, 64, 32, 32]
+  future_heatmap_channels: 12
+  heatmap_sigma_m: 0.5
+  memory_grid: [8, 8]
+  agent_chunk: 8
+  trainable: true
+
+history_encoder:
+  input_dim: 6
+  hidden_dim: 128
+  social_blocks: 2
+  social_heads: 4
+  social_ff_dim: 512
+  observed_geometry_dim: 10
+  observed_bias_bound: 2.0
+  dropout: 0.0
+
+representation:
+  type: invertible_endpoint_brownian_bridge
+  goal_tokens: 1
+  bridge_tokens: 11
+  goal_scale_m: 1.0
+  bridge_scale_m: 1.0
+  train_fold_rms_scaling: true
+  goal_rms_floor_m: 0.5
+  bridge_rms_floor_m: 0.1
+  literal_endpoint_concatenation: true
+
+denoiser:
+  hidden_dim: 128
+  heads: 4
+  ff_dim: 512
+  coarse_blocks: 3
+  refinement_blocks: 3
+  sublayers: [temporal_attention, social_attention, context_cross_attention, ffn]
+  memory_tokens_per_agent: 72
+  cross_world_attention: false
+  target_parameterization: v
+  geometry_gate: alpha_squared
+  clean_future_detach: false
+
+diffusion:
+  schedule: cosine_vp_alpha_cos_sigma_sin
+  exact_terminal_snr_zero: true
+  training_noise_bins: 100
+  shared_time_within_scene: true
+  sampler: ddim
+  ddim_eta: 0.0

@@ -1,0 +1,70 @@
+# Default training contract extracted from the certified HOTEL FULL run.
+objectives:
+  goal_v_weight: 1.0
+  bridge_v_weight: 1.0
+  coarse_v_weight: 0.25
+  relative_motion_weight: 0.05
+  map_bce_weight: 0.10
+  relative_velocity_factor: 0.5
+  rollout_joint_ade_weight: 1.0
+  rollout_joint_fde_weight: 0.5
+  rollout_marginal_ade_weight: 1.0
+  rollout_marginal_fde_weight: 0.5
+  supervision_edge_radius_m: 6.0
+  supervision_edge_cv_cpa_radius_m: 2.0
+  supervision_edge_cv_horizon_s: 4.8
+
+training:
+  epochs: 100
+  batch_scenes: 4
+  gradient_accumulation: 4
+  scene_forward_chunk: 1
+  execution_strategy: compact_grouped_v1
+  scene_compaction: true
+  physical_group_max_scenes: 4
+  physical_group_max_agent_slots: 96
+  physical_group_max_padding_ratio: 1.5
+  rollout_block_checkpointing: false
+  new_module_lr: 0.0001
+  unet_lr: 0.00001
+  lr_warmup_epochs: 5
+  lr_final_fraction: 0.01
+  optimizer: adamw_actual_step_projection
+  optimizer_betas: [0.9, 0.999]
+  optimizer_eps: 0.00000001
+  weight_decay: 0.0001
+  total_gradient_clip_norm: 5.0
+  exclude_bias_and_layernorm_from_decay: true
+  gradient_constraint_uses_unclipped_marginal_gradients: true
+  rollout_start_epoch: 21
+  rollout_ramp_end_epoch: 40
+  rollout_weight_start: 0.01
+  rollout_weight_end: 0.20
+  rollout_every_optimizer_updates: 4
+  rollout_frequency_loss_compensation: 4.0
+  rollout_worlds: 4
+  rollout_steps: 20
+  rollout_detach_between_steps: false
+  softmin_temperature_start_m: 0.10
+  softmin_temperature_end_m: 0.05
+  protected_losses: [soft_marginal_ade, soft_marginal_fde]
+  activation_checkpointing: true
+  checkpoint_use_reentrant: false
+  mixed_precision: bf16_with_fp32_geometry_loss_optimizer
+  ema: false
+  train_all_modules: true
+
+evaluation:
+  worlds: 20
+  steps: 20
+  selection_seed: 2035
+  inference_seeds: [2035, 2036, 2037, 2038, 2039]
+  minimum_training_seeds: 3
+  metrics: [minADE, minFDE, JADE, JFDE]
+  per_agent_reordering: false
+  final_test_used_for_checkpoint_selection: false
+  validation_test_identity: mirrored_official_package_internal_only
+  marginal_tolerance: 0.0
+
+ablations:
+  available: []

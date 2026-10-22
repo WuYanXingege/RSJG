@@ -1,0 +1,31 @@
+{
+  "schema": "ebjd-paper-test-receipt-v1",
+  "status": "PASS",
+  "date": "2026-10-22",
+  "pytest": {
+    "passed": 29,
+    "failed": 0,
+    "wall_seconds": 6.83
+  },
+  "checkpoint_validation": {
+    "status": "PASS",
+    "wall_seconds": 4.71,
+    "strict_loaded": [
+      "HOTEL epoch45 FULL",
+      "UNIV epoch73 selected FULL",
+      "UNIV Control epoch81 FULL"
+    ]
+  },
+  "covered_contracts": [
+    "workspace-local import",
+    "checkpoint state names shapes values and strict load",
+    "reversible Endpoint-Bridge Decomposition",
+    "FULL forward loss and required gradient paths",
+    "mixed-size padding and finite outputs",
+    "20-world 20-step deterministic DDIM Raw entry",
+    "certified execution grouping and optimizer projection"
+  ],
+  "gpu_wall_seconds": 0.0,
+  "formal_training_started": false,
+  "new_research_evaluation_started": false
+}

@@ -1,0 +1,43 @@
+{
+  "schema": "ebjd-paper-result-registry-v1",
+  "metric_direction": "lower_is_better",
+  "evidence_boundary": "Each five-seed row is five inference repeats of one training checkpoint, not five training seeds.",
+  "formal_full": {
+    "hotel_epoch45": {
+      "source_commit": "3b13adb8df5ea0ce3a094ab6fef8054ae0e3e662",
+      "checkpoint_sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+      "training_seed": 3101,
+      "inference_seeds": [2035, 2036, 2037, 2038, 2039],
+      "mean": {"minADE": 0.13800743340266403, "minFDE": 0.20203683684590143, "JADE": 0.16856602176437888, "JFDE": 0.27631447143018184},
+      "sample_standard_deviation": {"minADE": 0.0012579278138854344, "minFDE": 0.002553467559723525, "JADE": 0.0016051618115381515, "JFDE": 0.0039057124577149094},
+      "original_contract": "FAIL",
+      "reason": "Joint metrics improve over matched GDTS, but minADE and minFDE regress."
+    },
+    "univ_epoch73_selected": {
+      "checkpoint_sha256": "f526506055f346513b7c57994f9935d40e624162d74e110104073312cfc4bbe9",
+      "training_seed": 3101,
+      "inference_seeds": [2035, 2036, 2037, 2038, 2039],
+      "mean": {"minADE": 0.27441633786031566, "minFDE": 0.5165264761814912, "JADE": 0.5323026951650254, "JFDE": 1.134359554793792},
+      "sample_standard_deviation": {"minADE": 0.0007417562790448376, "minFDE": 0.0015828195924204552, "JADE": 0.000711408212382209, "JFDE": 0.002454350517234987},
+      "formal_identity_retained": true
+    }
+  },
+  "full_performance_reference_candidate": {
+    "univ_control_epoch81": {
+      "source_commit": "b338611b35d75d2fcebea9c25aca89cb6a0035be",
+      "checkpoint_sha256": "e9fd76be585fef0d9cf6ab82422e5a5775392030c59283054a5247a6f47eafdd",
+      "training_seed": 3101,
+      "inference_seeds": [2035, 2036, 2037, 2038, 2039],
+      "mean": {"minADE": 0.2699494692259255, "minFDE": 0.5078571632886917, "JADE": 0.5267327048742029, "JFDE": 1.1232160284407162},
+      "sample_standard_deviation": {"minADE": 0.0007798262291939404, "minFDE": 0.0015325131216480693, "JADE": 0.0003079219383508252, "JFDE": 0.0013146792261997864},
+      "warning": "FULL architecture, but epochs 74-81 used the registered rollout_mechanism_off continuation; it does not replace epoch73's formal selection identity."
+    }
+  },
+  "historical_interventions": {
+    "univ_self_only": {"commit": "b848a76b13419e2eb90de137dace98fd70c559df", "classification": "SUPPORT_FOR_FUTURE_CROSS_PERSON_CONNECTIONS_ONLY", "default_model": false},
+    "univ_half": {"commit": "ff0aa9a8b36018ac56ae66b79a4de779c9135697", "classification": "NO_CLEAR_GAIN", "default_model": false},
+    "hotel_half": {"commit": "cf59f0f14efd19bfcfe279e4a99291e54a63b24a", "classification": "NOT_SUPPORTED_AND_CONTRACT_FAIL", "default_model": false},
+    "eth_native_goal": {"commit": "5c9df1d73026be26dd108a179211aa12684392af", "classification": "HISTORICAL_VARIANT_NOT_FULL", "default_model": false},
+    "no_token_fixed_anchor_path_loss": {"commit": "d689e3a13757451c4447cbef48faf64917c7fe17", "classification": "FAILED_HISTORICAL_VARIANT", "default_model": false}
+  }
+}

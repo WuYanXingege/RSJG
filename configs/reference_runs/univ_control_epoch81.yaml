@@ -1,0 +1,19 @@
+role: performance_reference_candidate_not_formal_replacement
+architecture: FULL
+parent_checkpoint:
+  role: original_UNIV_epoch73_selected_formal
+  sha256: f526506055f346513b7c57994f9935d40e624162d74e110104073312cfc4bbe9
+checkpoint:
+  epoch: 81
+  update_index: 20655
+  sha256: e9fd76be585fef0d9cf6ab82422e5a5775392030c59283054a5247a6f47eafdd
+continuation:
+  epochs: [74, 81]
+  optimizer_updates: 2040
+  ablation_identity: rollout_mechanism_off
+  execution_strategy: small_group_uncheckpoint_v1
+  rollout_uncheckpointed_max_agent_slots: 32
+warning: >-
+  This is an original-FULL architecture checkpoint but not the same training
+  history as the HOTEL default contract. It does not replace epoch73's formal
+  selection identity.

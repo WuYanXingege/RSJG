@@ -1,0 +1,38 @@
+{
+  "schema": "ebjd-paper-asset-manifest-v1",
+  "persistent_store": "../RSJG_EBJD_assets",
+  "assets_are_git_ignored": true,
+  "checkpoints": {
+    "hotel_epoch45_full": {
+      "path": "assets/checkpoints/hotel/epoch_045_full.pt",
+      "sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+      "bytes": 43707466
+    },
+    "univ_epoch73_selected_formal": {
+      "path": "assets/checkpoints/univ/epoch_073_selected_formal.pt",
+      "sha256": "f526506055f346513b7c57994f9935d40e624162d74e110104073312cfc4bbe9",
+      "bytes": 43705597
+    },
+    "univ_epoch81_control_full": {
+      "path": "assets/checkpoints/univ/control_epoch_081_full.pt",
+      "sha256": "e9fd76be585fef0d9cf6ab82422e5a5775392030c59283054a5247a6f47eafdd",
+      "bytes": 43719846
+    },
+    "hotel_goal_unet": {
+      "path": "assets/checkpoints/hotel/goal_unet_epoch_096.pt",
+      "sha256": "f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13"
+    },
+    "univ_goal_unet": {
+      "path": "assets/checkpoints/univ/goal_unet_best.pt",
+      "sha256": "9fe5b2a7ae1e765d2706763b342d461c11ac0e736a2b597b6e18d63381652229"
+    }
+  },
+  "manifests": {
+    "hotel_train": "2a5f1909d928e5277d426ba04e3488940e34a5f71fad9da6331e5e673ec1966c",
+    "hotel_validation": "90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d",
+    "hotel_test": "84c95cb431caf7214d1b85e8e7dbfeaf48c9fe301b1cda7f3201c3e8cf199c78",
+    "univ_train": "6f6fca362ec1e591bf9a79c9b1a0204123947a0c7b754992f131432af40dfd5d",
+    "univ_validation": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+    "univ_test": "aabb35de82e936495fcd948a7ba0416d92d4fc93366151b99573a4d7683ee7e0"
+  }
+}
