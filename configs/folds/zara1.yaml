@@ -1,0 +1,24 @@
+seed: 3101
+experiment:
+  fold: zara1
+  source_commit: paper/ebjd-final-v1
+  implementation_base: 01faa633162a2b73794a40184e8d64e4d44964bc
+paths:
+  train_manifest: assets/data/zara1_official/train/train_manifest.json
+  validation_manifest: assets/data/zara1_official/validation/validation_manifest.json
+  test_manifest: assets/data/zara1_official/test/test_manifest.json
+  output_root: outputs/zara1
+  accepted_fold_matched_gdts_unet: null
+  accepted_fold_matched_gdts_unet_sha256: null
+  initialization_role: trainable_goal_unet_only
+  matched_gdts_validation_checkpoint: null
+  matched_gdts_validation_checkpoint_sha256: null
+  matched_gdts_validation_result: null
+  matched_gdts_validation_result_sha256: null
+evaluation:
+  matched_gdts_validation:
+    status: missing_fold_matched_assets
+    minADE: null
+    minFDE: null
+    source: no_local_zara1_goal_unet_or_matched_gdts_validation_result
+    reference_limitation: formal_training_fail_closed_until_fold_matched_assets_are_verified

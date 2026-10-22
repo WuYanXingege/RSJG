@@ -61,5 +61,10 @@ their implementation is intentionally not copied into the paper core.
   uses the mirrored validation manifest SHA256 `46c52540…`.
 - **ETH — NOT READY FOR UNIFIED FULL:** existing EBJD results use historical
   native-goal/anchor/Fixed-anchor variants. No result is promoted.
-- **ZARA1/ZARA2 — NOT PREPARED:** no paper-workspace assets or verified FULL
-  run configuration are asserted.
+- **ZARA1 — DATA READY / TRAINING BLOCKED:** full synchronized train,
+  validation and test manifests are bound in `results/ASSET_MANIFEST.json`.
+  The held-out fold has 705 windows and 2,356 agent occurrences (mean 3.342).
+  No ZARA1-fold goal U-Net or matched-GDTS validation checkpoint/result exists
+  locally, so the fold config deliberately remains fail-closed.
+- **ZARA2 — NOT PREPARED:** no paper-workspace assets or verified FULL run
+  configuration are asserted.

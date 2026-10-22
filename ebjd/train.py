@@ -3,11 +3,13 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import hashlib
 import json
 import os
 import random
 import subprocess
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -114,6 +116,54 @@ def _atomic_json(path: Path, payload: dict) -> None:
     temporary = path.with_suffix(path.suffix + ".tmp")
     temporary.write_text(
         json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    os.replace(temporary, path)
+
+
+EPOCH_METRIC_FIELDS = (
+    "epoch", "train_loss", "minADE", "minFDE", "JADE", "JFDE",
+    "epoch_minutes",
+)
+
+
+def format_epoch_summary(
+    epoch: int, epochs: int, metrics: dict[str, float], epoch_minutes: float,
+) -> str:
+    """Return the single human-readable line emitted after a complete epoch."""
+    return (
+        f"Epoch {epoch:03d}/{epochs:03d} | "
+        f"minADE={metrics['minADE']:.6f} | minFDE={metrics['minFDE']:.6f} | "
+        f"JADE={metrics['JADE']:.6f} | JFDE={metrics['JFDE']:.6f} | "
+        f"time={epoch_minutes:.2f}min"
+    )
+
+
+def append_epoch_metrics(path: Path, row: dict[str, float | int]) -> None:
+    """Atomically append one complete epoch without weakening raw JSONL logs."""
+    unknown = set(row) - set(EPOCH_METRIC_FIELDS)
+    missing = set(EPOCH_METRIC_FIELDS) - set(row)
+    if unknown or missing:
+        raise ValueError(
+            f"epoch metric fields differ: unknown={sorted(unknown)}, "
+            f"missing={sorted(missing)}")
+    previous = path.read_text(encoding="utf-8") if path.exists() else ""
+    if previous:
+        reader = csv.DictReader(previous.splitlines())
+        if tuple(reader.fieldnames or ()) != EPOCH_METRIC_FIELDS:
+            raise ValueError("existing epoch_metrics.csv header is incompatible")
+        epochs = [int(item["epoch"]) for item in reader]
+        if epochs and int(row["epoch"]) <= epochs[-1]:
+            raise ValueError("epoch_metrics.csv requires strictly increasing epochs")
+    temporary = path.with_suffix(path.suffix + ".tmp")
+    with temporary.open("w", encoding="utf-8", newline="") as handle:
+        if previous:
+            handle.write(previous)
+            if not previous.endswith("\n"):
+                handle.write("\n")
+            writer = csv.DictWriter(handle, fieldnames=EPOCH_METRIC_FIELDS)
+        else:
+            writer = csv.DictWriter(handle, fieldnames=EPOCH_METRIC_FIELDS)
+            writer.writeheader()
+        writer.writerow({name: row[name] for name in EPOCH_METRIC_FIELDS})
     os.replace(temporary, path)
 
 
@@ -510,6 +560,11 @@ def main() -> None:
         options.epochs = 1
         options.accumulation = 1
         options.rollout_start_epoch = 999
+    print(
+        f"Training | fold={identity['fold']} | seed={seed} | "
+        f"model=FULL/Raw | epochs={options.epochs} | output={output.resolve()}",
+        flush=True,
+    )
     train_loader = _loader(config, "train", args.smoke, loader_generator)
     validation_loader = _loader(config, "validation", args.smoke, loader_generator)
     fitted_scales = (
@@ -570,8 +625,11 @@ def main() -> None:
     if checkpoint_payload is not None:
         del checkpoint_payload
     if fitted_scales:
-        print(json.dumps({"fitted_goal_scale": fitted_scales[0],
-                          "fitted_bridge_scale": fitted_scales[1]}), flush=True)
+        _atomic_json(output / "FITTED_SCALES.json", {
+            "goal_scale_m": fitted_scales[0],
+            "bridge_scale_m": fitted_scales[1],
+            "source": "training_fold_only",
+        })
     if args.migration_only:
         print(json.dumps({
             "migration_only": True,
@@ -581,7 +639,11 @@ def main() -> None:
         }, sort_keys=True), flush=True)
         return
     log_path = output / "train.jsonl"
+    epoch_metrics_path = output / "epoch_metrics.csv"
     for epoch in range(start_epoch, options.epochs + 1):
+        epoch_started = time.perf_counter()
+        epoch_train_loss = 0.0
+        epoch_update_count = 0
         model.train()
         pending = []
         train_iterator = iter(train_loader)
@@ -602,6 +664,8 @@ def main() -> None:
                 with record_function("ebjd.jsonl_logging"):
                     with log_path.open("a", encoding="utf-8") as handle:
                         handle.write(json.dumps(record, sort_keys=True) + "\n")
+                epoch_train_loss += record["loss"]
+                epoch_update_count += 1
                 pending = []
         if pending:
             record = trainer.train_step(pending, epoch)
@@ -609,6 +673,8 @@ def main() -> None:
             with record_function("ebjd.jsonl_logging"):
                 with log_path.open("a", encoding="utf-8") as handle:
                     handle.write(json.dumps(record, sort_keys=True) + "\n")
+            epoch_train_loss += record["loss"]
+            epoch_update_count += 1
         evaluation = config["evaluation"]
         worlds = 2 if args.smoke else int(evaluation["worlds"])
         steps = 2 if args.smoke else int(evaluation["steps"])
@@ -630,11 +696,18 @@ def main() -> None:
                 {"validation": metrics, "candidate": candidate})
         (output / "SELECTION_STATUS.json").write_text(
             json.dumps(state, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-        print(json.dumps({
-            "epoch": epoch, "validation": metrics,
-            "simultaneous_improvement": state["simultaneous_improvement"],
-            "candidate": candidate,
-        }, sort_keys=True), flush=True)
+        if not epoch_update_count:
+            raise RuntimeError("epoch completed without an optimizer update")
+        epoch_minutes = (time.perf_counter() - epoch_started) / 60.0
+        append_epoch_metrics(epoch_metrics_path, {
+            "epoch": epoch,
+            "train_loss": epoch_train_loss / epoch_update_count,
+            "minADE": metrics["minADE"], "minFDE": metrics["minFDE"],
+            "JADE": metrics["JADE"], "JFDE": metrics["JFDE"],
+            "epoch_minutes": epoch_minutes,
+        })
+        print(format_epoch_summary(
+            epoch, options.epochs, metrics, epoch_minutes), flush=True)
 
 
 if __name__ == "__main__":

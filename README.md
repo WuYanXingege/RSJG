@@ -48,6 +48,7 @@ architecture, default training contract and one fold binding:
 ```bash
 python scripts/resolve_config.py --fold hotel
 python scripts/resolve_config.py --fold univ
+python scripts/resolve_config.py --fold zara1
 ```
 
 Generated files appear under `configs/resolved/` and record the current source
@@ -101,7 +102,10 @@ python scripts/summarize_results.py outputs/eval/*.json
 HOTEL and UNIV assets are locally ready. ETH is deliberately **not ready** in
 this paper workspace because existing ETH EBJD results used historical
 native-goal/anchor variants and cannot be placed in the unified FULL table.
-ZARA1/ZARA2 are also unprepared here. Missing folds are reported, not guessed.
+ZARA1 synchronized manifests are prepared (705 held-out windows, 2,356 agent
+occurrences, mean 3.342), but formal training remains fail-closed until a
+ZARA1-fold goal U-Net and matched-GDTS validation binding are available.
+ZARA2 remains unprepared. Missing fold assets are reported, not guessed.
 
 See `docs/FINALIZATION_REPORT.md` for the validation receipt and limitations.
 
