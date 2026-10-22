@@ -1,0 +1,225 @@
+{
+  "actual_gpu_wall_seconds": 792.28,
+  "checkpoint_sha256": "425988097793b639eb868fcc9ff28e41a3022c08598d13f396383da89268e1b1",
+  "config_sha256": "a3800984c4876bec69caa62a587ab2db609d2dce1c7670995ddee0ecb6440278",
+  "cpu_tests_passed": 103,
+  "cross_fold_checks": {
+    "half_JADE_below_gdts": true,
+    "half_JFDE_below_gdts": true,
+    "half_minADE_mean_below_full": false,
+    "half_minFDE_mean_below_full": false,
+    "minADE_at_least_4_of_5": false,
+    "minFDE_at_least_4_of_5": false
+  },
+  "cross_fold_direction": "NOT_SUPPORTED",
+  "ddim_eta": 0.0,
+  "ddim_steps": 20,
+  "evidence_boundary": "Five inference repeats of one training checkpoint on mirrored HOTEL validation/test windows; not training-seed significance or retraining ablation.",
+  "gamma": 0.5,
+  "gpu_budget_seconds": 1800,
+  "half_better_than_full_seed_count": {
+    "JADE": 0,
+    "JFDE": 0,
+    "minADE": 2,
+    "minFDE": 0
+  },
+  "half_minus_full_per_seed": {
+    "2035": {
+      "JADE": 0.008211695241710448,
+      "JFDE": 0.017701033677832545,
+      "minADE": -0.001039859342389593,
+      "minFDE": 0.0017955384094344162
+    },
+    "2036": {
+      "JADE": 0.008495845501258786,
+      "JFDE": 0.023207580164503916,
+      "minADE": 0.0027983949259826058,
+      "minFDE": 0.011034802869790417
+    },
+    "2037": {
+      "JADE": 0.009587492455801594,
+      "JFDE": 0.02182913978670442,
+      "minADE": 0.0023517465450759723,
+      "minFDE": 0.003545010743083832
+    },
+    "2038": {
+      "JADE": 0.0077455799974333606,
+      "JFDE": 0.01674500638932991,
+      "minADE": 0.00013190695612147474,
+      "minFDE": 0.0013683070302966394
+    },
+    "2039": {
+      "JADE": 0.008418155462072974,
+      "JFDE": 0.019292817881404134,
+      "minADE": -0.00013843881403566294,
+      "minFDE": 0.002659620874138874
+    }
+  },
+  "half_minus_gdts_mean": {
+    "JADE": -0.031411605480577004,
+    "JFDE": -0.06098525072102634,
+    "minADE": 0.004444000620741906,
+    "minFDE": 0.014528342720411758
+  },
+  "implementation_commit": "4ca5769a22d6890e563d327122027c9d9b8534c9",
+  "independent_test": false,
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "manifest_sha256": "84c95cb431caf7214d1b85e8e7dbfeaf48c9fe301b1cda7f3201c3e8cf199c78",
+  "metrics": {
+    "FULL": {
+      "JADE": {
+        "mean": 0.16856602176437888,
+        "per_seed": [
+          0.16882872052616282,
+          0.16978058155123774,
+          0.1694835447523157,
+          0.16895807648307823,
+          0.1657791855090999
+        ],
+        "sample_standard_deviation": 0.0016051618115381515
+      },
+      "JFDE": {
+        "mean": 0.27631447143018184,
+        "per_seed": [
+          0.2789008148079947,
+          0.27745382718407036,
+          0.2757430994790309,
+          0.2796224741482312,
+          0.26985214153158193
+        ],
+        "sample_standard_deviation": 0.0039057124577149094
+      },
+      "minADE": {
+        "mean": 0.13800743340266403,
+        "per_seed": [
+          0.13863019940599725,
+          0.13940195903904057,
+          0.13763471008838624,
+          0.13830447161014667,
+          0.13606582686974944
+        ],
+        "sample_standard_deviation": 0.0012579278138854344
+      },
+      "minFDE": {
+        "mean": 0.20203683684590143,
+        "per_seed": [
+          0.20478341841293682,
+          0.20055009475985278,
+          0.20134080575827515,
+          0.20455522502255302,
+          0.19895464027588938
+        ],
+        "sample_standard_deviation": 0.002553467559723525
+      }
+    },
+    "HALF": {
+      "JADE": {
+        "mean": 0.1770577754960343,
+        "per_seed": [
+          0.17704041576787327,
+          0.17827642705249652,
+          0.1790710372081173,
+          0.1767036564805116,
+          0.17419734097117287
+        ],
+        "sample_standard_deviation": 0.0018605188554367677
+      },
+      "JFDE": {
+        "mean": 0.2960695870101368,
+        "per_seed": [
+          0.29660184848582727,
+          0.30066140734857427,
+          0.29757223926573534,
+          0.2963674805375611,
+          0.28914495941298607
+        ],
+        "sample_standard_deviation": 0.004232767652882403
+      },
+      "minADE": {
+        "mean": 0.13882818345681497,
+        "per_seed": [
+          0.13759034006360765,
+          0.14220035396502317,
+          0.1399864566334622,
+          0.13843637856626814,
+          0.13592738805571378
+        ],
+        "sample_standard_deviation": 0.0023881746159767564
+      },
+      "minFDE": {
+        "mean": 0.20611749283125028,
+        "per_seed": [
+          0.20657895682237123,
+          0.2115848976296432,
+          0.20488581650135898,
+          0.20592353205284966,
+          0.20161426115002826
+        ],
+        "sample_standard_deviation": 0.0036034430474382807
+      }
+    },
+    "matched_GDTS": {
+      "JADE": {
+        "mean": 0.2084693809766113,
+        "per_seed": [
+          0.21118598435953093,
+          0.20784350924110145,
+          0.20486455576054835,
+          0.20921497844745604,
+          0.2092378770744198
+        ],
+        "sample_standard_deviation": 0.0023405616873221216
+      },
+      "JFDE": {
+        "mean": 0.35705483773116314,
+        "per_seed": [
+          0.35985399696222514,
+          0.3562187199836618,
+          0.35099902264773847,
+          0.36139185838401316,
+          0.35681059067817716
+        ],
+        "sample_standard_deviation": 0.004002395731911705
+      },
+      "minADE": {
+        "mean": 0.13438418283607306,
+        "per_seed": [
+          0.1352196876519829,
+          0.13391411160924158,
+          0.1324998894255101,
+          0.13605804989579676,
+          0.13422917559783387
+        ],
+        "sample_standard_deviation": 0.0013505050065002468
+      },
+      "minFDE": {
+        "mean": 0.19158915011083852,
+        "per_seed": [
+          0.19338157261354552,
+          0.1894232376244031,
+          0.19005563987983873,
+          0.19577756169568764,
+          0.18930773874071763
+        ],
+        "sample_standard_deviation": 0.0028724222530602745
+      }
+    }
+  },
+  "original_contract_all_four_no_worse_than_matched_gdts": {
+    "JADE": true,
+    "JFDE": true,
+    "minADE": false,
+    "minFDE": false
+  },
+  "original_hotel_performance_contract": "FAIL",
+  "schema": "ebjd-hotel-future-social-half-results-v1",
+  "status": "COMPLETE",
+  "training_seed": 3101,
+  "worlds": 20
+}
