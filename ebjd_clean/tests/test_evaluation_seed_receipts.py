@@ -8,6 +8,7 @@ def expected():
         "manifest_sha256": "manifest",
         "evaluator_sha256": "evaluator",
         "future_social_mode": "self_only",
+        "future_social_gamma": 0.0,
         "seed": 2035,
         "worlds": 20,
         "steps": 20,
@@ -19,7 +20,7 @@ def expected():
 
 def receipt(fixed=False):
     return {
-        "schema": "ebjd-evaluation-seed-receipt-v2",
+        "schema": "ebjd-evaluation-seed-receipt-v3",
         "status": "COMPLETE",
         **expected(),
         "raw_record": {"seed": 2035, "metrics": {}},
@@ -55,8 +56,19 @@ def test_fixed_receipt_requires_same_forward_marker():
 
 def test_legacy_receipt_identity_remains_readable():
     old_expected = expected()
+    old_expected.pop("future_social_gamma")
+    value = receipt()
+    value.pop("future_social_gamma")
+    value["schema"] = "ebjd-evaluation-seed-receipt-v2"
+    assert valid_seed_receipt(value, old_expected, require_fixed=False)
+
+
+def test_v1_legacy_receipt_identity_remains_readable():
+    old_expected = expected()
+    old_expected.pop("future_social_gamma")
     old_expected.pop("future_social_mode")
     value = receipt()
+    value.pop("future_social_gamma")
     value.pop("future_social_mode")
     value["schema"] = "ebjd-evaluation-seed-receipt-v1"
     assert valid_seed_receipt(value, old_expected, require_fixed=False)

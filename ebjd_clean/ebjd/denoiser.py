@@ -146,6 +146,25 @@ class FactorizedFutureBlock(nn.Module):
                 *((1,) * (bias.ndim - 2)), agents, agents)
         return bias.masked_fill(~diagonal, -torch.inf)
 
+    def _social_output(
+        self,
+        query: torch.Tensor,
+        bias: torch.Tensor,
+        valid: torch.Tensor,
+        gamma: float,
+    ) -> torch.Tensor:
+        """Interpolate projected self-only/full attention from one input."""
+        gamma = float(gamma)
+        if gamma == 1.0:
+            return self.social(query, bias, valid)
+        self_only = self.social(query, self._self_only_bias(bias), valid)
+        if gamma == 0.0:
+            return self_only
+        if not 0.0 < gamma < 1.0:
+            raise ValueError("future social gamma must be in [0, 1]")
+        full = self.social(query, bias, valid)
+        return self_only + gamma * (full - self_only)
+
     def forward(
         self,
         hidden: torch.Tensor,
@@ -156,6 +175,7 @@ class FactorizedFutureBlock(nn.Module):
         valid: torch.Tensor,
         social_enabled: bool = True,
         social_self_only: bool = False,
+        social_gamma: float | None = None,
         memory_mode: str = "legacy_joint",
         motion_memory: torch.Tensor | None = None,
         map_memory: torch.Tensor | None = None,
@@ -175,11 +195,12 @@ class FactorizedFutureBlock(nn.Module):
             query = self._modulate(self.norms[1](hidden), condition)
             social = query.permute(0, 1, 3, 2, 4).reshape(batch * worlds * times, agents, dim)
             flat_bias = bias.reshape(batch * worlds * times, 4, agents, agents)
-            if social_self_only:
-                flat_bias = self._self_only_bias(flat_bias)
             flat_valid = valid[:, None, None, :].expand(batch, worlds, times, agents)
-            social = self.social(
-                social, flat_bias, flat_valid.reshape(batch * worlds * times, agents))
+            gamma = (0.0 if social_self_only else 1.0) \
+                if social_gamma is None else float(social_gamma)
+            social = self._social_output(
+                social, flat_bias,
+                flat_valid.reshape(batch * worlds * times, agents), gamma)
             hidden = hidden + social.reshape(batch, worlds, times, agents, dim).permute(0, 1, 3, 2, 4)
 
         query = self._modulate(self.norms[2](hidden), condition)
@@ -291,6 +312,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
         # Inference-only mechanism intervention. This is deliberately runtime
         # state rather than a parameter/buffer so checkpoint identity is unchanged.
         self.future_social_self_only = False
+        self.future_social_gamma = 1.0
         self.clean_geometry = bool(clean_geometry)
         self.activation_checkpointing = bool(activation_checkpointing)
         self.memory_mode = str(memory_mode)
@@ -485,7 +507,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
                        motion, map_value, group_gate: module(
                            h, memory, social, time_value, bias_value, valid_value,
                            social_enabled=self.future_social,
-                           social_self_only=self.future_social_self_only,
+                           social_gamma=self.future_social_gamma,
                            memory_mode=self.memory_mode,
                            motion_memory=motion, map_memory=map_value,
                            memory_gate=group_gate),
@@ -502,7 +524,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
                     observed, context.valid, social_enabled=self.future_social,
-                    social_self_only=self.future_social_self_only,
+                    social_gamma=self.future_social_gamma,
                     memory_mode=self.memory_mode,
                     motion_memory=context.motion_memory,
                     map_memory=context.map_memory,
@@ -540,7 +562,7 @@ class JointEndpointBridgeDenoiser(nn.Module):
                 hidden = block(
                     hidden, context.memory, context.social_h, time_embedding,
                     combined, context.valid, social_enabled=self.future_social,
-                    social_self_only=self.future_social_self_only,
+                    social_gamma=self.future_social_gamma,
                     memory_mode=self.memory_mode,
                     motion_memory=context.motion_memory,
                     map_memory=context.map_memory,
