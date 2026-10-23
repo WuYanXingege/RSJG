@@ -1,0 +1,71 @@
+{
+  "schema": "ebjd-zara1-training-status-snapshot-v1",
+  "snapshot_local_time": "2026-10-23 19:08:28 +0800",
+  "status": "RUNNING",
+  "source_commit": "6f86d31f7987f2e8c2fff802e12d8eb04e8d82da",
+  "run_id": "zara1_full_wide192_rollout_off_seed3101_e250_v1",
+  "architecture": {
+    "hidden_dim": 192,
+    "attention_heads": 4,
+    "ff_dim": 768,
+    "parameter_count": 7248732
+  },
+  "training": {
+    "seed": 3101,
+    "target_epochs": 250,
+    "completed_epochs": 6,
+    "current_epoch": 7,
+    "current_epoch_update": 11,
+    "updates_per_epoch": 270,
+    "global_update": 1631,
+    "rollout_training_enabled": false,
+    "paired_actual_step_projection_enabled": false
+  },
+  "latest_complete_epoch": {
+    "epoch": 6,
+    "train_loss": 1.7634179874702736,
+    "minADE": 0.2459913018706661,
+    "minFDE": 0.43864732444466603,
+    "JADE": 0.36261915693997493,
+    "JFDE": 0.7259592102615968,
+    "epoch_minutes": 13.51814424360006,
+    "eta_minutes": 3276.484063222108
+  },
+  "best_complete_epoch": {
+    "epoch": 4,
+    "train_loss": 1.8251119203037687,
+    "minADE": 0.23563149571339703,
+    "minFDE": 0.42345167846294,
+    "JADE": 0.3323462653244641,
+    "JFDE": 0.6605805467919889,
+    "selector_role": "least_violation"
+  },
+  "timing": {
+    "completed_epoch_mean_minutes": 13.428213373861096,
+    "completed_epoch_sample_std_minutes": 0.21893374462407053,
+    "old_128_reference_mean_minutes": 19.973333333333333,
+    "observed_wall_clock_speedup": 1.4874155464503376,
+    "observed_wall_clock_reduction_fraction": 0.32769292186943777,
+    "paired_wide192_short_benchmark_speedup": 1.7204812975601667
+  },
+  "health": {
+    "finite_losses": true,
+    "record_count": 1631,
+    "observed_rollout_update_values": [0.0],
+    "observed_projection_active_values": [0.0],
+    "gpu_process_count": 1,
+    "gpu_used_memory_mib": 7148
+  },
+  "latest_checkpoint": {
+    "role": "last",
+    "epoch": 6,
+    "update": 1620,
+    "sha256": "b5121ff8d49804e3527ce7135f2ad75828f96984d553f4ed01cc1aebcf5fc005"
+  },
+  "selector": {
+    "best_eligible": null,
+    "matched_gdts_minADE": 0.18810851181618526,
+    "matched_gdts_minFDE": 0.2850338902386895
+  },
+  "evidence_boundary": "one training seed with per-epoch validation; formal five-inference-seed evaluation is pending"
+}
