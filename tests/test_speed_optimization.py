@@ -168,12 +168,26 @@ def test_speed_runtime_config_is_semantic_hash_neutral_and_migration_exact():
 def test_paper_default_uses_bounded_rollout_graph_reuse():
     config = load_paper_config()
     assert config["training"]["execution_strategy"] == (
-        "small_group_uncheckpoint_v1")
+        "prefetch_runtime_v1")
     assert config["training"]["rollout_uncheckpointed_max_agent_slots"] == 32
+    assert config["training"]["training_runtime_optimizations"] is True
+    assert config["training"]["data_loader_workers"] == 4
+    assert config["training"]["data_loader_prefetch_factor"] == 2
     assert config["training"]["activation_checkpointing"] is True
     assert config["training"]["rollout_block_checkpointing"] is False
     profile = validate_execution_migration_settings(config)
     assert profile["rollout_uncheckpointed_max_agent_slots"] == 32
+    assert profile["data_loader_workers"] == 4
+
+
+def test_wide_paper_architecture_is_192_4_768():
+    config = load_paper_config()
+    assert config["history_encoder"]["hidden_dim"] == 192
+    assert config["history_encoder"]["social_heads"] == 4
+    assert config["history_encoder"]["social_ff_dim"] == 768
+    assert config["denoiser"]["hidden_dim"] == 192
+    assert config["denoiser"]["heads"] == 4
+    assert config["denoiser"]["ff_dim"] == 768
 
 
 def test_small_group_rollout_checkpoint_policy_has_dense_fallback():

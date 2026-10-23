@@ -11,8 +11,8 @@ flowchart LR
     O[Observed trajectories<br/>B×N×8×2] --> MSCE
     M[Local semantic maps<br/>B×N×6×256×256] --> MSCE
     MSCE[MSCE<br/>history GRU + history social + map U-Net]
-    MSCE --> H[Per-person memory<br/>B×N×72×128]
-    MSCE --> G[History state and pair bias<br/>B×N×128; B×4×N×N]
+    MSCE --> H[Per-person memory<br/>B×N×72×192]
+    MSCE --> G[History state and pair bias<br/>B×N×192; B×4×N×N]
     Z[Diffusion state<br/>B×P×N×12×2] --> C[3 coarse FJABs]
     H --> C
     G --> C
@@ -40,7 +40,7 @@ world dimension; attention is never applied across `P`.
 | Endpoint–Bridge Decomposition (EBD) | `ebjd.representation.EndpointBridgeDecomposition`; registered as `model.representation` | trajectory ↔ 11 bridge variables + 1 endpoint residual | Reversible residual representation; it does not assert probabilistic independence. |
 | Geometry-Conditioned Joint Denoiser (GCJD) | `ebjd.denoiser.GeometryConditionedJointDenoiser`; registered as `model.denoiser` | noisy joint latent + context + time → coarse/final velocity predictions | Six-block v-parameterized denoiser. |
 | Clean-Trajectory Feedback (CTF) | `_clean_features`, `_sample_map`, `future_pair_geometry` inside GCJD | coarse clean path → motion, path-map and future-pair feedback | Logical feedback path between coarse and refinement blocks; no separate parameter namespace. |
-| Factorized Joint Attention Block (FJAB) | `ebjd.denoiser.FactorizedJointAttentionBlock` | `B×P×N×12×128` → same shape | Latent-slot attention, within-world cross-person attention, per-person context cross-attention and FFN. |
+| Factorized Joint Attention Block (FJAB) | `ebjd.denoiser.FactorizedJointAttentionBlock` | `B×P×N×12×192` → same shape | Latent-slot attention, within-world cross-person attention, per-person context cross-attention and FFN. |
 
 Historical Python symbols remain aliases only. The registered attributes
 remain `encoder`, `representation` and `denoiser`, so checkpoint keys do not
@@ -50,7 +50,7 @@ change or duplicate.
 
 For each observed frame, EBJD concatenates two-dimensional position relative
 to the last observation, velocity and acceleration, yielding six values. A
-`Linear(6,128)` stem and one-layer GRU produce eight 128-dimensional history
+`Linear(6,192)` stem and one-layer GRU produce eight 192-dimensional history
 tokens. Two four-head social blocks update the final history state using a
 10-dimensional history-only pair geometry mapped to four attention-head
 biases.
@@ -59,7 +59,7 @@ The map input is six semantic channels plus eight observed-position heatmaps,
 not a separate goal diffusion. The original 14-channel U-Net produces 32
 full-resolution feature channels and 12 auxiliary future heatmap logits.
 Adaptive `8×8` pooling yields 64 map tokens. Each pedestrian therefore owns
-`8 + 64 = 72` context tokens of width 128. Full-resolution features are
+`8 + 64 = 72` context tokens of width 192. Full-resolution features are
 retained for CTF sampling along the coarse path.
 
 ## EBD
@@ -89,9 +89,9 @@ process.
 ## GCJD, FJAB and CTF
 
 The latent contains 12 two-dimensional slots: 11 whitened bridge variables
-and one endpoint residual. A width-128 stem adds slot-time and token-type
+and one endpoint residual. A width-192 stem adds slot-time and token-type
 embeddings plus the MSCE social state. Each FJAB uses four heads and a
-512-dimensional FFN in this order:
+768-dimensional FFN in this order:
 
 1. attention across the 12 latent slots for each `(scene, world, person)`;
 2. Social Attention across valid people for each `(scene, world, slot)`;

@@ -324,8 +324,9 @@ class EBJDTrainer:
             with torch.autocast(
                 device_type=autocast_device, dtype=torch.bfloat16,
                 enabled=self.use_bf16):
-                final, coarse, coarse_trajectory, _ = self.model.denoiser(
-                    latent_noisy, time, context)
+                with record_function("ebjd.denoiser_forward"):
+                    final, coarse, coarse_trajectory, _ = self.model.denoiser(
+                        latent_noisy, time, context)
             with torch.autocast(device_type=autocast_device, enabled=False):
                 final_clean = alpha * latent_noisy.float() - sigma * final.float()
                 final_trajectory, _ = self.model.representation.decode(

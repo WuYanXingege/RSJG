@@ -2,9 +2,11 @@
 
 ## Formal identity
 
-The default paper model is the original FULL architecture with Raw output.
-All checkpoints listed below strict-load the same 307-tensor,
-3,612,764-parameter model state. Full hashes are authoritative.
+The default paper training profile is FULL/Raw with width 192, four attention
+heads and FFN width 768 (7,248,732 parameters). The checkpoints listed below
+are preserved historical FULL references using the legacy 128/4/512 profile
+(307 tensors, 3,612,764 parameters); they are not initialization checkpoints
+for the new wide run. Full hashes are authoritative.
 
 | Fold / role | Epoch | Checkpoint SHA256 | Status |
 |---|---:|---|---|
@@ -61,10 +63,10 @@ their implementation is intentionally not copied into the paper core.
   uses the mirrored validation manifest SHA256 `46c52540…`.
 - **ETH — NOT READY FOR UNIFIED FULL:** existing EBJD results use historical
   native-goal/anchor/Fixed-anchor variants. No result is promoted.
-- **ZARA1 — DATA READY / TRAINING BLOCKED:** full synchronized train,
-  validation and test manifests are bound in `results/ASSET_MANIFEST.json`.
-  The held-out fold has 705 windows and 2,356 agent occurrences (mean 3.342).
-  No ZARA1-fold goal U-Net or matched-GDTS validation checkpoint/result exists
-  locally, so the fold config deliberately remains fail-closed.
+- **ZARA1 — READY:** full synchronized train, validation and test manifests,
+  fold-matched goal U-Net and matched-GDTS validation comparator are bound by
+  hash. The held-out fold has 705 windows and 2,356 agent occurrences (mean
+  3.342). The archived 128/4/512 run stopped after epoch 3; the wide run starts
+  fresh and never treats that checkpoint as resumable.
 - **ZARA2 — NOT PREPARED:** no paper-workspace assets or verified FULL run
   configuration are asserted.

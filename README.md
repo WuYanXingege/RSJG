@@ -5,7 +5,9 @@
 中文：**终点—桥联合扩散**
 
 This is the only paper-development workspace for EBJD. The default path is
-the checkpoint-compatible, original **FULL** architecture with Raw decoding.
+the **FULL** architecture with Raw decoding. New formal training uses the
+192-wide, four-head, FFN-768 profile. Historical 128/4/512 checkpoints remain
+registered references and are loaded only with their legacy profile.
 It does not import code from another RSJG worktree and does not include
 native-goal, Fixed-anchor, SELF_ONLY, HALF, V2 token/anchor, or extra path-loss
 logic in the default model.
@@ -103,8 +105,9 @@ HOTEL and UNIV assets are locally ready. ETH is deliberately **not ready** in
 this paper workspace because existing ETH EBJD results used historical
 native-goal/anchor variants and cannot be placed in the unified FULL table.
 ZARA1 synchronized manifests are prepared (705 held-out windows, 2,356 agent
-occurrences, mean 3.342), but formal training remains fail-closed until a
-ZARA1-fold goal U-Net and matched-GDTS validation binding are available.
+occurrences, mean 3.342); its goal U-Net and matched-GDTS validation assets
+are hash-bound. The fresh 192/4/768 formal run is separate from the preserved
+three-epoch 128/4/512 attempt.
 ZARA2 remains unprepared. Missing fold assets are reported, not guessed.
 
 See `docs/FINALIZATION_REPORT.md` for the validation receipt and limitations.
@@ -121,3 +124,9 @@ checkpointed fallback. See
 `docs/performance/20261022_rollout_backward_v2/REPORT_ZH.md` for the exact
 scope, memory tradeoff and receipts. No model, objective, optimizer, sampling,
 validation or checkpoint schema changed.
+
+For rollout-OFF ZARA1 training, `prefetch_runtime_v1` adds four ordered loader
+workers (prefetch factor two) and removes unused constraint buffers/scalar
+synchronizations. A paired real-data 192/4/768 gate was update-identical and
+measured 1.720x end-to-end speedup; see
+`docs/performance/20261023_zara1_wide_prefetch_v1/REPORT_ZH.md`.

@@ -62,5 +62,8 @@ ebjd:
   ablation: none
   rollout_training_enabled: false
   paired_marginal_actual_step_projection_enabled: false
-  execution_strategy: small_group_uncheckpoint_v1
+  execution_strategy: prefetch_runtime_v1
   rollout_uncheckpointed_max_agent_slots: 32
+  training_runtime_optimizations: true
+  data_loader_workers: 4
+  data_loader_prefetch_factor: 2

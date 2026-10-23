@@ -81,6 +81,7 @@ ALLOWED_KEYS = {
         "physical_group_max_padding_ratio", "rollout_block_checkpointing",
         "rollout_uncheckpointed_max_agent_slots",
         "training_runtime_optimizations",
+        "data_loader_workers", "data_loader_prefetch_factor",
         "rollout_training_enabled",
         "paired_marginal_actual_step_projection_enabled",
     },
@@ -101,6 +102,7 @@ OPTIONAL_KEYS = {"training": {
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
     "rollout_uncheckpointed_max_agent_slots",
     "training_runtime_optimizations",
+    "data_loader_workers", "data_loader_prefetch_factor",
     "rollout_training_enabled",
     "paired_marginal_actual_step_projection_enabled",
 }}
@@ -117,6 +119,8 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "rollout_block_checkpointing"),
     ("training", "rollout_uncheckpointed_max_agent_slots"),
     ("training", "training_runtime_optimizations"),
+    ("training", "data_loader_workers"),
+    ("training", "data_loader_prefetch_factor"),
 }
 
 
@@ -207,10 +211,8 @@ def validate_supported_config(config: dict) -> None:
         ("map_encoder", "trainable", True),
         ("map_encoder", "crop_width_m", 32.0),
         ("history_encoder", "input_dim", 6),
-        ("history_encoder", "hidden_dim", 128),
         ("history_encoder", "social_blocks", 2),
         ("history_encoder", "social_heads", 4),
-        ("history_encoder", "social_ff_dim", 512),
         ("history_encoder", "observed_geometry_dim", 10),
         ("history_encoder", "observed_bias_bound", 2.0),
         ("history_encoder", "dropout", 0.0),
@@ -221,8 +223,7 @@ def validate_supported_config(config: dict) -> None:
         ("representation", "goal_rms_floor_m", 0.5),
         ("representation", "bridge_rms_floor_m", 0.1),
         ("representation", "literal_endpoint_concatenation", True),
-        ("denoiser", "hidden_dim", 128), ("denoiser", "heads", 4),
-        ("denoiser", "ff_dim", 512), ("denoiser", "coarse_blocks", 3),
+        ("denoiser", "heads", 4), ("denoiser", "coarse_blocks", 3),
         ("denoiser", "refinement_blocks", 3),
         ("denoiser", "memory_tokens_per_agent", 72),
         ("denoiser", "cross_world_attention", False),
@@ -258,6 +259,17 @@ def validate_supported_config(config: dict) -> None:
         ("ablations", "available", []),
     ):
         _require(config, section, key, expected)
+    width_profile = (
+        int(config["history_encoder"]["hidden_dim"]),
+        int(config["history_encoder"]["social_ff_dim"]),
+        int(config["denoiser"]["hidden_dim"]),
+        int(config["denoiser"]["ff_dim"]),
+    )
+    if width_profile not in {(128, 512, 128, 512), (192, 768, 192, 768)}:
+        raise ValueError(
+            "unsupported coherent hidden_dim/social_ff_dim width profile; "
+            "expected legacy 128/512 or "
+            f"wide 192/768, got {width_profile}")
     precision = config["training"].get("mixed_precision")
     if precision not in ("fp32", "bf16_with_fp32_geometry_loss_optimizer"):
         raise ValueError(f"unsupported training.mixed_precision={precision!r}")
@@ -273,6 +285,7 @@ def validate_supported_config(config: dict) -> None:
     if strategy not in {
         "legacy_or_oom_safe_v1", "compact_grouped_v1",
         "small_group_uncheckpoint_v1", "paper_training_v1",
+        "prefetch_runtime_v1",
     }:
         raise ValueError(f"unsupported training.execution_strategy={strategy!r}")
     for key in (
@@ -287,6 +300,11 @@ def validate_supported_config(config: dict) -> None:
             value = training[key]
             if isinstance(value, bool) or int(value) != value or int(value) < 1:
                 raise ValueError(f"training.{key} must be a positive integer")
+    for key in ("data_loader_workers", "data_loader_prefetch_factor"):
+        if key in training:
+            value = training[key]
+            if isinstance(value, bool) or int(value) != value or int(value) < 0:
+                raise ValueError(f"training.{key} must be a non-negative integer")
     if "physical_group_max_padding_ratio" in training:
         ratio = training["physical_group_max_padding_ratio"]
         if isinstance(ratio, bool) or float(ratio) < 1.0:
@@ -300,6 +318,7 @@ def validate_supported_config(config: dict) -> None:
                 "non-negative integer")
     if strategy in {
         "compact_grouped_v1", "small_group_uncheckpoint_v1", "paper_training_v1",
+        "prefetch_runtime_v1",
     }:
         required_execution = {
             "scene_forward_chunk", "scene_compaction",
@@ -326,6 +345,17 @@ def validate_supported_config(config: dict) -> None:
         if training.get("training_runtime_optimizations") is not True:
             raise ValueError(
                 "paper_training_v1 requires training_runtime_optimizations=true")
+    if strategy == "prefetch_runtime_v1":
+        expected_runtime = {
+            "training_runtime_optimizations": True,
+            "data_loader_workers": 4,
+            "data_loader_prefetch_factor": 2,
+        }
+        actual_runtime = {key: training.get(key) for key in expected_runtime}
+        if actual_runtime != expected_runtime:
+            raise ValueError(
+                "prefetch_runtime_v1 requires exact settings "
+                f"{expected_runtime}, got {actual_runtime}")
     if config["paths"].get("initialization_role") != "trainable_goal_unet_only":
         raise ValueError("paths.initialization_role must be trainable_goal_unet_only")
     baseline = config["evaluation"].get("matched_gdts_validation")
@@ -377,6 +407,10 @@ def build_model(config: dict, ablation: str = "none") -> EBJDModel:
         bridge_scale=float(rep["bridge_scale_m"]),
         crop_width_m=float(map_config["crop_width_m"]),
         map_agent_chunk=int(map_config["agent_chunk"]),
+        hidden_dim=int(config["denoiser"]["hidden_dim"]),
+        attention_heads=int(config["denoiser"]["heads"]),
+        ff_dim=int(config["denoiser"]["ff_dim"]),
+        history_social_blocks=int(config["history_encoder"]["social_blocks"]),
     )
     model.denoiser.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])

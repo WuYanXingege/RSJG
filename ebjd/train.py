@@ -58,6 +58,18 @@ CERTIFIED_EXECUTION_MIGRATIONS = {
         "rollout_uncheckpointed_max_agent_slots": 0,
         "training_runtime_optimizations": True,
     },
+    "prefetch_runtime_v1": {
+        "scene_forward_chunk": 1,
+        "scene_compaction": True,
+        "physical_group_max_scenes": 4,
+        "physical_group_max_agent_slots": 96,
+        "physical_group_max_padding_ratio": 1.5,
+        "rollout_block_checkpointing": False,
+        "rollout_uncheckpointed_max_agent_slots": 32,
+        "training_runtime_optimizations": True,
+        "data_loader_workers": 4,
+        "data_loader_prefetch_factor": 2,
+    },
 }
 
 
@@ -170,6 +182,16 @@ def validate_startup_contract(
         "paired_marginal_actual_step_projection_enabled": bool(
             config["training"].get(
                 "paired_marginal_actual_step_projection_enabled", True)),
+        "hidden_dim": int(config["denoiser"]["hidden_dim"]),
+        "attention_heads": int(config["denoiser"]["heads"]),
+        "ff_dim": int(config["denoiser"]["ff_dim"]),
+        "execution_strategy": str(config["training"].get("execution_strategy")),
+        "training_runtime_optimizations": bool(
+            config["training"].get("training_runtime_optimizations", False)),
+        "data_loader_workers": int(
+            config["training"].get("data_loader_workers", 0)),
+        "data_loader_prefetch_factor": int(
+            config["training"].get("data_loader_prefetch_factor", 0)),
         "evaluation_worlds": int(config["evaluation"]["worlds"]),
         "evaluation_steps": int(config["evaluation"]["steps"]),
         "run_id": args.run_id,
@@ -189,6 +211,10 @@ def validate_startup_contract(
         raise ValueError("formal ZARA1 startup requires rollout training OFF")
     if checks["paired_marginal_actual_step_projection_enabled"]:
         raise ValueError("formal ZARA1 startup requires paired projection OFF")
+    if (checks["hidden_dim"], checks["attention_heads"], checks["ff_dim"]) != (
+        192, 4, 768,
+    ):
+        raise ValueError("formal ZARA1 startup requires architecture 192/4/768")
     if checks["evaluation_worlds"] != 20 or checks["evaluation_steps"] != 20:
         raise ValueError("formal ZARA1 inference contract requires 20 worlds/20 steps")
     return {
@@ -276,10 +302,23 @@ def _dataset(config: dict, split: str, smoke: bool):
 
 def _loader(config: dict, split: str, smoke: bool, generator: torch.Generator) -> DataLoader:
     batch_size = 1 if smoke else int(config["training"]["batch_scenes"])
-    return DataLoader(
-        _dataset(config, split, smoke), batch_size=batch_size,
-        shuffle=split == "train", collate_fn=collate_scenes,
-        num_workers=0, generator=generator)
+    workers = 0 if smoke else int(
+        config["training"].get("data_loader_workers", 0))
+    arguments = {
+        "dataset": _dataset(config, split, smoke),
+        "batch_size": batch_size,
+        "shuffle": split == "train",
+        "collate_fn": collate_scenes,
+        "num_workers": workers,
+        "generator": generator,
+    }
+    if workers:
+        arguments.update({
+            "prefetch_factor": int(config["training"].get(
+                "data_loader_prefetch_factor", 2)),
+            "persistent_workers": True,
+        })
+    return DataLoader(**arguments)
 
 
 @torch.no_grad()
@@ -375,6 +414,10 @@ def _identity(config: dict, ablation: str, run_id: str, smoke: bool) -> dict:
             "training_runtime_optimizations": bool(
                 config["training"].get(
                     "training_runtime_optimizations", False)),
+            "data_loader_workers": int(
+                config["training"].get("data_loader_workers", 0)),
+            "data_loader_prefetch_factor": int(
+                config["training"].get("data_loader_prefetch_factor", 0)),
             "cpu_scene_staging": bool(
                 config["training"].get("scene_forward_chunk", 0)),
             "pytorch_cuda_alloc_conf": os.environ.get(

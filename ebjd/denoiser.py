@@ -54,7 +54,8 @@ class FactorizedJointAttentionBlock(nn.Module):
         query = self._modulate(self.norms[1](hidden), condition)
         social = query.permute(0, 1, 3, 2, 4).reshape(
             batch * worlds * times, agents, dim)
-        flat_bias = bias.reshape(batch * worlds * times, 4, agents, agents)
+        flat_bias = bias.reshape(
+            batch * worlds * times, self.social.heads, agents, agents)
         flat_valid = valid[:, None, None, :].expand(batch, worlds, times, agents)
         social = self.social(
             social, flat_bias, flat_valid.reshape(batch * worlds * times, agents))
@@ -132,10 +133,14 @@ class GeometryConditionedJointDenoiser(nn.Module):
         self,
         representation: nn.Module,
         dim: int = 128,
+        heads: int = 4,
+        ff_dim: int = 512,
         activation_checkpointing: bool = True,
     ) -> None:
         super().__init__()
         self.representation = representation
+        self.dim = int(dim)
+        self.heads = int(heads)
         self.activation_checkpointing = bool(activation_checkpointing)
         self.checkpoint_preserve_rng_state = True
         self.state_stem = nn.Sequential(nn.Linear(2, dim), nn.LayerNorm(dim))
@@ -144,7 +149,7 @@ class GeometryConditionedJointDenoiser(nn.Module):
         self.register_buffer(
             "future_time", sinusoidal_embedding(torch.arange(12).float(), dim))
         self.blocks = nn.ModuleList([
-            FactorizedJointAttentionBlock(dim, 4, 512) for _ in range(6)])
+            FactorizedJointAttentionBlock(dim, heads, ff_dim) for _ in range(6)])
         self.pre_bridge_head = self._head(dim)
         self.pre_goal_head = self._head(dim)
         self.final_bridge_head = self._head(dim)
@@ -152,7 +157,7 @@ class GeometryConditionedJointDenoiser(nn.Module):
         self.clean_injection = nn.Sequential(nn.Linear(6, dim), nn.LayerNorm(dim))
         self.map_injection = nn.Sequential(nn.Linear(33, dim), nn.LayerNorm(dim))
         self.future_geometry_mlp = nn.Sequential(
-            nn.Linear(12, 64), nn.SiLU(), nn.Linear(64, 4))
+            nn.Linear(12, 64), nn.SiLU(), nn.Linear(64, heads))
         for head in (
             self.pre_bridge_head, self.pre_goal_head,
             self.final_bridge_head, self.final_goal_head,
@@ -223,17 +228,17 @@ class GeometryConditionedJointDenoiser(nn.Module):
         alpha, sigma = cosine_vp(time)
         alpha = alpha.to(latent.device).view(batch, 1, 1, 1, 1)
         sigma = sigma.to(latent.device).view(batch, 1, 1, 1, 1)
-        time_embedding = self.time_mlp(sinusoidal_embedding(time, 128))
+        time_embedding = self.time_mlp(sinusoidal_embedding(time, self.dim))
         types = torch.zeros(12, dtype=torch.long, device=latent.device)
         types[-1] = 1
         hidden = (
             self.state_stem(latent)
-            + self.future_time.view(1, 1, 1, 12, 128)
-            + self.token_type[types].view(1, 1, 1, 12, 128)
+            + self.future_time.view(1, 1, 1, 12, self.dim)
+            + self.token_type[types].view(1, 1, 1, 12, self.dim)
             + context.social_h[:, None, :, None, :]
         )
         observed = context.observed_bias[:, None, None].expand(
-            batch, worlds, 12, 4, agents, agents)
+            batch, worlds, 12, self.heads, agents, agents)
         for block in self.blocks[:3]:
             if use_block_checkpoints and self.training and torch.is_grad_enabled():
                 with record_function("ebjd.denoiser_block_checkpoint"):

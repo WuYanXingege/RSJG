@@ -175,7 +175,7 @@ def run_arm(
         selected = [
             item[field] for item in records
             if rollout is None or item["rollout"] is rollout]
-        return statistics.mean(selected)
+        return statistics.mean(selected) if selected else float("nan")
 
     summary = {
         "name": name,

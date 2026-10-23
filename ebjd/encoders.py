@@ -7,6 +7,7 @@ from dataclasses import dataclass
 import torch
 from torch import nn
 from torch.nn import functional as F
+from torch.profiler import record_function
 from torch.utils.checkpoint import checkpoint
 
 from .layers import PreNormSocialBlock, sinusoidal_embedding
@@ -81,6 +82,9 @@ class MotionSceneContextEncoder(nn.Module):
         map_input_channels: int = 14,
         dim: int = 128,
         map_agent_chunk: int = 8,
+        social_blocks: int = 2,
+        social_heads: int = 4,
+        social_ff_dim: int = 512,
     ) -> None:
         super().__init__()
         self.crop_width_m = float(crop_width_m)
@@ -95,9 +99,10 @@ class MotionSceneContextEncoder(nn.Module):
             nn.Linear(6, dim), nn.LayerNorm(dim), nn.SiLU())
         self.history_gru = nn.GRU(dim, dim, batch_first=True)
         self.observed_geometry_mlp = nn.Sequential(
-            nn.Linear(10, 64), nn.SiLU(), nn.Linear(64, 4))
+            nn.Linear(10, 64), nn.SiLU(), nn.Linear(64, social_heads))
         self.history_social = nn.ModuleList([
-            PreNormSocialBlock(dim, 4, 512) for _ in range(2)])
+            PreNormSocialBlock(dim, social_heads, social_ff_dim)
+            for _ in range(social_blocks)])
         self.map_projection = nn.Linear(32, dim)
         self.map_coordinate_mlp = nn.Sequential(
             nn.Linear(2, 64), nn.SiLU(), nn.Linear(64, dim))
@@ -168,12 +173,13 @@ class MotionSceneContextEncoder(nn.Module):
         features, logits_parts = [], []
         for offset in range(0, len(flat_map), self.map_agent_chunk):
             part = flat_map[offset:offset + self.map_agent_chunk]
-            if self.activation_checkpointing and self.training and torch.is_grad_enabled():
-                f32_part, logits_part = checkpoint(
-                    self.map_unet, part, use_reentrant=False,
-                    preserve_rng_state=self.checkpoint_preserve_rng_state)
-            else:
-                f32_part, logits_part = self.map_unet(part)
+            with record_function("ebjd.map_unet_forward"):
+                if self.activation_checkpointing and self.training and torch.is_grad_enabled():
+                    f32_part, logits_part = checkpoint(
+                        self.map_unet, part, use_reentrant=False,
+                        preserve_rng_state=self.checkpoint_preserve_rng_state)
+                else:
+                    f32_part, logits_part = self.map_unet(part)
             features.append(f32_part)
             logits_parts.append(logits_part)
         f32, logits = torch.cat(features), torch.cat(logits_parts)
@@ -184,8 +190,12 @@ class MotionSceneContextEncoder(nn.Module):
         coords = torch.stack((xx, yy), -1).reshape(1, 1, 64, 2)
         map_tokens = self.map_projection(pooled) + self.map_coordinate_mlp(coords)
         history_time = sinusoidal_embedding(
-            torch.arange(8, device=observed.device, dtype=torch.float32), 128)
-        history_tokens = hist_tokens + history_time.view(1, 1, 8, 128) + self.history_type
+            torch.arange(8, device=observed.device, dtype=torch.float32),
+            hist_tokens.shape[-1])
+        history_tokens = (
+            hist_tokens
+            + history_time.view(1, 1, 8, hist_tokens.shape[-1])
+            + self.history_type)
         map_tokens = map_tokens + self.map_type
         memory = self.memory_norm(torch.cat((history_tokens, map_tokens), dim=2))
         mask = valid[..., None, None].to(memory.dtype)

@@ -3,7 +3,9 @@
 ## Decision
 
 The retained method is **Endpoint–Bridge Joint Diffusion (EBJD)**, Chinese
-**终点—桥联合扩散**, using the original FULL architecture and Raw decoding.
+**终点—桥联合扩散**, using the FULL architecture and Raw decoding. The current
+training profile is 192/4/768; the original reference checkpoints below use
+the separately supported legacy 128/4/512 profile.
 The paper-facing modules are MSCE, EBD, GCJD, CTF and FJAB. Registered module
 attributes and state-dict paths remain unchanged.
 
@@ -17,7 +19,7 @@ fixed commit pointers and small result records.
 
 - The package imports from this workspace without an external `PYTHONPATH`.
 - HOTEL epoch45, UNIV epoch73 and UNIV Control epoch81 each strict-load all
-  307 state tensors into the same 3,612,764-parameter FULL model.
+  307 state tensors into the same legacy 3,612,764-parameter FULL model.
 - The paper-facing class renames do not change registered state keys.
 - Existing tests cover reversible EBD encoding/decoding, FULL forward and
   required gradients, mixed-size padding, permutation/scene isolation,

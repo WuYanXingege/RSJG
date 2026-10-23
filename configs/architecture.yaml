@@ -23,10 +23,10 @@ map_encoder:
 
 history_encoder:
   input_dim: 6
-  hidden_dim: 128
+  hidden_dim: 192
   social_blocks: 2
   social_heads: 4
-  social_ff_dim: 512
+  social_ff_dim: 768
   observed_geometry_dim: 10
   observed_bias_bound: 2.0
   dropout: 0.0
@@ -43,9 +43,9 @@ representation:
   literal_endpoint_concatenation: true
 
 denoiser:
-  hidden_dim: 128
+  hidden_dim: 192
   heads: 4
-  ff_dim: 512
+  ff_dim: 768
   coarse_blocks: 3
   refinement_blocks: 3
   sublayers: [temporal_attention, social_attention, context_cross_attention, ffn]

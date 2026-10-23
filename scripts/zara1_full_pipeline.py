@@ -428,6 +428,13 @@ class Pipeline:
             "epochs": 250,
             "rollout_training_enabled": False,
             "paired_marginal_actual_step_projection_enabled": False,
+            "hidden_dim": 192,
+            "attention_heads": 4,
+            "ff_dim": 768,
+            "execution_strategy": "prefetch_runtime_v1",
+            "training_runtime_optimizations": True,
+            "data_loader_workers": 4,
+            "data_loader_prefetch_factor": 2,
         }
         actual_values = {
             "epochs": int(training["epochs"]),
@@ -436,6 +443,15 @@ class Pipeline:
             "paired_marginal_actual_step_projection_enabled": bool(
                 training.get(
                     "paired_marginal_actual_step_projection_enabled", True)),
+            "hidden_dim": int(config["denoiser"]["hidden_dim"]),
+            "attention_heads": int(config["denoiser"]["heads"]),
+            "ff_dim": int(config["denoiser"]["ff_dim"]),
+            "execution_strategy": str(training.get("execution_strategy")),
+            "training_runtime_optimizations": bool(
+                training.get("training_runtime_optimizations", False)),
+            "data_loader_workers": int(training.get("data_loader_workers", 0)),
+            "data_loader_prefetch_factor": int(
+                training.get("data_loader_prefetch_factor", 0)),
         }
         recipe_values = {
             "epochs": int(recipe["epochs"]),
@@ -443,6 +459,15 @@ class Pipeline:
                 recipe["rollout_training_enabled"]),
             "paired_marginal_actual_step_projection_enabled": bool(
                 recipe["paired_marginal_actual_step_projection_enabled"]),
+            "hidden_dim": int(config["denoiser"]["hidden_dim"]),
+            "attention_heads": int(config["denoiser"]["heads"]),
+            "ff_dim": int(config["denoiser"]["ff_dim"]),
+            "execution_strategy": str(recipe["execution_strategy"]),
+            "training_runtime_optimizations": bool(
+                recipe["training_runtime_optimizations"]),
+            "data_loader_workers": int(recipe["data_loader_workers"]),
+            "data_loader_prefetch_factor": int(
+                recipe["data_loader_prefetch_factor"]),
         }
         if actual_values != expected_values or recipe_values != expected_values:
             raise RuntimeError(
@@ -595,7 +620,7 @@ class Pipeline:
                      resolved_config=str(self.paper / "configs/resolved/zara1.json"))
 
         resolved = self.paper / "configs/resolved/zara1.json"
-        run_id = "zara1_full_rollout_off_seed3101_e250_v1"
+        run_id = "zara1_full_wide192_rollout_off_seed3101_e250_v1"
         run_dir = self.assets / "outputs/zara1/zara1/3101/none" / run_id
         train_log = self.logs / "ebjd_training.log"
         startup_contract = self.write_ebjd_startup_contract(
