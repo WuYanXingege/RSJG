@@ -156,6 +156,10 @@ class Pipeline:
             if previous.get("schema") != fresh_status["schema"]:
                 raise RuntimeError("existing pipeline status has an unknown schema")
             self.status = previous
+            prior_source = self.status.get("pipeline_source_commit")
+            if prior_source != self.initial_commit:
+                self.status["previous_pipeline_source_commit"] = prior_source
+            self.status["pipeline_source_commit"] = self.initial_commit
             self.status["supervisor_restarted_at"] = datetime.now(timezone.utc).isoformat()
         else:
             self.status = fresh_status
