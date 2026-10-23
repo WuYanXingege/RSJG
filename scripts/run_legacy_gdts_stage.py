@@ -42,6 +42,21 @@ def rng_state(loader) -> dict:
     }
 
 
+def cpu_byte_rng_state(value, name: str) -> torch.Tensor:
+    """Return the canonical state tensor required by PyTorch RNG APIs.
+
+    Legacy checkpoint loading uses ``map_location=self.device``.  On CUDA this
+    also moves serialized RNG tensors to the GPU, while ``set_rng_state`` and
+    ``Generator.set_state`` require CPU ByteTensors.  Normalizing the storage
+    device here preserves the serialized bytes without changing the state.
+    """
+    if not isinstance(value, torch.Tensor):
+        raise RuntimeError(f"{name} RNG state is not a tensor")
+    if value.dtype != torch.uint8:
+        raise RuntimeError(f"{name} RNG state is not uint8")
+    return value.detach().to(device="cpu", dtype=torch.uint8).contiguous()
+
+
 def restore_rng(state: dict, loader) -> None:
     required = {
         "python", "numpy", "torch_cpu", "torch_cuda_all",
@@ -56,16 +71,20 @@ def restore_rng(state: dict, loader) -> None:
         int(numpy_state["position"]), int(numpy_state["has_gauss"]),
         float(numpy_state["cached_gaussian"]),
     ))
-    torch.set_rng_state(state["torch_cpu"])
+    torch.set_rng_state(cpu_byte_rng_state(state["torch_cpu"], "torch_cpu"))
     if state["torch_cuda_all"] is not None:
         if not torch.cuda.is_available():
             raise RuntimeError("cannot restore CUDA RNG without CUDA")
-        torch.cuda.set_rng_state_all(state["torch_cuda_all"])
+        torch.cuda.set_rng_state_all([
+            cpu_byte_rng_state(value, f"torch_cuda_all[{index}]")
+            for index, value in enumerate(state["torch_cuda_all"])
+        ])
     generator = getattr(loader, "generator", None)
     if state["train_loader_generator"] is not None:
         if generator is None:
             raise RuntimeError("checkpoint contains loader RNG but loader has none")
-        generator.set_state(state["train_loader_generator"])
+        generator.set_state(cpu_byte_rng_state(
+            state["train_loader_generator"], "train_loader_generator"))
 
 
 def atomic_torch_save(payload: dict, destination: Path) -> None:
