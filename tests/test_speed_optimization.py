@@ -207,6 +207,22 @@ def test_architecture_identity_and_rollout_off_path_are_preserved():
     assert sum(parameter.numel() for parameter in model.parameters()) == 3_612_764
 
 
+def test_explicit_rollout_off_never_reenables_at_late_epoch():
+    torch.manual_seed(72)
+    trainer = EBJDTrainer(EBJDModel(), _options(
+        epochs=250,
+        rollout_start_epoch=21,
+        use_rollout_loss=False,
+        use_actual_step_constraint=False,
+        training_runtime_optimizations=True,
+    ))
+    record = trainer.train_step(
+        [_fix_identities(make_batch((1,), pixels=16))], epoch=250)
+    assert record["rollout_update"] == 0
+    assert record["rollout"] == 0
+    assert record["projection_active"] == 0
+
+
 def test_deferred_runtime_logs_preserve_off_optimizer_update():
     torch.manual_seed(91)
     base = EBJDModel()

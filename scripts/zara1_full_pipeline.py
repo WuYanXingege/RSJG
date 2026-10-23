@@ -411,6 +411,85 @@ class Pipeline:
         ], cwd=self.paper)
         return commit
 
+    def write_ebjd_startup_contract(
+        self, resolved: Path, run_id: str, device: str,
+    ) -> Path:
+        """Create the fail-closed contract consumed before EBJD update one."""
+        config = json.loads(resolved.read_text(encoding="utf-8"))
+        training = config["training"]
+        recipe = self.recipe["ebjd"]
+        expected_values = {
+            "epochs": 250,
+            "rollout_training_enabled": False,
+            "paired_marginal_actual_step_projection_enabled": False,
+        }
+        actual_values = {
+            "epochs": int(training["epochs"]),
+            "rollout_training_enabled": bool(
+                training.get("rollout_training_enabled", True)),
+            "paired_marginal_actual_step_projection_enabled": bool(
+                training.get(
+                    "paired_marginal_actual_step_projection_enabled", True)),
+        }
+        recipe_values = {
+            "epochs": int(recipe["epochs"]),
+            "rollout_training_enabled": bool(
+                recipe["rollout_training_enabled"]),
+            "paired_marginal_actual_step_projection_enabled": bool(
+                recipe["paired_marginal_actual_step_projection_enabled"]),
+        }
+        if actual_values != expected_values or recipe_values != expected_values:
+            raise RuntimeError(
+                "ZARA1 EBJD e250 rollout-OFF contract mismatch: "
+                f"resolved={actual_values}, recipe={recipe_values}")
+        if int(config["evaluation"]["worlds"]) != 20 or int(
+            config["evaluation"]["steps"]) != 20:
+            raise RuntimeError("ZARA1 formal inference must remain 20 worlds/20 steps")
+        commit = git_output(self.paper, "rev-parse", "HEAD")
+        if config["experiment"]["source_commit"] != commit:
+            raise RuntimeError("resolved config is not bound to the current paper commit")
+        if git_output(self.paper, "diff", "--name-only").strip():
+            raise RuntimeError("tracked paper files changed before formal EBJD launch")
+        sys.path.insert(0, str(self.paper))
+        from ebjd.config import semantic_config_hash
+        path = self.root / "receipts/ebjd_e250_rollout_off_startup_contract.json"
+        expected = {
+            "resolved_config_path": str(resolved.resolve()),
+            "resolved_config_sha256": sha256(resolved),
+            "semantic_config_hash": semantic_config_hash(config),
+            "source_commit": commit,
+            **expected_values,
+            "evaluation_worlds": 20,
+            "evaluation_steps": 20,
+            "run_id": run_id,
+            "ablation": "none",
+            "device": device,
+        }
+        atomic_json(path, {
+            "schema": "ebjd-zara1-e250-rollout-off-launch-v1",
+            "expected": expected,
+            "scheduler": {
+                "type": "epoch_warmup_cosine",
+                "total_epochs": 250,
+                "warmup_epochs": int(training["lr_warmup_epochs"]),
+                "cosine_decay_epoch_start": int(training["lr_warmup_epochs"]) + 1,
+                "cosine_decay_epoch_end": 250,
+                "cosine_denominator_epochs": 250 - int(
+                    training["lr_warmup_epochs"]),
+                "initial_new_module_lr": float(training["new_module_lr"]),
+                "initial_unet_lr": float(training["unet_lr"]),
+                "final_lr_fraction": float(training["lr_final_fraction"]),
+                "independent_total_steps_or_t_max": None,
+            },
+            "launch_parameters": {
+                "config": str(resolved.resolve()), "ablation": "none",
+                "device": device, "run_id": run_id,
+                "resume_policy": "same_run_last_pt_epoch_boundary_only",
+            },
+            "created_at": datetime.now(timezone.utc).isoformat(),
+        })
+        return path
+
     def freeze_selection(self, run_dir: Path) -> tuple[Path, str]:
         selection_path = run_dir / "SELECTION_STATUS.json"
         selection = json.loads(selection_path.read_text(encoding="utf-8"))
@@ -512,21 +591,33 @@ class Pipeline:
                      resolved_config=str(self.paper / "configs/resolved/zara1.json"))
 
         resolved = self.paper / "configs/resolved/zara1.json"
-        run_id = "zara1_full_seed3101_pipeline_v1"
+        run_id = "zara1_full_rollout_off_seed3101_e250_v1"
         run_dir = self.assets / "outputs/zara1/zara1/3101/none" / run_id
         train_log = self.logs / "ebjd_training.log"
+        startup_contract = self.write_ebjd_startup_contract(
+            resolved, run_id, "cuda:0")
         train_command = [
             self.python, "-u", "-B", "-m", "ebjd.train", "--config", str(resolved),
             "--ablation", "none", "--device", "cuda:0", "--run-id", run_id,
+            "--startup-contract", str(startup_contract),
         ]
         if (run_dir / "last.pt").is_file():
             train_command += ["--resume", str(run_dir / "last.pt")]
-        if self.checkpoint_epoch(run_dir / "last.pt") != 100:
+        self.persist(
+            stage="ebjd_startup_gate", status="PASSED", epoch=0, update=0,
+            startup_contract=str(startup_contract),
+            startup_contract_sha256=sha256(startup_contract),
+            ebjd_epochs=250, rollout_training_enabled=False,
+            paired_marginal_actual_step_projection_enabled=False,
+            ebjd_run_id=run_id)
+        if self.checkpoint_epoch(run_dir / "last.pt") != 250:
             self.run_stage(
                 "ebjd_training", train_command, train_log,
                 progress=lambda: ebjd_progress(train_log))
         selected, selected_hash = self.freeze_selection(run_dir)
-        self.persist(stage="ebjd_training", status="COMPLETE", epoch=100,
+        if self.checkpoint_epoch(run_dir / "final.pt") != 250:
+            raise RuntimeError("formal ZARA1 final.pt is not the epoch-250 boundary")
+        self.persist(stage="ebjd_training", status="COMPLETE", epoch=250,
                      selected_checkpoint=str(selected),
                      selected_checkpoint_sha256=selected_hash)
 
@@ -551,7 +642,7 @@ class Pipeline:
             "matched_gdts_test_seeds2035_2039", baseline_asset, baseline_hash,
             Path(self.recipe["manifests"]["test"]), test_parity,
             [2035, 2036, 2037, 2038, 2039], "test")
-        self.persist(stage="complete", status="COMPLETE", epoch=100,
+        self.persist(stage="complete", status="COMPLETE", epoch=250,
                      ebjd_five_seed_result=str(ebjd_result),
                      gdts_five_seed_result=str(gdts_result), child_pid=None)
 

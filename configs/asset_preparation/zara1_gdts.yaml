@@ -55,10 +55,12 @@ matched_evaluation:
   ddim_steps: 20
   output: native_GDTS_candidates_on_exact_synchronized_scene_windows
 ebjd:
-  epochs: 100
+  epochs: 250
   training_seed: 3101
   architecture: FULL
   output: Raw
   ablation: none
+  rollout_training_enabled: false
+  paired_marginal_actual_step_projection_enabled: false
   execution_strategy: small_group_uncheckpoint_v1
   rollout_uncheckpointed_max_agent_slots: 32

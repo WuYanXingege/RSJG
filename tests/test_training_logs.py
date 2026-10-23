@@ -3,7 +3,7 @@ import csv
 import pytest
 
 from ebjd.train import append_epoch_metrics, format_epoch_summary
-from ebjd.config import validate_supported_config
+from ebjd.config import trainer_options, validate_supported_config
 
 from conftest import load_paper_config
 
@@ -17,15 +17,24 @@ def _row(epoch):
         "JADE": 0.31,
         "JFDE": 0.61,
         "epoch_minutes": 3.5,
+        "eta_minutes": 249.5,
+        "validated": True,
     }
 
 
 def test_epoch_summary_is_one_compact_line():
-    line = format_epoch_summary(1, 100, _row(1), 3.5)
+    line = format_epoch_summary(1, 250, 1.25, _row(1), 3.5, 249.5)
     assert line == (
-        "Epoch 001/100 | minADE=0.210000 | minFDE=0.390000 | "
-        "JADE=0.310000 | JFDE=0.610000 | time=3.50min")
+        "Epoch 001/250 | loss=1.250000 | minADE=0.210000 | "
+        "minFDE=0.390000 | JADE=0.310000 | JFDE=0.610000 | "
+        "time=3.50min | ETA=4.16h")
     assert "\n" not in line
+
+
+def test_epoch_summary_uses_dash_when_epoch_was_not_validated():
+    line = format_epoch_summary(2, 250, 0.75, None, 2.0, 496.0)
+    assert (
+        "minADE=— | minFDE=— | JADE=— | JFDE=—" in line)
 
 
 def test_epoch_csv_is_atomic_append_with_one_row_per_epoch(tmp_path):
@@ -37,7 +46,7 @@ def test_epoch_csv_is_atomic_append_with_one_row_per_epoch(tmp_path):
     assert [int(item["epoch"]) for item in rows] == [1, 2]
     assert set(rows[0]) == {
         "epoch", "train_loss", "minADE", "minFDE", "JADE", "JFDE",
-        "epoch_minutes",
+        "epoch_minutes", "eta_minutes", "validated",
     }
     assert not path.with_suffix(".csv.tmp").exists()
 
@@ -57,5 +66,13 @@ def test_zara1_config_is_explicitly_data_ready_but_formal_training_blocked():
     assert config["experiment"]["fold"] == "zara1"
     assert config["paths"]["train_manifest"].endswith("train_manifest.json")
     assert config["paths"]["accepted_fold_matched_gdts_unet"] is None
+    assert config["training"]["epochs"] == 250
+    assert config["training"]["rollout_training_enabled"] is False
+    assert config["training"][
+        "paired_marginal_actual_step_projection_enabled"] is False
+    options = trainer_options(config)
+    assert options.epochs == 250
+    assert options.use_rollout_loss is False
+    assert options.use_actual_step_constraint is False
     assert config["evaluation"]["matched_gdts_validation"]["status"] == (
         "missing_fold_matched_assets")

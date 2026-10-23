@@ -81,6 +81,8 @@ ALLOWED_KEYS = {
         "physical_group_max_padding_ratio", "rollout_block_checkpointing",
         "rollout_uncheckpointed_max_agent_slots",
         "training_runtime_optimizations",
+        "rollout_training_enabled",
+        "paired_marginal_actual_step_projection_enabled",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -99,6 +101,8 @@ OPTIONAL_KEYS = {"training": {
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
     "rollout_uncheckpointed_max_agent_slots",
     "training_runtime_optimizations",
+    "rollout_training_enabled",
+    "paired_marginal_actual_step_projection_enabled",
 }}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
@@ -273,7 +277,8 @@ def validate_supported_config(config: dict) -> None:
         raise ValueError(f"unsupported training.execution_strategy={strategy!r}")
     for key in (
         "scene_compaction", "rollout_block_checkpointing",
-        "training_runtime_optimizations",
+        "training_runtime_optimizations", "rollout_training_enabled",
+        "paired_marginal_actual_step_projection_enabled",
     ):
         if key in training and not isinstance(training[key], bool):
             raise ValueError(f"training.{key} must be boolean")
@@ -446,9 +451,10 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
         rollout_steps=int(training["rollout_steps"]),
         softmin_temperature_start=float(training["softmin_temperature_start_m"]),
         softmin_temperature_end=float(training["softmin_temperature_end_m"]),
-        use_rollout_loss=True,
+        use_rollout_loss=bool(training.get("rollout_training_enabled", True)),
         use_geometry_loss=True,
-        use_actual_step_constraint=True,
+        use_actual_step_constraint=bool(training.get(
+            "paired_marginal_actual_step_projection_enabled", True)),
         activation_checkpointing=bool(training["activation_checkpointing"]),
         precision=str(training["mixed_precision"]),
         scene_forward_chunk=int(training.get("scene_forward_chunk", 0)),

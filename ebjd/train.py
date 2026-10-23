@@ -100,6 +100,9 @@ def parse_args() -> argparse.Namespace:
         "--migration-only", action="store_true",
         help="validate --resume-from, write and reload the migrated boundary, then exit")
     parser.add_argument("--run-id", help="new unique run id; defaults to UTC-like local timestamp")
+    parser.add_argument(
+        "--startup-contract",
+        help="fail-closed formal launch contract checked before the first update")
     parser.add_argument("--smoke", action="store_true", help="synthetic wiring only")
     return parser.parse_args()
 
@@ -121,20 +124,81 @@ def _atomic_json(path: Path, payload: dict) -> None:
 
 EPOCH_METRIC_FIELDS = (
     "epoch", "train_loss", "minADE", "minFDE", "JADE", "JFDE",
-    "epoch_minutes",
+    "epoch_minutes", "eta_minutes", "validated",
 )
 
 
 def format_epoch_summary(
-    epoch: int, epochs: int, metrics: dict[str, float], epoch_minutes: float,
+    epoch: int, epochs: int, train_loss: float,
+    metrics: dict[str, float] | None, epoch_minutes: float, eta_minutes: float,
 ) -> str:
     """Return the single human-readable line emitted after a complete epoch."""
+    shown = {
+        name: "—" if metrics is None else f"{metrics[name]:.6f}"
+        for name in ("minADE", "minFDE", "JADE", "JFDE")
+    }
     return (
         f"Epoch {epoch:03d}/{epochs:03d} | "
-        f"minADE={metrics['minADE']:.6f} | minFDE={metrics['minFDE']:.6f} | "
-        f"JADE={metrics['JADE']:.6f} | JFDE={metrics['JFDE']:.6f} | "
-        f"time={epoch_minutes:.2f}min"
+        f"loss={train_loss:.6f} | minADE={shown['minADE']} | "
+        f"minFDE={shown['minFDE']} | JADE={shown['JADE']} | "
+        f"JFDE={shown['JFDE']} | time={epoch_minutes:.2f}min | "
+        f"ETA={eta_minutes / 60.0:.2f}h"
     )
+
+
+def validate_startup_contract(
+    contract_path: str | Path, config_path: str | Path, config: dict,
+    args: argparse.Namespace,
+) -> dict:
+    """Verify the immutable ZARA1 formal contract before any optimizer update."""
+    contract_file = Path(contract_path).resolve()
+    payload = json.loads(contract_file.read_text(encoding="utf-8"))
+    if payload.get("schema") != "ebjd-zara1-e250-rollout-off-launch-v1":
+        raise ValueError("startup contract schema mismatch")
+    resolved = Path(config_path).resolve()
+    checks = {
+        "resolved_config_path": str(resolved),
+        "resolved_config_sha256": file_sha256(resolved),
+        "semantic_config_hash": semantic_config_hash(config),
+        "source_commit": subprocess.run(
+            ["git", "-C", str(Path(__file__).resolve().parents[1]),
+             "rev-parse", "HEAD"], check=True, capture_output=True,
+            text=True).stdout.strip(),
+        "epochs": int(config["training"]["epochs"]),
+        "rollout_training_enabled": bool(
+            config["training"].get("rollout_training_enabled", True)),
+        "paired_marginal_actual_step_projection_enabled": bool(
+            config["training"].get(
+                "paired_marginal_actual_step_projection_enabled", True)),
+        "evaluation_worlds": int(config["evaluation"]["worlds"]),
+        "evaluation_steps": int(config["evaluation"]["steps"]),
+        "run_id": args.run_id,
+        "ablation": args.ablation,
+        "device": args.device,
+    }
+    expected = payload.get("expected", {})
+    mismatches = {
+        key: {"expected": value, "actual": checks.get(key)}
+        for key, value in expected.items() if checks.get(key) != value
+    }
+    if mismatches:
+        raise ValueError(f"startup contract mismatch: {mismatches}")
+    if checks["epochs"] != 250:
+        raise ValueError("formal ZARA1 startup requires epochs=250")
+    if checks["rollout_training_enabled"]:
+        raise ValueError("formal ZARA1 startup requires rollout training OFF")
+    if checks["paired_marginal_actual_step_projection_enabled"]:
+        raise ValueError("formal ZARA1 startup requires paired projection OFF")
+    if checks["evaluation_worlds"] != 20 or checks["evaluation_steps"] != 20:
+        raise ValueError("formal ZARA1 inference contract requires 20 worlds/20 steps")
+    return {
+        "schema": "ebjd-startup-gate-receipt-v1",
+        "contract_path": str(contract_file),
+        "contract_sha256": file_sha256(contract_file),
+        "checks": checks,
+        "resume": str(Path(args.resume).resolve()) if args.resume else None,
+        "passed": True,
+    }
 
 
 def append_epoch_metrics(path: Path, row: dict[str, float | int]) -> None:
@@ -507,6 +571,10 @@ def main() -> None:
     if args.migration_only and not args.resume_from:
         raise ValueError("--migration-only requires --resume-from")
     config = load_config(args.config)
+    startup_gate = None
+    if args.startup_contract:
+        startup_gate = validate_startup_contract(
+            args.startup_contract, args.config, config, args)
     if not args.smoke:
         verify_formal_baseline_binding(config)
     seed = int(config["seed"])
@@ -553,6 +621,10 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     _atomic_json(output / "RESOLVED_CONFIG.json", config)
     _atomic_json(output / "RUN_IDENTITY.json", identity)
+    if startup_gate is not None:
+        if args.resume and Path(args.resume).resolve() != (output / "last.pt").resolve():
+            raise ValueError("formal startup contract permits resume only from this run's last.pt")
+        _atomic_json(output / "STARTUP_GATE_RECEIPT.json", startup_gate)
     device = torch.device(args.device)
     model = build_model(config, args.ablation).to(device)
     options = trainer_options(config, args.ablation)
@@ -640,6 +712,7 @@ def main() -> None:
         return
     log_path = output / "train.jsonl"
     epoch_metrics_path = output / "epoch_metrics.csv"
+    elapsed_epoch_minutes: list[float] = []
     for epoch in range(start_epoch, options.epochs + 1):
         epoch_started = time.perf_counter()
         epoch_train_loss = 0.0
@@ -686,6 +759,11 @@ def main() -> None:
         trainer.save_checkpoint(
             output / "last.pt", epoch, state, loader_generator,
             {"validation": metrics, "candidate": candidate})
+        if epoch == options.epochs:
+            trainer.save_checkpoint(
+                output / "final.pt", epoch, state, loader_generator,
+                {"validation": metrics, "candidate": candidate,
+                 "role": "final_epoch_not_automatic_selection"})
         if selector.best_eligible is candidate:
             trainer.save_checkpoint(
                 output / "best.pt", epoch, state, loader_generator,
@@ -699,15 +777,22 @@ def main() -> None:
         if not epoch_update_count:
             raise RuntimeError("epoch completed without an optimizer update")
         epoch_minutes = (time.perf_counter() - epoch_started) / 60.0
+        elapsed_epoch_minutes.append(epoch_minutes)
+        eta_minutes = (
+            sum(elapsed_epoch_minutes) / len(elapsed_epoch_minutes)
+            * (options.epochs - epoch))
+        train_loss = epoch_train_loss / epoch_update_count
         append_epoch_metrics(epoch_metrics_path, {
             "epoch": epoch,
-            "train_loss": epoch_train_loss / epoch_update_count,
+            "train_loss": train_loss,
             "minADE": metrics["minADE"], "minFDE": metrics["minFDE"],
             "JADE": metrics["JADE"], "JFDE": metrics["JFDE"],
             "epoch_minutes": epoch_minutes,
+            "eta_minutes": eta_minutes, "validated": True,
         })
         print(format_epoch_summary(
-            epoch, options.epochs, metrics, epoch_minutes), flush=True)
+            epoch, options.epochs, train_loss, metrics, epoch_minutes,
+            eta_minutes), flush=True)
 
 
 if __name__ == "__main__":

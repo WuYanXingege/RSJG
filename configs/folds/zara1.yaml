@@ -22,3 +22,9 @@ evaluation:
     minFDE: null
     source: no_local_zara1_goal_unet_or_matched_gdts_validation_result
     reference_limitation: formal_training_fail_closed_until_fold_matched_assets_are_verified
+training:
+  # ZARA1 formal contract: exactly epochs 1--250 with every training-time
+  # differentiable rollout and its paired actual-step projection disabled.
+  epochs: 250
+  rollout_training_enabled: false
+  paired_marginal_actual_step_projection_enabled: false
