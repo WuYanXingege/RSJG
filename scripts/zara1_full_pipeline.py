@@ -415,7 +415,13 @@ class Pipeline:
         self, resolved: Path, run_id: str, device: str,
     ) -> Path:
         """Create the fail-closed contract consumed before EBJD update one."""
-        config = json.loads(resolved.read_text(encoding="utf-8"))
+        # Use the exact loader used by ``python -m ebjd.train``.  PyYAML and
+        # json.loads assign different scalar types to JSON scientific notation
+        # such as 1e-05, which is numerically harmless but changes a typed
+        # semantic hash and must not produce a false startup-gate failure.
+        sys.path.insert(0, str(self.paper))
+        from ebjd.config import load_config, semantic_config_hash
+        config = load_config(resolved)
         training = config["training"]
         recipe = self.recipe["ebjd"]
         expected_values = {
@@ -450,8 +456,6 @@ class Pipeline:
             raise RuntimeError("resolved config is not bound to the current paper commit")
         if git_output(self.paper, "diff", "--name-only").strip():
             raise RuntimeError("tracked paper files changed before formal EBJD launch")
-        sys.path.insert(0, str(self.paper))
-        from ebjd.config import semantic_config_hash
         path = self.root / "receipts/ebjd_e250_rollout_off_startup_contract.json"
         expected = {
             "resolved_config_path": str(resolved.resolve()),

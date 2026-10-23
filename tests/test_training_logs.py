@@ -1,9 +1,12 @@
 import csv
+import json
 
 import pytest
 
 from ebjd.train import append_epoch_metrics, format_epoch_summary
-from ebjd.config import trainer_options, validate_supported_config
+from ebjd.config import (
+    load_config, semantic_config_hash, trainer_options, validate_supported_config,
+)
 
 from conftest import load_paper_config
 
@@ -60,12 +63,13 @@ def test_epoch_csv_refuses_duplicate_or_reordered_epoch(tmp_path):
         append_epoch_metrics(path, _row(1))
 
 
-def test_zara1_config_is_explicitly_data_ready_but_formal_training_blocked():
+def test_zara1_config_is_bound_to_verified_fold_assets():
     config = load_paper_config("zara1")
     validate_supported_config(config)
     assert config["experiment"]["fold"] == "zara1"
     assert config["paths"]["train_manifest"].endswith("train_manifest.json")
-    assert config["paths"]["accepted_fold_matched_gdts_unet"] is None
+    assert config["paths"]["accepted_fold_matched_gdts_unet"].endswith(
+        "goal_unet_best.pt")
     assert config["training"]["epochs"] == 250
     assert config["training"]["rollout_training_enabled"] is False
     assert config["training"][
@@ -75,4 +79,17 @@ def test_zara1_config_is_explicitly_data_ready_but_formal_training_blocked():
     assert options.use_rollout_loss is False
     assert options.use_actual_step_constraint is False
     assert config["evaluation"]["matched_gdts_validation"]["status"] == (
-        "missing_fold_matched_assets")
+        "bound_to_manifest")
+
+
+def test_contract_hash_uses_the_runtime_loader_for_resolved_json(tmp_path):
+    config = load_paper_config("zara1")
+    path = tmp_path / "resolved.json"
+    path.write_text(json.dumps(config, indent=2), encoding="utf-8")
+    runtime_config = load_config(path)
+    # The contract must hash precisely the in-memory representation consumed
+    # by ebjd.train, not a separately parsed JSON object.
+    assert semantic_config_hash(runtime_config) == semantic_config_hash(
+        load_config(path))
+    assert semantic_config_hash(runtime_config) != semantic_config_hash(
+        json.loads(path.read_text(encoding="utf-8")))
