@@ -79,6 +79,10 @@ class TrainerOptions:
     # random draws, or optimizer update.  The disabled default keeps archived
     # configurations on their original execution path.
     training_runtime_optimizations: bool = False
+    # Research-only transition for decoder-energy CTF feedback.  These are
+    # optimizer-update coordinates on the unchanged 250-epoch schedule.
+    ctf_feedback_transition_start_update: int = 0
+    ctf_feedback_transition_updates: int = 0
 
 
 @dataclass(frozen=True)
@@ -123,6 +127,15 @@ class BatchRandomDraws:
         return BatchRandomDraws(
             self.time[start:stop], pack(self.diffusion_noise),
             None if self.rollout_initial is None else pack(self.rollout_initial))
+
+
+def ctf_feedback_transition_eta(update: int, start: int, count: int) -> float:
+    """Linearly transition from zero to one over exact optimizer updates."""
+    if min(update, start, count) < 0 or count < 1:
+        raise ValueError("invalid CTF feedback transition coordinates")
+    if count == 1:
+        return float(update >= start)
+    return min(max(float((update - start) / (count - 1)), 0.0), 1.0)
 
 
 def rollout_step_checkpoint_policy(
@@ -243,6 +256,15 @@ class EBJDTrainer:
                 1 + math.cos(math.pi * min(progress, 1)))
         self.optimizer.lr = self.options.new_module_lr * factor
         self.optimizer.unet_lr = self.options.unet_lr * factor
+
+    def _ctf_feedback_eta(self) -> float:
+        if self.model.denoiser.ctf_feedback_basis == "legacy":
+            return 0.0
+        start = self.options.ctf_feedback_transition_start_update
+        count = self.options.ctf_feedback_transition_updates
+        if count < 1:
+            raise ValueError("decoder-energy CTF requires transition updates")
+        return ctf_feedback_transition_eta(self.update_index, start, count)
 
     @property
     def device(self) -> torch.device:
@@ -535,6 +557,8 @@ class EBJDTrainer:
         if not microbatches:
             raise ValueError("train_step needs at least one microbatch")
         self._schedule(epoch)
+        ctf_feedback_eta = self._ctf_feedback_eta()
+        self.model.denoiser.set_ctf_feedback_eta(ctf_feedback_eta)
         do_rollout = (
             self.options.use_rollout_loss and epoch >= self.options.rollout_start_epoch
             and self.update_index % self.options.rollout_every == 0)
@@ -617,6 +641,7 @@ class EBJDTrainer:
                 self.options.physical_group_max_scenes),
             "rollout_block_checkpointing": float(
                 self.options.rollout_block_checkpointing),
+            "ctf_feedback_eta": ctf_feedback_eta,
         })
         if deferred:
             tensor_names = [

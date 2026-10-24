@@ -111,6 +111,12 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--migration-only", action="store_true",
         help="validate --resume-from, write and reload the migrated boundary, then exit")
+    parser.add_argument(
+        "--research-fork", choices=("ctf_decoder_energy_v1",),
+        help="permit one explicitly audited semantic research fork")
+    parser.add_argument(
+        "--stop-after-epoch", type=int,
+        help="stop cleanly after this epoch while retaining the configured schedule length")
     parser.add_argument("--run-id", help="new unique run id; defaults to UTC-like local timestamp")
     parser.add_argument(
         "--startup-contract",
@@ -507,6 +513,7 @@ def validate_migration_payload(
     config: dict,
     execution_identity: dict,
     ablation: str,
+    research_fork: str | None = None,
 ) -> dict:
     """Validate the narrow execution-only migration contract."""
     actual_sha256 = file_sha256(checkpoint)
@@ -525,10 +532,40 @@ def validate_migration_payload(
         raise ValueError("origin checkpoint config hash does not match its run identity")
     old_semantic_hash = semantic_config_hash(origin_config)
     new_semantic_hash = semantic_config_hash(config)
-    if old_semantic_hash != new_semantic_hash:
-        raise ValueError("semantic configuration differs from origin checkpoint")
     differences = config_differences(origin_config, config)
     allowed_paths = {".".join(path) for path in SEMANTIC_CONFIG_EXCLUSIONS}
+    research_paths: set[str] = set()
+    research_receipt = None
+    if research_fork is None:
+        if old_semantic_hash != new_semantic_hash:
+            raise ValueError("semantic configuration differs from origin checkpoint")
+    elif research_fork == "ctf_decoder_energy_v1":
+        research_paths = {
+            "denoiser.ctf_feedback_basis",
+            "training.ctf_feedback_transition_start_update",
+            "training.ctf_feedback_transition_updates",
+        }
+        start = int(config["training"].get(
+            "ctf_feedback_transition_start_update", -1))
+        count = int(config["training"].get(
+            "ctf_feedback_transition_updates", 0))
+        if config["denoiser"].get("ctf_feedback_basis") != "decoder_energy":
+            raise ValueError("CTF research fork requires decoder_energy basis")
+        if start != int(payload["update_index"]):
+            raise ValueError(
+                "CTF transition must start at the parent optimizer update")
+        if count <= 1:
+            raise ValueError("CTF transition requires at least two optimizer updates")
+        research_receipt = {
+            "name": research_fork,
+            "allowed_semantic_paths": sorted(research_paths),
+            "transition_start_update": start,
+            "transition_updates": count,
+            "interpretation": "decoder-sensitivity heuristic, not an exact transform",
+        }
+    else:
+        raise ValueError(f"unsupported research fork: {research_fork}")
+    allowed_paths |= research_paths
     disallowed = sorted(set(differences) - allowed_paths)
     if disallowed:
         raise ValueError(f"resume-from has disallowed config changes: {disallowed}")
@@ -556,7 +593,7 @@ def validate_migration_payload(
         raise ValueError("origin checkpoint lacks selection or RNG state")
     if set(rng) != required_rng or rng.get("loader_generator") is None:
         raise ValueError("origin checkpoint RNG state is incomplete")
-    return {
+    receipt = {
         "schema": "ebjd-controlled-checkpoint-migration-v1",
         "origin_checkpoint_absolute_path": str(checkpoint.resolve()),
         "origin_checkpoint_sha256": actual_sha256,
@@ -569,6 +606,7 @@ def validate_migration_payload(
         "execution_source_commit": execution_identity["source_commit"],
         "execution_config_hash": execution_identity["config_hash"],
         "semantic_config_hash": new_semantic_hash,
+        "origin_semantic_config_hash": old_semantic_hash,
         "checked_semantic_diff": differences,
         "runtime_settings": execution_identity["execution"],
         "validated_execution_migration_profile": migration_profile,
@@ -578,6 +616,9 @@ def validate_migration_payload(
         "origin_selected_artifacts": _selected_origin_artifacts(checkpoint),
         "origin_tensor_audit": audit,
     }
+    if research_receipt is not None:
+        receipt["research_semantic_change"] = research_receipt
+    return receipt
 
 
 def audit_restored_state(
@@ -631,6 +672,8 @@ def main() -> None:
         Path(args.resume).resolve().parent.name if args.resume
         else datetime.now().strftime("%Y%m%d_%H%M%S"))
     identity = _identity(config, args.ablation, run_id, args.smoke)
+    identity["research_fork"] = args.research_fork or "none"
+    identity["stop_after_epoch"] = args.stop_after_epoch
     checkpoint_payload = None
     migration_receipt = None
     if args.resume or args.resume_from:
@@ -644,7 +687,8 @@ def main() -> None:
         else:
             migration_receipt = validate_migration_payload(
                 checkpoint_payload, checkpoint_path,
-                args.resume_from_sha256, config, identity, args.ablation)
+                args.resume_from_sha256, config, identity, args.ablation,
+                args.research_fork)
             identity["resume_origin"] = {
                 "checkpoint_absolute_path": str(checkpoint_path),
                 "checkpoint_sha256": args.resume_from_sha256,
@@ -753,10 +797,16 @@ def main() -> None:
             "update": trainer.update_index,
         }, sort_keys=True), flush=True)
         return
+    end_epoch = options.epochs
+    if args.stop_after_epoch is not None:
+        if not start_epoch <= args.stop_after_epoch <= options.epochs:
+            raise ValueError(
+                "stop-after-epoch must be within the resumed training interval")
+        end_epoch = args.stop_after_epoch
     log_path = output / "train.jsonl"
     epoch_metrics_path = output / "epoch_metrics.csv"
     elapsed_epoch_minutes: list[float] = []
-    for epoch in range(start_epoch, options.epochs + 1):
+    for epoch in range(start_epoch, end_epoch + 1):
         epoch_started = time.perf_counter()
         epoch_train_loss = 0.0
         epoch_update_count = 0

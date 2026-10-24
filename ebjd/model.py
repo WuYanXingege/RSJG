@@ -21,6 +21,7 @@ class EBJDModel(nn.Module):
         attention_heads: int = 4,
         ff_dim: int = 512,
         history_social_blocks: int = 2,
+        ctf_feedback_basis: str = "legacy",
     ) -> None:
         super().__init__()
         self.representation = EndpointBridgeDecomposition(goal_scale, bridge_scale)
@@ -31,7 +32,7 @@ class EBJDModel(nn.Module):
             social_heads=attention_heads, social_ff_dim=ff_dim)
         self.denoiser = GeometryConditionedJointDenoiser(
             self.representation, dim=hidden_dim, heads=attention_heads,
-            ff_dim=ff_dim)
+            ff_dim=ff_dim, ctf_feedback_basis=ctf_feedback_basis)
 
     def encode_context(
         self, observed: torch.Tensor, semantic_maps: torch.Tensor, valid: torch.Tensor

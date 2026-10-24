@@ -51,6 +51,7 @@ ALLOWED_KEYS = {
         "hidden_dim", "heads", "ff_dim", "coarse_blocks", "refinement_blocks",
         "sublayers", "memory_tokens_per_agent", "cross_world_attention",
         "target_parameterization", "geometry_gate", "clean_future_detach",
+        "ctf_feedback_basis",
     },
     "diffusion": {
         "schedule", "exact_terminal_snr_zero", "training_noise_bins",
@@ -84,6 +85,7 @@ ALLOWED_KEYS = {
         "data_loader_workers", "data_loader_prefetch_factor",
         "rollout_training_enabled",
         "paired_marginal_actual_step_projection_enabled",
+        "ctf_feedback_transition_start_update", "ctf_feedback_transition_updates",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -105,7 +107,8 @@ OPTIONAL_KEYS = {"training": {
     "data_loader_workers", "data_loader_prefetch_factor",
     "rollout_training_enabled",
     "paired_marginal_actual_step_projection_enabled",
-}}
+    "ctf_feedback_transition_start_update", "ctf_feedback_transition_updates",
+}, "denoiser": {"ctf_feedback_basis"}}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
     ("experiment", "source_commit"),
@@ -275,6 +278,10 @@ def validate_supported_config(config: dict) -> None:
         raise ValueError(f"unsupported training.mixed_precision={precision!r}")
     if int(config["map_encoder"].get("crop_pixels", 0)) != 256:
         raise ValueError("formal EBJD config requires 256x256 map crops")
+    ctf_basis = config["denoiser"].get("ctf_feedback_basis", "legacy")
+    if ctf_basis not in {"legacy", "decoder_energy"}:
+        raise ValueError(
+            "denoiser.ctf_feedback_basis must be legacy or decoder_energy")
     if "scene_forward_chunk" in config["training"]:
         chunk = config["training"]["scene_forward_chunk"]
         if isinstance(chunk, bool) or int(chunk) != chunk or int(chunk) != 1:
@@ -305,6 +312,18 @@ def validate_supported_config(config: dict) -> None:
             value = training[key]
             if isinstance(value, bool) or int(value) != value or int(value) < 0:
                 raise ValueError(f"training.{key} must be a non-negative integer")
+    for key in (
+        "ctf_feedback_transition_start_update",
+        "ctf_feedback_transition_updates",
+    ):
+        if key in training:
+            value = training[key]
+            if isinstance(value, bool) or int(value) != value or int(value) < 0:
+                raise ValueError(f"training.{key} must be a non-negative integer")
+    if ctf_basis == "decoder_energy":
+        if int(training.get("ctf_feedback_transition_updates", 0)) < 1:
+            raise ValueError(
+                "decoder_energy requires a positive feedback transition length")
     if "physical_group_max_padding_ratio" in training:
         ratio = training["physical_group_max_padding_ratio"]
         if isinstance(ratio, bool) or float(ratio) < 1.0:
@@ -411,6 +430,8 @@ def build_model(config: dict, ablation: str = "none") -> EBJDModel:
         attention_heads=int(config["denoiser"]["heads"]),
         ff_dim=int(config["denoiser"]["ff_dim"]),
         history_social_blocks=int(config["history_encoder"]["social_blocks"]),
+        ctf_feedback_basis=str(
+            config["denoiser"].get("ctf_feedback_basis", "legacy")),
     )
     model.denoiser.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])
@@ -505,4 +526,8 @@ def trainer_options(config: dict, ablation: str = "none") -> TrainerOptions:
             training.get("rollout_uncheckpointed_max_agent_slots", 0)),
         training_runtime_optimizations=bool(
             training.get("training_runtime_optimizations", False)),
+        ctf_feedback_transition_start_update=int(
+            training.get("ctf_feedback_transition_start_update", 0)),
+        ctf_feedback_transition_updates=int(
+            training.get("ctf_feedback_transition_updates", 0)),
     )

@@ -136,13 +136,23 @@ class GeometryConditionedJointDenoiser(nn.Module):
         heads: int = 4,
         ff_dim: int = 512,
         activation_checkpointing: bool = True,
+        ctf_feedback_basis: str = "legacy",
     ) -> None:
         super().__init__()
+        if ctf_feedback_basis not in {"legacy", "decoder_energy"}:
+            raise ValueError(
+                "ctf_feedback_basis must be 'legacy' or 'decoder_energy'")
         self.representation = representation
         self.dim = int(dim)
         self.heads = int(heads)
         self.activation_checkpointing = bool(activation_checkpointing)
         self.checkpoint_preserve_rng_state = True
+        # Plain Python attributes deliberately keep the certified checkpoint
+        # key space unchanged.  A decoder-energy model evaluates at the fully
+        # aligned endpoint unless its training controller sets a transition
+        # value before an update.
+        self.ctf_feedback_basis = ctf_feedback_basis
+        self.ctf_feedback_eta = 0.0 if ctf_feedback_basis == "legacy" else 1.0
         self.state_stem = nn.Sequential(nn.Linear(2, dim), nn.LayerNorm(dim))
         self.time_mlp = nn.Sequential(nn.Linear(dim, 256), nn.SiLU(), nn.Linear(256, dim))
         self.token_type = nn.Parameter(torch.zeros(2, dim))
@@ -172,6 +182,59 @@ class GeometryConditionedJointDenoiser(nn.Module):
     @staticmethod
     def _combine(bridge: torch.Tensor, goal: torch.Tensor) -> torch.Tensor:
         return torch.cat((bridge, goal.unsqueeze(-2)), dim=-2)
+
+    def set_ctf_feedback_eta(self, eta: float) -> None:
+        eta = float(eta)
+        if not 0.0 <= eta <= 1.0:
+            raise ValueError("ctf_feedback_eta must be in [0, 1]")
+        self.ctf_feedback_eta = eta
+
+    def ctf_decoder_energy_weights(
+        self, device: torch.device | None = None,
+    ) -> torch.Tensor:
+        """Return the fixed latent-slot/physical-time feedback weights.
+
+        This is a normalized decoding-sensitivity heuristic, not an exact
+        coordinate transform.  It is built from existing representation
+        buffers and therefore adds no state-dict entry.
+        """
+        target = device or self.representation.bridge_cholesky.device
+        cholesky2 = self.representation.bridge_cholesky.to(
+            device=target, dtype=torch.float32).square()
+        bridge = (
+            cholesky2 / cholesky2.sum(dim=0, keepdim=True).clamp_min(1e-12)
+        ).transpose(0, 1)
+        weights = torch.zeros(12, 12, device=target, dtype=torch.float32)
+        weights[:11, :11] = bridge
+        interpolation = torch.cat((
+            self.representation.a.to(device=target, dtype=torch.float32),
+            torch.ones(1, device=target, dtype=torch.float32),
+        ))
+        endpoint = interpolation.square()
+        weights[11] = endpoint / endpoint.sum().clamp_min(1e-12)
+        return weights
+
+    def _align_ctf_feedback(
+        self, physical: torch.Tensor, future_bias: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Map physical-time CTF feedback onto EBD latent slots."""
+        eta = self.ctf_feedback_eta
+        if self.ctf_feedback_basis == "legacy" or eta == 0.0:
+            return physical, future_bias
+        weights = self.ctf_decoder_energy_weights(physical.device)
+        with torch.autocast(device_type=physical.device.type, enabled=False):
+            aligned_physical = torch.einsum(
+                "kt,bpntd->bpnkd", weights, physical.float())
+            aligned_bias = torch.einsum(
+                "kt,bpthij->bpkhij", weights, future_bias.float())
+        aligned_physical = aligned_physical.to(physical.dtype)
+        aligned_bias = aligned_bias.to(future_bias.dtype)
+        if eta == 1.0:
+            return aligned_physical, aligned_bias
+        return (
+            torch.lerp(physical, aligned_physical, eta),
+            torch.lerp(future_bias, aligned_bias, eta),
+        )
 
     def _sample_map(self, context: EBJDContext, trajectory: torch.Tensor) -> torch.Tensor:
         with torch.autocast(device_type=trajectory.device.type, enabled=False):
@@ -260,7 +323,7 @@ class GeometryConditionedJointDenoiser(nn.Module):
             clean_latent = alpha.float() * latent.float() - sigma.float() * pre.float()
         trajectory, goal = self.representation.decode(clean_latent, context.baseline)
         gate = alpha.square()
-        hidden = hidden + gate * (
+        physical_feedback = (
             self.clean_injection(self._clean_features(trajectory, goal, context))
             + self.map_injection(self._sample_map(context, trajectory)))
         geometry_source = trajectory
@@ -270,6 +333,9 @@ class GeometryConditionedJointDenoiser(nn.Module):
                 geometry_source, geometry_goal, self.representation.goal_scale,
                 context.observed[..., -1, :])))
         future = future.permute(0, 1, 2, 5, 3, 4).contiguous()
+        physical_feedback, future = self._align_ctf_feedback(
+            physical_feedback, future)
+        hidden = hidden + gate * physical_feedback
         combined = observed + gate.view(batch, 1, 1, 1, 1, 1) * future
         for block in self.blocks[3:]:
             if use_block_checkpoints and self.training and torch.is_grad_enabled():
