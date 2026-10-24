@@ -1,0 +1,70 @@
+{
+  "schema": "ebjd-zara1-training-status-v1",
+  "snapshot_time": "2026-10-24T17:24:53+08:00",
+  "source_commit": "6f86d31f7987f2e8c2fff802e12d8eb04e8d82da",
+  "run_id": "zara1_full_wide192_rollout_off_seed3101_e250_v1",
+  "status": "RUNNING",
+  "latest_complete_epoch": 109,
+  "current_epoch": 110,
+  "current_update_in_epoch": 34,
+  "global_update": 29464,
+  "total_epochs": 250,
+  "eta_hours": 30.52581364859056,
+  "contract": {
+    "rollout_training_enabled": false,
+    "paired_actual_step_projection_enabled": false,
+    "worlds": 20,
+    "ddim_steps": 20,
+    "validation_seed": 2035
+  },
+  "latest_complete_metrics": {
+    "epoch": 109,
+    "train_loss": 1.2729064343152223,
+    "minADE": 0.20783219468182568,
+    "minFDE": 0.37644510589504326,
+    "JADE": 0.282994449968245,
+    "JFDE": 0.5701510913062392,
+    "epoch_minutes": 12.73599244599997
+  },
+  "matched_gdts": {
+    "minADE": 0.18810851181618526,
+    "minFDE": 0.2850338902386895,
+    "JADE": 0.3196069264982609,
+    "JFDE": 0.5868777502909408,
+    "checkpoint_sha256": "34af0f4335de77cf2b6ecd48b93262dfc4764e679bd52fd677392a85c22bf6d7"
+  },
+  "least_violation": {
+    "epoch": 96,
+    "minADE": 0.20547666106035486,
+    "minFDE": 0.35993286926813817,
+    "JADE": 0.2871663987900771,
+    "JFDE": 0.574829590420985,
+    "checkpoint_sha256": "2b6765349e2f87dd86acdbf4431436aa931553378c64f982fbe57e1b6bc3e3cd",
+    "best_eligible": false
+  },
+  "single_metric_bests": {
+    "minADE": {"epoch": 85, "value": 0.20545566813223354},
+    "minFDE": {"epoch": 96, "value": 0.35993286926813817},
+    "JADE": {"epoch": 109, "value": 0.282994449968245},
+    "JFDE": {"epoch": 79, "value": 0.5619850416410159}
+  },
+  "block_means": {
+    "epochs_71_80": {"loss": 1.317843410593492, "minADE": 0.2105735118371428, "minFDE": 0.3735851298603691, "JADE": 0.29161961495400746, "JFDE": 0.5810308821797899},
+    "epochs_81_90": {"loss": 1.29275758392281, "minADE": 0.2105708864793181, "minFDE": 0.3760939693580131, "JADE": 0.2905435801228733, "JFDE": 0.5825003165595815},
+    "epochs_91_100": {"loss": 1.2779618571643476, "minADE": 0.2090733276945357, "minFDE": 0.3707330909292271, "JADE": 0.29015237368854646, "JFDE": 0.5803924072214157},
+    "epochs_100_109": {"loss": 1.2697093597385618, "minADE": 0.20939833089227117, "minFDE": 0.37234031032061904, "JADE": 0.2893010635911784, "JFDE": 0.5781643418607085}
+  },
+  "learning_rate_area": {
+    "used_through_epoch_109": 0.00928520832399369,
+    "remaining_through_epoch_250": 0.003337791676006315,
+    "remaining_to_used_ratio": 0.3594740752753178
+  },
+  "assessment": {
+    "training_health": "NORMAL",
+    "joint_metric_signal": "POSITIVE_AND_STABLE",
+    "strict_no_marginal_regression_contract_outlook": "LOW_PROBABILITY",
+    "primary_bottleneck": "minFDE",
+    "final_contract_status": "NOT_YET_EVALUABLE"
+  },
+  "evidence_boundary": "One training seed and one fixed validation inference seed; validation/test identity is mirrored official-package internal-only."
+}
