@@ -1,0 +1,155 @@
+{
+  "schema": "ebjd-zara1-ctf-decoder-energy-formal-results-v1",
+  "status": "COMPLETE",
+  "decision": "DO_NOT_ADOPT",
+  "code_commit_used_for_all_runs": "a70499025b878a3d48941d634fc44bbff54d30b9",
+  "protocol": {
+    "fold": "zara1",
+    "training_seed": 3101,
+    "evaluation_seeds": [2035, 2036, 2037, 2038, 2039],
+    "worlds": 20,
+    "ddim_steps": 20,
+    "output": "Raw",
+    "rollout_training": false,
+    "paired_actual_step_projection": false,
+    "manifest_sha256": "9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478"
+  },
+  "checkpoints": {
+    "parent_epoch96": "2b6765349e2f87dd86acdbf4431436aa931553378c64f982fbe57e1b6bc3e3cd",
+    "control_epoch101": "418d3dbee6d70ed1fcf39735e1ab427c0dc10cd700cf6ea99758c6537f059988",
+    "candidate_epoch101": "db76f41514c351ca13acbd5b4d83fb60f96b59e6d1e18146d74863785c6a5024"
+  },
+  "five_seed_metrics": {
+    "parent_epoch96": {
+      "mean": {
+        "minADE": 0.20281282837164877,
+        "minFDE": 0.36121543672973255,
+        "JADE": 0.28712615640873607,
+        "JFDE": 0.5732435295741398
+      },
+      "sample_standard_deviation": {
+        "minADE": 0.0011943131056585427,
+        "minFDE": 0.0011750029419659138,
+        "JADE": 0.002230975013268078,
+        "JFDE": 0.0034082491915588256
+      }
+    },
+    "control_epoch101": {
+      "mean": {
+        "minADE": 0.2069837135944677,
+        "minFDE": 0.36723636415985583,
+        "JADE": 0.2936404668872661,
+        "JFDE": 0.5843686574125491
+      },
+      "sample_standard_deviation": {
+        "minADE": 0.0010560413701892297,
+        "minFDE": 0.0022893851789978943,
+        "JADE": 0.002242674783169987,
+        "JFDE": 0.0034478747031872797
+      }
+    },
+    "candidate_epoch101": {
+      "mean": {
+        "minADE": 0.2067546337263039,
+        "minFDE": 0.3670314136078144,
+        "JADE": 0.2934704038395104,
+        "JFDE": 0.584818632496217
+      },
+      "sample_standard_deviation": {
+        "minADE": 0.0009755909653319443,
+        "minFDE": 0.002248622843715413,
+        "JADE": 0.002263975746716083,
+        "JFDE": 0.0035357251699383013
+      }
+    }
+  },
+  "candidate_minus_control": {
+    "mean": {
+      "minADE": -0.00022907986816381176,
+      "minFDE": -0.00020495055204144963,
+      "JADE": -0.00017006304775568637,
+      "JFDE": 0.0004499750836679528
+    },
+    "improvement_seed_counts": {
+      "minADE": 5,
+      "minFDE": 5,
+      "JADE": 4,
+      "JFDE": 1
+    },
+    "per_seed": [
+      {"seed": 2035, "minADE": -0.00033321810419020825, "minFDE": -0.00023167011381308722, "JADE": -0.00021866668834752412, "JFDE": 0.0007435804999148532},
+      {"seed": 2036, "minADE": -0.0000717678777944486, "minFDE": -0.00010569828378820256, "JADE": -0.00027769583653897145, "JFDE": -0.0006993221627641377},
+      {"seed": 2037, "minADE": -0.00024365558728167702, "minFDE": -0.00009607024956692634, "JADE": -0.00039043459803500546, "JFDE": 0.0009561129442765548},
+      {"seed": 2038, "minADE": -0.0002716505121880819, "minFDE": -0.00006106410028117182, "JADE": -0.000025779500286593482, "JFDE": 0.0008325038702352572},
+      {"seed": 2039, "minADE": -0.00022510725936453202, "minFDE": -0.0005302500127575827, "JADE": 0.00006226138442966267, "JFDE": 0.0004170002666770145}
+    ]
+  },
+  "candidate_minus_parent": {
+    "minADE": 0.003941805354655131,
+    "minFDE": 0.00581597687808183,
+    "JADE": 0.00634424743077433,
+    "JFDE": 0.011575102922077196
+  },
+  "matched_gdts_seed2035": {
+    "evidence_scope": "single matched inference seed, not a five-seed mean",
+    "metrics": {
+      "minADE": 0.18810851181618526,
+      "minFDE": 0.2850338902386895,
+      "JADE": 0.3196069264982609,
+      "JFDE": 0.5868777502909408
+    },
+    "candidate_seed2035_minus_gdts_seed2035": {
+      "minADE": 0.01925469253258466,
+      "minFDE": 0.08560704213930947,
+      "JADE": -0.024356588214001718,
+      "JFDE": -0.0010433451424465279
+    }
+  },
+  "parent_goal_stage_mechanism_seed2035": {
+    "coarse_last_ddim_call": {
+      "minFDE": 0.3623642295464138,
+      "JFDE": 0.5750044269658995
+    },
+    "final_raw": {
+      "minFDE": 0.3622847316188363,
+      "JFDE": 0.5749011567985335
+    },
+    "final_minus_coarse": {
+      "minFDE": -0.00007949792757749963,
+      "JFDE": -0.00010327016736596861
+    },
+    "subgroups": {
+      "N=1": {
+        "coarse_minFDE": 0.3263506814114098,
+        "coarse_JFDE": 0.3263506814114098,
+        "final_minFDE": 0.326241628529088,
+        "final_JFDE": 0.326241628529088,
+        "scenes": 103,
+        "agents": 103
+      },
+      "N>=2": {
+        "coarse_minFDE": 0.36401065451663367,
+        "coarse_JFDE": 0.617548174128877,
+        "final_minFDE": 0.3639325077476619,
+        "final_JFDE": 0.6174458933629071,
+        "scenes": 602,
+        "agents": 2253
+      }
+    },
+    "gdts_subgroups": "NOT_VERIFIED_NO_EXISTING_EXPORT"
+  },
+  "screening_gate": {
+    "candidate_mean_minFDE_improves_control_by_at_least_0.005m": false,
+    "candidate_other_three_means_nonworse_than_control": false,
+    "candidate_minFDE_improves_at_least_4_of_5_seeds": true,
+    "candidate_improves_parent_minFDE_and_does_not_regress_other_means": false,
+    "passed": false
+  },
+  "gpu_cost": {
+    "budget_seconds": 14400,
+    "consumed_seconds": 11168.94,
+    "remaining_seconds": 3231.06,
+    "observed_training_process_memory_mib": 6642,
+    "memory_note": "observed with nvidia-smi; not an allocator-instrumented peak"
+  }
+}
