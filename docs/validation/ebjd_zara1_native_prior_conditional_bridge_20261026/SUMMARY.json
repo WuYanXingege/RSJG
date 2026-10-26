@@ -1,0 +1,45 @@
+{
+  "schema": "ebjd-zara1-native-prior-conditional-bridge-summary-v1",
+  "status": "COMPLETE",
+  "classification": "PRIOR_TRANSFER_ONLY",
+  "training_seed": 3101,
+  "inference_seeds": [2035, 2036, 2037, 2038, 2039],
+  "worlds": 20,
+  "ddim_steps": 20,
+  "metrics": {
+    "Control": {
+      "mean": {"minADE": 0.2177284958, "minFDE": 0.2748162681, "JADE": 0.3257238394, "JFDE": 0.5722026609, "Recall@0.5m": 0.9179117148},
+      "sample_standard_deviation": {"minADE": 0.0010330125, "minFDE": 0.0006663132, "JADE": 0.0033278977, "JFDE": 0.0035319347, "Recall@0.5m": 0.0014580275},
+      "N_ge_2_mean": {"minADE": 0.2184755558, "minFDE": 0.2767305300, "JADE": 0.3469973390, "JFDE": 0.6302485589}
+    },
+    "Candidate": {
+      "mean": {"minADE": 0.1922921416, "minFDE": 0.3098261318, "JADE": 0.2752047915, "JFDE": 0.5104083930, "Recall@0.5m": 0.8620543294},
+      "sample_standard_deviation": {"minADE": 0.0009341483, "minFDE": 0.0035868802, "JADE": 0.0007374450, "JFDE": 0.0036302793, "Recall@0.5m": 0.0064789208},
+      "N_ge_2_mean": {"minADE": 0.1926622997, "minFDE": 0.3118118737, "JADE": 0.2907761687, "JFDE": 0.5521589734},
+      "goal_correction_mean": {"P50_m": 0.8385191441, "P95_m": 2.3015944481}
+    }
+  },
+  "candidate_minus_control": {
+    "mean": {"minADE": -0.0254363542, "minFDE": 0.0350098637, "JADE": -0.0505190478, "JFDE": -0.0617942679, "Recall@0.5m": -0.0558573854, "N_ge_2_JFDE": -0.0780895854},
+    "candidate_improvement_seed_count": {"minADE": 5, "minFDE": 0, "JADE": 5, "JFDE": 5},
+    "per_seed_minFDE": [0.0332488991, 0.0378477570, 0.0384974902, 0.0354902557, 0.0299649165]
+  },
+  "gates": {
+    "native_prior_transfer_vs_parent": "PASS",
+    "residual_retention_vs_control": "FAIL",
+    "matched_gdts_seed2035_original_contract": "FAIL",
+    "matched_gdts_five_seed_contract": "NOT_EVALUABLE"
+  },
+  "optimizer_updates": {"shared_stage_a": 810, "control_after_fork": 810, "candidate_after_fork": 810, "executed_total": 2430},
+  "gpu": {"instrumented_seconds": 12328.045215791033, "instrumented_hours": 3.424457004386398, "budget_seconds": 14400, "peak_allocated_bytes": 848858624},
+  "assets": {
+    "parent_checkpoint_sha256": "2b6765349e2f87dd86acdbf4431436aa931553378c64f982fbe57e1b6bc3e3cd",
+    "gdts_checkpoint_sha256": "34af0f4335de77cf2b6ecd48b93262dfc4764e679bd52fd677392a85c22bf6d7",
+    "control_checkpoint_sha256": "46622922e8d00f5305a4c2791107cee4af5090cd600bc6d9622920e978ce7964",
+    "candidate_checkpoint_sha256": "4b08aa68fef82a0ee31663d4c860311aa5ff260afb4946072f05de75b668dfed",
+    "train_proposal_bank_sha256": "4c5b38a409d3ee8939d24243d191b8b63d361d6431a1f90344bb057e228fb247",
+    "validation_manifest_sha256": "9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478"
+  },
+  "old_formal_training_resumed": false,
+  "training_process_active": false
+}
