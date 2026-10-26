@@ -183,7 +183,7 @@ def export_gdts(args) -> None:
         raise ValueError("validation manifest SHA256 mismatch")
     records, manifest = manifest_identity(manifest_path)
     lookup = {
-        (tuple(record["frame_ids"]), tuple(record["agent_ids"])): record
+        (tuple(record["frame_ids"]), tuple(sorted(record["agent_ids"], key=int))): record
         for record in records
     }
     evaluator = configure_legacy_evaluator(args)
@@ -215,7 +215,8 @@ def export_gdts(args) -> None:
             with evaluator._autocast_context():
                 trajectories, auxiliary = evaluator.net.forward(inputs, if_test=True)
             frame_ids, agent_ids = gdts_scene_identity(batch_id)
-            record = lookup.get((tuple(frame_ids), tuple(agent_ids)))
+            record = lookup.get((
+                tuple(frame_ids), tuple(sorted(agent_ids, key=int))))
             if record is None:
                 raise RuntimeError(
                     f"GDTS window not present in manifest: frames={frame_ids}, agents={agent_ids}")
@@ -225,6 +226,14 @@ def export_gdts(args) -> None:
                 evaluator.args.down_factor)
             final_world = scene.make_world_coord_torch(final_pixel)
             proposal_world = scene.make_world_coord_torch(proposal_pixel)
+            # The trusted grouped cache retains its source-column order while
+            # the paper manifest uses stable numeric agent-ID order.  Reorder
+            # only the agent axis by explicit identity; world/candidate axes
+            # and the A--B correspondence remain untouched.
+            cache_index = {agent_id: index for index, agent_id in enumerate(agent_ids)}
+            agent_order = [cache_index[agent_id] for agent_id in record["agent_ids"]]
+            final_world = final_world[:, agent_order]
+            proposal_world = proposal_world[:, agent_order]
             final_records[record["scene_id"]] = final_world.float().cpu().numpy()
             proposal_records[record["scene_id"]] = proposal_world.float().cpu().numpy()
     if evaluator.device.type == "cuda":
