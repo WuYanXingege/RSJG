@@ -260,13 +260,13 @@ def export_gdts(args) -> None:
     }
     output = Path(args.output_dir).resolve()
     final_receipt = save_bank(
-        output / "gdts_final_A_seed2035.npz", final_arrays,
+        output / f"gdts_final_A_seed{args.seed}.npz", final_arrays,
         {**common, "path_label": "A", "endpoint_source": "final_native_trajectory"})
     proposal_receipt = save_bank(
-        output / "gdts_proposal_B_seed2035.npz", proposal_arrays,
+        output / f"gdts_proposal_B_seed{args.seed}.npz", proposal_arrays,
         {**common, "path_label": "B",
          "endpoint_source": "actual_goal_condition_for_corresponding_final_output"})
-    atomic_json(output / "gdts_export_receipt.json", {
+    atomic_json(output / f"gdts_export_receipt_seed{args.seed}.json", {
         "status": "COMPLETE", "A": final_receipt, "B": proposal_receipt,
         "gpu_elapsed_seconds": elapsed,
     })
@@ -360,8 +360,6 @@ def main() -> None:
     ebjd = subparsers.add_parser("ebjd", parents=[common])
     ebjd.add_argument("--device", default="cuda:0")
     args = parser.parse_args()
-    if args.seed != 2035:
-        raise ValueError("this frozen analysis is registered for seed 2035")
     if args.mode == "gdts":
         export_gdts(args)
     else:
