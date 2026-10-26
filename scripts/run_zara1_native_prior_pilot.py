@@ -62,7 +62,12 @@ def loader(config: dict, split: str, generator: torch.Generator) -> DataLoader:
     dataset = SceneManifestDataset(config["paths"][f"{split}_manifest"])
     workers = int(config["training"].get("data_loader_workers", 0))
     arguments = dict(
-        dataset=dataset, batch_size=int(config["training"]["batch_scenes"]),
+        dataset=dataset,
+        # The frozen endpoint attribution used one complete scene per
+        # validation batch.  Preserve that RNG-to-scene mapping exactly;
+        # training retains the formal four-scene logical microbatch.
+        batch_size=(int(config["training"]["batch_scenes"])
+                    if split == "train" else 1),
         shuffle=split == "train", collate_fn=collate_scenes,
         num_workers=workers, generator=generator)
     if workers:
