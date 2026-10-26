@@ -19,6 +19,8 @@ def differentiable_sample(
     checkpoint_steps: bool = False,
     checkpoint_blocks: bool | None = None,
     checkpoint_preserve_rng_state: bool = True,
+    proposal_goals: torch.Tensor | None = None,
+    proposal_eta: float = 1.0,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Return trajectory, literal goal and final latent without detaching steps."""
     if steps <= 0:
@@ -37,12 +39,16 @@ def differentiable_sample(
             with record_function("ebjd.ddim_step_checkpoint"):
                 velocity = checkpoint(
                     lambda z, t, policy=block_policy: model.denoiser(
-                        z, t, context, checkpoint_blocks=policy)[0],
+                        z, t, context, checkpoint_blocks=policy,
+                        proposal_goals=proposal_goals,
+                        proposal_eta=proposal_eta)[0],
                     latent, time, use_reentrant=False,
                     preserve_rng_state=checkpoint_preserve_rng_state)
         else:
             velocity = model.denoiser(
-                latent, time, context, checkpoint_blocks=checkpoint_blocks)[0]
+                latent, time, context, checkpoint_blocks=checkpoint_blocks,
+                proposal_goals=proposal_goals,
+                proposal_eta=proposal_eta)[0]
         with torch.autocast(device_type=latent.device.type, enabled=False):
             alpha, sigma = cosine_vp(time)
             next_alpha, next_sigma = cosine_vp(next_time)
@@ -53,7 +59,13 @@ def differentiable_sample(
             clean = alpha * latent.float() - sigma * velocity.float()
             noise = sigma * latent.float() + alpha * velocity.float()
             latent = next_alpha * clean + next_sigma * noise
-    trajectory, goal = model.representation.decode(latent, context.baseline)
+    if model.denoiser.proposal_conditioned:
+        if proposal_goals is None:
+            raise ValueError("proposal-conditioned sampling requires proposal_goals")
+        trajectory, goal = model.representation.decode_conditioned(
+            latent, context.baseline, proposal_goals, proposal_eta)
+    else:
+        trajectory, goal = model.representation.decode(latent, context.baseline)
     return trajectory, goal, latent
 
 
@@ -66,10 +78,14 @@ def predict(
     worlds: int = 20,
     steps: int = 20,
     generator: torch.Generator | None = None,
+    proposal_goals: torch.Tensor | None = None,
+    proposal_eta: float = 1.0,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     context = model.encode_context(observed, semantic_maps, valid)
     noise = torch.randn(
         observed.shape[0], worlds, observed.shape[1], 12, 2,
         device=observed.device, dtype=torch.float32, generator=generator)
-    trajectory, goal, _ = differentiable_sample(model, context, noise, steps)
+    trajectory, goal, _ = differentiable_sample(
+        model, context, noise, steps,
+        proposal_goals=proposal_goals, proposal_eta=proposal_eta)
     return trajectory, goal

@@ -137,6 +137,7 @@ class GeometryConditionedJointDenoiser(nn.Module):
         ff_dim: int = 512,
         activation_checkpointing: bool = True,
         ctf_feedback_basis: str = "legacy",
+        proposal_conditioned: bool = False,
     ) -> None:
         super().__init__()
         if ctf_feedback_basis not in {"legacy", "decoder_energy"}:
@@ -153,7 +154,13 @@ class GeometryConditionedJointDenoiser(nn.Module):
         # value before an update.
         self.ctf_feedback_basis = ctf_feedback_basis
         self.ctf_feedback_eta = 0.0 if ctf_feedback_basis == "legacy" else 1.0
+        self.proposal_conditioned = bool(proposal_conditioned)
         self.state_stem = nn.Sequential(nn.Linear(2, dim), nn.LayerNorm(dim))
+        if self.proposal_conditioned:
+            self.proposal_embedding = nn.Sequential(
+                nn.Linear(2, dim), nn.SiLU(), nn.Linear(dim, dim))
+            nn.init.zeros_(self.proposal_embedding[-1].weight)
+            nn.init.zeros_(self.proposal_embedding[-1].bias)
         self.time_mlp = nn.Sequential(nn.Linear(dim, 256), nn.SiLU(), nn.Linear(256, dim))
         self.token_type = nn.Parameter(torch.zeros(2, dim))
         self.register_buffer(
@@ -276,6 +283,8 @@ class GeometryConditionedJointDenoiser(nn.Module):
         time: torch.Tensor | float,
         context: EBJDContext,
         checkpoint_blocks: bool | None = None,
+        proposal_goals: torch.Tensor | None = None,
+        proposal_eta: float = 1.0,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         if latent.ndim != 5 or latent.shape[-2:] != (12, 2):
             raise ValueError("latent must have shape [B,P,N,12,2]")
@@ -300,6 +309,20 @@ class GeometryConditionedJointDenoiser(nn.Module):
             + self.token_type[types].view(1, 1, 1, 12, self.dim)
             + context.social_h[:, None, :, None, :]
         )
+        if self.proposal_conditioned:
+            if proposal_goals is None:
+                raise ValueError("proposal-conditioned denoising requires proposal_goals")
+            expected = (batch, worlds, agents, 2)
+            if proposal_goals.shape != expected:
+                raise ValueError(
+                    f"proposal_goals must have shape {expected}, got {tuple(proposal_goals.shape)}")
+            normalized = (
+                proposal_goals.float() - context.baseline[:, None, :, -1, :].float()
+            ) / self.representation.goal_scale.float()
+            hidden = hidden + self.proposal_embedding(
+                normalized.to(hidden.dtype)).unsqueeze(-2)
+        elif proposal_goals is not None:
+            raise ValueError("legacy denoiser does not accept proposal_goals")
         observed = context.observed_bias[:, None, None].expand(
             batch, worlds, 12, self.heads, agents, agents)
         for block in self.blocks[:3]:
@@ -321,7 +344,11 @@ class GeometryConditionedJointDenoiser(nn.Module):
         )
         with torch.autocast(device_type=latent.device.type, enabled=False):
             clean_latent = alpha.float() * latent.float() - sigma.float() * pre.float()
-        trajectory, goal = self.representation.decode(clean_latent, context.baseline)
+        if self.proposal_conditioned:
+            trajectory, goal = self.representation.decode_conditioned(
+                clean_latent, context.baseline, proposal_goals, proposal_eta)
+        else:
+            trajectory, goal = self.representation.decode(clean_latent, context.baseline)
         gate = alpha.square()
         physical_feedback = (
             self.clean_injection(self._clean_features(trajectory, goal, context))

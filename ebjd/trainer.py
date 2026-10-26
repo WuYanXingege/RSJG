@@ -83,6 +83,36 @@ class TrainerOptions:
     # optimizer-update coordinates on the unchanged 250-epoch schedule.
     ctf_feedback_transition_start_update: int = 0
     ctf_feedback_transition_updates: int = 0
+    constant_learning_rate: bool = False
+
+
+@dataclass(frozen=True)
+class ProposalTrainingCondition:
+    """One frozen, scene-level matched proposal world per logical scene."""
+
+    goals: torch.Tensor
+    eta: float
+    trust_weight: float = 0.0
+
+    def slice_scenes(self, start: int, stop: int) -> "ProposalTrainingCondition":
+        return ProposalTrainingCondition(
+            self.goals[start:stop], self.eta, self.trust_weight)
+
+    def compact_scenes(
+        self, valid: torch.Tensor, start: int, stop: int,
+    ) -> "ProposalTrainingCondition":
+        positions = [
+            valid[index].nonzero(as_tuple=False).flatten()
+            for index in range(start, stop)
+        ]
+        maximum = max(int(index.numel()) for index in positions)
+        packed = self.goals.new_zeros(stop - start, maximum, 2)
+        for local, (scene, index) in enumerate(zip(
+            range(start, stop), positions, strict=True,
+        )):
+            packed[local, :index.numel()] = self.goals[scene].index_select(
+                0, index.to(self.goals.device))
+        return ProposalTrainingCondition(packed, self.eta, self.trust_weight)
 
 
 @dataclass(frozen=True)
@@ -246,6 +276,10 @@ class EBJDTrainer:
             self.options.softmin_temperature_end - self.options.softmin_temperature_start)
 
     def _schedule(self, epoch: int) -> None:
+        if self.options.constant_learning_rate:
+            self.optimizer.lr = self.options.new_module_lr
+            self.optimizer.unet_lr = self.options.unet_lr
+            return
         if epoch <= self.options.warmup_epochs:
             factor = epoch / max(self.options.warmup_epochs, 1)
         else:
@@ -300,6 +334,7 @@ class EBJDTrainer:
         draws: BatchRandomDraws | None = None,
         agent_weight: float = 1.0,
         scene_weight: float = 1.0,
+        proposal: ProposalTrainingCondition | None = None,
     ) -> tuple[
         list[torch.Tensor], list[torch.Tensor] | None,
         list[torch.Tensor] | None, dict[str, float | torch.Tensor],
@@ -321,8 +356,19 @@ class EBJDTrainer:
                 context = self.model.encode_context(
                     batch.observed, batch.semantic_maps, batch.valid)
         with record_function("ebjd.base_diffusion_and_losses"):
-            latent_clean = self.model.representation.encode_target(
-                batch.future.detach(), context.baseline)[:, None]
+            if proposal is None:
+                latent_clean = self.model.representation.encode_target(
+                    batch.future.detach(), context.baseline)[:, None]
+                proposal_worlds = None
+                proposal_eta = 1.0
+            else:
+                if proposal.goals.shape != batch.future.shape[:-2] + (2,):
+                    raise ValueError("training proposal shape differs from physical batch")
+                latent_clean = self.model.representation.encode_target_conditioned(
+                    batch.future.detach(), context.baseline,
+                    proposal.goals, proposal.eta)[:, None]
+                proposal_worlds = proposal.goals[:, None]
+                proposal_eta = proposal.eta
             if draws is None:
                 time = torch.randint(
                     1, self.options.noise_bins + 1, (batch.observed.shape[0],),
@@ -348,11 +394,18 @@ class EBJDTrainer:
                 enabled=self.use_bf16):
                 with record_function("ebjd.denoiser_forward"):
                     final, coarse, coarse_trajectory, _ = self.model.denoiser(
-                        latent_noisy, time, context)
+                        latent_noisy, time, context,
+                        proposal_goals=proposal_worlds,
+                        proposal_eta=proposal_eta)
             with torch.autocast(device_type=autocast_device, enabled=False):
                 final_clean = alpha * latent_noisy.float() - sigma * final.float()
-                final_trajectory, _ = self.model.representation.decode(
-                    final_clean, context.baseline)
+                if proposal is None:
+                    final_trajectory, _ = self.model.representation.decode(
+                        final_clean, context.baseline)
+                else:
+                    final_trajectory, _ = self.model.representation.decode_conditioned(
+                        final_clean, context.baseline,
+                        proposal_worlds, proposal_eta)
                 loss_diff = diffusion_loss(
                     final, coarse, velocity_target, batch.valid,
                     coarse_weight=self.options.coarse_v_weight)
@@ -372,9 +425,19 @@ class EBJDTrainer:
                     loss_geo = gated_geometry_mean(per_scene_geo, alpha)
                 loss_map = map_loss(
                     batch.future, context, self.options.heatmap_sigma_m)
+                loss_trust = loss_diff.new_zeros(())
+                if proposal is not None and proposal.trust_weight:
+                    normalized_delta = float(proposal.eta) * final_clean[..., 11, :]
+                    per_agent = normalized_delta.square().sum(-1).squeeze(1)
+                    mask = batch.valid.float()
+                    per_scene = (per_agent * mask).sum(-1) / mask.sum(-1).clamp_min(1)
+                    gate = alpha.reshape(alpha.shape[0], -1)[:, 0].square()
+                    loss_trust = (gate * per_scene).mean()
                 total = (
                     float(agent_weight) * (
-                        loss_diff + self.options.map_weight * loss_map)
+                        loss_diff + self.options.map_weight * loss_map
+                        + (0.0 if proposal is None else proposal.trust_weight)
+                        * loss_trust)
                     + float(scene_weight) * self.options.geometry_weight * loss_geo)
         marginal_a = total.new_zeros(())
         marginal_f = total.new_zeros(())
@@ -439,6 +502,7 @@ class EBJDTrainer:
         logs = {
             "loss": scalar(total), "diffusion": scalar(loss_diff),
             "geometry": scalar(loss_geo), "map": scalar(loss_map),
+            "proposal_trust": scalar(loss_trust),
             "rollout": scalar(loss_roll),
             "soft_marginal_ade": scalar(marginal_a),
             "soft_marginal_fde": scalar(marginal_f),
@@ -456,6 +520,7 @@ class EBJDTrainer:
 
     def _scene_chunked_batch_gradients(
         self, logical_batch: SceneBatch, epoch: int, do_rollout: bool,
+        proposal: ProposalTrainingCondition | None = None,
     ) -> tuple[
         list[torch.Tensor], list[torch.Tensor] | None,
         list[torch.Tensor] | None, dict[str, float | torch.Tensor],
@@ -485,7 +550,7 @@ class EBJDTrainer:
         aggregate = {
             "loss": 0.0, "diffusion": 0.0, "geometry": 0.0, "map": 0.0,
             "rollout": 0.0, "soft_marginal_ade": 0.0,
-            "soft_marginal_fde": 0.0,
+            "soft_marginal_fde": 0.0, "proposal_trust": 0.0,
         }
         minimum_time = None
         maximum_time = None
@@ -499,16 +564,24 @@ class EBJDTrainer:
                 physical_batch = logical_batch.compact_scenes(start, stop).to(self.device)
                 physical_draws = draws.compact_scenes(
                     logical_batch.valid, start, stop)
+                physical_proposal = (
+                    None if proposal is None else proposal.compact_scenes(
+                        logical_batch.valid, start, stop).goals.to(self.device))
             else:
                 physical_batch = logical_batch.slice_scenes(start, stop).to(self.device)
                 physical_draws = draws.slice_scenes(start, stop)
+                physical_proposal = (
+                    None if proposal is None else
+                    proposal.slice_scenes(start, stop).goals.to(self.device))
             maximum_group_scenes = max(maximum_group_scenes, stop - start)
             maximum_group_slots = max(
                 maximum_group_slots,
                 int(physical_batch.valid.numel()))
             gradients_total, gradients_a, gradients_f, logs = self._batch_gradients(
                 physical_batch, epoch, do_rollout, physical_draws,
-                agent_weight=agent_weight, scene_weight=scene_weight)
+                agent_weight=agent_weight, scene_weight=scene_weight,
+                proposal=(None if proposal is None else ProposalTrainingCondition(
+                    physical_proposal, proposal.eta, proposal.trust_weight)))
             with record_function("ebjd.gradient_accumulation"):
                 self._add_gradients_(total_grad, gradients_total)
                 if constraint_buffers:
@@ -524,6 +597,7 @@ class EBJDTrainer:
                 "soft_marginal_fde",
             ):
                 aggregate[name] += scene_weight * logs[name]
+            aggregate["proposal_trust"] += agent_weight * logs["proposal_trust"]
             if self.options.training_runtime_optimizations:
                 minimum_time = (
                     logs["minimum_time"] if minimum_time is None else
@@ -553,9 +627,16 @@ class EBJDTrainer:
             float(checkpointed_rollout_groups) / len(groups) if do_rollout else 0.0)
         return total_grad, grad_a, grad_f, aggregate
 
-    def train_step(self, microbatches: list[SceneBatch], epoch: int) -> dict[str, float]:
+    def train_step(
+        self,
+        microbatches: list[SceneBatch],
+        epoch: int,
+        proposal_conditions: list[ProposalTrainingCondition] | None = None,
+    ) -> dict[str, float]:
         if not microbatches:
             raise ValueError("train_step needs at least one microbatch")
+        if proposal_conditions is not None and len(proposal_conditions) != len(microbatches):
+            raise ValueError("proposal condition count differs from microbatches")
         self._schedule(epoch)
         ctf_feedback_eta = self._ctf_feedback_eta()
         self.model.denoiser.set_ctf_feedback_eta(ctf_feedback_eta)
@@ -569,15 +650,20 @@ class EBJDTrainer:
         grad_f = zeros_for(self.parameters) if constraint_buffers else None
         aggregate: dict[str, float | torch.Tensor] = {}
         scale = 1 / len(microbatches)
-        for batch in microbatches:
+        for index, batch in enumerate(microbatches):
+            proposal = None if proposal_conditions is None else proposal_conditions[index]
             if self.options.scene_forward_chunk:
                 gradients_total, gradients_a, gradients_f, logs = (
-                    self._scene_chunked_batch_gradients(batch, epoch, do_rollout))
+                    self._scene_chunked_batch_gradients(
+                        batch, epoch, do_rollout, proposal))
             else:
                 physical_batch = (
                     batch if batch.observed.device == self.device else batch.to(self.device))
                 gradients_total, gradients_a, gradients_f, logs = self._batch_gradients(
-                    physical_batch, epoch, do_rollout)
+                    physical_batch, epoch, do_rollout,
+                    proposal=(None if proposal is None else ProposalTrainingCondition(
+                        proposal.goals.to(self.device), proposal.eta,
+                        proposal.trust_weight)))
             total_grad = [a + scale * b for a, b in zip(total_grad, gradients_total, strict=True)]
             if constraint_buffers:
                 assert grad_a is not None and gradients_a is not None

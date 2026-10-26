@@ -268,12 +268,26 @@ class SyntheticSceneDataset(Dataset):
         return self.items[index]
 
 
-def augment_batch(batch: SceneBatch, generator: torch.Generator | None = None) -> SceneBatch:
-    """Rotate/reflect every scene consistently, including all agent map crops."""
+def augment_batch_with_points(
+    batch: SceneBatch,
+    points: torch.Tensor,
+    generator: torch.Generator | None = None,
+) -> tuple[SceneBatch, torch.Tensor]:
+    """Augment a scene batch and aligned ``[B,...,N,2]`` world points.
+
+    This is the proposal-safe form of the formal augmentation: the exact same
+    sampled rigid transform is applied to observations, labels, map crops and
+    external point conditions without drawing any additional randomness.
+    """
     batch_size = batch.observed.shape[0]
+    if points.shape[0] != batch_size or points.shape[-2:] != (
+        batch.observed.shape[1], 2,
+    ):
+        raise ValueError("points must have shape [B,...,N,2] with batch padding")
     angles = 2 * torch.pi * torch.rand(batch_size, generator=generator)
     reflected = torch.rand(batch_size, generator=generator) < 0.5
     observed, future, maps = batch.observed.clone(), batch.future.clone(), batch.semantic_maps.clone()
+    transformed_points = points.clone()
     for scene in range(batch_size):
         center = observed[scene, batch.valid[scene], -1].mean(0)
         cosine, sine = angles[scene].cos(), angles[scene].sin()
@@ -283,13 +297,25 @@ def augment_batch(batch: SceneBatch, generator: torch.Generator | None = None) -
             rotation = rotation @ torch.diag(torch.tensor([-1.0, 1.0]))
         observed[scene] = (observed[scene] - center) @ rotation.T + center
         future[scene] = (future[scene] - center) @ rotation.T + center
+        transformed_points[scene] = (
+            transformed_points[scene] - center) @ rotation.T + center
         inverse = rotation.T
         theta = torch.zeros(maps.shape[1], 2, 3, dtype=maps.dtype)
         theta[:, :, :2] = inverse
         grid = F.affine_grid(theta, maps[scene].shape, align_corners=False)
         maps[scene] = F.grid_sample(
             maps[scene], grid, mode="bilinear", padding_mode="zeros", align_corners=False)
-    return SceneBatch(
+    augmented = SceneBatch(
         observed, future, maps, batch.valid.clone(), list(batch.scene_ids),
         batch.agent_ids, batch.frame_ids, batch.timestamps,
         batch.source_sequences, batch.metadata)
+    return augmented, transformed_points
+
+
+def augment_batch(batch: SceneBatch, generator: torch.Generator | None = None) -> SceneBatch:
+    """Rotate/reflect every scene consistently, including all agent map crops."""
+    placeholder = torch.zeros(
+        batch.observed.shape[0], batch.observed.shape[1], 2,
+        dtype=batch.observed.dtype, device=batch.observed.device)
+    augmented, _ = augment_batch_with_points(batch, placeholder, generator)
+    return augmented

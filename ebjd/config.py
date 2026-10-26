@@ -415,7 +415,9 @@ def validate_supported_config(config: dict) -> None:
                 raise ValueError(f"paths.{path_key} and paths.{hash_key} are required")
 
 
-def build_model(config: dict, ablation: str = "none") -> EBJDModel:
+def build_model(
+    config: dict, ablation: str = "none", *, proposal_conditioned: bool = False,
+) -> EBJDModel:
     if ablation not in ABLATIONS:
         raise ValueError(f"unsupported ablation {ablation!r}; expected {sorted(ABLATIONS)}")
     validate_supported_config(config)
@@ -432,6 +434,7 @@ def build_model(config: dict, ablation: str = "none") -> EBJDModel:
         history_social_blocks=int(config["history_encoder"]["social_blocks"]),
         ctf_feedback_basis=str(
             config["denoiser"].get("ctf_feedback_basis", "legacy")),
+        proposal_conditioned=proposal_conditioned,
     )
     model.denoiser.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])

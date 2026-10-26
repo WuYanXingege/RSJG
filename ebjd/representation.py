@@ -109,6 +109,49 @@ class EndpointBridgeDecomposition(nn.Module):
             goal = unscaled[..., 11:, :] / self.goal_scale.float()
             return torch.cat((bridge, goal), dim=-2)
 
+    def encode_target_conditioned(
+        self,
+        targets: torch.Tensor,
+        baseline: torch.Tensor,
+        proposal_goal: torch.Tensor,
+        eta: float,
+    ) -> torch.Tensor:
+        """Encode a trajectory relative to a frozen proposal endpoint.
+
+        ``eta=0`` is the fixed-endpoint control: the bridge reconstructs the
+        first eleven target frames while the clean endpoint slot is zero.
+        ``eta=1`` encodes the target endpoint as a residual from the proposal.
+        The proposal is a condition and is never inferred from ``targets``.
+        """
+        if targets.shape != baseline.shape or targets.shape[-2:] != (12, 2):
+            raise ValueError("targets and baseline must have shape [...,12,2]")
+        if proposal_goal.shape != targets.shape[:-2] + (2,):
+            raise ValueError("proposal_goal must have shape [...,2]")
+        if float(eta) not in (0.0, 1.0):
+            raise ValueError("conditioned encoding requires eta exactly 0 or 1")
+        with torch.autocast(device_type=targets.device.type, enabled=False):
+            targets = targets.float()
+            baseline = baseline.float()
+            proposal_goal = proposal_goal.float()
+            endpoint = targets[..., -1, :] if float(eta) == 1.0 else proposal_goal
+            endpoint_delta = endpoint - baseline[..., -1, :]
+            residual = (
+                targets[..., :11, :] - baseline[..., :11, :]
+                - self.a.float().view(*([1] * (targets.ndim - 2)), 11, 1)
+                * endpoint_delta.unsqueeze(-2)
+            )
+            flat = residual.movedim(-2, 0).reshape(11, -1)
+            whitened = torch.linalg.solve_triangular(
+                self.bridge_cholesky.float(), flat, upper=False)
+            whitened = whitened.reshape(
+                11, *residual.movedim(-2, 0).shape[1:]).movedim(0, -2)
+            bridge = whitened / self.bridge_scale.float()
+            if float(eta) == 0.0:
+                goal = torch.zeros_like(proposal_goal)
+            else:
+                goal = (targets[..., -1, :] - proposal_goal) / self.goal_scale.float()
+            return torch.cat((bridge, goal.unsqueeze(-2)), dim=-2)
+
     def decode(
         self, latent: torch.Tensor, baseline: torch.Tensor
     ) -> tuple[torch.Tensor, torch.Tensor]:
@@ -132,6 +175,45 @@ class EndpointBridgeDecomposition(nn.Module):
             first = baseline[..., :11, :] + a * goal_delta.unsqueeze(-2) + residual
             trajectory = torch.cat((first, goal.unsqueeze(-2)), dim=-2)
             return trajectory, goal
+
+    def decode_conditioned(
+        self,
+        latent: torch.Tensor,
+        baseline: torch.Tensor,
+        proposal_goal: torch.Tensor,
+        eta: float,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Decode EBD variables around a proposal endpoint condition."""
+        if latent.shape[-2:] != (12, 2) or baseline.shape[-2:] != (12, 2):
+            raise ValueError("latent and baseline must end in [12,2]")
+        if float(eta) not in (0.0, 1.0):
+            raise ValueError("conditioned decoding requires eta exactly 0 or 1")
+        with torch.autocast(device_type=latent.device.type, enabled=False):
+            baseline = baseline.float()
+            while baseline.ndim < latent.ndim:
+                baseline = baseline.unsqueeze(1)
+            proposal_goal = proposal_goal.float()
+            while proposal_goal.ndim < latent.ndim - 1:
+                proposal_goal = proposal_goal.unsqueeze(1)
+            expected = latent.shape[:-2] + (2,)
+            if proposal_goal.shape != expected:
+                try:
+                    proposal_goal = proposal_goal.expand(expected)
+                except RuntimeError as error:
+                    raise ValueError(
+                        "proposal_goal cannot broadcast to latent worlds/agents") from error
+            bridge_z = latent.float()[..., :11, :]
+            goal_z = latent.float()[..., 11, :]
+            goal = proposal_goal + float(eta) * self.goal_scale.float() * goal_z
+            goal_delta = goal - baseline[..., -1, :]
+            flat = bridge_z.movedim(-2, 0).reshape(11, -1)
+            residual = torch.matmul(
+                self.bridge_cholesky.float(), flat).reshape(
+                    11, *bridge_z.movedim(-2, 0).shape[1:]).movedim(0, -2)
+            residual = self.bridge_scale.float() * residual
+            a = self.a.float().view(*([1] * (latent.ndim - 2)), 11, 1)
+            first = baseline[..., :11, :] + a * goal_delta.unsqueeze(-2) + residual
+            return torch.cat((first, goal.unsqueeze(-2)), dim=-2), goal
 
 
 # Historical import compatibility; the parameter/buffer layout is unchanged.
