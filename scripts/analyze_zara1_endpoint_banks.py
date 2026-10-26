@@ -57,7 +57,11 @@ def validate_alignment(banks: dict[str, dict]) -> None:
     reference = banks["A"]
     for label, bank in banks.items():
         for key in ("scene_ids", "agent_ids", "valid", "truth"):
-            if not np.array_equal(bank[key], reference[key], equal_nan=True):
+            equal = (
+                np.array_equal(bank[key], reference[key], equal_nan=True)
+                if np.issubdtype(bank[key].dtype, np.floating)
+                else np.array_equal(bank[key], reference[key]))
+            if not equal:
                 raise ValueError(f"bank {label} identity/truth mismatch at {key}")
         if bank["endpoints"].shape != reference["endpoints"].shape:
             raise ValueError(f"bank {label} endpoint shape mismatch")
@@ -92,7 +96,9 @@ def summarize(bank: dict, scene_selector: np.ndarray | None = None) -> dict:
     scene_joint = []
     for scene in np.flatnonzero(selector):
         mask = bank["valid"][scene]
-        scene_joint.append(distances[scene, :, mask].mean(axis=1).min())
+        # Slice the scene before boolean indexing so NumPy keeps [K,N]
+        # ordering; mixed advanced indexing would transpose these axes.
+        scene_joint.append(distances[scene][:, mask].mean(axis=1).min())
     centers = bank["endpoints"].astype(np.float64).mean(axis=1)
     centered = bank["endpoints"].astype(np.float64) - centers[:, None]
     rms = np.sqrt(np.square(centered).sum(axis=-1).mean(axis=1))[valid]

@@ -32,6 +32,7 @@ def test_summary_masks_padding_and_reports_tail() -> None:
     assert result["scene_count"] == 2
     assert result["Recall@0.25m"] == 2 / 3
     assert result["P95"] >= result["P90"] >= result["P50"]
+    assert np.isclose(result["JFDE"], 0.175)
 
 
 def test_paired_delta_sign_is_explicit() -> None:
