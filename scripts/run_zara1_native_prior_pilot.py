@@ -10,6 +10,7 @@ import json
 import os
 import random
 import statistics
+import subprocess
 import tempfile
 import time
 from pathlib import Path
@@ -287,6 +288,9 @@ def main() -> None:
     loader_generator = torch.Generator().manual_seed(int(pilot["training_seed"]))
     identity = {
         "schema": pilot["schema"], "fold": "zara1", "seed": 3101,
+        "source_commit": subprocess.run(
+            ["git", "rev-parse", "HEAD"], check=True, capture_output=True,
+            text=True).stdout.strip(),
         "parent_sha256": pilot["parent_checkpoint_sha256"],
         "train_proposal_bank_sha256": train_bank.sha256,
         "validation_proposal_bank_sha256": validation_bank.sha256,
