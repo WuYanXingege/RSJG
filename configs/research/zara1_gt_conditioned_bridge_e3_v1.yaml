@@ -1,0 +1,20 @@
+schema: ebjd-zara1-gt-conditioned-bridge-e3-v1
+fold: zara1
+training_seed: 3101
+training_condition: augmented_ground_truth_endpoint
+inference_conditions: [native_G, mpjc_H]
+epochs: 3
+fixed_checkpoint_epoch: 3
+main_learning_rate: 2.0e-5
+unet_learning_rate: 2.0e-6
+constant_learning_rate: true
+proposal_eta: 0.0
+trust_weight: 0.0
+rollout_training_enabled: false
+paired_actual_step_projection_enabled: false
+worlds: 20
+ddim_steps: 20
+inference_seeds: [2035, 2036, 2037, 2038, 2039]
+candidate_checkpoint_sha256: 4b08aa68fef82a0ee31663d4c860311aa5ff260afb4946072f05de75b668dfed
+validation_manifest_sha256: 9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478
+gpu_wallclock_limit_seconds: 7200

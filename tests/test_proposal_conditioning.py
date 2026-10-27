@@ -4,7 +4,10 @@ import torch
 
 from ebjd.encoders import EBJDContext
 from ebjd.model import EBJDModel
-from ebjd.data import SceneBatch, augment_batch, augment_batch_with_points
+from ebjd.data import (
+    SceneBatch, augment_batch, augment_batch_with_gt_endpoint_condition,
+    augment_batch_with_points,
+)
 from ebjd.proposals import NativeProposalBank
 from ebjd.representation import EndpointBridgeDecomposition
 
@@ -117,4 +120,36 @@ def test_joint_augmentation_preserves_legacy_and_point_offsets():
     transformed_distance = torch.linalg.vector_norm(
         transformed[:, 0] - paired.observed[:, :, -1, :], dim=-1)
     torch.testing.assert_close(original_distance, transformed_distance)
+
+
+def test_gt_condition_roundtrip_matches_original_bridge_and_zeroes_padding():
+    torch.manual_seed(23)
+    rep = EndpointBridgeDecomposition(goal_scale=1.7, bridge_scale=0.8)
+    baseline = torch.randn(2, 3, 12, 2)
+    target = baseline + torch.randn_like(baseline) * 0.2
+    goal = target[..., -1, :]
+    conditioned = rep.encode_target_conditioned(target, baseline, goal, eta=0.0)
+    original = rep.encode_target(target, baseline)
+    decoded, decoded_goal = rep.decode_conditioned(
+        conditioned, baseline, goal, eta=0.0)
+    torch.testing.assert_close(decoded, target)
+    torch.testing.assert_close(decoded_goal, goal)
+    torch.testing.assert_close(conditioned[..., :11, :], original[..., :11, :])
+    assert torch.equal(
+        conditioned[..., 11, :], torch.zeros_like(conditioned[..., 11, :]))
+
+    batch = SceneBatch(
+        observed=torch.randn(1, 3, 8, 2),
+        future=torch.randn(1, 3, 12, 2),
+        semantic_maps=torch.zeros(1, 3, 6, 8, 8),
+        valid=torch.tensor([[True, True, False]]),
+        scene_ids=["s"], agent_ids=[["a", "b"]],
+        frame_ids=[list(range(20))],
+        timestamps=[[0.4 * i for i in range(20)]],
+        source_sequences=["x"], metadata={})
+    augmented, condition = augment_batch_with_gt_endpoint_condition(
+        batch, torch.Generator().manual_seed(31))
+    torch.testing.assert_close(
+        condition[augmented.valid], augmented.future[..., -1, :][augmented.valid])
+    assert torch.equal(condition[~augmented.valid], torch.zeros_like(condition[~augmented.valid]))
 

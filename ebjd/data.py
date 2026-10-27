@@ -319,3 +319,22 @@ def augment_batch(batch: SceneBatch, generator: torch.Generator | None = None) -
         dtype=batch.observed.dtype, device=batch.observed.device)
     augmented, _ = augment_batch_with_points(batch, placeholder, generator)
     return augmented
+
+
+def augment_batch_with_gt_endpoint_condition(
+    batch: SceneBatch, generator: torch.Generator | None = None,
+) -> tuple[SceneBatch, torch.Tensor]:
+    """Apply formal augmentation and return its valid, padded GT endpoint.
+
+    This helper is training-only: callers must not use it from inference
+    because it intentionally reads the future label. Padding is zeroed after
+    augmentation so it cannot become an accidental endpoint condition.
+    """
+    endpoints = batch.future[..., -1, :].detach()[:, None]
+    endpoints = torch.where(
+        batch.valid[:, None, :, None], endpoints, torch.zeros_like(endpoints))
+    augmented, _ = augment_batch_with_points(batch, endpoints, generator)
+    condition = augmented.future[..., -1, :].detach()
+    condition = torch.where(
+        augmented.valid[..., None], condition, torch.zeros_like(condition))
+    return augmented, condition
