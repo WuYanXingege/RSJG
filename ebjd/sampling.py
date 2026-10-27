@@ -80,11 +80,18 @@ def predict(
     generator: torch.Generator | None = None,
     proposal_goals: torch.Tensor | None = None,
     proposal_eta: float = 1.0,
+    initial_noise: torch.Tensor | None = None,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     context = model.encode_context(observed, semantic_maps, valid)
-    noise = torch.randn(
-        observed.shape[0], worlds, observed.shape[1], 12, 2,
-        device=observed.device, dtype=torch.float32, generator=generator)
+    if initial_noise is None:
+        noise = torch.randn(
+            observed.shape[0], worlds, observed.shape[1], 12, 2,
+            device=observed.device, dtype=torch.float32, generator=generator)
+    else:
+        expected = (observed.shape[0], worlds, observed.shape[1], 12, 2)
+        if initial_noise.shape != expected:
+            raise ValueError(f"initial_noise must have shape {expected}")
+        noise = initial_noise.to(device=observed.device, dtype=torch.float32)
     trajectory, goal, _ = differentiable_sample(
         model, context, noise, steps,
         proposal_goals=proposal_goals, proposal_eta=proposal_eta)

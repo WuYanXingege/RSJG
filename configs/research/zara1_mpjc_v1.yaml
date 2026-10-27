@@ -1,0 +1,29 @@
+schema: ebjd-zara1-mpjc-v1
+fold: zara1
+training_seed: 3101
+inference_seeds: [2035, 2036, 2037, 2038, 2039]
+worlds: 20
+ddim_steps: 20
+matching: scipy_linear_sum_assignment_squared_euclidean
+candidate_checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_native_prior_conditional_bridge_20261026/pilot/candidate/fixed_eplus3.pt
+candidate_checkpoint_sha256: 4b08aa68fef82a0ee31663d4c860311aa5ff260afb4946072f05de75b668dfed
+control_checkpoint_sha256: 46622922e8d00f5305a4c2791107cee4af5090cd600bc6d9622920e978ce7964
+gdts_checkpoint_sha256: 34af0f4335de77cf2b6ecd48b93262dfc4764e679bd52fd677392a85c22bf6d7
+validation_manifest_sha256: 9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478
+endpoint_gate:
+  n_ge_2_jfde_mean_improvement_m: 0.005
+  improving_seed_count: 4
+  preserve_per_agent_coverage: true
+bridge_gate:
+  seed2035_jade_improvement_m: 0.005
+  seed2035_minade_max_regression_m: 0.003
+bridge_training:
+  epochs: 3
+  proposal_eta: 0.0
+  trust_weight: 0.0
+  main_learning_rate: 2.0e-5
+  unet_learning_rate: 2.0e-6
+  constant_learning_rate: true
+  rollout_training_enabled: false
+  paired_actual_step_projection_enabled: false
+gpu_wallclock_limit_seconds: 14400
