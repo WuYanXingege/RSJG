@@ -1,0 +1,64 @@
+schema: ebjd-zara1-gt-bridge-h-bounded-long-v1
+fold: zara1
+training_seed: 3101
+implementation_base: 278e776777f68bf45515fc88396ef29e77b909ca
+model_config: configs/resolved/zara1.json
+
+parent:
+  checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_gt_conditioned_bridge_e3_20261027/training/fixed_eplus3.pt
+  checkpoint_sha256: 9ecf25b4ff607e4c3a6cdce985b9ee96415b175b87ef358c59d6267a663288cb
+  epoch: 9
+  update: 810
+  restore_optimizer: true
+  restore_rng: true
+  training_condition: augmented_ground_truth_endpoint
+
+frozen_inference:
+  candidate_reference_sha256: 4b08aa68fef82a0ee31663d4c860311aa5ff260afb4946072f05de75b668dfed
+  validation_manifest_sha256: 9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478
+  h_bank_seed2035: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_mpjc_20261026/endpoints/seed_2035/MPJC_ENDPOINT_BANK.npz
+  h_bank_seed_pattern: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_mpjc_20261026/endpoints/seed_{seed}/MPJC_ENDPOINT_BANK.npz
+  worlds: 20
+  ddim_steps: 20
+  selection_seed: 2035
+  formal_seeds: [2035, 2036, 2037, 2038, 2039]
+
+model_contract:
+  hidden_dim: 192
+  heads: 4
+  ff_dim: 768
+  fjab_blocks: 6
+  architecture: FULL
+  ctf_feedback_basis: legacy
+  output: Raw
+  proposal_eta: 0.0
+  trust_weight: 0.0
+
+continuation:
+  maximum_additional_epochs: 30
+  main_initial_lr: 2.0e-5
+  unet_initial_lr: 2.0e-6
+  cosine_final_fraction: 0.1
+  rollout_training_enabled: false
+  paired_actual_step_projection_enabled: false
+  gpu_wallclock_limit_seconds: 43200
+
+selection:
+  metric: JADE
+  direction: min
+  require_eligible: true
+  patience_epochs: 8
+  patience_reset_minimum_improvement_m: 0.0005
+  preserve_actual_lowest_eligible: true
+  initial_parent_is_candidate: true
+  matched_gdts_seed2035:
+    minADE: 0.18810851181618526
+    minFDE: 0.2850338902386895
+    JADE: 0.3196069264982609
+    JFDE: 0.5868777502909408
+  initial_parent_h_seed2035:
+    minADE: 0.184083518316789
+    minFDE: 0.27446163737006385
+    JADE: 0.28767162785990863
+    JFDE: 0.5427920514757328
+

@@ -77,6 +77,7 @@ def evaluate_mode(model, config, bank, mode: str, device, seed: int) -> dict:
     generator = torch.Generator(device=device).manual_seed(seed)
     recall_hits = recall_count = 0
     if device.type == "cuda":
+        torch.cuda.reset_peak_memory_stats(device)
         torch.cuda.synchronize(device)
     started = time.perf_counter()
     for cpu_batch in loader(config, "validation", torch.Generator().manual_seed(99173)):
@@ -117,6 +118,8 @@ def evaluate_mode(model, config, bank, mode: str, device, seed: int) -> dict:
         "N_ge_2_prefix": prefix_multi.as_dict(),
         "recall_at_0_5m": recall_hits / recall_count,
         "elapsed_seconds": time.perf_counter() - started,
+        "peak_memory_bytes": int(torch.cuda.max_memory_allocated(device))
+        if device.type == "cuda" else 0,
     }
 
 

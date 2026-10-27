@@ -125,6 +125,8 @@ def main() -> None:
                 continue
             raise RuntimeError(f"invalid existing per-seed result: {target}")
         started = time.perf_counter()
+        if torch.cuda.is_available():
+            torch.cuda.reset_peak_memory_stats(evaluator.device)
         raw = evaluator._evaluate_epoch(
             0, mode=args.split, evaluation_seed=seed, metric_names=METRICS)
         record = {
@@ -135,6 +137,11 @@ def main() -> None:
             "scene_count": int(statistics_payload["scenes"]),
             "agent_occurrence_count": int(statistics_payload["agents"]),
             "elapsed_seconds": time.perf_counter() - started,
+            "peak_memory_bytes": (
+                int(torch.cuda.max_memory_allocated(evaluator.device))
+                if torch.cuda.is_available() else 0),
+            "model_parameter_count": int(sum(
+                parameter.numel() for parameter in evaluator.net.parameters())),
             "metrics": {
                 "minADE": float(raw["valid_minADE@K"]),
                 "minFDE": float(raw["valid_minFDE@K"]),
