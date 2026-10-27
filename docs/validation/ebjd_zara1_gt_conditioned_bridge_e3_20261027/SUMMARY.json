@@ -1,0 +1,77 @@
+{
+  "schema": "ebjd-zara1-gt-conditioned-bridge-e3-summary-v1",
+  "status": "COMPLETE",
+  "classification": "SUPERVISION_SUPPORTED_BUT_DO_NOT_ADOPT_AS_MAIN_OR_PARETO",
+  "training": {
+    "model": "GT_CONDITIONED_BRIDGE_E3",
+    "training_seed": 3101,
+    "optimizer_updates": 810,
+    "epochs": 3,
+    "checkpoint_sha256": "9ecf25b4ff607e4c3a6cdce985b9ee96415b175b87ef358c59d6267a663288cb",
+    "candidate_parent_sha256": "4b08aa68fef82a0ee31663d4c860311aa5ff260afb4946072f05de75b668dfed",
+    "training_condition": "augmented_ground_truth_endpoint",
+    "inference_condition": "frozen_G_or_H",
+    "rollout": false,
+    "paired_projection": false
+  },
+  "protocol": {
+    "manifest_sha256": "9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478",
+    "inference_seeds": [2035, 2036, 2037, 2038, 2039],
+    "worlds": 20,
+    "ddim_steps": 20,
+    "one_training_seed": true
+  },
+  "five_seed_metrics": {
+    "G": {
+      "mean": {"minADE": 0.18435415131433636, "minFDE": 0.27481626809196363, "JADE": 0.30267368070517026, "JFDE": 0.5722026609116835},
+      "sample_standard_deviation": {"minADE": 0.0009058275353306913, "minFDE": 0.0006663131710814858, "JADE": 0.0007266484585302046, "JFDE": 0.003531934737566657},
+      "prefix_mean": {"minADE_11": 0.16645626933843607, "JADE_11": 0.2722817419020208}
+    },
+    "H": {
+      "mean": {"minADE": 0.18375036606987297, "minFDE": 0.27481626809196363, "JADE": 0.28797769429307457, "JFDE": 0.5353551273164173},
+      "sample_standard_deviation": {"minADE": 0.0007957611936748033, "minFDE": 0.0006663131710814858, "JADE": 0.002385856706231148, "JFDE": 0.005775456985795106},
+      "prefix_mean": {"minADE_11": 0.1659201524355599, "JADE_11": 0.2594909962552025}
+    },
+    "candidate": {
+      "mean": {"minADE": 0.1922921415980105, "minFDE": 0.3098261317712866, "JADE": 0.275204791530227, "JFDE": 0.5104083929757806},
+      "sample_standard_deviation": {"minADE": 0.0009341482708414838, "minFDE": 0.0035868801736979494, "JADE": 0.0007374449885711246, "JFDE": 0.003630279288315926}
+    }
+  },
+  "paired_H_minus_G": {
+    "mean": {"minADE": -0.00060378524446339, "minFDE": 0.0, "JADE": -0.01469598641209569, "JFDE": -0.0368475335952662},
+    "H_improvement_seed_count": {"minADE": 5, "minFDE": 0, "JADE": 5, "JFDE": 5}
+  },
+  "supervision_attribution_seed2035": {
+    "new_G_minus_old_native": {"minADE": -0.04146805952709478, "JADE": -0.01542150984313465, "prefix_minADE_11": -0.0211900296104765, "prefix_JADE_11": -0.00346880899940399},
+    "new_H_minus_old_coupled": {"minADE": -0.03794469076156594, "JADE": -0.02803355827927587, "prefix_minADE_11": -0.01873416340070284, "prefix_JADE_11": -0.01721697476897253},
+    "conclusion": "SUPPORTED"
+  },
+  "H_minus_candidate": {
+    "mean": {"minADE": -0.008541775528137535, "minFDE": -0.03500986367932296, "JADE": 0.012772902762847593, "JFDE": 0.024946734340636767},
+    "H_improvement_seed_count": {"minADE": 5, "minFDE": 5, "JADE": 0, "JFDE": 0},
+    "practical_minADE_tolerance_pass": true,
+    "practical_JADE_tolerance_pass": false,
+    "retain_as_coverage_priority_pareto_variant": false
+  },
+  "matched_gdts_contract": {
+    "seed2035": "PASS",
+    "five_seed": "NOT_EVALUABLE",
+    "reason": "matched GDTS has only one bound inference seed"
+  },
+  "decision": {
+    "retain_original_candidate_as_complete_prediction_mainline": true,
+    "retain_mpjc_as_endpoint_coupling_mechanism_evidence": true,
+    "stop_fixed_endpoint_conditional_bridge_as_main_model": true,
+    "zara1_local_tuning_loop_closed": true
+  },
+  "gpu": {
+    "training_seconds": 2825.150932212011,
+    "new_G_H_five_seed_seconds": 2022.3493458620505,
+    "old_prefix_replay_seconds": 412.15258059097686,
+    "total_accounted_seconds": 5259.652858665038,
+    "budget_seconds": 7200,
+    "training_peak_memory_bytes": 3593318400
+  },
+  "optimizer_updates_after_training": 0,
+  "training_process_active_at_completion": false
+}
