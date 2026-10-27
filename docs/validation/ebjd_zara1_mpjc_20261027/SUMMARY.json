@@ -1,0 +1,69 @@
+{
+  "schema": "ebjd-zara1-mpjc-summary-v1",
+  "status": "COMPLETE",
+  "classification": "ENDPOINT_COUPLING_ONLY",
+  "endpoint_gate": {
+    "status": "PASS",
+    "n_ge_2_jfde_improvement_mean_m": 0.04315201243121556,
+    "improving_seed_count": 5,
+    "seed_count": 5,
+    "per_agent_coverage_exact": true,
+    "g_mean": {
+      "minFDE": 0.2748162679746513,
+      "JFDE": 0.572202661246777,
+      "Recall@0.5m": 0.9179117147707979
+    },
+    "h_mean": {
+      "minFDE": 0.2748162679746513,
+      "JFDE": 0.535355127227498,
+      "Recall@0.5m": 0.9179117147707979
+    },
+    "n_ge_2_g_jfde_mean": 0.6302485592102294,
+    "n_ge_2_h_jfde_mean": 0.5870965467790138
+  },
+  "bridge_seed2035_gate": {
+    "status": "FAIL",
+    "native": {
+      "minADE": 0.22630942079708208,
+      "minFDE": 0.27446163737006385,
+      "JADE": 0.318333710634962,
+      "JFDE": 0.5740820383507732
+    },
+    "coupled": {
+      "minADE": 0.22202820907835494,
+      "minFDE": 0.27446163737006385,
+      "JADE": 0.3157051861391845,
+      "JFDE": 0.5427920514757328
+    },
+    "coupled_minus_native": {
+      "minADE": -0.004281211718727141,
+      "minFDE": 0.0,
+      "JADE": -0.002628524495777495,
+      "JFDE": -0.031289986875040365
+    },
+    "required_jade_improvement_m": 0.005,
+    "actual_jade_improvement_m": 0.002628524495777495,
+    "remaining_to_threshold_m": 0.002371475504222505,
+    "minade_regression_m": -0.004281211718727141,
+    "additional_full_trajectory_seeds_run": false
+  },
+  "checkpoints": {
+    "candidate_reference_sha256": "4b08aa68fef82a0ee31663d4c860311aa5ff260afb4946072f05de75b668dfed",
+    "bridge_native_eplus3_sha256": "fff17149a59bfb5c281ed01836792f0052e55d9f089376c889cda75f97362e7b",
+    "bridge_coupled_eplus3_sha256": "887b0a91813e98cd978a9103e3fed081345c385c3f72ff53e43d0c5417f2b574"
+  },
+  "optimizer_updates": {
+    "bridge_native": 810,
+    "bridge_coupled": 810
+  },
+  "runtime": {
+    "online_reference_matching_bridge_seconds": 395.6710185240372,
+    "online_matching_and_reference_transfer_seconds": 0.2228377113933675,
+    "cached_native_proposal_provider_included": false,
+    "successful_instrumented_gpu_seconds": 8466.878297681043,
+    "failed_call_estimated_gpu_seconds": 184.3,
+    "total_accounted_gpu_seconds": 8651.178297681043,
+    "gpu_budget_seconds": 14400
+  },
+  "evidence_boundary": "One training seed; five endpoint inference seeds; only seed2035 full-trajectory comparison because the preregistered trajectory gate failed."
+}
