@@ -22,6 +22,10 @@ frozen_inference:
   ddim_steps: 20
   selection_seed: 2035
   formal_seeds: [2035, 2036, 2037, 2038, 2039]
+  e3_five_seed_result: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_gt_conditioned_bridge_e3_20261027/five_seed/FIVE_SEED_RESULT.json
+  e3_five_seed_result_sha256: 7bdfc30d961ae1f2a97993f0e387688e5c1bfb34c4ce98f5225b4f0ef6e29125
+  gdts_five_seed_result: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_main_readiness_20261027/gdts_five_seed/results.json
+  gdts_five_seed_result_sha256: 48d1719c033136fc08764f8d1bbcc3e99a416d2c2d9545a18482d09d479dbd7e
 
 model_contract:
   hidden_dim: 192
@@ -42,6 +46,8 @@ continuation:
   rollout_training_enabled: false
   paired_actual_step_projection_enabled: false
   gpu_wallclock_limit_seconds: 43200
+  final_evaluation_reserve_seconds: 1200
+  expected_epoch_seconds: 946.195275850012
 
 selection:
   metric: JADE

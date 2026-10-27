@@ -11,6 +11,7 @@ with a fresh or constant-learning-rate run.
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import math
 import statistics
@@ -132,17 +133,57 @@ def aggregate_h(records: list[dict]) -> dict:
     }
 
 
+def append_epoch_csv(path: Path, record: dict, state: dict, options,
+                     total_elapsed: float, budget: float) -> None:
+    metrics = record["validation_H_seed2035"]["metrics"]
+    row = {
+        "additional_epoch": record["additional_epoch"],
+        "epoch_equivalent": record["epoch_equivalent"],
+        "global_update": record["update"], "loss": record["loss"],
+        **{metric: metrics[metric] for metric in METRICS},
+        "eligible": record["eligible"], "best_JADE": state["best_jade"],
+        "patience": state["patience"], "main_lr": options.new_module_lr,
+        "unet_lr": options.unet_lr,
+        "epoch_seconds": record["elapsed_seconds"],
+        "total_elapsed_seconds": total_elapsed,
+        "remaining_budget_seconds": max(budget - total_elapsed, 0.0),
+    }
+    path.parent.mkdir(parents=True, exist_ok=True)
+    exists = path.exists()
+    with path.open("a", newline="", encoding="utf-8") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(row))
+        if not exists:
+            writer.writeheader()
+        writer.writerow(row)
+
+
 def formal_evaluation(model, plan: dict, config: dict, selected_sha: str,
-                      output: Path, device: torch.device) -> dict:
+                      output: Path, device: torch.device, total_elapsed,
+                      budget_seconds: float) -> dict:
     target = output / "FORMAL_FIVE_SEED.json"
     if target.exists():
         result = json.loads(target.read_text(encoding="utf-8"))
         if result.get("selected_checkpoint_sha256") != selected_sha:
             raise ValueError("existing formal result belongs to another checkpoint")
-        return result
+        if result.get("status") == "COMPLETE":
+            return result
     frozen = plan["frozen_inference"]
     records = []
+    per_seed = output / "formal_per_seed"
+    per_seed.mkdir(parents=True, exist_ok=True)
     for seed in frozen["formal_seeds"]:
+        seed_target = per_seed / f"seed_{seed}.json"
+        if seed_target.exists():
+            record = json.loads(seed_target.read_text(encoding="utf-8"))
+            if (record.get("seed") != seed
+                    or record.get("selected_checkpoint_sha256") != selected_sha):
+                raise ValueError(f"formal seed receipt identity mismatch: {seed_target}")
+            records.append(record["result"])
+            continue
+        completed_times = [row["elapsed_seconds"] for row in records]
+        estimated = statistics.fmean(completed_times) if completed_times else 240.0
+        if budget_seconds - total_elapsed() < estimated:
+            break
         bank_path = Path(
             frozen["h_bank_seed2035"] if seed == 2035
             else frozen["h_bank_seed_pattern"].format(seed=seed))
@@ -151,17 +192,92 @@ def formal_evaluation(model, plan: dict, config: dict, selected_sha: str,
             expected_candidate_sha256=frozen["candidate_reference_sha256"],
             expected_manifest_sha256=frozen["validation_manifest_sha256"],
             expected_split="validation")
-        records.append(evaluate_mode(model, config, bank, "coupled", device, seed))
+        record = evaluate_mode(model, config, bank, "coupled", device, seed)
+        atomic_json(seed_target, {
+            "status": "COMPLETE", "seed": seed,
+            "selected_checkpoint_sha256": selected_sha,
+            "bank_sha256": bank.sha256, "result": record,
+            "total_elapsed_seconds": total_elapsed(),
+        })
+        records.append(record)
     result = {
         "schema": "ebjd-zara1-bounded-long-five-seed-v1",
-        "status": "COMPLETE", "selected_checkpoint_sha256": selected_sha,
-        "records": records, "summary": aggregate_h(records),
+        "status": "COMPLETE" if len(records) == len(frozen["formal_seeds"])
+        else "PARTIAL_GPU_BUDGET_EXHAUSTED",
+        "selected_checkpoint_sha256": selected_sha,
+        "completed_seeds": [row["seed"] for row in records],
+        "records": records,
+        "summary": aggregate_h(records) if len(records) == 5 else None,
+        "total_elapsed_seconds": total_elapsed(),
     }
     atomic_json(target, result)
     return result
 
 
+def write_final_report(plan: dict, formal: dict, state: dict, output: Path,
+                       stop_reason: str) -> dict:
+    frozen = plan["frozen_inference"]
+    if file_sha256(frozen["e3_five_seed_result"]) != frozen[
+            "e3_five_seed_result_sha256"]:
+        raise ValueError("E3 five-seed result SHA256 mismatch")
+    if file_sha256(frozen["gdts_five_seed_result"]) != frozen[
+            "gdts_five_seed_result_sha256"]:
+        raise ValueError("GDTS five-seed result SHA256 mismatch")
+    e3 = json.loads(Path(frozen["e3_five_seed_result"]).read_text(encoding="utf-8"))
+    gdts = json.loads(Path(frozen["gdts_five_seed_result"]).read_text(encoding="utf-8"))
+    comparison = {
+        "schema": "ebjd-zara1-bounded-long-final-comparison-v1",
+        "status": formal["status"], "stop_reason": stop_reason,
+        "selected_additional_epoch": state.get("best_additional_epoch", 0),
+        "selected_checkpoint": state["best_checkpoint"],
+        "selected_checkpoint_sha256": state["best_checkpoint_sha256"],
+        "optimizer_updates": state.get("final_update"),
+        "gpu_elapsed_seconds": state["gpu_elapsed_seconds"],
+        "formal": formal, "E3": e3["summary"]["H"], "GDTS": gdts["summary"],
+    }
+    if formal["status"] == "COMPLETE":
+        final_by_seed = {row["seed"]: row["metrics"] for row in formal["records"]}
+        e3_by_seed = {row["seed"]: row["H"]["metrics"] for row in e3["records"]}
+        gdts_by_seed = {row["seed"]: row["metrics"] for row in gdts["runs"]}
+        comparison["paired_deltas"] = {
+            label: {
+                str(seed): {
+                    metric: final_by_seed[seed][metric] - reference[seed][metric]
+                    for metric in METRICS}
+                for seed in frozen["formal_seeds"]}
+            for label, reference in (("final_minus_E3", e3_by_seed),
+                                     ("final_minus_GDTS", gdts_by_seed))
+        }
+        means = {metric: formal["summary"][metric]["mean"] for metric in METRICS}
+        gdts_means = {metric: gdts["summary"][metric]["mean"] for metric in METRICS}
+        comparison["performance_contract_pass"] = eligible(means, gdts_means)
+    atomic_json(output / "FINAL_COMPARISON.json", comparison)
+    report = [
+        "# ZARA1 新桥＋H 有界续训最终报告", "",
+        f"- 状态：`{formal['status']}`", f"- 停止原因：`{stop_reason}`",
+        f"- 选中追加轮：`{comparison['selected_additional_epoch']}`（0 表示保留 E3）",
+        f"- selected SHA256：`{state['best_checkpoint_sha256']}`",
+        f"- 累计 GPU 秒：`{state['gpu_elapsed_seconds']:.3f}`", "",
+    ]
+    if formal["status"] == "COMPLETE":
+        report += ["| 指标 | 最终均值 | 样本标准差 |", "|---|---:|---:|"]
+        for metric in METRICS:
+            row = formal["summary"][metric]
+            report.append(
+                f"| {metric} | {row['mean']:.6f} | {row['sample_standard_deviation']:.6f} |")
+        report += ["", f"相对 matched GDTS 原合同：**{'PASS' if comparison['performance_contract_pass'] else 'FAIL'}**。"]
+    else:
+        report += ["正式五种子未齐，不给出完整合同结论。",
+                   f"已完成 seeds：`{formal['completed_seeds']}`。"]
+    report += ["", "该结果是单训练 seed 的 warm-start 续训；provider/reference 全程冻结。", ""]
+    (output.parent / "reports").mkdir(parents=True, exist_ok=True)
+    (output.parent / "reports" / "FINAL_REPORT_ZH.md").write_text(
+        "\n".join(report), encoding="utf-8")
+    return comparison
+
+
 def main() -> None:
+    process_started = time.perf_counter()
     parser = argparse.ArgumentParser()
     parser.add_argument("--plan-config", required=True)
     parser.add_argument("--output", required=True)
@@ -213,6 +329,13 @@ def main() -> None:
     output.mkdir(parents=True, exist_ok=True)
     atomic_json(output / "RUN_IDENTITY.json", identity)
     state = payload.get("extra", {}).get("bounded_long_state")
+    state_path = output / "STATE.json"
+    if last.exists() and state_path.exists():
+        disk_state = json.loads(state_path.read_text(encoding="utf-8"))
+        if disk_state.get("completed_additional_epochs") != state.get(
+                "completed_additional_epochs"):
+            raise ValueError("STATE.json and last.pt epoch differ")
+        state = disk_state
     if state is None:
         initial = plan["selection"]["initial_parent_h_seed2035"]
         baseline = plan["selection"]["matched_gdts_seed2035"]
@@ -224,14 +347,32 @@ def main() -> None:
             "best_jade": initial["JADE"],
             "best_checkpoint": plan["parent"]["checkpoint"],
             "best_checkpoint_sha256": plan["parent"]["checkpoint_sha256"],
+            "best_additional_epoch": 0,
             "gpu_elapsed_seconds": 0.0, "records": [],
         }
     continuation, selection = plan["continuation"], plan["selection"]
     maximum = int(continuation["maximum_additional_epochs"])
-    run_started = time.perf_counter()
-    for local_epoch in range(state["completed_additional_epochs"] + 1, maximum + 1):
-        elapsed = state["gpu_elapsed_seconds"] + time.perf_counter() - run_started
-        if elapsed >= continuation["gpu_wallclock_limit_seconds"]:
+    spent_before_process = float(state.get("gpu_elapsed_seconds", 0.0))
+
+    def total_elapsed() -> float:
+        return spent_before_process + time.perf_counter() - process_started
+
+    if state["completed_additional_epochs"] >= maximum:
+        stop_reason = "MAXIMUM_30_EPOCHS"
+        epoch_range = range(0)
+    elif state["patience"] >= selection["patience_epochs"]:
+        stop_reason = "EARLY_STOP_PATIENCE_8"
+        epoch_range = range(0)
+    else:
+        stop_reason = None
+        epoch_range = range(state["completed_additional_epochs"] + 1, maximum + 1)
+    for local_epoch in epoch_range:
+        remaining = continuation["gpu_wallclock_limit_seconds"] - total_elapsed()
+        prior_times = [row["elapsed_seconds"] for row in state["records"]]
+        estimated_epoch = statistics.fmean(prior_times[-3:]) if prior_times else float(
+            continuation["expected_epoch_seconds"])
+        if remaining < estimated_epoch + continuation["final_evaluation_reserve_seconds"]:
+            stop_reason = "GPU_BUDGET_SAFE_BOUNDARY"
             break
         factor = cosine_factor(
             local_epoch - 1, maximum, continuation["cosine_final_fraction"])
@@ -286,6 +427,7 @@ def main() -> None:
                                     loader_generator, {"bounded_long_state": state})
             state["best_checkpoint"] = str(best)
             state["best_checkpoint_sha256"] = file_sha256(best)
+            state["best_additional_epoch"] = local_epoch
         reset = is_eligible and metrics["JADE"] <= (
             state["patience_reference_jade"]
             - selection["patience_reset_minimum_improvement_m"])
@@ -294,32 +436,62 @@ def main() -> None:
             state["patience"] = 0
         else:
             state["patience"] += 1
-        state["gpu_elapsed_seconds"] += record["elapsed_seconds"]
+        state["gpu_elapsed_seconds"] = total_elapsed()
         trainer.save_checkpoint(
             last, record["epoch_equivalent"], state, loader_generator,
             {"bounded_long_state": state})
-        atomic_json(output / "STATE.json", state)
+        state["gpu_elapsed_seconds"] = total_elapsed()
+        state["final_update"] = trainer.update_index
+        atomic_json(state_path, state)
+        append_epoch_csv(
+            output.parent / "logs" / "epoch_metrics.csv", record, state,
+            options, state["gpu_elapsed_seconds"],
+            continuation["gpu_wallclock_limit_seconds"])
+        eta_seconds = max(maximum - local_epoch, 0) * record["elapsed_seconds"]
         print(
-            f"[BOUNDED {local_epoch:02d}/{maximum}] loss={record['loss']:.6f} "
-            f"minADE={metrics['minADE']:.6f} minFDE={metrics['minFDE']:.6f} "
+            f"[H-LONG {local_epoch:02d}/{maximum}] update={trainer.update_index} "
+            f"loss={record['loss']:.6f} ADE={metrics['minADE']:.6f} "
+            f"FDE={metrics['minFDE']:.6f} "
             f"JADE={metrics['JADE']:.6f} JFDE={metrics['JFDE']:.6f} "
-            f"eligible={is_eligible} patience={state['patience']}", flush=True)
+            f"eligible={'Y' if is_eligible else 'N'} best_JADE={state['best_jade']:.6f} "
+            f"patience={state['patience']}/{selection['patience_epochs']} "
+            f"lr={options.new_module_lr:.3e} time={record['elapsed_seconds']/60:.2f}min "
+            f"ETA={eta_seconds/3600:.2f}h", flush=True)
         if state["patience"] >= selection["patience_epochs"]:
+            stop_reason = "EARLY_STOP_PATIENCE_8"
             break
-    budget_hit = state["gpu_elapsed_seconds"] >= continuation["gpu_wallclock_limit_seconds"]
+    if stop_reason is None:
+        stop_reason = (
+            "MAXIMUM_30_EPOCHS" if state["completed_additional_epochs"] >= maximum
+            else "TRAINING_ALREADY_COMPLETE")
     selected = Path(state["best_checkpoint"])
     if file_sha256(selected) != state["best_checkpoint_sha256"]:
         raise ValueError("selected checkpoint changed before formal evaluation")
-    result = {
-        "status": "GPU_BUDGET_EXHAUSTED" if budget_hit else "TRAINING_COMPLETE",
-        "selection": state, "formal_five_seed": None,
+    selected_payload = torch.load(selected, map_location="cpu", weights_only=False)
+    model.load_state_dict(selected_payload["model"], strict=True)
+    state["final_update"] = trainer.update_index
+    formal = formal_evaluation(
+        model, plan, config, state["best_checkpoint_sha256"], output, device,
+        total_elapsed, continuation["gpu_wallclock_limit_seconds"])
+    state["gpu_elapsed_seconds"] = total_elapsed()
+    atomic_json(state_path, state)
+    comparison = write_final_report(plan, formal, state, output, stop_reason)
+    checkpoint_index = {
+        "schema": "ebjd-zara1-bounded-long-checkpoint-index-v1",
+        "E3": {"path": plan["parent"]["checkpoint"],
+               "sha256": plan["parent"]["checkpoint_sha256"]},
+        "last": {"path": str(last), "sha256": file_sha256(last) if last.exists() else None},
+        "best": {"path": state["best_checkpoint"],
+                 "sha256": state["best_checkpoint_sha256"]},
+        "selected": {"path": state["best_checkpoint"],
+                     "sha256": state["best_checkpoint_sha256"]},
     }
-    if not budget_hit:
-        selected_payload = torch.load(selected, map_location="cpu", weights_only=False)
-        model.load_state_dict(selected_payload["model"], strict=True)
-        result["formal_five_seed"] = formal_evaluation(
-            model, plan, config, state["best_checkpoint_sha256"], output, device)
-        result["status"] = "COMPLETE"
+    atomic_json(output.parent / "checkpoints" / "CHECKPOINT_INDEX.json", checkpoint_index)
+    result = {
+        "status": "COMPLETE" if formal["status"] == "COMPLETE" else formal["status"],
+        "stop_reason": stop_reason, "selection": state,
+        "formal_five_seed": formal, "comparison": comparison,
+    }
     atomic_json(output / "RESULT.json", result)
 
 
