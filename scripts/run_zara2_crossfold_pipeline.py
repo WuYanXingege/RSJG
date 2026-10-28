@@ -93,6 +93,50 @@ class Pipeline:
             }
         if self.state.get("source_commit") != source_commit:
             raise ValueError("run manifest is bound to another source commit")
+        self._recover_interrupted_gpu_stage()
+
+    @staticmethod
+    def _pid_is_alive(pid: object) -> bool:
+        try:
+            os.kill(int(pid), 0)
+        except (OSError, TypeError, ValueError):
+            return False
+        return True
+
+    def _recover_interrupted_gpu_stage(self) -> None:
+        """Charge elapsed GPU-stage wall time left by a dead supervisor.
+
+        The start timestamp is persisted before the child is launched.  A service
+        restart therefore cannot reset the cumulative GPU budget.  An extant
+        child is treated as an ownership conflict rather than being duplicated.
+        """
+        started_at = self.state.get("gpu_stage_started_at_unix")
+        if started_at is None:
+            return
+        child_pid = self.state.get("child_pid")
+        if child_pid is not None and self._pid_is_alive(child_pid):
+            raise RuntimeError(
+                f"GPU stage {self.state.get('stage')} is still owned by PID "
+                f"{child_pid}; refusing to launch a duplicate")
+        now = time.time()
+        elapsed = max(0.0, now - float(started_at))
+        previous = float(self.state.get("gpu_seconds", 0.0))
+        recoveries = list(self.state.get("gpu_budget_recoveries", []))
+        recoveries.append({
+            "stage": self.state.get("stage"),
+            "started_at_unix": float(started_at),
+            "recovered_at_unix": now,
+            "charged_seconds": elapsed,
+            "reason": "persisted GPU stage had no live child",
+        })
+        self.state.update({
+            "gpu_seconds": min(self.maximum_gpu_seconds, previous + elapsed),
+            "gpu_stage_started_at_unix": None,
+            "gpu_budget_recoveries": recoveries,
+            "child_pid": None,
+            "status": "RECOVERING",
+        })
+        self.persist()
 
     def persist(self, **updates) -> None:
         self.state.update(updates)
@@ -114,8 +158,10 @@ class Pipeline:
         log = self.logs / f"{stage}.log"
         log.parent.mkdir(parents=True, exist_ok=True)
         started = time.perf_counter()
+        started_at_unix = time.time()
         self.persist(stage=stage, status="RUNNING", command=command,
-                     log_path=str(log), child_pid=None)
+                     log_path=str(log), child_pid=None,
+                     gpu_stage_started_at_unix=(started_at_unix if gpu else None))
         with log.open("ab", buffering=0) as handle:
             process = subprocess.Popen(
                 command, cwd=self.paper, stdout=handle, stderr=subprocess.STDOUT,
@@ -137,6 +183,7 @@ class Pipeline:
                 elapsed = time.perf_counter() - started
                 self.state["gpu_seconds"] = self.maximum_gpu_seconds
                 self.persist(status="PARTIAL_GPU_BUDGET_EXHAUSTED", child_pid=None,
+                             gpu_stage_started_at_unix=None,
                              last_stage_seconds=elapsed,
                              failure=f"{stage} reached the 48-hour GPU limit")
                 raise RuntimeError("48-hour GPU budget reached during a stage")
@@ -144,6 +191,7 @@ class Pipeline:
         if gpu:
             self.state["gpu_seconds"] = float(self.state.get("gpu_seconds", 0.0)) + elapsed
         self.persist(child_pid=None, last_stage_seconds=elapsed,
+                     gpu_stage_started_at_unix=None,
                      last_stage_exit_code=return_code)
         if return_code:
             self.persist(status="FAILED", failure=f"{stage} exit={return_code}")
