@@ -10,6 +10,7 @@ from pathlib import Path
 
 import numpy as np
 import torch
+import yaml
 
 from export_zara1_endpoint_banks import (
     configure_legacy_evaluator, gdts_scene_identity, manifest_identity,
@@ -43,6 +44,7 @@ def main() -> None:
         for record in records
     }
     evaluator = configure_legacy_evaluator(args)
+    recipe = yaml.safe_load(Path(args.recipe).read_text(encoding="utf-8"))
     loader = evaluator.data_loaders["train"]
     if len(loader.dataset) != len(records):
         raise RuntimeError(
@@ -76,7 +78,7 @@ def main() -> None:
     arrays = pack_bank(records, proposals)
     metadata = {
         "schema": "ebjd-native-proposal-bank-v1",
-        "fold": "zara1", "split": "train", "seed": int(args.seed),
+        "fold": str(recipe["fold"]), "split": "train", "seed": int(args.seed),
         "worlds": 20, "coordinate_unit": "m",
         "endpoint_source": "matched_gdts_native_legacy_encode_goal_point_first20",
         "checkpoint": str(checkpoint),

@@ -142,8 +142,8 @@ def main() -> None:
         expected_manifest_sha256=args.validation_manifest_sha256,
         expected_split="validation")
     identity = {
-        "schema": "ebjd-zara1-gt-conditioned-bridge-e3-v1",
-        "fold": "zara1", "seed": 3101,
+        "schema": "ebjd-gt-conditioned-bridge-e3-v1",
+        "fold": str(config["experiment"]["fold"]), "seed": 3101,
         "source_commit": subprocess.run(
             ["git", "rev-parse", "HEAD"], check=True, capture_output=True,
             text=True).stdout.strip(),
@@ -211,7 +211,7 @@ def main() -> None:
         {"fixed_stage": "GT_CONDITIONED_BRIDGE_E3", "not_best_selected": True},
         loader_generator, {"records": records, "training_condition": "gt_endpoint"})
     result = {
-        "schema": "ebjd-zara1-gt-conditioned-bridge-e3-training-v1",
+        "schema": "ebjd-gt-conditioned-bridge-e3-training-v1",
         "status": "COMPLETE", "identity": identity, "records": records,
         "checkpoint": str(checkpoint), "checkpoint_sha256": file_sha256(checkpoint),
         "optimizer_updates": trainer.update_index,

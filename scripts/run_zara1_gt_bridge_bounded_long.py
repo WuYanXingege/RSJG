@@ -54,6 +54,13 @@ def eligible(metrics: dict, baseline: dict) -> bool:
     )
 
 
+def violation_key(metrics: dict, baseline: dict) -> tuple[float, float]:
+    """Pre-registered least-violation order for folds with no eligible model."""
+    excess = sum(max(float(metrics[name]) - float(baseline[name]), 0.0)
+                 for name in METRICS)
+    return excess, float(metrics["JADE"])
+
+
 def git_head() -> str:
     return subprocess.run(
         ["git", "rev-parse", "HEAD"], check=True, capture_output=True,
@@ -63,7 +70,10 @@ def git_head() -> str:
 def load_plan(path: Path) -> dict:
     with path.open(encoding="utf-8") as handle:
         plan = yaml.safe_load(handle)
-    if plan.get("schema") != "ebjd-zara1-gt-bridge-h-bounded-long-v1":
+    if plan.get("schema") not in {
+        "ebjd-zara1-gt-bridge-h-bounded-long-v1",
+        "ebjd-crossfold-gt-bridge-h-bounded-long-v1",
+    }:
         raise ValueError("unsupported bounded-long plan schema")
     return plan
 
@@ -201,7 +211,7 @@ def formal_evaluation(model, plan: dict, config: dict, selected_sha: str,
         })
         records.append(record)
     result = {
-        "schema": "ebjd-zara1-bounded-long-five-seed-v1",
+        "schema": "ebjd-crossfold-bounded-long-five-seed-v1",
         "status": "COMPLETE" if len(records) == len(frozen["formal_seeds"])
         else "PARTIAL_GPU_BUDGET_EXHAUSTED",
         "selected_checkpoint_sha256": selected_sha,
@@ -226,7 +236,7 @@ def write_final_report(plan: dict, formal: dict, state: dict, output: Path,
     e3 = json.loads(Path(frozen["e3_five_seed_result"]).read_text(encoding="utf-8"))
     gdts = json.loads(Path(frozen["gdts_five_seed_result"]).read_text(encoding="utf-8"))
     comparison = {
-        "schema": "ebjd-zara1-bounded-long-final-comparison-v1",
+        "schema": "ebjd-crossfold-bounded-long-final-comparison-v1",
         "status": formal["status"], "stop_reason": stop_reason,
         "selected_additional_epoch": state.get("best_additional_epoch", 0),
         "selected_checkpoint": state["best_checkpoint"],
@@ -253,7 +263,7 @@ def write_final_report(plan: dict, formal: dict, state: dict, output: Path,
         comparison["performance_contract_pass"] = eligible(means, gdts_means)
     atomic_json(output / "FINAL_COMPARISON.json", comparison)
     report = [
-        "# ZARA1 新桥＋H 有界续训最终报告", "",
+        f"# {plan['fold'].upper()} 新桥＋H 有界续训最终报告", "",
         f"- 状态：`{formal['status']}`", f"- 停止原因：`{stop_reason}`",
         f"- 选中追加轮：`{comparison['selected_additional_epoch']}`（0 表示保留 E3）",
         f"- selected SHA256：`{state['best_checkpoint_sha256']}`",
@@ -301,7 +311,8 @@ def main() -> None:
         expected_manifest_sha256=frozen["validation_manifest_sha256"],
         expected_split="validation")
     identity = {
-        "schema": plan["schema"], "fold": "zara1", "training_seed": 3101,
+        "schema": plan["schema"], "fold": str(plan["fold"]),
+        "training_seed": int(plan["training_seed"]),
         "source_commit": args.source_commit, "plan_config_sha256": file_sha256(plan_path),
         "model_config_sha256": config_hash(config),
         "parent_checkpoint_sha256": plan["parent"]["checkpoint_sha256"],
@@ -339,15 +350,21 @@ def main() -> None:
     if state is None:
         initial = plan["selection"]["initial_parent_h_seed2035"]
         baseline = plan["selection"]["matched_gdts_seed2035"]
-        if not eligible(initial, baseline):
-            raise ValueError("pre-registered initial E3 checkpoint is not eligible")
+        initial_eligible = eligible(initial, baseline)
+        initial_violation = violation_key(initial, baseline)
         state = {
             "completed_additional_epochs": 0, "patience": 0,
             "patience_reference_jade": initial["JADE"],
-            "best_jade": initial["JADE"],
-            "best_checkpoint": plan["parent"]["checkpoint"],
-            "best_checkpoint_sha256": plan["parent"]["checkpoint_sha256"],
-            "best_additional_epoch": 0,
+            "best_jade": initial["JADE"] if initial_eligible else None,
+            "best_checkpoint": (plan["parent"]["checkpoint"]
+                                if initial_eligible else None),
+            "best_checkpoint_sha256": (plan["parent"]["checkpoint_sha256"]
+                                       if initial_eligible else None),
+            "best_additional_epoch": 0 if initial_eligible else None,
+            "least_violation_key": list(initial_violation),
+            "least_violation_checkpoint": plan["parent"]["checkpoint"],
+            "least_violation_checkpoint_sha256": plan["parent"]["checkpoint_sha256"],
+            "least_violation_additional_epoch": 0,
             "gpu_elapsed_seconds": 0.0, "records": [],
         }
     continuation, selection = plan["continuation"], plan["selection"]
@@ -420,7 +437,8 @@ def main() -> None:
         }
         state["records"].append(record)
         state["completed_additional_epochs"] = local_epoch
-        if is_eligible and metrics["JADE"] < state["best_jade"]:
+        if is_eligible and (state["best_jade"] is None
+                            or metrics["JADE"] < state["best_jade"]):
             state["best_jade"] = metrics["JADE"]
             best = output / "best.pt"
             trainer.save_checkpoint(best, record["epoch_equivalent"], state,
@@ -428,6 +446,16 @@ def main() -> None:
             state["best_checkpoint"] = str(best)
             state["best_checkpoint_sha256"] = file_sha256(best)
             state["best_additional_epoch"] = local_epoch
+        current_violation = violation_key(
+            metrics, selection["matched_gdts_seed2035"])
+        if tuple(current_violation) < tuple(state["least_violation_key"]):
+            least = output / "least_violation.pt"
+            trainer.save_checkpoint(least, record["epoch_equivalent"], state,
+                                    loader_generator, {"bounded_long_state": state})
+            state["least_violation_key"] = list(current_violation)
+            state["least_violation_checkpoint"] = str(least)
+            state["least_violation_checkpoint_sha256"] = file_sha256(least)
+            state["least_violation_additional_epoch"] = local_epoch
         reset = is_eligible and metrics["JADE"] <= (
             state["patience_reference_jade"]
             - selection["patience_reset_minimum_improvement_m"])
@@ -453,7 +481,8 @@ def main() -> None:
             f"loss={record['loss']:.6f} ADE={metrics['minADE']:.6f} "
             f"FDE={metrics['minFDE']:.6f} "
             f"JADE={metrics['JADE']:.6f} JFDE={metrics['JFDE']:.6f} "
-            f"eligible={'Y' if is_eligible else 'N'} best_JADE={state['best_jade']:.6f} "
+            f"eligible={'Y' if is_eligible else 'N'} "
+            f"best_JADE={state['best_jade'] if state['best_jade'] is not None else 'none'} "
             f"patience={state['patience']}/{selection['patience_epochs']} "
             f"lr={options.new_module_lr:.3e} time={record['elapsed_seconds']/60:.2f}min "
             f"ETA={eta_seconds/3600:.2f}h", flush=True)
@@ -464,6 +493,12 @@ def main() -> None:
         stop_reason = (
             "MAXIMUM_30_EPOCHS" if state["completed_additional_epochs"] >= maximum
             else "TRAINING_ALREADY_COMPLETE")
+    selected_role = "best_eligible" if state["best_checkpoint"] else "least_violation"
+    if selected_role == "least_violation":
+        state["best_checkpoint"] = state["least_violation_checkpoint"]
+        state["best_checkpoint_sha256"] = state["least_violation_checkpoint_sha256"]
+        state["best_additional_epoch"] = state["least_violation_additional_epoch"]
+    state["selected_role"] = selected_role
     selected = Path(state["best_checkpoint"])
     if file_sha256(selected) != state["best_checkpoint_sha256"]:
         raise ValueError("selected checkpoint changed before formal evaluation")
@@ -477,14 +512,15 @@ def main() -> None:
     atomic_json(state_path, state)
     comparison = write_final_report(plan, formal, state, output, stop_reason)
     checkpoint_index = {
-        "schema": "ebjd-zara1-bounded-long-checkpoint-index-v1",
+        "schema": "ebjd-crossfold-bounded-long-checkpoint-index-v1",
         "E3": {"path": plan["parent"]["checkpoint"],
                "sha256": plan["parent"]["checkpoint_sha256"]},
         "last": {"path": str(last), "sha256": file_sha256(last) if last.exists() else None},
         "best": {"path": state["best_checkpoint"],
                  "sha256": state["best_checkpoint_sha256"]},
         "selected": {"path": state["best_checkpoint"],
-                     "sha256": state["best_checkpoint_sha256"]},
+                     "sha256": state["best_checkpoint_sha256"],
+                     "role": state["selected_role"]},
     }
     atomic_json(output.parent / "checkpoints" / "CHECKPOINT_INDEX.json", checkpoint_index)
     result = {

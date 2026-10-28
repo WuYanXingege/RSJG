@@ -1,0 +1,27 @@
+seed: 3101
+experiment:
+  fold: zara2
+  source_commit: train/ebjd-zara2-crossfold-v1
+  implementation_base: a9fb0c1d57c039485119206b4e8665fa1773ee93
+paths:
+  train_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/train/train_manifest.json
+  validation_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/validation/validation_manifest.json
+  test_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/test/test_manifest.json
+  output_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/reference_base/output
+  initialization_role: trainable_goal_unet_only
+  accepted_fold_matched_gdts_unet: ""
+  accepted_fold_matched_gdts_unet_sha256: ""
+  matched_gdts_validation_checkpoint: ""
+  matched_gdts_validation_checkpoint_sha256: ""
+  matched_gdts_validation_result: ""
+  matched_gdts_validation_result_sha256: ""
+evaluation:
+  matched_gdts_validation:
+    status: pending_local_zara2_asset_preparation
+    minADE: 0.0
+    minFDE: 0.0
+    source: pending_local_zara2_matched_GDTS
+training:
+  epochs: 250
+  rollout_training_enabled: false
+  paired_marginal_actual_step_projection_enabled: false

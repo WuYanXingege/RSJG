@@ -54,7 +54,7 @@ def _atomic_json(path: Path, payload: dict) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--fold", required=True, choices=("hotel", "univ", "zara1"))
+        "--fold", required=True, choices=("hotel", "univ", "zara1", "zara2"))
     parser.add_argument("--output")
     args = parser.parse_args()
     payload = _merge(

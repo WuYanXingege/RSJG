@@ -1,0 +1,56 @@
+schema: ebjd-cross-fold-protocol-v1
+fold: zara2
+method: reliable_native_endpoint_prior_plus_MPJC_plus_GT_consistent_conditional_bridge
+training_seed: 3101
+inference_seeds: [2035, 2036, 2037, 2038, 2039]
+held_out_average_agents_gate:
+  expected_approximately: 5.9
+  accepted_interval: [5.8, 6.0]
+  rule: complete_synchronized_windows_without_agent_truncation_or_resampling
+model:
+  hidden_dim: 192
+  heads: 4
+  ff_dim: 768
+  fjab_blocks: 6
+  architecture: FULL
+  ctf_feedback_basis: legacy
+  output: Raw
+  worlds: 20
+  ddim_steps: 20
+  ddim_eta: 0.0
+  rollout_training_enabled: false
+  paired_actual_step_projection_enabled: false
+stages:
+  matched_gdts:
+    goal_pretrain_epochs: 150
+    baseline_epochs: 250
+    recipe: configs/asset_preparation/zara2_gdts.yaml
+  reference_base:
+    epochs: 96
+    scheduler_total_epochs: 250
+    training_seed: 3101
+  reference_stage_a:
+    epochs: 3
+    proposal_eta: 0.0
+    trust_weight: 0.0
+  reference_candidate:
+    epochs: 3
+    proposal_eta: 1.0
+    trust_weight: 0.01
+  gt_conditioned_bridge:
+    epochs: 3
+    proposal_eta: 0.0
+    trust_weight: 0.0
+  bounded_continuation:
+    maximum_additional_epochs: 30
+    main_learning_rate: 2.0e-5
+    unet_learning_rate: 2.0e-6
+    cosine_final_fraction: 0.1
+    patience_epochs: 8
+    patience_reset_minimum_improvement_m: 0.0005
+selector:
+  eligible: minADE_and_minFDE_not_above_GDTS_and_JADE_and_JFDE_below_GDTS
+  eligible_order: minimum_JADE
+  least_violation: sum_of_positive_metric_excess_over_GDTS_then_lower_JADE
+gpu_wallclock_limit_seconds: 172800
+next_fold_auto_launch: false

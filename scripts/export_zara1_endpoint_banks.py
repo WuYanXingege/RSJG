@@ -121,7 +121,7 @@ def save_bank(path: Path, arrays: dict, metadata: dict) -> dict:
 
 def legacy_cli(recipe: dict, scene_cache_root: Path, output_root: Path) -> list[str]:
     return [
-        "--dataset", "eth5", "--test_set", "zara1", "--phase", "test",
+        "--dataset", "eth5", "--test_set", str(recipe["fold"]), "--phase", "test",
         "--device", "cuda:0", "--batch_size", "64", "--num_workers", "0",
         "--down_factor", "8", "--skip_ts_window", "1",
         "--goal_model_type", "social", "--training_stage", "finetune",
@@ -247,7 +247,8 @@ def export_gdts(args) -> None:
         final_arrays["endpoints"].tobytes() + proposal_arrays["endpoints"].tobytes()
     ).hexdigest()
     common = {
-        "schema": "ebjd-frozen-endpoint-bank-v1", "fold": "zara1",
+        "schema": "ebjd-frozen-endpoint-bank-v1",
+        "fold": str(yaml.safe_load(Path(args.recipe).read_text(encoding="utf-8"))["fold"]),
         "split": "validation", "seed": args.seed, "worlds": 20,
         "ddim_steps": 20, "coordinate_unit": "m",
         "checkpoint": str(checkpoint), "checkpoint_sha256": args.checkpoint_sha256,
@@ -323,7 +324,8 @@ def export_ebjd(args) -> None:
     elapsed = time.perf_counter() - started
     arrays = pack_bank(records, endpoint_records)
     metadata = {
-        "schema": "ebjd-frozen-endpoint-bank-v1", "fold": "zara1",
+        "schema": "ebjd-frozen-endpoint-bank-v1",
+        "fold": str(config["experiment"]["fold"]),
         "split": "validation", "seed": args.seed, "worlds": 20,
         "ddim_steps": 20, "coordinate_unit": "m", "path_label": "C",
         "endpoint_source": "ebjd_parent_final_raw_trajectory",

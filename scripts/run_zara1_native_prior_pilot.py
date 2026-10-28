@@ -287,7 +287,9 @@ def main() -> None:
     seed_all(int(pilot["training_seed"]))
     loader_generator = torch.Generator().manual_seed(int(pilot["training_seed"]))
     identity = {
-        "schema": pilot["schema"], "fold": "zara1", "seed": 3101,
+        "schema": pilot["schema"],
+        "fold": str(config["experiment"]["fold"]),
+        "seed": int(pilot["training_seed"]),
         "source_commit": subprocess.run(
             ["git", "rev-parse", "HEAD"], check=True, capture_output=True,
             text=True).stdout.strip(),
@@ -320,8 +322,16 @@ def main() -> None:
         loader_generator, {"records": stage_a_records})
     stage_payload = torch.load(
         stage_a_dir / "last.pt", map_location="cpu", weights_only=False)
+    arm_definitions = {
+        "Control": (0.0, 0.0),
+        "Candidate": (1.0, float(pilot["candidate_trust_weight"])),
+    }
+    requested_arms = pilot.get("arms", ["Control", "Candidate"])
+    if not requested_arms or any(name not in arm_definitions for name in requested_arms):
+        raise ValueError(f"unsupported pilot arms: {requested_arms}")
     arm_results = {}
-    for label, eta, trust in (("Control", 0.0, 0.0), ("Candidate", 1.0, 0.01)):
+    for label in requested_arms:
+        eta, trust = arm_definitions[label]
         arm_dir = output / label.lower()
         arm_dir.mkdir(exist_ok=True)
         arm_generator = torch.Generator().manual_seed(0)
@@ -369,8 +379,10 @@ def main() -> None:
     atomic_json(output / "SEED2035_RESULT.json", result)
     print(json.dumps({
         "status": result["status"], "gpu_seconds": gpu_elapsed,
-        "control": arm_results["Control"]["final_seed2035"]["metrics"],
-        "candidate": arm_results["Candidate"]["final_seed2035"]["metrics"],
+        "arms": {
+            name: value["final_seed2035"]["metrics"]
+            for name, value in arm_results.items()
+        },
     }, sort_keys=True), flush=True)
 
 

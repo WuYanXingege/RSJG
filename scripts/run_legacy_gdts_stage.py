@@ -157,8 +157,9 @@ def patch_baseline_trainer(trainer) -> None:
 
 
 def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> list[str]:
+    fold = str(recipe["fold"])
     common = [
-        "--dataset", "eth5", "--test_set", "zara1",
+        "--dataset", "eth5", "--test_set", fold,
         "--reproducibility", "True", "--seed", str(recipe["seed"]),
         "--batch_size", "64", "--learning_rate", "0.001",
         "--optimizer", "Adam", "--scheduler", "ExponentialLR",
@@ -194,7 +195,7 @@ def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> li
         ]
     if stage == "scene_cache":
         return [
-            "--dataset", "eth5", "--test_set", "zara1",
+            "--dataset", "eth5", "--test_set", fold,
             "--phase", "pre-process", "--batch_size", "64",
             "--device", "cpu", "--num_workers", "0", "--down_factor", "8",
             "--skip_ts_window", "1", "--goal_model_type", "social",
@@ -215,6 +216,7 @@ def main() -> None:
     parser.add_argument("--goal-checkpoint")
     args = parser.parse_args()
     recipe = yaml.safe_load(Path(args.recipe).read_text(encoding="utf-8"))
+    fold = str(recipe["fold"])
     legacy = Path(recipe["legacy_gdts"]["root"]).resolve()
     runtime = Path(args.runtime_root).resolve()
     runtime.mkdir(parents=True, exist_ok=True)
@@ -232,11 +234,11 @@ def main() -> None:
     argv = fixed_arguments(recipe, args.stage, args.goal_checkpoint)
     argv += ["--batch_cache_root", str(Path(args.batch_cache_root).resolve())]
     if args.stage == "goal":
-        last = runtime / "output" / "zara1" / "runs" / recipe["goal_pretrain"]["run_name"] / "saved_models" / "goal_pretrain_last_model.pt"
+        last = runtime / "output" / fold / "runs" / recipe["goal_pretrain"]["run_name"] / "saved_models" / "goal_pretrain_last_model.pt"
         if last.is_file():
             argv += ["--load_checkpoint", "last"]
     elif args.stage == "baseline":
-        last = runtime / "output" / "zara1" / "runs" / recipe["gdts_baseline"]["run_name"] / "saved_models" / "last_model.pt"
+        last = runtime / "output" / fold / "runs" / recipe["gdts_baseline"]["run_name"] / "saved_models" / "last_model.pt"
         if last.is_file():
             argv += ["--load_checkpoint", "last"]
     sys.argv = [str(legacy / "main.py"), *argv]

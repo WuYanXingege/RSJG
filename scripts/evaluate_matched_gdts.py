@@ -76,7 +76,7 @@ def main() -> None:
     from src.trainer import trainer
 
     cli = [
-        "--dataset", "eth5", "--test_set", "zara1", "--phase", "test",
+        "--dataset", "eth5", "--test_set", str(recipe["fold"]), "--phase", "test",
         "--device", "cuda:0", "--batch_size", "64", "--num_workers", "0",
         "--down_factor", "8", "--skip_ts_window", "1",
         "--goal_model_type", "social", "--training_stage", "finetune",
@@ -171,7 +171,7 @@ def main() -> None:
         atomic_json(output / "results.json", {
             "schema": "ebjd-matched-gdts-validation-v1",
             "status": "complete" if len(runs) == len(args.seeds) else "running",
-            "fold": "zara1",
+            "fold": str(recipe["fold"]),
             "split": "validation" if args.split == "valid" else "test",
             "checkpoint": str(checkpoint),
             "checkpoint_sha256": args.checkpoint_sha256,
