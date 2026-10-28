@@ -1,0 +1,37 @@
+{
+  "schema": "ebjd-zara1-gt-bridge-h-final-github-summary-v1",
+  "status": "COMPLETE",
+  "source_commit": "021460d012e1bc55b45fed93e2dfac56c3f61a35",
+  "stop_reason": "EARLY_STOP_PATIENCE_8",
+  "training_seed": 3101,
+  "parent_epoch": 9,
+  "completed_additional_epochs": 12,
+  "selected_additional_epoch": 6,
+  "selected_epoch_equivalent": 15,
+  "new_optimizer_updates": 3240,
+  "final_global_update": 4050,
+  "selected_checkpoint_sha256": "0756311447fb5d57c6de0994d8ceadf74bcea1ba5af17cda408943d3fb8093b1",
+  "last_checkpoint_sha256": "cb4806231757d82d3dee11d14a1476e76d4b0e651daec17b4e28a232afbbe961",
+  "inference_seeds": [2035, 2036, 2037, 2038, 2039],
+  "formal_metrics": {
+    "minADE": {"mean": 0.18161802178625086, "sample_standard_deviation": 0.0005833908182261749},
+    "minFDE": {"mean": 0.27481626809196363, "sample_standard_deviation": 0.0006663131710814858},
+    "JADE": {"mean": 0.28267562877413227, "sample_standard_deviation": 0.002320084051926131},
+    "JFDE": {"mean": 0.5353551273164173, "sample_standard_deviation": 0.005775456985795106}
+  },
+  "mean_delta_final_minus_e3": {
+    "minADE": -0.002132344283622095,
+    "minFDE": 0.0,
+    "JADE": -0.005302065518942289,
+    "JFDE": 0.0
+  },
+  "mean_delta_final_minus_matched_gdts": {
+    "minADE": -0.006937562807894771,
+    "minFDE": -0.010791928829575437,
+    "JADE": -0.035448683849040506,
+    "JFDE": -0.050137961969202324
+  },
+  "performance_contract_pass": true,
+  "cumulative_gpu_seconds": 11992.405458572961,
+  "evidence_boundary": "one training seed with five stochastic inference seeds"
+}
