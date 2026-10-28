@@ -1,0 +1,40 @@
+schema: ebjd-unified-coupling-bridge-v1
+fold: zara1
+training_seed: 3101
+epochs: 30
+architecture:
+  hidden_dim: 192
+  heads: 4
+  ff_dim: 768
+  fjab_blocks: 6
+  full_future_social_attention: true
+  ctf: true
+  output: Raw
+native_goal_provider:
+  frozen: true
+  worlds: 20
+  source: matched_gdts_native_goal_proposals
+coupling:
+  world_queries: 20
+  cross_attention_layers: 1
+  sinkhorn_temperature: 1.0
+  sinkhorn_iterations: 20
+  hard_forward: hungarian
+  straight_through_backward: true
+  pair_loss_weight: 1.0
+  pair_loss_temperature: 0.1
+conditional_bridge:
+  proposal_eta: 0.0
+  gt_consistent_training_endpoint: true
+  ddim_steps: 20
+optimization:
+  main_lr: 0.0001
+  map_unet_lr: 0.00001
+  warmup_epochs: 5
+  cosine_final_fraction: 0.1
+  rollout: false
+  paired_actual_step_projection: false
+selection:
+  seed: 2035
+  eligible_requires_all_four_not_worse_than_matched_gdts: true
+  primary_metric: JADE
