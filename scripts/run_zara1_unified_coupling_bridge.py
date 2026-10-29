@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Train/evaluate the single-stage ZARA1 unified coupling bridge."""
+"""Train/evaluate the fold-generic single-stage unified coupling bridge."""
 
 from __future__ import annotations
 
@@ -27,6 +27,7 @@ from ebjd.objectives import (
 from ebjd.proposals import NativeProposalBank, file_sha256
 from ebjd.representation import cosine_vp
 from ebjd.sampling import differentiable_sample
+from ebjd.train import fit_training_scales
 from ebjd.unified import (
     FrozenNativeGoalProvider, UnifiedCouplingBridge, gather_candidates,
     joint_pair_loss,
@@ -91,7 +92,9 @@ def set_epoch_lr(optimizer, epoch: int) -> tuple[float, float]:
     return 1e-4 * factor, 1e-5 * factor
 
 
-def bridge_and_pair_loss(model, batch, proposals, pair_weight=1.0):
+def bridge_and_pair_loss(
+    model, batch, proposals, pair_weight=1.0, *, time_draw=None, noise=None,
+):
     """One shared context and one combined objective graph."""
     context = model.encode_context(batch.observed, batch.semantic_maps, batch.valid)
     coupled, _, _ = model.coupling.assign(
@@ -103,9 +106,12 @@ def bridge_and_pair_loss(model, batch, proposals, pair_weight=1.0):
     endpoint = batch.future[..., -1, :].detach()
     clean = model.bridge.representation.encode_target_conditioned(
         batch.future.detach(), context.baseline, endpoint, eta=0.0)[:, None]
-    time_draw = torch.randint(1, 101, (batch.observed.shape[0],), device=batch.observed.device)
-    time_draw = time_draw.float() / 100
-    noise = torch.randn_like(clean, dtype=torch.float32)
+    if time_draw is None:
+        time_draw = torch.randint(
+            1, 101, (batch.observed.shape[0],), device=batch.observed.device)
+        time_draw = time_draw.float() / 100
+    if noise is None:
+        noise = torch.randn_like(clean, dtype=torch.float32)
     alpha, sigma = cosine_vp(time_draw)
     alpha = alpha.to(clean).view(-1, 1, 1, 1, 1)
     sigma = sigma.to(clean).view(-1, 1, 1, 1, 1)
@@ -123,8 +129,27 @@ def bridge_and_pair_loss(model, batch, proposals, pair_weight=1.0):
         + relative_motion_loss(final_path, batch.future, context, 6.0, 2.0, 4.8))
     loss_geo = gated_geometry_mean(per_scene_geo, alpha)
     loss_map = map_loss(batch.future, context, 0.5)
-    bridge = loss_diff + options["geometry"] * loss_geo + options["map"] * loss_map
-    return bridge + pair_weight * pair, bridge, pair
+    agent_part = loss_diff + options["map"] * loss_map
+    scene_part = options["geometry"] * loss_geo + pair_weight * pair
+    bridge = agent_part + options["geometry"] * loss_geo
+    return bridge + pair_weight * pair, bridge, pair, agent_part, scene_part
+
+
+def bound_reference_metrics(path: str, seed: int, manifest_sha256: str) -> dict:
+    """Resolve a comparator by identity, never by JSON list ordering."""
+    reference = json.loads(Path(path).read_text(encoding="utf-8"))
+    if reference.get("manifest_sha256") != manifest_sha256:
+        raise ValueError("matched-GDTS top-level manifest SHA256 mismatch")
+    matches = [row for row in reference.get("runs", [])
+               if int(row.get("seed", -1)) == int(seed)]
+    if len(matches) != 1:
+        raise ValueError(f"expected exactly one matched-GDTS seed {seed} run")
+    run = matches[0]
+    if run.get("manifest_sha256") != manifest_sha256:
+        raise ValueError("matched-GDTS run manifest SHA256 mismatch")
+    if int(run.get("worlds", -1)) != 20 or int(run.get("ddim_steps", -1)) != 20:
+        raise ValueError("matched-GDTS comparator is not the bound 20/20 protocol")
+    return run["metrics"]
 
 
 @torch.no_grad()
@@ -179,6 +204,8 @@ def main() -> None:
     parser.add_argument("--validation-bank-pattern", required=True)
     parser.add_argument("--output", required=True)
     parser.add_argument("--source-commit", required=True)
+    parser.add_argument("--fold", required=True)
+    parser.add_argument("--compact-scenes", action="store_true")
     parser.add_argument("--max-gpu-seconds", type=float, default=43200)
     parser.add_argument("--final-reserve-seconds", type=float, default=5400)
     parser.add_argument("--device", default="cuda")
@@ -194,19 +221,31 @@ def main() -> None:
     validation_banks = {seed: make_bank(
         args.validation_bank_pattern.format(seed=seed), checkpoint_sha,
         validation_sha, "validation") for seed in range(2035, 2040)}
+    config_sha256 = file_sha256(args.config)
+    seed_all(3101)
+    bridge = build_model(config, proposal_conditioned=True)
+    scale_loader = loader(config, "train", torch.Generator().manual_seed(0))
+    scales = fit_training_scales(bridge, scale_loader)
+    if scales is None:
+        raise RuntimeError("endpoint-bridge representation scales were not fitted")
+    goal_scale, bridge_scale = scales
+    bridge = bridge.to(device)
     identity = {
-        "schema": "ebjd-unified-coupling-bridge-run-v1", "fold": "zara1",
+        "schema": "ebjd-unified-coupling-bridge-run-v1", "fold": args.fold,
         "training_seed": 3101, "source_commit": args.source_commit,
+        "config": str(Path(args.config).resolve()),
+        "config_sha256": config_sha256,
+        "representation_scales": {
+            "goal": goal_scale, "bridge": bridge_scale,
+            "source": "training_fold_only_existing_rms_rule"},
         "train_bank_sha256": train_bank.sha256,
         "validation_bank_sha256": {str(k): v.sha256 for k, v in validation_banks.items()},
         "rollout": False, "actual_step_projection": False,
         "worlds": 20, "ddim_steps": 20, "temperature": 1.0,
         "sinkhorn_iterations": 20, "pair_weight": 1.0,
+        "compact_scenes": bool(args.compact_scenes),
     }
     atomic_json(output / "RUN_IDENTITY.json", identity)
-    seed_all(3101)
-    bridge = build_model(config, proposal_conditioned=True).to(device)
-    bridge.representation.set_scales(1.0666561126708984, 0.21917930245399475)
     model = UnifiedCouplingBridge(bridge).to(device)
     model.training_options = {"coarse": 0.25, "geometry": 0.05, "map": 0.10}
     optimizer = optimizer_for(model, config)
@@ -228,10 +267,9 @@ def main() -> None:
         torch.set_rng_state(payload["rng"]["torch_cpu"])
         torch.cuda.set_rng_state_all(payload["rng"]["torch_cuda"])
         loader_generator.set_state(payload["rng"]["loader"])
-    baseline = config["evaluation"]["matched_gdts_validation"]
-    # The bound JSON contains all four metrics; use it rather than the compact fold fields.
-    reference = json.loads(Path(config["paths"]["matched_gdts_validation_result"]).read_text())
-    gdts = reference["runs"][0]["metrics"]
+    gdts = bound_reference_metrics(
+        config["paths"]["matched_gdts_validation_result"], 2035,
+        validation_sha)
     started = time.perf_counter()
     index_path = output / "checkpoint_index.csv"
     if not index_path.exists():
@@ -252,14 +290,51 @@ def main() -> None:
             raw_proposals = train_provider(cpu_batch)
             cpu_batch, proposals = augment_batch_with_points(
                 cpu_batch, raw_proposals, loader_generator)
-            batch, proposals = cpu_batch.to(device), proposals.to(device)
-            with torch.autocast(device_type="cuda", dtype=torch.bfloat16,
-                                enabled=device.type == "cuda" and torch.cuda.is_bf16_supported()):
-                total, bridge_loss, pair_loss = bridge_and_pair_loss(model, batch, proposals)
-                scaled = total / int(config["training"]["gradient_accumulation"])
-            scaled.backward(); pending += 1
-            losses.append(float(total.detach())); pairs.append(float(pair_loss.detach()))
-            bridges.append(float(bridge_loss.detach()))
+            logical_batch = int(cpu_batch.observed.shape[0])
+            total_agents = int(cpu_batch.valid.sum())
+            logical_time = torch.randint(
+                1, 101, (logical_batch,), device=device).float() / 100
+            logical_noise = torch.randn(
+                logical_batch, 1, cpu_batch.observed.shape[1], 12, 2,
+                dtype=torch.float32, device=device)
+            logical_total = logical_pair = logical_bridge = 0.0
+            groups = (range(logical_batch) if args.compact_scenes else [None])
+            for scene in groups:
+                if scene is None:
+                    batch = cpu_batch.to(device)
+                    physical_proposals = proposals.to(device)
+                    time_draw, noise = logical_time, logical_noise
+                    agent_weight = scene_weight = 1.0
+                else:
+                    positions = cpu_batch.valid[scene].nonzero(
+                        as_tuple=False).flatten()
+                    batch = cpu_batch.compact_scenes(scene, scene + 1).to(device)
+                    physical_proposals = proposals[scene:scene + 1, :, positions].to(device)
+                    time_draw = logical_time[scene:scene + 1]
+                    noise = logical_noise[
+                        scene:scene + 1, :, positions.to(device)]
+                    agent_weight = float(positions.numel()) / total_agents
+                    scene_weight = 1.0 / logical_batch
+                with torch.autocast(
+                    device_type="cuda", dtype=torch.bfloat16,
+                    enabled=device.type == "cuda" and torch.cuda.is_bf16_supported(),
+                ):
+                    _, bridge_loss, pair_loss, agent_part, scene_part = (
+                        bridge_and_pair_loss(
+                            model, batch, physical_proposals,
+                            time_draw=time_draw, noise=noise))
+                    total = agent_weight * agent_part + scene_weight * scene_part
+                    scaled = total / int(config["training"]["gradient_accumulation"])
+                scaled.backward()
+                logical_total += float(total.detach())
+                logical_pair += scene_weight * float(pair_loss.detach())
+                logical_bridge += (
+                    agent_weight * float(agent_part.detach())
+                    + scene_weight * float(
+                        (bridge_loss - agent_part).detach()))
+            pending += 1
+            losses.append(logical_total); pairs.append(logical_pair)
+            bridges.append(logical_bridge)
             if pending == int(config["training"]["gradient_accumulation"]):
                 coupling_grad = torch.sqrt(sum(
                     p.grad.detach().float().square().sum() for p in model.coupling.parameters()
@@ -297,18 +372,27 @@ def main() -> None:
             selection["best_eligible"] = {"epoch": epoch, **validation["H"]}
         save_checkpoint(epoch_path, model, optimizer, epoch, update, loader_generator, selection, identity)
         shutil.copy2(epoch_path, output / "last.pt")
-        last = output / "last.pt"; digest = file_sha256(last)
+        last = output / "last.pt"; digest = file_sha256(epoch_path)
         if selection["best_jade"]["epoch"] == epoch:
             shutil.copy2(epoch_path, output / "best_jade.pt")
         if eligible and selection["best_eligible"]["epoch"] == epoch:
             shutil.copy2(epoch_path, output / "best_eligible.pt")
         with index_path.open("a", newline="", encoding="utf-8") as handle:
-            csv.writer(handle).writerow([epoch, update, int(eligible), validation["H"]["JADE"], str(last), digest])
+            csv.writer(handle).writerow([
+                epoch, update, int(eligible), validation["H"]["JADE"],
+                str(epoch_path), digest])
         epoch_record = {"epoch": epoch, "update": update,
                         "loss": statistics.fmean(losses),
                         "pair_loss": statistics.fmean(pairs),
                         "bridge_loss": statistics.fmean(bridges),
-                        "G": validation["G"], "H": validation["H"],
+                        "G_minADE": validation["G"]["minADE"],
+                        "G_minFDE": validation["G"]["minFDE"],
+                        "G_JADE": validation["G"]["JADE"],
+                        "G_JFDE": validation["G"]["JFDE"],
+                        "H_minADE": validation["H"]["minADE"],
+                        "H_minFDE": validation["H"]["minFDE"],
+                        "H_JADE": validation["H"]["JADE"],
+                        "H_JFDE": validation["H"]["JFDE"],
                         "eligible": eligible, "training_seconds": training_seconds,
                         "validation_seconds": validation_seconds,
                         "elapsed_seconds": time.perf_counter() - started}
@@ -318,16 +402,39 @@ def main() -> None:
             writer.writerow(epoch_record)
         atomic_json(output / "STATUS.json", {"status": "TRAINING", **epoch_record,
                     "best": selection})
-        print(f"E{epoch:02d}/30 | loss={epoch_record['loss']:.6f} pair={epoch_record['pair_loss']:.6f} bridge={epoch_record['bridge_loss']:.6f} | G: ADE/FDE/JADE/JFDE={validation['G']['minADE']:.4f}/{validation['G']['minFDE']:.4f}/{validation['G']['JADE']:.4f}/{validation['G']['JFDE']:.4f} | H: ADE/FDE/JADE/JFDE={validation['H']['minADE']:.4f}/{validation['H']['minFDE']:.4f}/{validation['H']['JADE']:.4f}/{validation['H']['JFDE']:.4f} | time={(training_seconds+validation_seconds)/60:.1f}m", flush=True)
+        elapsed = time.perf_counter() - started
+        eta = elapsed / epoch * (30 - epoch)
+        print(f"E{epoch:02d}/30 | loss={epoch_record['loss']:.6f} pair={epoch_record['pair_loss']:.6f} bridge={epoch_record['bridge_loss']:.6f} | G: ADE/FDE/JADE/JFDE={validation['G']['minADE']:.4f}/{validation['G']['minFDE']:.4f}/{validation['G']['JADE']:.4f}/{validation['G']['JFDE']:.4f} | H: ADE/FDE/JADE/JFDE={validation['H']['minADE']:.4f}/{validation['H']['minFDE']:.4f}/{validation['H']['JADE']:.4f}/{validation['H']['JFDE']:.4f} | train={training_seconds/60:.1f}m val={validation_seconds/60:.1f}m total={(training_seconds+validation_seconds)/60:.1f}m ETA={eta/3600:.2f}h", flush=True)
     if completed_normally and start_epoch <= 30:
         atomic_json(output / "STATUS.json", {"status": "TRAINING_COMPLETE_PENDING_FINAL_EVALUATION", "epoch": 30, "update": update, "best": selection})
     selected_name = "best_eligible.pt" if (output / "best_eligible.pt").exists() else "best_jade.pt"
     selected = output / selected_name
-    if selected.exists() and time.perf_counter() - started < args.max_gpu_seconds:
+    if completed_normally and selected.exists() and time.perf_counter() - started < args.max_gpu_seconds:
         payload = torch.load(selected, map_location=device, weights_only=False)
         model.load_state_dict(payload["model"], strict=True)
-        final = [evaluate(model, config, validation_banks[seed], device, seed)
-                 for seed in range(2035, 2040)]
+        selected_sha = file_sha256(selected)
+        evaluation_dir = output / "evaluations"
+        evaluation_dir.mkdir(exist_ok=True)
+        final = []
+        for seed in range(2035, 2040):
+            seed_path = evaluation_dir / f"seed_{seed}.json"
+            existing = None
+            if seed_path.exists():
+                candidate = json.loads(seed_path.read_text(encoding="utf-8"))
+                if (candidate.get("selected_checkpoint_sha256") == selected_sha
+                        and candidate.get("validation_bank_sha256")
+                        == validation_banks[seed].sha256):
+                    existing = candidate["result"]
+            run = existing or evaluate(
+                model, config, validation_banks[seed], device, seed)
+            if existing is None:
+                atomic_json(seed_path, {
+                    "status": "complete", "seed": seed,
+                    "selected_checkpoint_sha256": selected_sha,
+                    "validation_bank_sha256": validation_banks[seed].sha256,
+                    "manifest_sha256": validation_sha, "worlds": 20,
+                    "ddim_steps": 20, "result": run})
+            final.append(run)
         summary = {}
         for mode in ("G", "H"):
             summary[mode] = {}
@@ -338,7 +445,7 @@ def main() -> None:
                     "sample_standard_deviation": statistics.stdev(values)}
         result = {"status": "COMPLETE" if completed_normally else "BUDGET_PARTIAL",
                   "selected_checkpoint": str(selected),
-                  "selected_checkpoint_sha256": file_sha256(selected),
+                  "selected_checkpoint_sha256": selected_sha,
                   "selection_identity": selected_name, "runs": final,
                   "summary": summary, "optimizer_updates": update,
                   "gpu_wall_seconds": time.perf_counter() - started}
