@@ -1,0 +1,69 @@
+{
+  "schema": "ebjd-native-goal-provider-audit-v1",
+  "status": "EXTRACTABLE",
+  "prototype": "minimal_goal_provider.py",
+  "prototype_sha256": "750c0b19dd77d598feef8f1ff228c55e81997b791b8000dab1b7f6a6031c7644",
+  "learned_modules": [
+    "goal_module.encoder",
+    "goal_module.decoder",
+    "goal_module.head"
+  ],
+  "excluded_modules": [
+    "registrar/history encoder",
+    "diffnet/trajectory diffusion denoiser"
+  ],
+  "goal_parameter_tensors": 46,
+  "goal_parameter_count": 613772,
+  "running_buffers": 0,
+  "input": {
+    "semantic_channels": 6,
+    "observed_heatmap_channels": 8,
+    "total_channels": 14,
+    "observation_frames": 8
+  },
+  "sampling": {
+    "algorithm": "native TTST",
+    "multinomial_samples_per_agent": 1000,
+    "kmeans_clusters": 20,
+    "formal_output_count": 20,
+    "note": "Native code appends argmax as item 21; formal exporters retain the first 20 k-means centers."
+  },
+  "coordinate_conversion": {
+    "down_factor": 8,
+    "output_unit": "metres",
+    "operation": "scene.make_world_coord_torch(map_grid_xy * down_factor)"
+  },
+  "weights": {
+    "zara1": {
+      "source": "matched GDTS baseline epoch 160",
+      "checkpoint_sha256": "34af0f4335de77cf2b6ecd48b93262dfc4764e679bd52fd677392a85c22bf6d7"
+    },
+    "zara2": {
+      "source": "matched GDTS baseline epoch 140",
+      "checkpoint_sha256": "bba3e538775e57fac45fd693ae6308c84fd92d6bf8d5451ab337005b292b2d80"
+    }
+  },
+  "strict_loading": true,
+  "runtime_dependencies": [
+    "PyTorch",
+    "torchvision CenterCrop",
+    "NumPy",
+    "prepared semantic image and observed heatmaps",
+    "scene pixel-to-world transform"
+  ],
+  "legacy_source_tree_pythonpath_required_by_prototype": false,
+  "full_gdts_model_instantiated_by_prototype": false,
+  "replay": {
+    "device": "cpu",
+    "dtype": "float32",
+    "folds": ["zara1", "zara2"],
+    "windows_per_fold": 16,
+    "seeds": [3101, 2035],
+    "candidate_coordinate_tolerance_m": 1e-6,
+    "zara1_reference_comparisons_exact": 32,
+    "zara2_reference_comparisons_exact": 32,
+    "heatmap_logits_exact": true,
+    "candidate_order_exact": true,
+    "candidate_values_exact": true
+  }
+}
