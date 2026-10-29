@@ -108,8 +108,9 @@ def main() -> None:
                 frame_ids=np.asarray(record["frame_ids"], dtype=np.int64))
 
     Trajectory_Data_Pre_Process.make_scene_window_batches = manifest_bound
+    fold = str(recipe["fold"])
     cli = [
-        "--dataset", "eth5", "--test_set", "zara1", "--phase", "pre-process",
+        "--dataset", "eth5", "--test_set", fold, "--phase", "pre-process",
         "--batch_size", "64", "--device", "cpu", "--num_workers", "0",
         "--down_factor", "8", "--skip_ts_window", "1",
         "--goal_model_type", "social", "--training_stage", "finetune",
@@ -121,7 +122,7 @@ def main() -> None:
     parsed = check_and_add_additional_args(get_parser().parse_args(cli))
     Trajectory_Data_Pre_Process(parsed)
     confirmation = (
-        Path(args.batch_cache_root).resolve() / "eth5/zara1/data_batches_joint_v2"
+        Path(args.batch_cache_root).resolve() / f"eth5/{fold}/data_batches_joint_v2"
         / "finished_train_batches.txt")
     if not confirmation.is_file() or str(expected_count) not in confirmation.read_text():
         raise RuntimeError("manifest-bound GDTS cache scene count mismatch")

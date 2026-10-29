@@ -151,12 +151,21 @@ class Pipeline:
         train_dir = self.root / "proposal_banks/native_train"
         train_bank = train_dir / "gdts_proposal_train_seed3101.npz"
         common = [str(PYTHON)]
+        bound_cache = self.root / "proposal_banks/manifest_bound_scene_cache"
+        marker = bound_cache / "eth5/zara2/data_batches_joint_v2/finished_train_batches.txt"
+        if not marker.exists() or "4016" not in marker.read_text(encoding="utf-8"):
+            self.run("BUILD_MANIFEST_BOUND_CACHE", common + [
+                "scripts/build_manifest_bound_gdts_cache.py", "--recipe", str(RECIPE),
+                "--manifest", str(self.train_manifest),
+                "--runtime-root", str(OLD_ROOT / "gdts/runtime"),
+                "--batch-cache-root", str(bound_cache)],
+                self.root / "logs/build_manifest_bound_cache.log")
         if not train_bank.exists():
             self.run("EXPORT_TRAIN_BANK", common + [
                 "scripts/export_zara1_train_proposals.py", "--recipe", str(RECIPE),
                 "--checkpoint", str(self.gdts), "--checkpoint-sha256", GDTS_SHA,
                 "--manifest", str(self.train_manifest), "--manifest-sha256", TRAIN_SHA,
-                "--scene-cache-root", str(OLD_ROOT / "gdts/scene_cache"),
+                "--scene-cache-root", str(bound_cache),
                 "--runtime-root", str(OLD_ROOT / "gdts/runtime"),
                 "--output-dir", str(train_dir), "--seed", "3101"],
                 self.root / "logs/export_train_bank.log")
@@ -168,7 +177,7 @@ class Pipeline:
             self.run(f"EXPORT_VALIDATION_BANK_{seed}", common + [
                 "scripts/export_zara1_endpoint_banks.py", "gdts", "--recipe", str(RECIPE),
                 "--runtime-root", str(OLD_ROOT / "gdts/runtime"),
-                "--scene-cache-root", str(OLD_ROOT / "gdts/scene_cache"),
+                "--scene-cache-root", str(bound_cache),
                 "--checkpoint", str(self.gdts), "--checkpoint-sha256", GDTS_SHA,
                 "--manifest", str(self.validation_manifest),
                 "--manifest-sha256", VALID_SHA, "--output-dir", str(output),
