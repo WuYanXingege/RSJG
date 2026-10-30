@@ -10,6 +10,7 @@ import argparse
 import json
 import os
 import random
+import tempfile
 import sys
 import time
 from pathlib import Path
@@ -89,19 +90,26 @@ def main() -> None:
             proposals[record["scene_id"]] = world.cpu().numpy().astype(np.float32)
 
     Trajectory_Data_Pre_Process.make_scene_window_batches = stream_scene
-    cli = ["--dataset", "eth5", "--test_set", str(recipe["fold"]),
-           "--phase", "pre-process", "--batch_size", "64", "--device", "cpu",
-           "--num_workers", "0", "--down_factor", "8", "--skip_ts_window", "1",
-           "--goal_model_type", "social", "--training_stage", "finetune",
-           "--data_augmentation", "False", "--shuffle_train_batches", "False",
-           "--shuffle_test_batches", "False", "--reproducibility", "True",
-           "--seed", str(recipe["seed"]), "--use_wandb", "False",
-           "--batch_cache_root", str(runtime / "empty_cache")]
-    parsed = check_and_add_additional_args(get_parser().parse_args(cli))
-    if device.type == "cuda": torch.cuda.synchronize(device)
-    started = time.perf_counter(); Trajectory_Data_Pre_Process(parsed)
-    if device.type == "cuda": torch.cuda.synchronize(device)
-    elapsed = time.perf_counter() - started
+    # The legacy preprocessor writes completion sentinels for all three splits.
+    # Those sentinels are intentionally disposable here: this exporter streams
+    # tensors into the compact bank and does not materialize batch-cache files.
+    # A fresh scratch root is therefore required for every split/seed replay;
+    # reusing one would skip preprocessing and silently yield an empty bank.
+    with tempfile.TemporaryDirectory(
+            prefix=f"stream_{args.split}_{args.seed}_", dir=runtime) as scratch:
+        cli = ["--dataset", "eth5", "--test_set", str(recipe["fold"]),
+               "--phase", "pre-process", "--batch_size", "64", "--device", "cpu",
+               "--num_workers", "0", "--down_factor", "8", "--skip_ts_window", "1",
+               "--goal_model_type", "social", "--training_stage", "finetune",
+               "--data_augmentation", "False", "--shuffle_train_batches", "False",
+               "--shuffle_test_batches", "False", "--reproducibility", "True",
+               "--seed", str(recipe["seed"]), "--use_wandb", "False",
+               "--batch_cache_root", scratch]
+        parsed = check_and_add_additional_args(get_parser().parse_args(cli))
+        if device.type == "cuda": torch.cuda.synchronize(device)
+        started = time.perf_counter(); Trajectory_Data_Pre_Process(parsed)
+        if device.type == "cuda": torch.cuda.synchronize(device)
+        elapsed = time.perf_counter() - started
     if len(proposals) != len(records):
         missing = [record["scene_id"] for record in records
                    if record["scene_id"] not in proposals]
