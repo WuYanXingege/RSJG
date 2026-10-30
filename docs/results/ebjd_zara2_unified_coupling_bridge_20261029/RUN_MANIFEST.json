@@ -1,0 +1,97 @@
+{
+  "command": [
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+    "-u",
+    "scripts/run_zara1_unified_coupling_bridge.py",
+    "--config",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/configs/RESOLVED_ZARA2_UNIFIED.json",
+    "--fold",
+    "zara2",
+    "--compact-scenes",
+    "--train-bank",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/proposal_banks/native_train/gdts_proposal_train_seed3101.npz",
+    "--validation-bank-pattern",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/proposal_banks/native_validation/seed_{seed}/gdts_proposal_B_seed{seed}.npz",
+    "--output",
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training",
+    "--source-commit",
+    "5369f589a8b4ad89735b4028e237bede53d35771",
+    "--max-gpu-seconds",
+    "53872.07948749792",
+    "--final-reserve-seconds",
+    "7200",
+    "--resume"
+  ],
+  "experiment_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715",
+  "failure": "RuntimeError('EXPORT_TRAIN_BANK exited with code 1')",
+  "fold": "zara2",
+  "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/logs/console.log",
+  "result": {
+    "G": {
+      "JADE": {
+        "mean": 0.28391119180702584,
+        "sample_standard_deviation": 0.0008743571103146293
+      },
+      "JFDE": {
+        "mean": 0.5701145360418007,
+        "sample_standard_deviation": 0.0026637406799489205
+      },
+      "minADE": {
+        "mean": 0.15784358116794164,
+        "sample_standard_deviation": 0.0005316178466774189
+      },
+      "minFDE": {
+        "mean": 0.24924426169211497,
+        "sample_standard_deviation": 0.000676114780150806
+      }
+    },
+    "H": {
+      "JADE": {
+        "mean": 0.27079391262824376,
+        "sample_standard_deviation": 0.0009674086861251631
+      },
+      "JFDE": {
+        "mean": 0.5417442675004294,
+        "sample_standard_deviation": 0.001152287925941176
+      },
+      "minADE": {
+        "mean": 0.15765178702577837,
+        "sample_standard_deviation": 0.00047323635526625693
+      },
+      "minFDE": {
+        "mean": 0.24924426169211497,
+        "sample_standard_deviation": 0.000676114780150806
+      }
+    },
+    "five_inference_seeds_one_training_seed": true,
+    "matched_GDTS": {
+      "JADE": {
+        "mean": 0.2956019675667082,
+        "sample_standard_deviation": 0.0012610046205370352
+      },
+      "JFDE": {
+        "mean": 0.5823599543419661,
+        "sample_standard_deviation": 0.002314959813653372
+      },
+      "minADE": {
+        "mean": 0.15842072963560166,
+        "sample_standard_deviation": 0.0003047425829096067
+      },
+      "minFDE": {
+        "mean": 0.25784719831401615,
+        "sample_standard_deviation": 0.0010299897648329652
+      }
+    },
+    "optimizer_updates": 7530,
+    "pairing_mechanism_mean_joint_improvement": true,
+    "performance_contract_pass": true,
+    "schema": "ebjd-zara2-unified-final-summary-v1",
+    "selected_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/best_eligible.pt",
+    "selected_checkpoint_sha256": "1dcdf54a2ea8081ee21480f1bc7a0499b89dff5a8ccc2c99357f9dd01243c3be"
+  },
+  "schema": "ebjd-zara2-unified-pipeline-v1",
+  "source_commit": "5369f589a8b4ad89735b4028e237bede53d35771",
+  "stage": "COMPLETE",
+  "status": "COMPLETE",
+  "updated_at_utc": "2026-10-29T15:05:15.390037+00:00"
+}

@@ -1,0 +1,217 @@
+{
+  "ablations": {
+    "available": []
+  },
+  "data": {
+    "complete_horizon_required": true,
+    "coordinates": "metres",
+    "do_not_truncate_scene_agents": true,
+    "dt_seconds": 0.4,
+    "obs_length": 8,
+    "pred_length": 12,
+    "scene_agent_padding": true
+  },
+  "denoiser": {
+    "clean_future_detach": false,
+    "coarse_blocks": 3,
+    "cross_world_attention": false,
+    "ff_dim": 768,
+    "geometry_gate": "alpha_squared",
+    "heads": 4,
+    "hidden_dim": 192,
+    "memory_tokens_per_agent": 72,
+    "refinement_blocks": 3,
+    "sublayers": [
+      "temporal_attention",
+      "social_attention",
+      "context_cross_attention",
+      "ffn"
+    ],
+    "target_parameterization": "v"
+  },
+  "diffusion": {
+    "ddim_eta": 0.0,
+    "exact_terminal_snr_zero": true,
+    "sampler": "ddim",
+    "schedule": "cosine_vp_alpha_cos_sigma_sin",
+    "shared_time_within_scene": true,
+    "training_noise_bins": 100
+  },
+  "evaluation": {
+    "final_test_used_for_checkpoint_selection": false,
+    "inference_seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "marginal_tolerance": 0.0,
+    "matched_gdts_validation": {
+      "agent_occurrence_count": 5910,
+      "checkpoint_sha256": "bba3e538775e57fac45fd693ae6308c84fd92d6bf8d5451ab337005b292b2d80",
+      "ebjd_initialization_sha256": "50175952e2a5dca2984320b3d7751dcf851e09264b324fcf50a511f423a014db",
+      "evaluation_seed": 2035,
+      "fold": "zara2",
+      "manifest_sha256": "de47ab89a5421dad62eb1846511d72f22e104fe1fc7771117676dcda806c581f",
+      "minADE": 0.15852175799203178,
+      "minFDE": 0.25805648753950183,
+      "reference_limitation": "one_training_seed_and_mirrored_validation_test",
+      "result_sha256": "7f7e25856758af4ef7013b1c0ef9424fcbeb6c8e90571f42438449786a59d092",
+      "scene_count": 998,
+      "source": "local_ZARA2_matched_GDTS",
+      "status": "bound_to_manifest",
+      "steps": 20,
+      "unit": "m",
+      "worlds": 20
+    },
+    "metrics": [
+      "minADE",
+      "minFDE",
+      "JADE",
+      "JFDE"
+    ],
+    "minimum_training_seeds": 3,
+    "per_agent_reordering": false,
+    "selection_seed": 2035,
+    "steps": 20,
+    "validation_test_identity": "mirrored_official_package_internal_only",
+    "worlds": 20
+  },
+  "experiment": {
+    "fold": "zara2",
+    "implementation_base": "5369f58",
+    "source_commit": "5369f589a8b4ad89735b4028e237bede53d35771"
+  },
+  "history_encoder": {
+    "dropout": 0.0,
+    "hidden_dim": 192,
+    "input_dim": 6,
+    "observed_bias_bound": 2.0,
+    "observed_geometry_dim": 10,
+    "social_blocks": 2,
+    "social_ff_dim": 768,
+    "social_heads": 4
+  },
+  "map_encoder": {
+    "agent_chunk": 8,
+    "crop_pixels": 256,
+    "crop_width_m": 32.0,
+    "dec_channels": [
+      64,
+      64,
+      64,
+      32,
+      32
+    ],
+    "enc_channels": [
+      14,
+      32,
+      32,
+      64,
+      64,
+      64
+    ],
+    "future_heatmap_channels": 12,
+    "heatmap_sigma_m": 0.5,
+    "history_heatmap_channels": 8,
+    "memory_grid": [
+      8,
+      8
+    ],
+    "semantic_channels": 6,
+    "trainable": true
+  },
+  "objectives": {
+    "bridge_v_weight": 1.0,
+    "coarse_v_weight": 0.25,
+    "goal_v_weight": 1.0,
+    "map_bce_weight": 0.1,
+    "relative_motion_weight": 0.05,
+    "relative_velocity_factor": 0.5,
+    "rollout_joint_ade_weight": 1.0,
+    "rollout_joint_fde_weight": 0.5,
+    "rollout_marginal_ade_weight": 1.0,
+    "rollout_marginal_fde_weight": 0.5,
+    "supervision_edge_cv_cpa_radius_m": 2.0,
+    "supervision_edge_cv_horizon_s": 4.8,
+    "supervision_edge_radius_m": 6.0
+  },
+  "paths": {
+    "accepted_fold_matched_gdts_unet": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/gdts/goal_unet_best.pt",
+    "accepted_fold_matched_gdts_unet_sha256": "50175952e2a5dca2984320b3d7751dcf851e09264b324fcf50a511f423a014db",
+    "initialization_role": "trainable_goal_unet_only",
+    "matched_gdts_validation_checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/gdts/matched_gdts_best.pt",
+    "matched_gdts_validation_checkpoint_sha256": "bba3e538775e57fac45fd693ae6308c84fd92d6bf8d5451ab337005b292b2d80",
+    "matched_gdts_validation_result": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/evaluation/matched_gdts/results.json",
+    "matched_gdts_validation_result_sha256": "7f7e25856758af4ef7013b1c0ef9424fcbeb6c8e90571f42438449786a59d092",
+    "output_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training",
+    "test_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/test/test_manifest.json",
+    "train_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/train/train_manifest.json",
+    "validation_manifest": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/validation/validation_manifest.json"
+  },
+  "representation": {
+    "bridge_rms_floor_m": 0.1,
+    "bridge_scale_m": 1.0,
+    "bridge_tokens": 11,
+    "goal_rms_floor_m": 0.5,
+    "goal_scale_m": 1.0,
+    "goal_tokens": 1,
+    "literal_endpoint_concatenation": true,
+    "train_fold_rms_scaling": true,
+    "type": "invertible_endpoint_brownian_bridge"
+  },
+  "seed": 3101,
+  "training": {
+    "activation_checkpointing": true,
+    "batch_scenes": 4,
+    "checkpoint_use_reentrant": false,
+    "data_loader_prefetch_factor": 2,
+    "data_loader_workers": 4,
+    "ema": false,
+    "epochs": 30,
+    "exclude_bias_and_layernorm_from_decay": true,
+    "execution_strategy": "prefetch_runtime_v1",
+    "gradient_accumulation": 4,
+    "gradient_constraint_uses_unclipped_marginal_gradients": true,
+    "lr_final_fraction": 0.1,
+    "lr_warmup_epochs": 5,
+    "mixed_precision": "bf16_with_fp32_geometry_loss_optimizer",
+    "new_module_lr": 0.0001,
+    "optimizer": "adamw_actual_step_projection",
+    "optimizer_betas": [
+      0.9,
+      0.999
+    ],
+    "optimizer_eps": 1e-08,
+    "paired_marginal_actual_step_projection_enabled": false,
+    "physical_group_max_agent_slots": 96,
+    "physical_group_max_padding_ratio": 1.5,
+    "physical_group_max_scenes": 4,
+    "protected_losses": [
+      "soft_marginal_ade",
+      "soft_marginal_fde"
+    ],
+    "rollout_block_checkpointing": false,
+    "rollout_detach_between_steps": false,
+    "rollout_every_optimizer_updates": 4,
+    "rollout_frequency_loss_compensation": 4.0,
+    "rollout_ramp_end_epoch": 40,
+    "rollout_start_epoch": 21,
+    "rollout_steps": 20,
+    "rollout_training_enabled": false,
+    "rollout_uncheckpointed_max_agent_slots": 32,
+    "rollout_weight_end": 0.2,
+    "rollout_weight_start": 0.01,
+    "rollout_worlds": 4,
+    "scene_compaction": true,
+    "scene_forward_chunk": 1,
+    "softmin_temperature_end_m": 0.05,
+    "softmin_temperature_start_m": 0.1,
+    "total_gradient_clip_norm": 5.0,
+    "train_all_modules": true,
+    "training_runtime_optimizations": true,
+    "unet_lr": 1e-05,
+    "weight_decay": 0.0001
+  }
+}
