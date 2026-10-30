@@ -44,8 +44,10 @@ def main() -> None:
             output_dir=str(Path(args.output).parent / ("runtime_" + fold)),
             checkpoint=item["checkpoint"])
         evaluator = configure_legacy_evaluator(namespace)
-        provider = NativeGoalProvider(goal_state(Path(item["checkpoint"]))).to(
-            evaluator.device).eval()
+        provider = NativeGoalProvider(
+            goal_state(Path(item["checkpoint"])),
+            {"fold": fold, "source": "matched_gdts_parity_reference"},
+        ).to(evaluator.device).eval()
         rows = []
         for index, (batch_data, batch_id) in enumerate(evaluator.data_loaders["valid"]):
             if index >= args.windows:
