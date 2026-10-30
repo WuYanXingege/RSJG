@@ -60,8 +60,14 @@ def main() -> None:
     random.seed(args.seed); np.random.seed(args.seed); torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
     original_add = Trajectory_Data_Pre_Process.add_pre_computed_cnn_maps
+    expected_legacy_set = "train" if args.split == "train" else "valid"
 
     def stream_scene(self, scene_data, set_name):
+        # ETH/UCY raw basenames can occur in more than one legacy split.  The
+        # manifest identity includes the intended split, so never match a
+        # same-named source from another split merely by its file stem.
+        if set_name != expected_legacy_set:
+            return
         source = Path(scene_data["file_path"]).stem
         if source not in targets:
             return
