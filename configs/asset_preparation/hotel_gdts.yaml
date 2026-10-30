@@ -1,0 +1,28 @@
+schema: ebjd-crossfold-gdts-asset-recipe-v1
+fold: hotel
+seed: 3101
+legacy_gdts:
+  root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean
+  commit: 092ed91f1f4117f50aa835ec8e47cd2c9ce74a98
+  role: read_only_preprocessing_and_parity_reference_only
+source_data_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS_official_297d508_HOTEL/data
+asset_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets
+python: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python
+manifests:
+  train: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/hotel_official_train_scene_shards_e7a1948/train/train_manifest.json
+  validation: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/hotel_official/validation/validation_manifest.json
+  test: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/hotel_official/test/test_manifest.json
+goal_pretrain:
+  checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/checkpoints/hotel/goal_unet_epoch_096.pt
+  sha256: f6a52cf228d733bd684aef043d843ba7d942e40495d5eec354ce1e4e3507ec13
+matched_gdts:
+  checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/checkpoints/hotel/matched_gdts_best.pt
+  sha256: 5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b
+  selection: minimum_native_validation_ADE
+matched_evaluation:
+  result: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/references/hotel_matched_gdts.json
+  selection_seed: 2035
+  final_seeds: [2035, 2036, 2037, 2038, 2039]
+  worlds: 20
+  ddim_steps: 20
+

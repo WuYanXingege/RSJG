@@ -145,8 +145,12 @@ def configure_legacy_evaluator(args):
     from src.parser import check_and_add_additional_args, get_parser
     from src.trainer import trainer
 
-    parsed = get_parser().parse_args(legacy_cli(
-        recipe, Path(args.scene_cache_root), Path(args.output_dir)))
+    cli = legacy_cli(recipe, Path(args.scene_cache_root), Path(args.output_dir))
+    cache_goal_model_type = getattr(args, "cache_goal_model_type", None)
+    if cache_goal_model_type is not None:
+        index = cli.index("--goal_model_type") + 1
+        cli[index] = str(cache_goal_model_type)
+    parsed = get_parser().parse_args(cli)
     parsed = check_and_add_additional_args(parsed)
     parsed.model_dir = str(Path(args.output_dir).resolve() / "runtime")
     parsed.save_dir = parsed.model_dir

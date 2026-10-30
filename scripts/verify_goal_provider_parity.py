@@ -42,7 +42,8 @@ def main() -> None:
             recipe=item["recipe"], runtime_root=item["runtime_root"],
             scene_cache_root=item["scene_cache_root"],
             output_dir=str(Path(args.output).parent / ("runtime_" + fold)),
-            checkpoint=item["checkpoint"])
+            checkpoint=item["checkpoint"],
+            cache_goal_model_type=item.get("cache_goal_model_type"))
         evaluator = configure_legacy_evaluator(namespace)
         provider = NativeGoalProvider(
             goal_state(Path(item["checkpoint"])),
