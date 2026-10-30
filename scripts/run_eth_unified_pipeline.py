@@ -170,6 +170,12 @@ class Pipeline:
     def parity(self) -> None:
         output = self.root / "reports/PROVIDER_PARITY_REPORT.json"
         if output.exists() and json.loads(output.read_text()).get("status") == "PASS": return
+        eth_parity_cache = self.root / "provider/eth_parity_cache/eth5/eth"
+        eth_parity_cache.mkdir(parents=True, exist_ok=True)
+        eth_joint_cache = eth_parity_cache / "data_batches_joint_v2"
+        legacy_cache = ROOT / "GDTS/output/eth/data_batches"
+        if not eth_joint_cache.exists() and not eth_joint_cache.is_symlink():
+            eth_joint_cache.symlink_to(legacy_cache, target_is_directory=True)
         spec = {
             "zara1": {"recipe": str(PAPER / "configs/asset_preparation/zara1_gdts.yaml"),
                       "runtime_root": str(ASSETS / "zara1_full_pipeline_v1/gdts_runtime"),
@@ -180,33 +186,26 @@ class Pipeline:
                       "scene_cache_root": str(ASSETS / "experiments/formal_zara2_gt_bridge_h_20261028_100627/gdts/scene_cache"),
                       "checkpoint": str(ASSETS / "experiments/formal_zara2_gt_bridge_h_20261028_100627/gdts/matched_gdts_best.pt")},
             "eth": {"recipe": str(RECIPE), "runtime_root": str(self.runtime),
-                    "scene_cache_root": str(self.cache_root), "checkpoint": str(MATCHED)}}
+                    "scene_cache_root": str(self.root / "provider/eth_parity_cache"),
+                    "checkpoint": str(MATCHED)}}
         spec_path = self.root / "configs/PROVIDER_PARITY_SPEC.json"; atomic_json(spec_path, spec)
         self.run("PROVIDER_PARITY", [str(PYTHON), "-u", "scripts/verify_goal_provider_parity.py",
                  "--spec", str(spec_path), "--output", str(output), "--windows", "2"])
 
-    def build_cache(self) -> None:
-        marker = self.cache / "finished_train_batches.txt"
-        if marker.exists() and "4110" in marker.read_text(): return
-        self.run("BUILD_CACHE", [str(PYTHON), "-u", "scripts/build_manifest_bound_gdts_cache.py",
-                 "--recipe", str(RECIPE), "--manifest", str(TRAIN),
-                 "--runtime-root", str(self.runtime), "--batch-cache-root", str(self.cache_root)],
-                 gpu=False)
-
     def export_banks(self) -> None:
-        common = [str(PYTHON), "-u", "scripts/export_native_goal_bank.py",
-                  "--provider-manifest", str(self.provider), "--cache-root", str(self.cache),
-                  "--homography", str(ROOT / "GDTS/data/eth5/eth/H.txt"), "--scene", "eth"]
+        common = [str(PYTHON), "-u", "scripts/stream_native_goal_bank.py",
+                  "--recipe", str(RECIPE), "--provider-manifest", str(self.provider),
+                  "--runtime-root", str(self.runtime)]
         train = self.root / "proposal_banks/native_train/gdts_proposal_train_seed3101.npz"
         if not train.exists():
-            self.run("EXPORT_TRAIN", common + ["--data-manifest", str(TRAIN),
-                     "--data-manifest-sha256", TRAIN_SHA, "--split", "train", "--seed", "3101",
+            self.run("EXPORT_TRAIN", common + ["--manifest", str(TRAIN),
+                     "--manifest-sha256", TRAIN_SHA, "--split", "train", "--seed", "3101",
                      "--output", str(train)])
         for seed in range(2035, 2040):
             output = self.root / f"proposal_banks/native_validation/seed_{seed}/gdts_proposal_B_seed{seed}.npz"
             if output.exists(): continue
-            self.run(f"EXPORT_VALIDATION_{seed}", common + ["--data-manifest", str(VALID),
-                     "--data-manifest-sha256", VALID_SHA, "--split", "validation",
+            self.run(f"EXPORT_VALIDATION_{seed}", common + ["--manifest", str(VALID),
+                     "--manifest-sha256", VALID_SHA, "--split", "validation",
                      "--seed", str(seed), "--output", str(output)])
 
     def train(self) -> None:
@@ -268,7 +267,7 @@ class Pipeline:
 
     def execute(self) -> None:
         try:
-            self.verify_assets(); self.prepare(); self.build_cache(); self.parity()
+            self.verify_assets(); self.prepare(); self.parity()
             self.export_banks(); self.train(); self.finalize()
         except Exception as error:
             self.update(self.state.get("stage", "UNKNOWN"), "FAILED", failure=repr(error)); raise
