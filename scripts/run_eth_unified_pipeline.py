@@ -167,6 +167,11 @@ class Pipeline:
         config["evaluation"]["matched_gdts_validation"]["result_sha256"] = reference_sha
         config["training"].update({"epochs": 30, "lr_warmup_epochs": 5,
                                     "lr_final_fraction": 0.1,
+                                    # ETH scale fitting and shard prefetch can
+                                    # multiply host memory across four forked
+                                    # workers.  Single-process loading preserves
+                                    # order/RNG while avoiding host-level kills.
+                                    "data_loader_workers": 0,
                                     "rollout_training_enabled": False,
                                     "paired_marginal_actual_step_projection_enabled": False})
         atomic_json(self.config, config)
