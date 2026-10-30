@@ -142,6 +142,10 @@ class HotelPipeline(base.Pipeline):
         output = self.root / "reports/PROVIDER_PARITY_REPORT.json"
         if output.exists() and json.loads(output.read_text()).get("status") == "PASS":
             return
+        # The legacy evaluator changes into an isolated runtime directory
+        # before importing its modules.  Unlike the older fold assets, a new
+        # HOTEL experiment has no pre-existing runtime tree.
+        self.runtime.mkdir(parents=True, exist_ok=True)
         cache_root = self.root / "provider/hotel_parity_cache"
         cache = cache_root / "eth5/hotel/data_batches"
         cache.parent.mkdir(parents=True, exist_ok=True)
