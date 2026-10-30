@@ -38,6 +38,17 @@ GDTS_RESULTS_SHA = "df9aa35cd26296558c864a2bcda792a8411bbc83a530376c45d3429a768e
 class HotelPipeline(base.Pipeline):
     def __init__(self, root: Path, source_commit: str) -> None:
         super().__init__(root, source_commit)
+        # HOTEL has an independent 16-hour ceiling.  The inherited ETH
+        # orchestrator defaults to 24 hours, so replace that value only for a
+        # brand-new HOTEL receipt; a resumed run keeps its accumulated ledger.
+        if not self.budget_path.exists():
+            self.budget = {
+                "limit_seconds": 57600.0,
+                "final_reserve_seconds": 10800.0,
+                "consumed_seconds": 0.0,
+                "remaining_seconds": 57600.0,
+                "stages": [],
+            }
         self.config = self.root / "configs/RESOLVED_HOTEL_UNIFIED.json"
         self.reference = self.root / "assets_manifest/MATCHED_GDTS_RESULTS.json"
         self.provider = self.root / "provider/provider_manifest.json"
