@@ -80,6 +80,8 @@ class Pipeline:
         self.runtime = self.root / "provider/runtime"
 
     def update(self, stage: str, status: str, **extra) -> None:
+        if status != "FAILED":
+            self.state.pop("failure", None)
         self.state.update({"schema": "ebjd-eth-unified-pipeline-v1", "fold": "eth",
                            "experiment_root": str(self.root),
                            "source_commit": self.source_commit, "stage": stage,
@@ -142,6 +144,7 @@ class Pipeline:
         atomic_json(self.reference, {"schema": "matched-gdts-results-v1",
                     "manifest_sha256": VALID_SHA, "checkpoint_sha256": MATCHED_SHA,
                     "runs": runs})
+        reference_sha = sha256(self.reference)
         config = json.loads(BASE_CONFIG.read_text())
         config["experiment"] = {"fold": "eth", "implementation_base": self.source_commit[:7],
                                 "source_commit": self.source_commit}
@@ -151,7 +154,7 @@ class Pipeline:
             "matched_gdts_validation_checkpoint": str(MATCHED),
             "matched_gdts_validation_checkpoint_sha256": MATCHED_SHA,
             "matched_gdts_validation_result": str(self.reference),
-            "matched_gdts_validation_result_sha256": "generated_from_bound_five_seed_receipt",
+            "matched_gdts_validation_result_sha256": reference_sha,
             "train_manifest": str(TRAIN), "validation_manifest": str(VALID),
             "test_manifest": str(TEST), "output_root": str(self.root / "training")})
         config["evaluation"]["matched_gdts_validation"].update({
@@ -161,6 +164,7 @@ class Pipeline:
             "minADE": runs[0]["metrics"]["minADE"],
             "minFDE": runs[0]["metrics"]["minFDE"],
             "source": "local_ETH_matched_GDTS", "status": "bound_to_manifest"})
+        config["evaluation"]["matched_gdts_validation"]["result_sha256"] = reference_sha
         config["training"].update({"epochs": 30, "lr_warmup_epochs": 5,
                                     "lr_final_fraction": 0.1,
                                     "rollout_training_enabled": False,
