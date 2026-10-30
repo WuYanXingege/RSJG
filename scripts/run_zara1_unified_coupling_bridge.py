@@ -214,10 +214,6 @@ def main() -> None:
     output, device = Path(args.output).resolve(), torch.device(args.device)
     output.mkdir(parents=True, exist_ok=True)
     config = load_config(args.config)
-    print(
-        f"Starting unified {args.fold} run | workers="
-        f"{config['training'].get('data_loader_workers', 0)} | "
-        f"output={output}", flush=True)
     checkpoint_sha = config["paths"]["matched_gdts_validation_checkpoint_sha256"]
     train_manifest_sha = file_sha256(config["paths"]["train_manifest"])
     validation_sha = config["evaluation"]["matched_gdts_validation"]["manifest_sha256"]
@@ -228,15 +224,11 @@ def main() -> None:
     config_sha256 = file_sha256(args.config)
     seed_all(3101)
     bridge = build_model(config, proposal_conditioned=True)
-    print("Fitting train-fold representation scales...", flush=True)
     scale_loader = loader(config, "train", torch.Generator().manual_seed(0))
     scales = fit_training_scales(bridge, scale_loader)
     if scales is None:
         raise RuntimeError("endpoint-bridge representation scales were not fitted")
     goal_scale, bridge_scale = scales
-    print(
-        f"Representation scales ready | goal={goal_scale:.8g} "
-        f"bridge={bridge_scale:.8g}", flush=True)
     bridge = bridge.to(device)
     identity = {
         "schema": "ebjd-unified-coupling-bridge-run-v1", "fold": args.fold,
