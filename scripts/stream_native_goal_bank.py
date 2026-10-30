@@ -71,16 +71,16 @@ def main() -> None:
         source = Path(scene_data["file_path"]).stem
         if source not in targets:
             return
-        dataframe = scene_data["raw_pixel_data"]
-        by_key = dataframe.set_index(["frame_id", "agent_id"], drop=False)
+        scene = self.dataset.scenes[scene_data["scene_name"]]
         for record in targets[source]:
-            trajectories = []
-            for agent in record["agent_ids"]:
-                rows = [by_key.loc[(frame, int(agent))] for frame in record["frame_ids"]]
-                trajectories.append(np.stack([
-                    np.asarray(row[["x_coord", "y_coord"]], dtype=np.float32)
-                    for row in rows]))
-            absolute = np.stack(trajectories).transpose(1, 0, 2)
+            # The formal manifest is derived from the JMM/AgentFormer source.
+            # In ETH its canonical frame ids differ from the legacy raw-file
+            # numbering, so identity-by-frame lookup is invalid.  Convert the
+            # manifest's exact observed world coordinates through the legacy
+            # scene homography instead.  Future ground truth is never passed
+            # to the provider or used to form its eight observed maps.
+            observed_world = torch.from_numpy(record["observed"]).transpose(0, 1)
+            absolute = scene.make_pixel_coord_torch(observed_world).cpu().numpy()
             data = {"abs_pixel_coord": absolute,
                     "seq_list": np.ones(absolute.shape[:2], dtype=np.float32)}
             identity = {"scene_name": scene_data["scene_name"],
@@ -91,7 +91,6 @@ def main() -> None:
             with torch.autocast(device_type="cuda", dtype=torch.bfloat16,
                                 enabled=device.type == "cuda"):
                 _, goal_map = provider.predict_prepared(semantic, observed_maps)
-            scene = self.dataset.scenes[scene_data["scene_name"]]
             world = scene.make_world_coord_torch(goal_map.float() * 8.0)
             proposals[record["scene_id"]] = world.cpu().numpy().astype(np.float32)
 
@@ -129,6 +128,7 @@ def main() -> None:
         "manifest_sha256": args.manifest_sha256, "scene_count": len(records),
         "agent_occurrence_count": int(manifest["statistics"]["agents"]),
         "endpoint_source": "standalone_matched_goal_unet_native_ttst",
+        "provider_input_source": "formal_manifest_observed_world_via_legacy_homography",
         "full_gdts_trajectory_network_instantiated": False,
         "large_intermediate_cache_materialized": False,
         "gt_used_for_generation": False, "gpu_elapsed_seconds": elapsed}

@@ -71,6 +71,7 @@ def manifest_identity(manifest_path: Path) -> tuple[list[dict], dict]:
                     "scene_id": str(payload["scene_ids"][index]),
                     "agent_ids": [str(value) for value in payload["agent_ids"][index]],
                     "frame_ids": [int(value) for value in payload["frame_ids"][index]],
+                    "observed": np.asarray(payload["observed"][index], dtype=np.float32),
                     "future": np.asarray(payload["future"][index], dtype=np.float32),
                 })
     if len(records) != int(manifest["statistics"]["scenes"]):

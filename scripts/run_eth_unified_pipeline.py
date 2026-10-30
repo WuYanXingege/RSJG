@@ -200,7 +200,7 @@ class Pipeline:
         common = [str(PYTHON), "-u", "scripts/stream_native_goal_bank.py",
                   "--recipe", str(RECIPE), "--provider-manifest", str(self.provider),
                   "--runtime-root", str(self.runtime)]
-        train = self.root / "proposal_banks/native_train/gdts_proposal_train_seed3101.npz"
+        train = self.root / "proposal_banks/native_train/gdts_proposal_train_manifest_seed3101.npz"
         if not train.exists():
             self.run("EXPORT_TRAIN", common + ["--manifest", str(TRAIN),
                      "--manifest-sha256", TRAIN_SHA, "--split", "train", "--seed", "3101",
@@ -219,7 +219,7 @@ class Pipeline:
         self.run("UNIFIED_TRAIN_AND_EVALUATE", [str(PYTHON), "-u",
             "scripts/run_zara1_unified_coupling_bridge.py", "--config", str(self.config),
             "--fold", "eth", "--compact-scenes",
-            "--train-bank", str(self.root / "proposal_banks/native_train/gdts_proposal_train_seed3101.npz"),
+            "--train-bank", str(self.root / "proposal_banks/native_train/gdts_proposal_train_manifest_seed3101.npz"),
             "--validation-bank-pattern", str(self.root / "proposal_banks/native_validation/seed_{seed}/gdts_proposal_B_seed{seed}.npz"),
             "--output", str(self.root / "training"), "--source-commit", self.source_commit,
             "--max-gpu-seconds", str(remaining), "--final-reserve-seconds", "10800", "--resume"])
