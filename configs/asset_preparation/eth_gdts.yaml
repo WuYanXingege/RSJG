@@ -1,0 +1,27 @@
+schema: ebjd-crossfold-gdts-asset-recipe-v1
+fold: eth
+seed: 3101
+legacy_gdts:
+  root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean
+  commit: 092ed91f1f4117f50aa835ec8e47cd2c9ce74a98
+  role: read_only_preprocessing_and_parity_reference_only
+source_data_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data
+asset_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets
+python: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python
+manifests:
+  train: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/train/train_manifest.json
+  validation: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json
+  test: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/test/test_manifest.json
+goal_pretrain:
+  checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_JDV2_clean/output/eth/runs/eth_goal_pretrain_seed3101_20261015/saved_models/goal_pretrain_best_model.pt
+  sha256: d130f47a3e13f457920a724465cc02d55bdb22e4827f7889bc49331d6c3bfec6
+matched_gdts:
+  checkpoint: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/output/eth/saved_models/best_model.pt
+  sha256: 126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950
+  selection: minimum_native_validation_ADE
+matched_evaluation:
+  result: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/outputs/formal_eth_main_20261015_seed3101/archive/GDTS_ETH_SEEDS2035_2039.json
+  selection_seed: 2035
+  final_seeds: [2035, 2036, 2037, 2038, 2039]
+  worlds: 20
+  ddim_steps: 20
