@@ -65,24 +65,46 @@ def main() -> None:
                 with evaluator._autocast_context():
                     _, reference = evaluator.net._legacy_encode(inputs, if_test=True)
                 logits_a = captured.pop(); hook.remove()
+                map_a = reference["goal_point"][:20]
+                world_a = inputs["scene"].make_world_coord_torch(map_a * 8).float()
+                # Replay the native reference itself before comparing it with
+                # the extracted provider.  This distinguishes provider drift
+                # from an unstable reference/RNG route.
+                random.setstate(python_state); np.random.set_state(numpy_state)
+                torch.set_rng_state(cpu_state); torch.cuda.set_rng_state_all(cuda_state)
+                repeated = []
+                repeat_hook = evaluator.net.goal_module.register_forward_hook(
+                    lambda _m, _i, output: repeated.append(output.detach().clone()))
+                with evaluator._autocast_context():
+                    _, reference_repeat = evaluator.net._legacy_encode(inputs, if_test=True)
+                logits_a_repeat = repeated.pop(); repeat_hook.remove()
+                map_a_repeat = reference_repeat["goal_point"][:20]
+                world_a_repeat = inputs["scene"].make_world_coord_torch(
+                    map_a_repeat * 8).float()
                 random.setstate(python_state); np.random.set_state(numpy_state)
                 torch.set_rng_state(cpu_state); torch.cuda.set_rng_state_all(cuda_state)
                 with evaluator._autocast_context():
                     logits_c, map_c = provider.predict_prepared(
                         inputs["tensor_image"], inputs["input_traj_maps"])
-                map_a = reference["goal_point"][:20]
-                world_a = inputs["scene"].make_world_coord_torch(map_a * 8).float()
                 world_c = inputs["scene"].make_world_coord_torch(map_c * 8).float()
                 rows.append({
                     "window": index, "seed": seed,
                     "agent_count": int(map_a.shape[1]),
+                    "reference_repeat_logits_max_abs": float(
+                        (logits_a.float() - logits_a_repeat.float()).abs().max()),
+                    "reference_repeat_world_max_euclidean_m": float(
+                        torch.linalg.vector_norm(
+                            world_a - world_a_repeat, dim=-1).max()),
+                    "reference_repeat_ordered_exact": bool(
+                        torch.equal(world_a, world_a_repeat)),
                     "logits_max_abs": float((logits_a.float() - logits_c.float()).abs().max()),
                     "ordered_world_max_euclidean_m": float(torch.linalg.vector_norm(
                         world_a - world_c, dim=-1).max()),
                     "ordered_exact": bool(torch.equal(world_a, world_c)),
                 })
         passed = bool(rows) and all(
-            row["ordered_world_max_euclidean_m"] <= 1e-6
+            row["reference_repeat_world_max_euclidean_m"] <= 1e-6
+            and row["ordered_world_max_euclidean_m"] <= 1e-6
             for row in rows)
         report["folds"][fold] = {"status": "PASS" if passed else "FAIL",
                                          "comparisons": rows}
