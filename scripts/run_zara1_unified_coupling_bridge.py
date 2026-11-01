@@ -205,6 +205,8 @@ def main() -> None:
     parser.add_argument("--output", required=True)
     parser.add_argument("--source-commit", required=True)
     parser.add_argument("--fold", required=True)
+    parser.add_argument("--training-seed", type=int, default=3101)
+    parser.add_argument("--provider-seed", type=int, default=3101)
     parser.add_argument("--compact-scenes", action="store_true")
     parser.add_argument("--max-gpu-seconds", type=float, default=43200)
     parser.add_argument("--final-reserve-seconds", type=float, default=5400)
@@ -214,6 +216,10 @@ def main() -> None:
     output, device = Path(args.output).resolve(), torch.device(args.device)
     output.mkdir(parents=True, exist_ok=True)
     config = load_config(args.config)
+    if int(config["seed"]) != args.training_seed:
+        raise ValueError(
+            f"config seed {config['seed']} does not match --training-seed "
+            f"{args.training_seed}")
     checkpoint_sha = config["paths"]["matched_gdts_validation_checkpoint_sha256"]
     train_manifest_sha = file_sha256(config["paths"]["train_manifest"])
     validation_sha = config["evaluation"]["matched_gdts_validation"]["manifest_sha256"]
@@ -222,7 +228,7 @@ def main() -> None:
         args.validation_bank_pattern.format(seed=seed), checkpoint_sha,
         validation_sha, "validation") for seed in range(2035, 2040)}
     config_sha256 = file_sha256(args.config)
-    seed_all(3101)
+    seed_all(args.training_seed)
     bridge = build_model(config, proposal_conditioned=True)
     scale_loader = loader(config, "train", torch.Generator().manual_seed(0))
     scales = fit_training_scales(bridge, scale_loader)
@@ -232,7 +238,9 @@ def main() -> None:
     bridge = bridge.to(device)
     identity = {
         "schema": "ebjd-unified-coupling-bridge-run-v1", "fold": args.fold,
-        "training_seed": 3101, "source_commit": args.source_commit,
+        "training_seed": args.training_seed,
+        "provider_seed": args.provider_seed,
+        "source_commit": args.source_commit,
         "config": str(Path(args.config).resolve()),
         "config_sha256": config_sha256,
         "representation_scales": {
@@ -250,7 +258,7 @@ def main() -> None:
     model.training_options = {"coarse": 0.25, "geometry": 0.05, "map": 0.10}
     optimizer = optimizer_for(model, config)
     train_provider = FrozenNativeGoalProvider(train_bank)
-    loader_generator = torch.Generator().manual_seed(3101)
+    loader_generator = torch.Generator().manual_seed(args.training_seed)
     update = 0
     selection = {"best_jade": None, "best_eligible": None}
     start_epoch = 1
@@ -349,7 +357,10 @@ def main() -> None:
                           "coupling_grad_norm": float(coupling_grad),
                           "bridge_grad_norm": float(bridge_grad), "lr": main_lr,
                           "unet_lr": unet_lr, "rollout_update": 0.0,
-                          "projection_active": 0.0}
+                          "projection_active": 0.0,
+                          "fold": args.fold,
+                          "training_seed": args.training_seed,
+                          "provider_seed": args.provider_seed}
                 with (output / "train.jsonl").open("a", encoding="utf-8") as handle:
                     handle.write(json.dumps(record, sort_keys=True) + "\n")
                 if update == 1:
@@ -404,7 +415,7 @@ def main() -> None:
                     "best": selection})
         elapsed = time.perf_counter() - started
         eta = elapsed / epoch * (30 - epoch)
-        print(f"E{epoch:02d}/30 | loss={epoch_record['loss']:.6f} pair={epoch_record['pair_loss']:.6f} bridge={epoch_record['bridge_loss']:.6f} | G: ADE/FDE/JADE/JFDE={validation['G']['minADE']:.4f}/{validation['G']['minFDE']:.4f}/{validation['G']['JADE']:.4f}/{validation['G']['JFDE']:.4f} | H: ADE/FDE/JADE/JFDE={validation['H']['minADE']:.4f}/{validation['H']['minFDE']:.4f}/{validation['H']['JADE']:.4f}/{validation['H']['JFDE']:.4f} | train={training_seconds/60:.1f}m val={validation_seconds/60:.1f}m total={(training_seconds+validation_seconds)/60:.1f}m ETA={eta/3600:.2f}h", flush=True)
+        print(f"fold={args.fold} seed={args.training_seed} | E{epoch:02d}/30 | loss={epoch_record['loss']:.6f} pair={epoch_record['pair_loss']:.6f} bridge={epoch_record['bridge_loss']:.6f} | G: ADE/FDE/JADE/JFDE={validation['G']['minADE']:.4f}/{validation['G']['minFDE']:.4f}/{validation['G']['JADE']:.4f}/{validation['G']['JFDE']:.4f} | H: ADE/FDE/JADE/JFDE={validation['H']['minADE']:.4f}/{validation['H']['minFDE']:.4f}/{validation['H']['JADE']:.4f}/{validation['H']['JFDE']:.4f} | train={training_seconds/60:.1f}m val={validation_seconds/60:.1f}m total={(training_seconds+validation_seconds)/60:.1f}m ETA={eta/3600:.2f}h", flush=True)
     if completed_normally and start_epoch <= 30:
         atomic_json(output / "STATUS.json", {"status": "TRAINING_COMPLETE_PENDING_FINAL_EVALUATION", "epoch": 30, "update": update, "best": selection})
     selected_name = "best_eligible.pt" if (output / "best_eligible.pt").exists() else "best_jade.pt"
