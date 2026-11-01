@@ -71,7 +71,8 @@ def read_csv(path: Path) -> list[dict]:
 
 
 class RepeatPipeline:
-    def __init__(self, root: Path, source_commit: str) -> None:
+    def __init__(self, root: Path, source_commit: str,
+                 carried_forward_gpu_seconds: float = 0.0) -> None:
         self.root = root.resolve()
         self.source_commit = source_commit
         self.root.mkdir(parents=True, exist_ok=True)
@@ -89,9 +90,12 @@ class RepeatPipeline:
         }
         self.budget = read_json(self.budget_path) if self.budget_path.exists() else {
             "limit_seconds": 48 * 3600,
-            "consumed_seconds": 0.0,
-            "remaining_seconds": 48 * 3600,
-            "stages": [],
+            "consumed_seconds": carried_forward_gpu_seconds,
+            "remaining_seconds": 48 * 3600 - carried_forward_gpu_seconds,
+            "stages": ([{"stage": "PRELAUNCH_FAILED_ATTEMPT",
+                         "seconds": carried_forward_gpu_seconds,
+                         "status": "carried_forward"}]
+                       if carried_forward_gpu_seconds else []),
         }
 
     def update(self, status: str, **fields) -> None:
@@ -201,7 +205,6 @@ class RepeatPipeline:
         config["experiment"].update({
             "source_commit": self.source_commit,
             "implementation_base": self.source_commit[:7],
-            "training_repeat_of": str(source),
         })
         config["paths"]["output_root"] = str(run_root / "training")
         atomic_json(destination, config)
@@ -362,8 +365,10 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--experiment-root", required=True)
     parser.add_argument("--source-commit", required=True)
+    parser.add_argument("--carried-forward-gpu-seconds", type=float, default=0.0)
     args = parser.parse_args()
-    RepeatPipeline(Path(args.experiment_root), args.source_commit).execute()
+    RepeatPipeline(Path(args.experiment_root), args.source_commit,
+                   args.carried_forward_gpu_seconds).execute()
 
 
 if __name__ == "__main__":
