@@ -1,0 +1,466 @@
+{
+  "folds": {
+    "eth": {
+      "performance_by_metric": {
+        "minADE": {
+          "H_minus_GDTS": -0.012582840656882144,
+          "improvement_percent": 3.026537539064157,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "minFDE": {
+          "H_minus_GDTS": 0.004054344404529675,
+          "improvement_percent": -0.7025489180468057,
+          "pass_non_degradation": false,
+          "paired_seed_directions": {
+            "improved": 1,
+            "equal": 0,
+            "regressed": 4
+          }
+        },
+        "JADE": {
+          "H_minus_GDTS": -0.022107154831820353,
+          "improvement_percent": 4.486740867458071,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_GDTS": -0.015024668866908453,
+          "improvement_percent": 2.0055226618422184,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "four_metric_contract_pass": false,
+      "pairing": {
+        "minADE": {
+          "H_minus_G": -0.0002443157760733672,
+          "improvement_percent": 0.06056237223383037,
+          "paired_seed_directions": {
+            "improved": 4,
+            "equal": 0,
+            "regressed": 1
+          }
+        },
+        "minFDE": {
+          "H_minus_G": 0.0,
+          "improvement_percent": 0.0,
+          "paired_seed_directions": {
+            "improved": 0,
+            "equal": 5,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_G": -0.017262428804584173,
+          "improvement_percent": 3.5382735122702638,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_G": -0.04065164513738739,
+          "improvement_percent": 5.2467835777802465,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "pairing_joint_gain": true,
+      "candidate_set_evidence": "implementation_invariant_and_exact_minFDE_only; no standalone full-bank set receipt found"
+    },
+    "hotel": {
+      "performance_by_metric": {
+        "minADE": {
+          "H_minus_GDTS": 0.016735752737468607,
+          "improvement_percent": -12.453662614359548,
+          "pass_non_degradation": false,
+          "paired_seed_directions": {
+            "improved": 0,
+            "equal": 0,
+            "regressed": 5
+          }
+        },
+        "minFDE": {
+          "H_minus_GDTS": -0.009222606571123587,
+          "improvement_percent": 4.813741574503623,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_GDTS": -0.004388615632157644,
+          "improvement_percent": 2.1051607730585693,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_GDTS": -0.04609151456714344,
+          "improvement_percent": 12.908805510106845,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "four_metric_contract_pass": false,
+      "pairing": {
+        "minADE": {
+          "H_minus_G": -0.000395700585333586,
+          "improvement_percent": 0.2611615509561436,
+          "paired_seed_directions": {
+            "improved": 3,
+            "equal": 0,
+            "regressed": 2
+          }
+        },
+        "minFDE": {
+          "H_minus_G": 0.0,
+          "improvement_percent": 0.0,
+          "paired_seed_directions": {
+            "improved": 0,
+            "equal": 5,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_G": -0.015710549909579624,
+          "improvement_percent": 7.147939349387614,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_G": -0.04075487423646318,
+          "improvement_percent": 11.587365833692637,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "pairing_joint_gain": true,
+      "candidate_set_evidence": "implementation_invariant_and_exact_minFDE_only; no standalone full-bank set receipt found"
+    },
+    "univ": {
+      "performance_by_metric": {
+        "minADE": {
+          "H_minus_GDTS": -0.010616418450912657,
+          "improvement_percent": 3.692363750904792,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "minFDE": {
+          "H_minus_GDTS": -0.024379669200313425,
+          "improvement_percent": 4.67463747841631,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_GDTS": -0.06704925960195351,
+          "improvement_percent": 10.238478622537723,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_GDTS": -0.04488471322540488,
+          "improvement_percent": 3.4028967468596916,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "four_metric_contract_pass": true,
+      "pairing": {
+        "minADE": {
+          "H_minus_G": 0.0014563246395263296,
+          "improvement_percent": -0.5287057278121817,
+          "paired_seed_directions": {
+            "improved": 0,
+            "equal": 0,
+            "regressed": 5
+          }
+        },
+        "minFDE": {
+          "H_minus_G": 0.0,
+          "improvement_percent": 0.0,
+          "paired_seed_directions": {
+            "improved": 0,
+            "equal": 5,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_G": -0.026776277921393588,
+          "improvement_percent": 4.356684074300745,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_G": -0.06241938294616656,
+          "improvement_percent": 4.670188593385096,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "pairing_joint_gain": true,
+      "candidate_set_evidence": "implementation_invariant_and_exact_minFDE_only; no standalone full-bank set receipt found"
+    },
+    "zara1": {
+      "performance_by_metric": {
+        "minADE": {
+          "H_minus_GDTS": -0.004241797601067299,
+          "improvement_percent": 2.2496271379060495,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "minFDE": {
+          "H_minus_GDTS": -0.010791928829575415,
+          "improvement_percent": 3.7785781171189994,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_GDTS": -0.03884372198941016,
+          "improvement_percent": 12.210233687929927,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_GDTS": -0.05745160552468287,
+          "improvement_percent": 9.8125164200967,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "four_metric_contract_pass": true,
+      "pairing": {
+        "minADE": {
+          "H_minus_G": -0.0004978441529716049,
+          "improvement_percent": 0.2693792321859746,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "minFDE": {
+          "H_minus_G": 0.0,
+          "improvement_percent": 0.0,
+          "paired_seed_directions": {
+            "improved": 0,
+            "equal": 5,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_G": -0.017165705259387376,
+          "improvement_percent": 5.790494095286155,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_G": -0.04416117715074663,
+          "improvement_percent": 7.717751098952453,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "pairing_joint_gain": true,
+      "candidate_set_evidence": "explicit_formal_report_plus_one_to_one_pairing"
+    },
+    "zara2": {
+      "performance_by_metric": {
+        "minADE": {
+          "H_minus_GDTS": -0.0007689426098232977,
+          "improvement_percent": 0.48538004564933795,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 4,
+            "equal": 0,
+            "regressed": 1
+          }
+        },
+        "minFDE": {
+          "H_minus_GDTS": -0.00860293662190112,
+          "improvement_percent": 3.3364475852958995,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_GDTS": -0.02480805493846444,
+          "improvement_percent": 8.392384916337212,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_GDTS": -0.04061568684153671,
+          "improvement_percent": 6.974326881289452,
+          "pass_non_degradation": true,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "four_metric_contract_pass": true,
+      "pairing": {
+        "minADE": {
+          "H_minus_G": -0.00019179414216324853,
+          "improvement_percent": 0.12150899057414591,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "minFDE": {
+          "H_minus_G": 0.0,
+          "improvement_percent": 0.0,
+          "paired_seed_directions": {
+            "improved": 0,
+            "equal": 5,
+            "regressed": 0
+          }
+        },
+        "JADE": {
+          "H_minus_G": -0.013117279178782082,
+          "improvement_percent": 4.620205034994846,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        },
+        "JFDE": {
+          "H_minus_G": -0.02837026854137137,
+          "improvement_percent": 4.976240167167263,
+          "paired_seed_directions": {
+            "improved": 5,
+            "equal": 0,
+            "regressed": 0
+          }
+        }
+      },
+      "pairing_joint_gain": true,
+      "candidate_set_evidence": "explicit_formal_report_plus_one_to_one_pairing"
+    }
+  },
+  "macro_5fold": {
+    "minADE": {
+      "H_minus_G": 2.5333996596904607e-05,
+      "H_minus_GDTS": -0.0022948493162433525,
+      "H_vs_G_improvement_percent": -0.010798495959711283,
+      "H_vs_GDTS_improvement_percent": 0.9685896099151877,
+      "pass_non_degradation_vs_GDTS": true
+    },
+    "minFDE": {
+      "H_minus_G": 0.0,
+      "H_minus_GDTS": -0.009788559363676785,
+      "H_vs_G_improvement_percent": 0.0,
+      "H_vs_GDTS_improvement_percent": 2.6691228789508368,
+      "pass_non_degradation_vs_GDTS": true
+    },
+    "JADE": {
+      "H_minus_G": -0.01800644821474534,
+      "H_minus_GDTS": -0.03143936139876119,
+      "H_vs_G_improvement_percent": 4.7319933700224475,
+      "H_vs_GDTS_improvement_percent": 7.9803727770358535,
+      "pass_non_degradation_vs_GDTS": true
+    },
+    "JFDE": {
+      "H_minus_G": -0.043271469602427004,
+      "H_minus_GDTS": -0.04081363780513525,
+      "H_vs_G_improvement_percent": 6.000963833938041,
+      "H_vs_GDTS_improvement_percent": 5.679466206239564,
+      "pass_non_degradation_vs_GDTS": true
+    },
+    "four_metric_contract_pass": true
+  },
+  "comparison_tolerance": 1e-12,
+  "folds_passing_four_metric_contract": [
+    "univ",
+    "zara1",
+    "zara2"
+  ]
+}
