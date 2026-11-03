@@ -25,13 +25,19 @@ class SceneBatch:
     timestamps: list[list[float]]
     source_sequences: list[str]
     metadata: dict
+    # Multiplicative conversion from the model's internal coordinate unit to
+    # the paper metric unit.  ETH/UCY manifests default to one.  JMM SDD
+    # stores metres internally and supplies px/m independently per scene.
+    paper_metric_scale: torch.Tensor | None = None
 
     def to(self, device: torch.device | str) -> "SceneBatch":
         return SceneBatch(
             self.observed.to(device), self.future.to(device),
             self.semantic_maps.to(device), self.valid.to(device), self.scene_ids,
             self.agent_ids, self.frame_ids, self.timestamps,
-            self.source_sequences, self.metadata)
+            self.source_sequences, self.metadata,
+            None if self.paper_metric_scale is None else
+            self.paper_metric_scale.to(device))
 
     def slice_scenes(self, start: int, stop: int) -> "SceneBatch":
         """Slice only the scene dimension while retaining the original N padding."""
@@ -44,7 +50,9 @@ class SceneBatch:
             self.semantic_maps[start:stop], self.valid[start:stop],
             list(self.scene_ids[start:stop]), list(self.agent_ids[start:stop]),
             list(self.frame_ids[start:stop]), list(self.timestamps[start:stop]),
-            list(self.source_sequences[start:stop]), self.metadata)
+            list(self.source_sequences[start:stop]), self.metadata,
+            None if self.paper_metric_scale is None else
+            self.paper_metric_scale[start:stop])
 
     def compact_scenes(self, start: int, stop: int) -> "SceneBatch":
         """Pack valid agents of contiguous scenes without changing their order.
@@ -92,7 +100,26 @@ class SceneBatch:
             pack(self.observed), pack(self.future), pack(self.semantic_maps), valid,
             list(self.scene_ids[start:stop]), agent_ids,
             list(self.frame_ids[start:stop]), list(self.timestamps[start:stop]),
-            list(self.source_sequences[start:stop]), self.metadata)
+            list(self.source_sequences[start:stop]), self.metadata,
+            None if self.paper_metric_scale is None else
+            self.paper_metric_scale[start:stop])
+
+    def paper_coordinates(
+        self, predictions: torch.Tensor, targets: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Convert model-space trajectories to the declared paper unit."""
+        if self.paper_metric_scale is None:
+            return predictions, targets
+        scale = self.paper_metric_scale.to(
+            device=predictions.device, dtype=predictions.dtype)
+        if scale.ndim != 1 or scale.shape[0] != predictions.shape[0]:
+            raise ValueError("paper metric scale must have shape [B]")
+        if not torch.isfinite(scale).all() or (scale <= 0).any():
+            raise ValueError("paper metric scale must be finite and positive")
+        return (
+            predictions * scale[:, None, None, None, None],
+            targets * scale[:, None, None, None],
+        )
 
 
 def _sha256(path: Path) -> str:
@@ -195,6 +222,9 @@ class SceneManifestDataset(Dataset):
             "scene_id": str(payload["scene_ids"][local]), "agent_ids": agent_ids,
             "frame_ids": frame_ids, "timestamps": timestamps,
             "source_sequence": str(payload["source_sequences"][local]),
+            "paper_metric_scale": (
+                1.0 / float(payload["scale_m_per_px"][local])
+                if "scale_m_per_px" in payload else 1.0),
             "metadata": self.metadata,
         }
 
@@ -216,6 +246,11 @@ def collate_scenes(samples: list[dict]) -> SceneBatch:
     future = torch.zeros(batch, maximum, 12, 2)
     maps = torch.zeros(batch, maximum, channels, height, width)
     valid = torch.zeros(batch, maximum, dtype=torch.bool)
+    paper_metric_scale = torch.as_tensor([
+        float(item.get("paper_metric_scale", 1.0)) for item in samples
+    ], dtype=torch.float32)
+    if not torch.isfinite(paper_metric_scale).all() or (paper_metric_scale <= 0).any():
+        raise ValueError("paper metric scales must be finite and positive")
     for index, item in enumerate(samples):
         agents = item["observed"].shape[0]
         if item["semantic_maps"].shape[1:] != (channels, height, width):
@@ -230,7 +265,8 @@ def collate_scenes(samples: list[dict]) -> SceneBatch:
         [item["agent_ids"] for item in samples],
         [item["frame_ids"] for item in samples],
         [item["timestamps"] for item in samples],
-        [item["source_sequence"] for item in samples], metadata)
+        [item["source_sequence"] for item in samples], metadata,
+        paper_metric_scale)
 
 
 class SyntheticSceneDataset(Dataset):
@@ -259,6 +295,7 @@ class SyntheticSceneDataset(Dataset):
                 "frame_ids": list(range(20)),
                 "timestamps": [index * 0.4 for index in range(20)],
                 "source_sequence": "synthetic", "metadata": metadata,
+                "paper_metric_scale": 1.0,
             })
 
     def __len__(self) -> int:
@@ -308,7 +345,9 @@ def augment_batch_with_points(
     augmented = SceneBatch(
         observed, future, maps, batch.valid.clone(), list(batch.scene_ids),
         batch.agent_ids, batch.frame_ids, batch.timestamps,
-        batch.source_sequences, batch.metadata)
+        batch.source_sequences, batch.metadata,
+        None if batch.paper_metric_scale is None else
+        batch.paper_metric_scale.clone())
     return augmented, transformed_points
 
 

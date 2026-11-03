@@ -71,12 +71,28 @@ def main() -> None:
     statistics_payload = manifest_payload["statistics"]
     sys.path.insert(0, str(legacy))
     os.chdir(runtime)
+    if str(recipe.get("legacy_dataset", "eth5")) == "sdd":
+        from src.data_src.dataset_src.dataset_sdd import Dataset_sdd
+        from src.data_src.scene_src.scene_sdd import Scene_sdd
+        original_dataset_init = Dataset_sdd.__init__
+
+        def exact_jmm_init(self, verbose=False, load_visual_data=True):
+            original_dataset_init(
+                self, verbose=verbose, load_visual_data=load_visual_data)
+            self.train_scenes.discard("hyang_7")
+            self.train_scenes.add("nexus_2")
+            self.scenes.pop("hyang_7", None)
+            self.scenes["nexus_2"] = Scene_sdd(
+                "nexus_2", verbose, load_visual_data=load_visual_data)
+
+        Dataset_sdd.__init__ = exact_jmm_init
     from src.models.model import GDTS
     from src.parser import check_and_add_additional_args, get_parser
     from src.trainer import trainer
 
     cli = [
-        "--dataset", "eth5", "--test_set", str(recipe["fold"]), "--phase", "test",
+        "--dataset", str(recipe.get("legacy_dataset", "eth5")),
+        "--test_set", str(recipe["fold"]), "--phase", "test",
         "--device", "cuda:0", "--batch_size", "64", "--num_workers", "0",
         "--down_factor", "8", "--skip_ts_window", "1",
         "--goal_model_type", "social", "--training_stage", "finetune",
@@ -182,7 +198,9 @@ def main() -> None:
             "scene_count": int(statistics_payload["scenes"]),
             "agent_occurrence_count": int(statistics_payload["agents"]),
             "evaluation_seeds": args.seeds, "runs": runs, "summary": summary,
-            "coordinate_unit": "m", "per_agent_reordering": False,
+            "coordinate_unit": (
+                "pixel" if str(recipe.get("legacy_dataset")) == "sdd" else "m"),
+            "per_agent_reordering": False,
         })
 
 

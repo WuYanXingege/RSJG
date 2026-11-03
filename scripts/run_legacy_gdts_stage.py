@@ -158,8 +158,9 @@ def patch_baseline_trainer(trainer) -> None:
 
 def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> list[str]:
     fold = str(recipe["fold"])
+    dataset = str(recipe.get("legacy_dataset", "eth5"))
     common = [
-        "--dataset", "eth5", "--test_set", fold,
+        "--dataset", dataset, "--test_set", fold,
         "--reproducibility", "True", "--seed", str(recipe["seed"]),
         "--batch_size", "64", "--learning_rate", "0.001",
         "--optimizer", "Adam", "--scheduler", "ExponentialLR",
@@ -193,12 +194,13 @@ def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> li
             "--start_validation", "1", "--validate_every", "10",
             "--goal_pretrain_checkpoint", str(Path(goal_checkpoint).resolve()),
         ]
-    if stage == "scene_cache":
+    if stage in ("scene_cache", "scene_cache_independent"):
         return [
-            "--dataset", "eth5", "--test_set", fold,
+            "--dataset", dataset, "--test_set", fold,
             "--phase", "pre-process", "--batch_size", "64",
             "--device", "cpu", "--num_workers", "0", "--down_factor", "8",
-            "--skip_ts_window", "1", "--goal_model_type", "social",
+            "--skip_ts_window", "1", "--goal_model_type",
+            "independent" if stage == "scene_cache_independent" else "social",
             "--training_stage", "finetune", "--data_augmentation", "False",
             "--shuffle_train_batches", "False", "--shuffle_test_batches", "False",
             "--reproducibility", "True", "--seed", str(recipe["seed"]),
@@ -210,13 +212,19 @@ def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> li
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--recipe", required=True)
-    parser.add_argument("--stage", choices=("goal", "baseline", "scene_cache"), required=True)
+    parser.add_argument(
+        "--stage",
+        choices=("goal", "baseline", "scene_cache", "scene_cache_independent"),
+        required=True)
     parser.add_argument("--runtime-root", required=True)
     parser.add_argument("--batch-cache-root", required=True)
     parser.add_argument("--goal-checkpoint")
     args = parser.parse_args()
     recipe = yaml.safe_load(Path(args.recipe).read_text(encoding="utf-8"))
     fold = str(recipe["fold"])
+    output_key = (
+        str(recipe.get("legacy_dataset"))
+        if str(recipe.get("legacy_dataset", "eth5")) != "eth5" else fold)
     legacy = Path(recipe["legacy_gdts"]["root"]).resolve()
     runtime = Path(args.runtime_root).resolve()
     runtime.mkdir(parents=True, exist_ok=True)
@@ -227,6 +235,21 @@ def main() -> None:
         raise RuntimeError("runtime data link points to an unexpected target")
     sys.path.insert(0, str(legacy))
     os.chdir(runtime)
+    if str(recipe.get("legacy_dataset", "eth5")) == "sdd":
+        from src.data_src.dataset_src.dataset_sdd import Dataset_sdd
+        from src.data_src.scene_src.scene_sdd import Scene_sdd
+        original_dataset_init = Dataset_sdd.__init__
+
+        def exact_jmm_init(self, verbose=False, load_visual_data=True):
+            original_dataset_init(
+                self, verbose=verbose, load_visual_data=load_visual_data)
+            self.train_scenes.discard("hyang_7")
+            self.train_scenes.add("nexus_2")
+            self.scenes.pop("hyang_7", None)
+            self.scenes["nexus_2"] = Scene_sdd(
+                "nexus_2", verbose, load_visual_data=load_visual_data)
+
+        Dataset_sdd.__init__ = exact_jmm_init
     from src.models.goal_pretrain import goal_pretrainer
     from src.trainer import trainer
     patch_goal_pretrainer(goal_pretrainer)
@@ -234,11 +257,11 @@ def main() -> None:
     argv = fixed_arguments(recipe, args.stage, args.goal_checkpoint)
     argv += ["--batch_cache_root", str(Path(args.batch_cache_root).resolve())]
     if args.stage == "goal":
-        last = runtime / "output" / fold / "runs" / recipe["goal_pretrain"]["run_name"] / "saved_models" / "goal_pretrain_last_model.pt"
+        last = runtime / "output" / output_key / "runs" / recipe["goal_pretrain"]["run_name"] / "saved_models" / "goal_pretrain_last_model.pt"
         if last.is_file():
             argv += ["--load_checkpoint", "last"]
     elif args.stage == "baseline":
-        last = runtime / "output" / fold / "runs" / recipe["gdts_baseline"]["run_name"] / "saved_models" / "last_model.pt"
+        last = runtime / "output" / output_key / "runs" / recipe["gdts_baseline"]["run_name"] / "saved_models" / "last_model.pt"
         if last.is_file():
             argv += ["--load_checkpoint", "last"]
     sys.argv = [str(legacy / "main.py"), *argv]

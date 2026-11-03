@@ -82,7 +82,9 @@ def main() -> None:
                 prediction, _ = predict(
                     model, batch.observed, batch.semantic_maps, batch.valid,
                     worlds, steps, generator)
-                accumulator.update(prediction, batch.future, batch.valid)
+                prediction, target = batch.paper_coordinates(
+                    prediction, batch.future)
+                accumulator.update(prediction, target, batch.valid)
             means = accumulator.as_dict()
             results.append({"seed": int(seed), "metrics": means})
     metric_names = (

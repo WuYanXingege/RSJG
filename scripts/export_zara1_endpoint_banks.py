@@ -73,6 +73,10 @@ def manifest_identity(manifest_path: Path) -> tuple[list[dict], dict]:
                     "frame_ids": [int(value) for value in payload["frame_ids"][index]],
                     "observed": np.asarray(payload["observed"][index], dtype=np.float32),
                     "future": np.asarray(payload["future"][index], dtype=np.float32),
+                    "source_sequence": str(payload["source_sequences"][index]),
+                    "scale_m_per_px": (
+                        float(payload["scale_m_per_px"][index])
+                        if "scale_m_per_px" in payload else 1.0),
                 })
     if len(records) != int(manifest["statistics"]["scenes"]):
         raise ValueError("manifest record count mismatch")
@@ -122,7 +126,8 @@ def save_bank(path: Path, arrays: dict, metadata: dict) -> dict:
 
 def legacy_cli(recipe: dict, scene_cache_root: Path, output_root: Path) -> list[str]:
     return [
-        "--dataset", "eth5", "--test_set", str(recipe["fold"]), "--phase", "test",
+        "--dataset", str(recipe.get("legacy_dataset", "eth5")),
+        "--test_set", str(recipe["fold"]), "--phase", "test",
         "--device", "cuda:0", "--batch_size", "64", "--num_workers", "0",
         "--down_factor", "8", "--skip_ts_window", "1",
         "--goal_model_type", "social", "--training_stage", "finetune",
@@ -141,6 +146,21 @@ def configure_legacy_evaluator(args):
     runtime = Path(args.runtime_root).resolve()
     sys.path.insert(0, str(legacy))
     os.chdir(runtime)
+    if str(recipe.get("legacy_dataset", "eth5")) == "sdd":
+        from src.data_src.dataset_src.dataset_sdd import Dataset_sdd
+        from src.data_src.scene_src.scene_sdd import Scene_sdd
+        original_dataset_init = Dataset_sdd.__init__
+
+        def exact_jmm_init(self, verbose=False, load_visual_data=True):
+            original_dataset_init(
+                self, verbose=verbose, load_visual_data=load_visual_data)
+            self.train_scenes.discard("hyang_7")
+            self.train_scenes.add("nexus_2")
+            self.scenes.pop("hyang_7", None)
+            self.scenes["nexus_2"] = Scene_sdd(
+                "nexus_2", verbose, load_visual_data=load_visual_data)
+
+        Dataset_sdd.__init__ = exact_jmm_init
     from src.models.model import GDTS
     from src.parser import check_and_add_additional_args, get_parser
     from src.trainer import trainer
@@ -239,6 +259,9 @@ def export_gdts(args) -> None:
             agent_order = [cache_index[agent_id] for agent_id in record["agent_ids"]]
             final_world = final_world[:, agent_order]
             proposal_world = proposal_world[:, agent_order]
+            scale = float(record.get("scale_m_per_px", 1.0))
+            final_world = final_world * scale
+            proposal_world = proposal_world * scale
             final_records[record["scene_id"]] = final_world.float().cpu().numpy()
             proposal_records[record["scene_id"]] = proposal_world.float().cpu().numpy()
     if evaluator.device.type == "cuda":

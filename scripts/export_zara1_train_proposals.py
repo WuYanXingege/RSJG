@@ -69,6 +69,8 @@ def main() -> None:
             proposal_pixel = auxiliary["goal_point"][:20].detach() * float(
                 evaluator.args.down_factor)
             proposal_world = inputs["scene"].make_world_coord_torch(proposal_pixel)
+            proposal_world = proposal_world * float(
+                record.get("scale_m_per_px", 1.0))
             proposals[record["scene_id"]] = proposal_world.float().cpu().numpy()
     if evaluator.device.type == "cuda":
         torch.cuda.synchronize(evaluator.device)

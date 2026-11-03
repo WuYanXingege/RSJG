@@ -26,11 +26,14 @@ def sha256(path: Path) -> str:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
+    parser.add_argument("--train-manifest", required=True)
     parser.add_argument("--validation-manifest", required=True)
     parser.add_argument("--test-manifest", required=True)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
+    train_path = Path(args.train_manifest)
     validation_path, test_path = Path(args.validation_manifest), Path(args.test_manifest)
+    train = SceneManifestDataset(train_path)
     validation = SceneManifestDataset(validation_path)
     test = SceneManifestDataset(test_path)
     n1 = next(index for index in range(len(validation))
@@ -88,10 +91,14 @@ def main() -> None:
         "representation_reconstruction_max_abs_m": reconstruction_max_abs_m,
         "full_192_4_768_loss": float(loss.detach()),
         "full_192_4_768_backward_finite": bool(gradients_finite),
-        "formal_train_split_loaded": False,
-        "formal_train_split_blocker": "missing nexus_2 six-class semantic map",
-        "status": "PASS_PARTIAL_DATA_ASSETS_PENDING" if (
-            padded_finite and augmentation_finite and gradients_finite
+        "train_manifest_sha256": sha256(train_path),
+        "formal_train_split_loaded": len(train) == 5720,
+        "formal_train_scenes": len(train),
+        "formal_train_contains_nexus_2": any(
+            item["sequence"] == "nexus_2"
+            for item in json.loads(train_path.read_text())["source_files"]),
+        "status": "PASS_DATA_AND_CPU_INTERFACE" if (
+            len(train) == 5720 and padded_finite and augmentation_finite and gradients_finite
             and reconstruction_max_abs_m <= 1e-4) else "FAIL",
     }
     output = Path(args.output)

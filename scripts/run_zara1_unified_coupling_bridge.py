@@ -176,8 +176,10 @@ def evaluate(model, config, bank, device, seed: int) -> dict:
             proposal_goals=h_goals, proposal_eta=0.0)
         if not torch.equal(g_goal.sort(1).values, h_goal.sort(1).values):
             raise RuntimeError("G/H endpoint multisets changed")
-        g_acc.update(g_path, batch.future, batch.valid)
-        h_acc.update(h_path, batch.future, batch.valid)
+        g_path, target = batch.paper_coordinates(g_path, batch.future)
+        h_path, _ = batch.paper_coordinates(h_path, batch.future)
+        g_acc.update(g_path, target, batch.valid)
+        h_acc.update(h_path, target, batch.valid)
     return {"seed": seed, "G": g_acc.as_dict(), "H": h_acc.as_dict(),
             "elapsed_seconds": time.perf_counter() - started}
 

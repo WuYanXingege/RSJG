@@ -284,6 +284,9 @@ def main() -> None:
         raise FileExistsError(f"output root already exists: {output}")
     output.mkdir(parents=True, exist_ok=True)
     scales_path = Path(args.scales)
+    scales = yaml.safe_load(scales_path.read_text(encoding="utf-8"))
+    if not isinstance(scales, dict):
+        raise ValueError("estimated scales YAML must contain a mapping")
     results = {}
     existing_validation = output / "validation" / "validation_manifest.json"
     if args.reuse_validation_for_test and existing_validation.is_file():
