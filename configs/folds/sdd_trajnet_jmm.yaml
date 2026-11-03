@@ -1,0 +1,50 @@
+seed: 3101
+experiment:
+  fold: sdd_trajnet_jmm
+  protocol: JMM_TrajNet_SDD_30_17_validation_test_mirrored
+  readiness: NOT_DATA_READY
+  readiness_reason: missing_verified_nexus_2_six_class_semantic_map
+paths:
+  data_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/sdd_trajnet_jmm
+  train_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/sdd_trajnet_jmm/manifests/train/train_manifest.json
+  validation_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/sdd_trajnet_jmm/manifests/validation/validation_manifest.json
+  test_manifest: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/sdd_trajnet_jmm/manifests/test/test_manifest.json
+  accepted_fold_matched_gdts_unet: null
+  matched_gdts_validation_checkpoint: null
+  matched_gdts_validation_result: null
+  train_proposal_bank: null
+  validation_proposal_bank_pattern: null
+data:
+  observed_frames: 8
+  predicted_frames: 12
+  dt_seconds: 0.4
+  source_coordinates: pixels
+  model_coordinates: metres_via_opentraj_approximate_scene_scale
+  paper_evaluation_coordinates: pixels_via_inverse_scene_scale
+  validation_test_membership: mirrored
+  preserve_complete_synchronized_scene: true
+  reported_mean_agents_per_window: 1.415207603801901
+map:
+  semantic_channels: 6
+  history_heatmap_channels: 8
+  crop_width_m: 32.0
+  crop_pixels: 256
+  missing_required_scene_assets: [nexus_2/pred_mask.png]
+model:
+  hidden_dim: 192
+  heads: 4
+  ff_dim: 768
+  fjab_blocks: 6
+  future_social_attention: FULL
+  ctf: true
+  output: Raw
+training:
+  epochs: 30
+  rollout_training_enabled: false
+  paired_marginal_actual_step_projection_enabled: false
+evaluation:
+  worlds: 20
+  ddim_steps: 20
+  inference_seeds: [2035, 2036, 2037, 2038, 2039]
+  unit_for_jmm_table: pixels
+  unit_for_internal_geometry: metres
