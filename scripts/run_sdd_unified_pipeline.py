@@ -38,14 +38,24 @@ class Pipeline:
             (self.root/name).mkdir(parents=True, exist_ok=True)
         self.state_path, self.budget_path = self.root/"PIPELINE_STATE.json", self.root/"GPU_BUDGET.json"
         if not self.budget_path.exists(): atomic_json(self.budget_path, {"limit_seconds":604800.0,"consumed_seconds":0.0,"stages":[]})
-        if not (self.root/"RUN_MANIFEST.json").exists():
-            atomic_json(self.root/"RUN_MANIFEST.json", {
+        run_manifest = self.root/"RUN_MANIFEST.json"
+        if not run_manifest.exists():
+            atomic_json(run_manifest, {
                 "schema":"ebjd-sdd-jmm-unified-run-v1",
                 "fold":"sdd_trajnet_jmm", "training_seed":3101,
                 "source_commit":self.commit, "epochs":30, "worlds":20,
                 "ddim_steps":20, "rollout":False, "projection":False,
                 "architecture":"192/4/768, 6 FJAB, FULL/CTF/Raw",
                 "experiment_root":str(self.root)})
+        else:
+            identity=json.loads(run_manifest.read_text())
+            if identity.get("source_commit") != self.commit:
+                identity.setdefault("execution_migrations",[]).append({
+                    "from":identity.get("source_commit"), "to":self.commit,
+                    "reason":"pre-update SDD legacy CLI identity adaptation",
+                    "optimizer_updates_before_migration":0})
+                identity["source_commit"]=self.commit
+                atomic_json(run_manifest,identity)
         for filename, schema in (("CONFIG_HASHES.json","ebjd-sdd-config-hashes-v1"),
                                  ("CHECKPOINT_MANIFEST.json","ebjd-sdd-checkpoints-v1")):
             path=self.root/filename
