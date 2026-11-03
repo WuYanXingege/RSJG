@@ -148,6 +148,9 @@ def configure_legacy_evaluator(args):
     runtime = Path(args.runtime_root).resolve()
     sys.path.insert(0, str(legacy))
     os.chdir(runtime)
+    from src.data_src import data_utils
+    source_data_root = str(Path(recipe["source_data_root"]).resolve())
+    data_utils.get_data_location = lambda: source_data_root
     if str(recipe.get("legacy_dataset", "eth5")) == "sdd":
         from src.data_src.dataset_src.dataset_sdd import Dataset_sdd
         from src.data_src.scene_src.scene_sdd import Scene_sdd
