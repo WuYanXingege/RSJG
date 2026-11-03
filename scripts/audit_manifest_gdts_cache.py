@@ -7,7 +7,6 @@ import argparse
 import hashlib
 import json
 import os
-import pickle
 import sys
 import tempfile
 from pathlib import Path
@@ -52,6 +51,7 @@ def main() -> None:
     sys.path.insert(0, str(legacy))
     os.chdir(runtime)
     from src.data_src import data_utils
+    from src.batch_cache_io import batch_cache_files, load_batch_cache
     source_data_root = str(Path(recipe["source_data_root"]).resolve())
     data_utils.get_data_location = lambda: source_data_root
     legacy_dataset = str(recipe.get("legacy_dataset", "eth5"))
@@ -96,13 +96,13 @@ def main() -> None:
                     float(shard["scale_m_per_px"][index])
                     if "scale_m_per_px" in shard else 1.0))
     dataset = dataset_class()
-    cache_files = sorted(Path(args.cache_dir).resolve().glob("*.pkl"))
+    cache_files = [Path(value) for value in batch_cache_files(
+        str(Path(args.cache_dir).resolve()))]
     seen = set()
     maximum_error = 0.0
     source_counts: dict[str, int] = {}
     for path in cache_files:
-        with path.open("rb") as handle:
-            data, identity = pickle.load(handle)  # trusted local asset
+        data, identity = load_batch_cache(str(path))  # trusted local asset
         key = (
             Path(identity["data_file_path"]).stem,
             tuple(int(value) for value in identity["frame_ids"]),
@@ -127,7 +127,9 @@ def main() -> None:
     if maximum_error >= 1e-5:
         raise RuntimeError(f"native cache coordinate parity failed: {maximum_error}")
     atomic_json(Path(args.output), {
-        "status": "PASS", "manifest": str(manifest_path),
+        "status": "PASS", "passed": True,
+        "manifest": {
+            "path": str(manifest_path), "sha256": sha256(manifest_path)},
         "manifest_sha256": sha256(manifest_path),
         "cache_directory": str(Path(args.cache_dir).resolve()),
         "scene_count": len(seen), "source_counts": source_counts,

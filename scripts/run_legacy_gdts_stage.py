@@ -175,6 +175,7 @@ def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> li
         "--amp_dtype", "fp32", "--early_stopping_patience", "0",
         "--shuffle_test_batches", "False", "--use_wandb", "False",
         "--save_every", "10",
+        "--compress_batch_cache", "True",
     ]
     if stage == "goal":
         section = recipe["goal_pretrain"]
@@ -206,6 +207,7 @@ def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> li
             "--shuffle_train_batches", "False", "--shuffle_test_batches", "False",
             "--reproducibility", "True", "--seed", str(recipe["seed"]),
             "--use_wandb", "False",
+            "--compress_batch_cache", "True",
         ]
     raise ValueError(stage)
 

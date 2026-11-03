@@ -106,6 +106,7 @@ def main() -> None:
         "--ddpm_step", "100", "--ddim_step", "20", "--trunk_stage_step", "30",
         "--reproducibility", "True", "--seed", str(recipe["seed"]),
         "--batch_cache_root", str(Path(args.scene_cache_root).resolve()),
+        "--compress_batch_cache", "True",
         "--use_wandb", "False",
     ]
     parsed = get_parser().parse_args(cli)

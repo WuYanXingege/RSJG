@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Resumable JMM TrajNet-SDD asset preparation and unified EBJD pipeline."""
 from __future__ import annotations
-import argparse, hashlib, json, os, subprocess, tempfile, time
+import argparse, hashlib, json, os, shutil, subprocess, tempfile, time
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -28,10 +28,16 @@ def atomic_json(path, value):
         if os.path.exists(temporary): os.unlink(temporary)
 
 class Pipeline:
+    MINIMUM_STAGE_FREE_BYTES = 32 * 1024 ** 3
+
     def __init__(self, root, commit):
         self.root, self.commit = Path(root).resolve(), commit
         self.runtime = self.root / "04_matched_gdts/runtime"
         self.cache = self.root / "04_matched_gdts/cache"
+        self.independent_cache = (
+            self.cache / "sdd/sdd/data_batches_zstd_v1")
+        self.joint_cache = (
+            self.cache / "sdd/sdd/data_batches_joint_v2_zstd_v1")
         data = Path("/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/sdd_trajnet_jmm/manifests")
         self.train, self.valid = data / "train/train_manifest.json", data / "validation/validation_manifest.json"
         for name in ("00_identity","01_map_recovery","02_data_manifests","03_goal_pretrain","04_matched_gdts","05_proposal_banks","06_ebjd_training","07_evaluation","logs","reports","receipts"):
@@ -65,6 +71,7 @@ class Pipeline:
         atomic_json(self.state_path, {"schema":"ebjd-sdd-jmm-unified-pipeline-v1","stage":stage,"status":status,"source_commit":self.commit,"experiment_root":str(self.root),"updated_at_utc":datetime.now(timezone.utc).isoformat(),**extra})
 
     def run(self, stage, command):
+        self.require_free_space(stage)
         log = self.root/"logs"/(stage.lower()+".log"); self.state(stage,"RUNNING",command=command,log=str(log))
         started=time.perf_counter(); outcome="failed"
         try:
@@ -72,9 +79,26 @@ class Pipeline:
                 result=subprocess.run(command,cwd=PAPER,stdout=handle,stderr=subprocess.STDOUT,check=False)
             if result.returncode: raise RuntimeError(f"{stage} exited {result.returncode}")
             outcome="complete"
+        except BaseException as error:
+            self.state(
+                stage, "FAILED", failed_stage=stage, resume_from=stage,
+                reason=f"{type(error).__name__}: {error}", log=str(log))
+            raise
         finally:
             budget=json.loads(self.budget_path.read_text()); seconds=time.perf_counter()-started
             budget["consumed_seconds"]+=seconds; budget["stages"].append({"stage":stage,"seconds":seconds,"status":outcome}); atomic_json(self.budget_path,budget)
+
+    def require_free_space(self, stage):
+        free = shutil.disk_usage(self.root).free
+        if free < self.MINIMUM_STAGE_FREE_BYTES:
+            self.state(
+                stage, "PAUSED_NO_SPACE", failed_stage=stage,
+                resume_from=stage, free_bytes=free,
+                required_free_bytes=self.MINIMUM_STAGE_FREE_BYTES,
+                reason="insufficient filesystem headroom before stage start")
+            raise RuntimeError(
+                f"{stage} requires at least {self.MINIMUM_STAGE_FREE_BYTES} "
+                f"free bytes; found {free}")
 
     def verify(self):
         train,valid=json.loads(self.train.read_text()),json.loads(self.valid.read_text())
@@ -88,12 +112,14 @@ class Pipeline:
             self.state("WAIT_GPU","WAITING_FOR_GPU",retry_seconds=60); time.sleep(60)
 
     def caches(self):
+        self.require_free_space("CACHE_INDEPENDENT")
         common=[str(PYTHON),"scripts/run_legacy_gdts_stage.py","--recipe",str(RECIPE),"--runtime-root",str(self.runtime),"--batch-cache-root",str(self.cache)]
-        if not (self.cache/"sdd/sdd/data_batches/finished_train_batches.txt").exists(): self.run("CACHE_INDEPENDENT",common+["--stage","scene_cache_independent"])
-        if not (self.cache/"sdd/sdd/data_batches_joint_v2/finished_train_batches.txt").exists(): self.run("CACHE_JOINT",common+["--stage","scene_cache"])
+        if not (self.independent_cache/"finished_train_batches.txt").exists(): self.run("CACHE_INDEPENDENT",common+["--stage","scene_cache_independent"])
+        self.require_free_space("CACHE_JOINT")
+        if not (self.joint_cache/"finished_train_batches.txt").exists(): self.run("CACHE_JOINT",common+["--stage","scene_cache"])
         for split,manifest in (("train",self.train),("valid",self.valid)):
             receipt=self.root/f"receipts/CACHE_PARITY_{split.upper()}.json"
-            if not receipt.exists(): self.run("AUDIT_CACHE_"+split.upper(),[str(PYTHON),"scripts/audit_manifest_gdts_cache.py","--recipe",str(RECIPE),"--manifest",str(manifest),"--runtime-root",str(self.runtime),"--cache-dir",str(self.cache/f"sdd/sdd/data_batches_joint_v2/{split}_batches"),"--output",str(receipt)])
+            if not receipt.exists(): self.run("AUDIT_CACHE_"+split.upper(),[str(PYTHON),"scripts/audit_manifest_gdts_cache.py","--recipe",str(RECIPE),"--manifest",str(manifest),"--runtime-root",str(self.runtime),"--cache-dir",str(self.joint_cache/f"{split}_batches"),"--output",str(receipt)])
 
     def gdts(self):
         common=[str(PYTHON),"scripts/run_legacy_gdts_stage.py","--recipe",str(RECIPE),"--runtime-root",str(self.runtime),"--batch-cache-root",str(self.cache)]

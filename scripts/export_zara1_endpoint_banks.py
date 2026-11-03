@@ -138,6 +138,7 @@ def legacy_cli(recipe: dict, scene_cache_root: Path, output_root: Path) -> list[
         "--ddpm_step", "100", "--ddim_step", "20", "--trunk_stage_step", "30",
         "--reproducibility", "True", "--seed", str(recipe["seed"]),
         "--batch_cache_root", str(scene_cache_root.resolve()),
+        "--compress_batch_cache", "True",
         "--use_wandb", "False",
     ]
 
