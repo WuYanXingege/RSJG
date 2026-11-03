@@ -1,0 +1,573 @@
+{
+  "schema": "ebjd_unified_fivefold_source_manifest_v1",
+  "folds_complete": [
+    "eth",
+    "hotel",
+    "univ",
+    "zara1",
+    "zara2"
+  ],
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "methods": {
+    "GDTS": "fold-bound matched GDTS full prediction",
+    "G": "native endpoints plus current conditional bridge full trajectory",
+    "H": "learned endpoint reassignment plus the same conditional bridge full trajectory"
+  },
+  "fold_sources": {
+    "eth": {
+      "experiment_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912",
+      "status": "COMPLETE",
+      "source_commit": "e4b526d8af8cad02937ab04a9090f96cb2450497",
+      "training_seed": 3101,
+      "selected_checkpoint": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/training/best_jade.pt",
+        "exists": true,
+        "size_bytes": 91481709,
+        "sha256": "48dc2144fb20cb3e678eed7b7df793598fe8f2ac0eda7a026b4bcf1696626b97"
+      },
+      "selected_epoch": 19,
+      "selection_identity": "best_jade",
+      "completed_epochs": 30,
+      "optimizer_updates": 7710,
+      "resolved_config": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/configs/RESOLVED_ETH_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7286,
+        "sha256": "f787704fb9655fd26776949d1cee9eec663e5adf2a041357cad3c1f0e80931e7"
+      },
+      "actual_contract": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/configs/RESOLVED_ETH_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7286,
+        "sha256": "f787704fb9655fd26776949d1cee9eec663e5adf2a041357cad3c1f0e80931e7"
+      },
+      "configuration_note": "Fold/provider adaptation; unified method fields match.",
+      "method_signature": {
+        "hidden_dim": 192,
+        "heads": 4,
+        "ff_dim": 768,
+        "fjab_blocks": 6,
+        "full_raw": true,
+        "worlds": 20,
+        "ddim_steps": 20,
+        "rollout_training_enabled": false,
+        "paired_projection_enabled": false
+      },
+      "manifests": {
+        "train": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/train/train_manifest.json",
+          "exists": true,
+          "size_bytes": 825398,
+          "sha256": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de"
+        },
+        "validation": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/validation/validation_manifest.json",
+          "exists": true,
+          "size_bytes": 52731,
+          "sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b"
+        },
+        "test": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/test/test_manifest.json",
+          "exists": true,
+          "size_bytes": 51207,
+          "sha256": "5a73bcc851dac828e22286ce11eabfbc2f6c026f7b514f06f760bdd7e06470c1"
+        }
+      },
+      "validation_test_identity": "mirrored_official_package_internal_only",
+      "raw_G_H_seed_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/reports/PER_SEED_METRICS.csv",
+        "exists": true,
+        "size_bytes": 5579,
+        "sha256": "3cc18c9d300853deba636147b994142b810eb45fdb6d17e6acc0173fb686eaf8"
+      },
+      "raw_matched_gdts_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/assets_manifest/MATCHED_GDTS_RESULTS.json",
+        "exists": true,
+        "size_bytes": 1960,
+        "sha256": "c91e6ac7fce85989687d9eb4478804dce7e9c0c4def2b396d93a9ad2ee4806c1"
+      },
+      "formal_summary": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/reports/FINAL_RESULT_SUMMARY.json",
+        "exists": true,
+        "size_bytes": 4342,
+        "sha256": "53c6c06d73e0e2c89842c162afc3af6c8177dbdd00a8d10f26f842e2aedc5f72"
+      },
+      "epoch_metrics": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/training/epoch_metrics.csv",
+        "exists": true,
+        "size_bytes": 8538,
+        "sha256": "f4521e408011d5f314aecda78876df0f8e27b9949182dcec15d963d35a90330b"
+      },
+      "checkpoint_index": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/training/checkpoint_index.csv",
+        "exists": true,
+        "size_bytes": 7486,
+        "sha256": "d8c19abd47dab8a2c0102681320ebce5bbe47eb1372f4a06aa4a1ed64d1c36db"
+      },
+      "run_identity": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/training/RUN_IDENTITY.json",
+        "exists": true,
+        "size_bytes": 1295,
+        "sha256": "4d0eaabc6b073513cc5d2befcc48d3cae8c6c8f9a213148d116af49b6127e417"
+      },
+      "gpu_budget": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/GPU_BUDGET.json",
+        "exists": true,
+        "size_bytes": 2236,
+        "sha256": "092a723e6f6478f740609d974c19221709a3590460ddaf676eac22e2587108f0"
+      },
+      "matched_gdts_checkpoint_sha256": "126acf2a34f52986c536c397fe3acb04c769a3cde95077461d7971a1b0792950",
+      "matched_manifest_sha256": "03f9b6bef89d43137b31782bbf0eb5b16d19f8ddfe378e2c7c62e700e128397b",
+      "coordinate_unit": "m",
+      "scene_count": 253,
+      "agent_occurrence_count": 364,
+      "candidate_set_preservation_evidence": "implementation_invariant_and_exact_minFDE_only; no standalone full-bank set receipt found"
+    },
+    "hotel": {
+      "experiment_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601",
+      "status": "COMPLETE",
+      "source_commit": "7801d4fcf8f89416510bbb2e96258be0f5d693d8",
+      "training_seed": 3101,
+      "selected_checkpoint": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/training/best_jade.pt",
+        "exists": true,
+        "size_bytes": 91481709,
+        "sha256": "68119ee66d552c75fddf501522e896e8582dcb646e9edd58e6fdc48ea8c1b122"
+      },
+      "selected_epoch": 21,
+      "selection_identity": "best_jade",
+      "completed_epochs": 30,
+      "optimizer_updates": 7980,
+      "resolved_config": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/configs/RESOLVED_HOTEL_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7187,
+        "sha256": "0411b480a57f22c437094136a7baf65f4a5d0ecd678c35da9b35cba231de20d0"
+      },
+      "actual_contract": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/configs/RESOLVED_HOTEL_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7187,
+        "sha256": "0411b480a57f22c437094136a7baf65f4a5d0ecd678c35da9b35cba231de20d0"
+      },
+      "configuration_note": "Fold/provider adaptation; unified method fields match.",
+      "method_signature": {
+        "hidden_dim": 192,
+        "heads": 4,
+        "ff_dim": 768,
+        "fjab_blocks": 6,
+        "full_raw": true,
+        "worlds": 20,
+        "ddim_steps": 20,
+        "rollout_training_enabled": false,
+        "paired_projection_enabled": false
+      },
+      "manifests": {
+        "train": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/hotel_official_train_scene_shards_e7a1948/train/train_manifest.json",
+          "exists": true,
+          "size_bytes": 877117,
+          "sha256": "2a5f1909d928e5277d426ba04e3488940e34a5f71fad9da6331e5e673ec1966c"
+        },
+        "validation": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/hotel_official/validation/validation_manifest.json",
+          "exists": true,
+          "size_bytes": 19814,
+          "sha256": "90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d"
+        },
+        "test": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/hotel_official/test/test_manifest.json",
+          "exists": true,
+          "size_bytes": 19641,
+          "sha256": "84c95cb431caf7214d1b85e8e7dbfeaf48c9fe301b1cda7f3201c3e8cf199c78"
+        }
+      },
+      "validation_test_identity": "mirrored_official_package_internal_only",
+      "raw_G_H_seed_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/reports/PER_SEED_METRICS.csv",
+        "exists": true,
+        "size_bytes": 5608,
+        "sha256": "025a76d4d545a134a51aa0b108b02bff936f3b012ead4f99cb1e3540f5254f7c"
+      },
+      "raw_matched_gdts_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/assets_manifest/MATCHED_GDTS_RESULTS.json",
+        "exists": true,
+        "size_bytes": 1973,
+        "sha256": "3860ec6d06fc9ff652b6071ced0c0bdb90a37474156860a5c6e4e56271254df2"
+      },
+      "formal_summary": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/reports/FINAL_RESULT_SUMMARY.json",
+        "exists": true,
+        "size_bytes": 4295,
+        "sha256": "5612ad3036273ba778a6177e7dee9ef1c431ebb91d3e4c77ddac8df09ea25525"
+      },
+      "epoch_metrics": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/training/epoch_metrics.csv",
+        "exists": true,
+        "size_bytes": 8605,
+        "sha256": "3f17d2cdce314765420f5eb8092ed154ecb9d0a0441de7fadd773a04c1bf0651"
+      },
+      "checkpoint_index": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/training/checkpoint_index.csv",
+        "exists": true,
+        "size_bytes": 7557,
+        "sha256": "d7117116bfa26e632b823210b26d1919ac94e0ee1da521764fdd296f5ecd5003"
+      },
+      "run_identity": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/training/RUN_IDENTITY.json",
+        "exists": true,
+        "size_bytes": 1301,
+        "sha256": "a59c14c64628ea08c5b9451bd2e9d82dec3c09f991b55a38cb6ca8b537d8425a"
+      },
+      "gpu_budget": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/GPU_BUDGET.json",
+        "exists": true,
+        "size_bytes": 2185,
+        "sha256": "7c311bbc9838826f628f609bb1cc0683a8eafa0b3ed4d80271598250da276708"
+      },
+      "matched_gdts_checkpoint_sha256": "5c101c2474ebb1a3cb3ecf882f0e9db2fbb2489c741c58068b8183b0b663b97b",
+      "matched_manifest_sha256": "90fb42545ad043410f7c12b9ca91a1a0b218895b19252650e62f7fbefdb77d6d",
+      "coordinate_unit": "m",
+      "scene_count": 445,
+      "agent_occurrence_count": 1197,
+      "candidate_set_preservation_evidence": "implementation_invariant_and_exact_minFDE_only; no standalone full-bank set receipt found"
+    },
+    "univ": {
+      "experiment_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541",
+      "status": "COMPLETE",
+      "source_commit": "84ff4a68aca768a7f06211b9a758bfc97319c378",
+      "training_seed": 3101,
+      "selected_checkpoint": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/training/best_eligible.pt",
+        "exists": true,
+        "size_bytes": 91481901,
+        "sha256": "39b5fce2b343516b36572df97289079ae00881ab0b380319bd5c10f3474957d3"
+      },
+      "selected_epoch": 30,
+      "selection_identity": "best_eligible",
+      "completed_epochs": 30,
+      "optimizer_updates": 7650,
+      "resolved_config": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/configs/RESOLVED_UNIV_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7173,
+        "sha256": "38710937e6e20b441eb22169c54d01af473ef36bce29059a3a890d98a947169a"
+      },
+      "actual_contract": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/configs/RESOLVED_UNIV_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7173,
+        "sha256": "38710937e6e20b441eb22169c54d01af473ef36bce29059a3a890d98a947169a"
+      },
+      "configuration_note": "Fold/provider adaptation; unified method fields match.",
+      "method_signature": {
+        "hidden_dim": 192,
+        "heads": 4,
+        "ff_dim": 768,
+        "fjab_blocks": 6,
+        "full_raw": true,
+        "worlds": 20,
+        "ddim_steps": 20,
+        "rollout_training_enabled": false,
+        "paired_projection_enabled": false
+      },
+      "manifests": {
+        "train": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/univ_official_train_scene_shards_20261010/train/train_manifest.json",
+          "exists": true,
+          "size_bytes": 838532,
+          "sha256": "6f6fca362ec1e591bf9a79c9b1a0204123947a0c7b754992f131432af40dfd5d"
+        },
+        "validation": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/univ_official/validation/validation_manifest.json",
+          "exists": true,
+          "size_bytes": 41281,
+          "sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e"
+        },
+        "test": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/univ_official/test/test_manifest.json",
+          "exists": true,
+          "size_bytes": 40917,
+          "sha256": "aabb35de82e936495fcd948a7ba0416d92d4fc93366151b99573a4d7683ee7e0"
+        }
+      },
+      "validation_test_identity": "mirrored_official_package_internal_only",
+      "raw_G_H_seed_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/reports/PER_SEED_METRICS.csv",
+        "exists": true,
+        "size_bytes": 5554,
+        "sha256": "89037010df7301a080544a6859aedf3cd8bd6334ed27ef959f6a0835a4395ee0"
+      },
+      "raw_matched_gdts_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/assets_manifest/MATCHED_GDTS_RESULTS.json",
+        "exists": true,
+        "size_bytes": 1958,
+        "sha256": "8a5e6849e271dc646e99deb5666069359bc0c4bb9356a2a47516f4cc08a4e472"
+      },
+      "formal_summary": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/reports/FINAL_RESULT_SUMMARY.json",
+        "exists": true,
+        "size_bytes": 5700,
+        "sha256": "0ec2e86f7db1d4237665349c9dd20d587c61d1f00533b5e74f83e8d26f86c4e5"
+      },
+      "epoch_metrics": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/training/epoch_metrics.csv",
+        "exists": true,
+        "size_bytes": 8513,
+        "sha256": "99adca0125095dbbb57fb83f6c49fdd3ca6a27061ad5e954af5c3fe4864fc882"
+      },
+      "checkpoint_index": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/training/checkpoint_index.csv",
+        "exists": true,
+        "size_bytes": 7501,
+        "sha256": "0eba54d2cdfb78f7bb84d8b2657e39fff4b15b7efff727d60f31b1cf64b19689"
+      },
+      "run_identity": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/training/RUN_IDENTITY.json",
+        "exists": true,
+        "size_bytes": 1298,
+        "sha256": "d5b10e3b7759011dcc8cb41b7fecc826b2288353d2104c4e58e10d13939716fb"
+      },
+      "gpu_budget": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/GPU_BUDGET.json",
+        "exists": true,
+        "size_bytes": 1880,
+        "sha256": "4862de4672d4c4c8f3e591b89cbd01adaf27e4bdc1b8f08e0648d4798186f34a"
+      },
+      "matched_gdts_checkpoint_sha256": "ebfbae9de25463497c7bcc20981022f0638bc0349c7eeeb38bfc235dfaf61a3e",
+      "matched_manifest_sha256": "46c52540aac6f0313865f01f53d7c735d91cb8116fdbee39cb65f0cf545c7d8e",
+      "coordinate_unit": "m",
+      "scene_count": 947,
+      "agent_occurrence_count": 24334,
+      "candidate_set_preservation_evidence": "implementation_invariant_and_exact_minFDE_only; no standalone full-bank set receipt found"
+    },
+    "zara1": {
+      "experiment_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026",
+      "status": "COMPLETE",
+      "source_commit": "9bf9e71b0da74e69f3bca9add6833c39b51f1642",
+      "training_seed": 3101,
+      "selected_checkpoint": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/training/best_eligible.pt",
+        "exists": true,
+        "size_bytes": 91481389,
+        "sha256": "062a497c7baa28bfe88cf7e559784ad7029e979ddf93f3e0f8b08baa4713214b"
+      },
+      "selected_epoch": 30,
+      "selection_identity": "best_eligible",
+      "completed_epochs": 30,
+      "optimizer_updates": 8100,
+      "resolved_config": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/configs/model_config.json",
+        "exists": true,
+        "size_bytes": 6957,
+        "sha256": "670afacdbac420f046417b42c7398758b1727b78ca3de779b79abc1c3559b191"
+      },
+      "actual_contract": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/configs/training_contract.yaml",
+        "exists": true,
+        "size_bytes": 906,
+        "sha256": "86e042fe34e07d243860fc3e5a1cfdce30174143ee176dcb4a308759914b802d"
+      },
+      "configuration_note": "model_config.json retains the pre-unified 250-epoch/0.01 base fields; configs/training_contract.yaml, RUN_IDENTITY, and the completed 30-epoch log bind the actual unified run (30 epochs, final LR fraction 0.1).",
+      "method_signature": {
+        "hidden_dim": 192,
+        "heads": 4,
+        "ff_dim": 768,
+        "fjab_blocks": 6,
+        "full_raw": true,
+        "worlds": 20,
+        "ddim_steps": 20,
+        "rollout_training_enabled": false,
+        "paired_projection_enabled": false
+      },
+      "manifests": {
+        "train": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/zara1_official/train/train_manifest.json",
+          "exists": true,
+          "size_bytes": 177918,
+          "sha256": "d4d2ab9b3f4f54a7de5774b2c2284a65f2b27423c783fa5c24092ed45019b1dd"
+        },
+        "validation": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/zara1_official/validation/validation_manifest.json",
+          "exists": true,
+          "size_bytes": 31780,
+          "sha256": "9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478"
+        },
+        "test": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/data/zara1_official/test/test_manifest.json",
+          "exists": true,
+          "size_bytes": 31505,
+          "sha256": "93892a1480ec859d32a56a272f94fd35b47163cc31fe492b67d658314ac7a79f"
+        }
+      },
+      "validation_test_identity": "mirrored_official_package_internal_only",
+      "raw_G_H_seed_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/training/STATUS.json",
+        "exists": true,
+        "size_bytes": 9331,
+        "sha256": "e5db77a3d85337b89b168540832074dd5d589727f2918576b0e96e217ee7dda1"
+      },
+      "raw_matched_gdts_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_main_readiness_20261027/gdts_five_seed/results.json",
+        "exists": true,
+        "size_bytes": 4428,
+        "sha256": "48d1719c033136fc08764f8d1bbcc3e99a416d2c2d9545a18482d09d479dbd7e"
+      },
+      "formal_summary": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_Paper/docs/validation/ebjd_zara1_unified_coupling_bridge_20261028/FINAL_RESULT_SUMMARY.json",
+        "exists": true,
+        "size_bytes": 1386,
+        "sha256": "b51664ab988b76b8b3315690239808955a589876cebab5953802081c750563f4"
+      },
+      "epoch_metrics": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/training/epoch_metrics.csv",
+        "exists": true,
+        "size_bytes": 38327,
+        "sha256": "84c297a11456ab83966c3e32980378babbffc9a591f5e59378cc493b8e36f576"
+      },
+      "checkpoint_index": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/training/checkpoint_index.csv",
+        "exists": true,
+        "size_bytes": 7395,
+        "sha256": "690d24ee8a1fff8bb633fe99149eda8c73524907bd0a7ac4bc2704a378bfb86a"
+      },
+      "run_identity": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/training/RUN_IDENTITY.json",
+        "exists": true,
+        "size_bytes": 850,
+        "sha256": "30e75830403547eb0447bd17f9ca3483bbee716c575c8dde153fcb561c18b94e"
+      },
+      "gpu_budget": null,
+      "matched_gdts_checkpoint_sha256": "34af0f4335de77cf2b6ecd48b93262dfc4764e679bd52fd677392a85c22bf6d7",
+      "matched_manifest_sha256": "9c12e30ac17e91bbf8efa9e23a3d61a16c9e9c8dfc6414871fc7431b76379478",
+      "coordinate_unit": "m",
+      "scene_count": 705,
+      "agent_occurrence_count": 2356,
+      "candidate_set_preservation_evidence": "explicit_formal_report_plus_one_to_one_pairing"
+    },
+    "zara2": {
+      "experiment_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715",
+      "status": "COMPLETE",
+      "source_commit": "5369f589a8b4ad89735b4028e237bede53d35771",
+      "training_seed": 3101,
+      "selected_checkpoint": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/best_eligible.pt",
+        "exists": true,
+        "size_bytes": 91481901,
+        "sha256": "1dcdf54a2ea8081ee21480f1bc7a0499b89dff5a8ccc2c99357f9dd01243c3be"
+      },
+      "selected_epoch": 23,
+      "selection_identity": "best_eligible",
+      "completed_epochs": 30,
+      "optimizer_updates": 7530,
+      "resolved_config": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/configs/RESOLVED_ZARA2_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7364,
+        "sha256": "d9360d514a14afa94564fbbd3aec5ea412b321993acd66f6a600ca2e56e9ae5b"
+      },
+      "actual_contract": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/configs/RESOLVED_ZARA2_UNIFIED.json",
+        "exists": true,
+        "size_bytes": 7364,
+        "sha256": "d9360d514a14afa94564fbbd3aec5ea412b321993acd66f6a600ca2e56e9ae5b"
+      },
+      "configuration_note": "Fold adaptation plus scene-compaction/runtime engineering; unified method fields match.",
+      "method_signature": {
+        "hidden_dim": 192,
+        "heads": 4,
+        "ff_dim": 768,
+        "fjab_blocks": 6,
+        "full_raw": true,
+        "worlds": 20,
+        "ddim_steps": 20,
+        "rollout_training_enabled": false,
+        "paired_projection_enabled": false
+      },
+      "manifests": {
+        "train": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/train/train_manifest.json",
+          "exists": true,
+          "size_bytes": 165871,
+          "sha256": "0bd18ec06fda1974ec6cf84b5e19d898ae00cbb38b6bdcd7e5dfe1100c3d70d2"
+        },
+        "validation": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/validation/validation_manifest.json",
+          "exists": true,
+          "size_bytes": 44183,
+          "sha256": "de47ab89a5421dad62eb1846511d72f22e104fe1fc7771117676dcda806c581f"
+        },
+        "test": {
+          "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/test/test_manifest.json",
+          "exists": true,
+          "size_bytes": 43800,
+          "sha256": "fa1266412965ea3fe1ffd12b1b13fb61339055f5035f0223c0a109081b50c090"
+        }
+      },
+      "validation_test_identity": "mirrored_official_package_internal_only",
+      "raw_G_H_seed_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/reports/PER_SEED_METRICS.csv",
+        "exists": true,
+        "size_bytes": 5603,
+        "sha256": "7b22a00ac6781a657758286400ce81b62089ffc53b4b64f6652a6fb89b4e10f5"
+      },
+      "raw_matched_gdts_results": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/assets_manifest/MATCHED_GDTS_RESULTS.json",
+        "exists": false,
+        "size_bytes": null,
+        "sha256": null
+      },
+      "formal_summary": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/reports/FINAL_RESULT_SUMMARY.json",
+        "exists": true,
+        "size_bytes": 1920,
+        "sha256": "fbd44f3bfa52f73c3f358830be91ac5335691632b9e1a9b3b66ade27e0a688ba"
+      },
+      "epoch_metrics": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/epoch_metrics.csv",
+        "exists": true,
+        "size_bytes": 8590,
+        "sha256": "a2297c25606222af1a1d5e4e5651857979ecb6e7631688ae2c2eed080bd9c4bc"
+      },
+      "checkpoint_index": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/checkpoint_index.csv",
+        "exists": true,
+        "size_bytes": 7550,
+        "sha256": "c91f6e6c85f347fc15f22bebd88cc665c9d96f459992ba9062ee8a80ccd88aa2"
+      },
+      "run_identity": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/RUN_IDENTITY.json",
+        "exists": true,
+        "size_bytes": 1301,
+        "sha256": "c97e57c1022dd09bfbdf5a80144809abf645c1c7819b6f78bf315836b8da7c83"
+      },
+      "gpu_budget": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/GPU_BUDGET.json",
+        "exists": true,
+        "size_bytes": 1727,
+        "sha256": "884cc318b7cd2eee132fdd834f893fa60522cfea9d8d52d16c12136ba5075c35"
+      },
+      "matched_gdts_checkpoint_sha256": "bba3e538775e57fac45fd693ae6308c84fd92d6bf8d5451ab337005b292b2d80",
+      "matched_manifest_sha256": "de47ab89a5421dad62eb1846511d72f22e104fe1fc7771117676dcda806c581f",
+      "coordinate_unit": "m",
+      "scene_count": 998,
+      "agent_occurrence_count": 5910,
+      "candidate_set_preservation_evidence": "explicit_formal_report_plus_one_to_one_pairing"
+    }
+  },
+  "comparability": {
+    "coordinate_unit": "m",
+    "worlds": 20,
+    "ddim_steps": 20,
+    "validation_test_relation": "mirrored official-package internal validation/test members for all five folds",
+    "training_seeds": 1,
+    "inference_repetitions_per_fold": 5,
+    "source_commit_difference_assessment": "Source commits differ because each fold was launched sequentially with fold/provider/runtime adaptations. Resolved method signatures match 192/4/768, 6 FJAB, FULL/Raw, 20x20, rollout/projection OFF. No source evidence of a method-semantic change was found in the bound configs."
+  }
+}

@@ -85,8 +85,6 @@ def delta_figure(data: dict, output: Path) -> None:
         axis.grid(axis="y", color="#D9D9D9", linewidth=0.5, zorder=0)
         axis.text(-0.11, 1.03, label, transform=axis.transAxes, fontweight="bold",
                   fontsize=8, va="bottom")
-        axis.text(.99, .02, "lower is better", transform=axis.transAxes,
-                  ha="right", va="bottom", color="#555555", fontsize=6)
     axes[0].legend(ncol=2, loc="upper center", bbox_to_anchor=(1.04, 1.18))
     export(fig, output / "fivefold_cr_deltas", ["a", "b"])
 

@@ -1,0 +1,17 @@
+{
+  "schema": "ebjd-jmm-collision-test-receipt-v1",
+  "command": "python -m pytest -p no:cacheprovider -q tests/test_collision_metrics.py",
+  "result": "9 passed",
+  "gpu_used": false,
+  "collision_implementation_sha256": "44e0a05ccef34ae69a39bc305ef47b84d85d380caefbb57c284ec13167de4ecf",
+  "test_source_sha256": "44f15ab23254cbef69bfe5c48029d2b02a832f189a2217f682fea9076eebd0f7",
+  "analyzer_sha256": "029b17e10059ee1afb7017d0bd2922dab33d6f52a686b5f496f7392af73e4b55",
+  "formal_metric_replay_tolerance": 0.000002,
+  "figure_qa": {
+    "backend": "python_matplotlib",
+    "source_preflight": "PASS",
+    "panel_alignment": "PASS",
+    "pdf_glyph_floor_pt": 5,
+    "rendered_collision_audit": "PASS"
+  }
+}
