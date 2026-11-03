@@ -159,8 +159,9 @@ def patch_baseline_trainer(trainer) -> None:
 def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> list[str]:
     fold = str(recipe["fold"])
     dataset = str(recipe.get("legacy_dataset", "eth5"))
+    test_set = fold if dataset == "eth5" else dataset
     common = [
-        "--dataset", dataset, "--test_set", fold,
+        "--dataset", dataset, "--test_set", test_set,
         "--reproducibility", "True", "--seed", str(recipe["seed"]),
         "--batch_size", "64", "--learning_rate", "0.001",
         "--optimizer", "Adam", "--scheduler", "ExponentialLR",
@@ -196,7 +197,7 @@ def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> li
         ]
     if stage in ("scene_cache", "scene_cache_independent"):
         return [
-            "--dataset", dataset, "--test_set", fold,
+            "--dataset", dataset, "--test_set", test_set,
             "--phase", "pre-process", "--batch_size", "64",
             "--device", "cpu", "--num_workers", "0", "--down_factor", "8",
             "--skip_ts_window", "1", "--goal_model_type",

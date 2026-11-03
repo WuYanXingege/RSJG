@@ -90,9 +90,11 @@ def main() -> None:
     from src.parser import check_and_add_additional_args, get_parser
     from src.trainer import trainer
 
+    dataset = str(recipe.get("legacy_dataset", "eth5"))
     cli = [
-        "--dataset", str(recipe.get("legacy_dataset", "eth5")),
-        "--test_set", str(recipe["fold"]), "--phase", "test",
+        "--dataset", dataset,
+        "--test_set", str(recipe["fold"]) if dataset == "eth5" else dataset,
+        "--phase", "test",
         "--device", "cuda:0", "--batch_size", "64", "--num_workers", "0",
         "--down_factor", "8", "--skip_ts_window", "1",
         "--goal_model_type", "social", "--training_stage", "finetune",
