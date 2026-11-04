@@ -95,7 +95,14 @@ def main() -> None:
                 ), axis=1), (
                     float(shard["scale_m_per_px"][index])
                     if "scale_m_per_px" in shard else 1.0))
-    dataset = dataset_class()
+    # The cache audit only needs the per-scene coordinate transforms.  Loading
+    # all SDD reference images and semantic maps here adds several gigabytes of
+    # avoidable memory pressure immediately after cache construction.
+    dataset = (
+        dataset_class(load_visual_data=False)
+        if legacy_dataset == "sdd"
+        else dataset_class()
+    )
     cache_files = [Path(value) for value in batch_cache_files(
         str(Path(args.cache_dir).resolve()))]
     seen = set()

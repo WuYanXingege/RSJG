@@ -58,7 +58,7 @@ class Pipeline:
             if identity.get("source_commit") != self.commit:
                 identity.setdefault("execution_migrations",[]).append({
                     "from":identity.get("source_commit"), "to":self.commit,
-                    "reason":"pre-update SDD legacy CLI identity adaptation",
+                    "reason":"pre-optimizer SDD manifest-bound cache and resource-limit fix",
                     "optimizer_updates_before_migration":0})
                 identity["source_commit"]=self.commit
                 atomic_json(run_manifest,identity)
@@ -75,8 +75,16 @@ class Pipeline:
         log = self.root/"logs"/(stage.lower()+".log"); self.state(stage,"RUNNING",command=command,log=str(log))
         started=time.perf_counter(); outcome="failed"
         try:
+            environment = os.environ.copy()
+            if stage.startswith("CACHE_"):
+                environment.update({
+                    "OMP_NUM_THREADS": "2", "MKL_NUM_THREADS": "2",
+                    "OPENBLAS_NUM_THREADS": "2", "NUMEXPR_NUM_THREADS": "2",
+                })
             with log.open("a",encoding="utf-8") as handle:
-                result=subprocess.run(command,cwd=PAPER,stdout=handle,stderr=subprocess.STDOUT,check=False)
+                result=subprocess.run(
+                    command, cwd=PAPER, stdout=handle,
+                    stderr=subprocess.STDOUT, check=False, env=environment)
             if result.returncode: raise RuntimeError(f"{stage} exited {result.returncode}")
             outcome="complete"
         except BaseException as error:
@@ -116,7 +124,15 @@ class Pipeline:
         common=[str(PYTHON),"scripts/run_legacy_gdts_stage.py","--recipe",str(RECIPE),"--runtime-root",str(self.runtime),"--batch-cache-root",str(self.cache)]
         if not (self.independent_cache/"finished_train_batches.txt").exists(): self.run("CACHE_INDEPENDENT",common+["--stage","scene_cache_independent"])
         self.require_free_space("CACHE_JOINT")
-        if not (self.joint_cache/"finished_train_batches.txt").exists(): self.run("CACHE_JOINT",common+["--stage","scene_cache"])
+        bound_common=[str(PYTHON),"scripts/build_manifest_bound_gdts_cache.py","--recipe",str(RECIPE),"--runtime-root",str(self.runtime),"--batch-cache-root",str(self.cache)]
+        if not (self.joint_cache/"finished_train_batches.txt").exists(): self.run("CACHE_JOINT_TRAIN",bound_common+["--manifest",str(self.train),"--split","train"])
+        if not (self.joint_cache/"finished_valid_batches.txt").exists(): self.run("CACHE_JOINT_VALIDATION",bound_common+["--manifest",str(self.valid),"--split","validation"])
+        expected={"train":5720,"valid":1999,"test":1999}
+        for split,count in expected.items():
+            marker=self.joint_cache/f"finished_{split}_batches.txt"
+            if not marker.exists() or str(count) not in marker.read_text():
+                raise RuntimeError(
+                    f"manifest-bound joint cache mismatch: {split} != {count}")
         for split,manifest in (("train",self.train),("valid",self.valid)):
             receipt=self.root/f"receipts/CACHE_PARITY_{split.upper()}.json"
             if not receipt.exists(): self.run("AUDIT_CACHE_"+split.upper(),[str(PYTHON),"scripts/audit_manifest_gdts_cache.py","--recipe",str(RECIPE),"--manifest",str(manifest),"--runtime-root",str(self.runtime),"--cache-dir",str(self.joint_cache/f"{split}_batches"),"--output",str(receipt)])

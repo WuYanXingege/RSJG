@@ -223,6 +223,10 @@ def main() -> None:
     parser.add_argument("--batch-cache-root", required=True)
     parser.add_argument("--goal-checkpoint")
     args = parser.parse_args()
+    if args.stage in ("scene_cache", "scene_cache_independent"):
+        torch.set_num_threads(2)
+        torch.set_num_interop_threads(1)
+        os.nice(10)
     recipe = yaml.safe_load(Path(args.recipe).read_text(encoding="utf-8"))
     fold = str(recipe["fold"])
     output_key = (
