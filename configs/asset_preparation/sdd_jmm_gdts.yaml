@@ -32,10 +32,35 @@ gdts_baseline:
   learning_rate: 0.001
   optimizer: Adam
   scheduler: ExponentialLR
-  scheduler_gamma: 0.99
+  # The read-only legacy trainer fixes ExponentialLR gamma at 0.995.
+  scheduler_gamma: 0.995
   validate_every: 10
   selection: minimum_native_validation_ADE_strict_earlier_tie
   initialization: goal_pretrain_best_model_only_fresh_optimizer_scheduler_rng
+  early_stopping:
+    monitor: valid_ADE
+    direction: minimize
+    unit: pixel
+    max_epochs: 250
+    minimum_epochs: 50
+    earliest_stop_epoch: 50
+    patience_validations: 20
+    significant_relative_improvement: 0.001
+    validation_frequency_epochs: 10
+    selector: minimum_native_validation_ADE_strict_earlier_tie
+ebjd_training:
+  early_stopping:
+    monitor: H_JADE
+    direction: minimize
+    max_epochs: 30
+    minimum_epochs: 10
+    earliest_stop_epoch: 10
+    patience_validations: 8
+    significant_relative_improvement: 0.001
+    validation_frequency_epochs: 1
+    pre_eligible_monitor: H_JADE
+    eligible_monitor: eligible_H_JADE
+    reset_patience_on_first_eligible: true
 matched_evaluation:
   split: validation
   selection_seed: 2035

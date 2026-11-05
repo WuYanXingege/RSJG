@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 """Resumable JMM TrajNet-SDD asset preparation and unified EBJD pipeline."""
 from __future__ import annotations
-import argparse, hashlib, json, os, shutil, subprocess, tempfile, time
+import argparse, fcntl, hashlib, json, os, shutil, subprocess, tempfile, time
 from datetime import datetime, timezone
 from pathlib import Path
+
+import yaml
 
 PAPER = Path(__file__).resolve().parents[1]
 PYTHON = Path("/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python")
@@ -58,7 +60,7 @@ class Pipeline:
             if identity.get("source_commit") != self.commit:
                 identity.setdefault("execution_migrations",[]).append({
                     "from":identity.get("source_commit"), "to":self.commit,
-                    "reason":"pre-optimizer SDD manifest-bound cache and resource-limit fix",
+                    "reason":"stage-boundary resumable early-stopping handoff",
                     "optimizer_updates_before_migration":0})
                 identity["source_commit"]=self.commit
                 atomic_json(run_manifest,identity)
@@ -140,11 +142,52 @@ class Pipeline:
     def gdts(self):
         common=[str(PYTHON),"scripts/run_legacy_gdts_stage.py","--recipe",str(RECIPE),"--runtime-root",str(self.runtime),"--batch-cache-root",str(self.cache)]
         goal=self.runtime/"output/sdd/runs/sdd_jmm_goal_pretrain_seed3101_v1/saved_models/goal_pretrain_best_model.pt"
-        if not goal.exists(): self.run("GOAL_PRETRAIN",common+["--stage","goal"])
+        goal_last=self.runtime/"output/sdd/runs/sdd_jmm_goal_pretrain_seed3101_v1/saved_models/goal_pretrain_last_model.pt"
+        goal_receipt=self.root/"03_goal_pretrain/GOAL_PRETRAIN_COMPLETION.json"
+        if goal_receipt.exists():
+            receipt=json.loads(goal_receipt.read_text(encoding="utf-8"))
+            if (receipt.get("stage_status") != "COMPLETED" or
+                    Path(receipt.get("selected_checkpoint", "")).resolve() != goal.resolve() or
+                    not goal.exists() or receipt.get("selected_checkpoint_sha256") != sha256(goal)):
+                raise RuntimeError("invalid Goal-pretrain completion receipt")
+        else:
+            completed_naturally=False
+            if goal.exists() and goal_last.exists():
+                import torch
+                last_payload=torch.load(goal_last,map_location="cpu",weights_only=False)
+                completed_naturally=(
+                    int(last_payload.get("epoch",0)) >=
+                    int(yaml.safe_load(RECIPE.read_text())["goal_pretrain"]["epochs"]))
+            if not completed_naturally:
+                self.run("GOAL_PRETRAIN",common+["--stage","goal"])
+            if not goal.exists() or not goal_last.exists():
+                raise RuntimeError("goal selected or last checkpoint absent")
+            import torch
+            best_payload=torch.load(goal,map_location="cpu",weights_only=False)
+            last_payload=torch.load(goal_last,map_location="cpu",weights_only=False)
+            atomic_json(goal_receipt,{
+                "stage_status":"COMPLETED",
+                "completion_reason":"MAX_EPOCHS",
+                "planned_epochs":int(best_payload["training_epochs_planned"]),
+                "completed_epochs":int(last_payload["epoch"]),
+                "selected_checkpoint":str(goal),
+                "selected_checkpoint_sha256":sha256(goal),
+                "selected_epoch":int(best_payload["epoch"]),
+                "validation_goal_BCE":float(best_payload["best_metrics"]["goal_BCE"]),
+            })
         if not goal.exists(): raise RuntimeError("goal selected checkpoint absent")
         base=self.runtime/"output/sdd/runs/sdd_jmm_matched_gdts_seed3101_v1/saved_models/best_model.pt"
-        if not base.exists(): self.run("MATCHED_GDTS",common+["--stage","baseline","--goal-checkpoint",str(goal)])
-        if not base.exists(): raise RuntimeError("matched GDTS selected checkpoint absent")
+        base_receipt=self.root/"04_matched_gdts/MATCHED_GDTS_COMPLETION.json"
+        if not base_receipt.exists():
+            self.run("MATCHED_GDTS",common+["--stage","baseline","--goal-checkpoint",str(goal)])
+        if not base.exists() or not base_receipt.exists():
+            raise RuntimeError("matched GDTS selected checkpoint or completion receipt absent")
+        receipt=json.loads(base_receipt.read_text(encoding="utf-8"))
+        if (receipt.get("stage_status") != "COMPLETED" or
+                Path(receipt.get("selected_checkpoint", "")).resolve() != base.resolve() or
+                receipt.get("selected_checkpoint_sha256") != sha256(base) or
+                receipt.get("goal_pretrain_initialization_sha256") != sha256(goal)):
+            raise RuntimeError("invalid matched-GDTS completion receipt")
         return goal,base
 
     def assets(self, base):
@@ -159,11 +202,11 @@ class Pipeline:
         return train_bank,str(pattern),digest,result
 
     def config(self,goal,base,base_sha,result):
-        target=self.root/"00_identity/RESOLVED_SDD_JMM_UNIFIED.json"; config=json.loads(BASE_CONFIG.read_text()); matched=json.loads(result.read_text()); run=next(x for x in matched["runs"] if x["seed"]==2035)
+        target=self.root/"00_identity/RESOLVED_SDD_JMM_UNIFIED.json"; config=json.loads(BASE_CONFIG.read_text()); matched=json.loads(result.read_text()); run=next(x for x in matched["runs"] if x["seed"]==2035); recipe=yaml.safe_load(RECIPE.read_text())
         config["seed"]=3101; config["experiment"].update({"fold":"sdd_trajnet_jmm","source_commit":self.commit,"implementation_base":self.commit[:7]})
         config["paths"].update({"train_manifest":str(self.train),"validation_manifest":str(self.valid),"test_manifest":str(self.train.parents[1]/"test/test_manifest.json"),"accepted_fold_matched_gdts_unet":str(goal),"accepted_fold_matched_gdts_unet_sha256":sha256(goal),"matched_gdts_validation_checkpoint":str(base),"matched_gdts_validation_checkpoint_sha256":base_sha,"matched_gdts_validation_result":str(result),"matched_gdts_validation_result_sha256":sha256(result),"output_root":str(self.root/"06_ebjd_training")})
         config["evaluation"].update({"unit":"pixel","worlds":20,"steps":20,"inference_seeds":list(SEEDS)}); config["evaluation"]["matched_gdts_validation"]={"status":"bound_to_manifest","fold":"sdd_trajnet_jmm","evaluation_seed":2035,"worlds":20,"steps":20,"unit":"pixel","checkpoint_sha256":base_sha,"manifest_sha256":sha256(self.valid),"scene_count":1999,"agent_occurrence_count":2829,**run["metrics"]}
-        config["training"].update({"epochs":30,"rollout_training_enabled":False,"paired_marginal_actual_step_projection_enabled":False}); atomic_json(target,config)
+        config["training"].update({"epochs":30,"rollout_training_enabled":False,"paired_marginal_actual_step_projection_enabled":False,"early_stopping":recipe["ebjd_training"]["early_stopping"]}); atomic_json(target,config)
         atomic_json(self.root/"CONFIG_HASHES.json",{"resolved_config":str(target),"resolved_config_sha256":sha256(target),"recipe":str(RECIPE),"recipe_sha256":sha256(RECIPE),"source_commit":self.commit}); return target
 
     def execute(self):
@@ -172,5 +215,14 @@ class Pipeline:
         checkpoints={str(p):sha256(p) for p in (goal,base,self.root/"06_ebjd_training/best_jade.pt",self.root/"06_ebjd_training/last.pt") if p.exists()}; atomic_json(self.root/"CHECKPOINT_MANIFEST.json",checkpoints); self.state("COMPLETE","COMPLETE")
 
 def main():
-    parser=argparse.ArgumentParser(); parser.add_argument("--root",required=True); parser.add_argument("--source-commit",required=True); args=parser.parse_args(); Pipeline(args.root,args.source_commit).execute()
+    parser=argparse.ArgumentParser(); parser.add_argument("--root",required=True); parser.add_argument("--source-commit",required=True); args=parser.parse_args()
+    root=Path(args.root).resolve(); root.mkdir(parents=True,exist_ok=True)
+    lock_path=root/"SUPERVISOR.lock"
+    with lock_path.open("a+",encoding="utf-8") as lock:
+        try:
+            fcntl.flock(lock.fileno(),fcntl.LOCK_EX|fcntl.LOCK_NB)
+        except BlockingIOError as error:
+            raise RuntimeError("another SDD supervisor owns the pipeline lock") from error
+        lock.seek(0); lock.truncate(); lock.write(f"{os.getpid()}\n"); lock.flush(); os.fsync(lock.fileno())
+        Pipeline(root,args.source_commit).execute()
 if __name__=="__main__": main()

@@ -20,6 +20,7 @@ import torch
 
 from ebjd.config import build_model, load_config
 from ebjd.data import augment_batch_with_points
+from ebjd.early_stopping import EligibleJADEEarlyStop, RelativeEarlyStop
 from ebjd.metrics import MetricAccumulator
 from ebjd.objectives import (
     diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss,
@@ -184,11 +185,14 @@ def evaluate(model, config, bank, device, seed: int) -> dict:
             "elapsed_seconds": time.perf_counter() - started}
 
 
-def save_checkpoint(path, model, optimizer, epoch, update, loader_generator, selection, identity):
+def save_checkpoint(
+        path, model, optimizer, epoch, update, loader_generator, selection,
+        identity, early_stop):
     payload = {
         "schema": "ebjd-unified-coupling-bridge-v1", "epoch": epoch,
         "update_index": update, "model": model.state_dict(),
         "optimizer": optimizer.state_dict(), "selection_state": selection,
+        "early_stop_state": early_stop.state_dict(),
         "rng": {"python": random.getstate(), "numpy": np.random.get_state(),
                 "torch_cpu": torch.get_rng_state(),
                 "torch_cuda": torch.cuda.get_rng_state_all(),
@@ -197,6 +201,37 @@ def save_checkpoint(path, model, optimizer, epoch, update, loader_generator, sel
     }
     temporary = path.with_suffix(path.suffix + ".tmp")
     torch.save(payload, temporary); os.replace(temporary, path)
+
+
+def make_early_stop(contract: dict) -> EligibleJADEEarlyStop:
+    required = {
+        "monitor", "earliest_stop_epoch", "patience_validations",
+        "significant_relative_improvement",
+    }
+    if not required.issubset(contract):
+        raise RuntimeError("incomplete EBJD early-stop contract")
+    if str(contract["monitor"]) != "H_JADE":
+        raise RuntimeError("EBJD early-stop monitor must be H_JADE")
+    return EligibleJADEEarlyStop(RelativeEarlyStop(
+        monitor="H_JADE",
+        earliest_stop_epoch=int(contract["earliest_stop_epoch"]),
+        patience=int(contract["patience_validations"]),
+        relative_improvement=float(contract["significant_relative_improvement"]),
+    ))
+
+
+def rebuild_early_stop(path: Path, contract: dict, through_epoch: int):
+    state = make_early_stop(contract)
+    if not path.exists():
+        return state, "no_history_fresh_state"
+    with path.open(newline="", encoding="utf-8") as handle:
+        for row in csv.DictReader(handle):
+            epoch = int(row["epoch"])
+            if epoch > through_epoch:
+                break
+            state.observe(
+                float(row["H_JADE"]), bool(int(row["eligible"])), epoch)
+    return state, "rebuilt_from_epoch_metrics"
 
 
 def main() -> None:
@@ -259,6 +294,12 @@ def main() -> None:
     model = UnifiedCouplingBridge(bridge).to(device)
     model.training_options = {"coarse": 0.25, "geometry": 0.05, "map": 0.10}
     optimizer = optimizer_for(model, config)
+    early_contract = config["training"]["early_stopping"]
+    max_epochs = int(early_contract["max_epochs"])
+    if max_epochs != int(config["training"]["epochs"]):
+        raise RuntimeError("EBJD max_epochs disagrees with training epochs")
+    early_stop = make_early_stop(early_contract)
+    early_stop_restore = "fresh_run"
     train_provider = FrozenNativeGoalProvider(train_bank)
     loader_generator = torch.Generator().manual_seed(args.training_seed)
     update = 0
@@ -271,6 +312,22 @@ def main() -> None:
         optimizer.load_state_dict(payload["optimizer"])
         update = int(payload["update_index"])
         selection = payload["selection_state"]
+        if payload.get("early_stop_state") is None:
+            early_stop, early_stop_restore = rebuild_early_stop(
+                output / "epoch_metrics.csv", early_contract,
+                int(payload["epoch"]))
+        else:
+            early_stop = EligibleJADEEarlyStop.from_state_dict(
+                payload["early_stop_state"])
+            expected = make_early_stop(early_contract).state.state_dict()
+            actual = early_stop.state.state_dict()
+            for key in (
+                    "monitor", "direction", "earliest_stop_epoch", "patience",
+                    "relative_improvement"):
+                if actual[key] != expected[key]:
+                    raise RuntimeError(
+                        f"EBJD early-stop contract changed on resume: {key}")
+            early_stop_restore = "checkpoint"
         start_epoch = int(payload["epoch"]) + 1
         random.setstate(payload["rng"]["python"])
         np.random.set_state(payload["rng"]["numpy"])
@@ -286,7 +343,9 @@ def main() -> None:
         with index_path.open("w", newline="", encoding="utf-8") as handle:
             csv.writer(handle).writerow(["epoch", "update", "eligible", "JADE", "checkpoint", "sha256"])
     completed_normally = True
-    for epoch in range(start_epoch, 31):
+    last_completed_epoch = start_epoch - 1
+    normal_stop_reason = None
+    for epoch in range(start_epoch, max_epochs + 1):
         if time.perf_counter() - started >= args.max_gpu_seconds - args.final_reserve_seconds:
             atomic_json(output / "STATUS.json", {"status": "BUDGET_PARTIAL", "epoch": epoch - 1, "update": update})
             completed_normally = False
@@ -383,7 +442,11 @@ def main() -> None:
             selection["best_jade"] = {"epoch": epoch, **validation["H"]}
         if eligible and (selection["best_eligible"] is None or validation["H"]["JADE"] < selection["best_eligible"]["JADE"]):
             selection["best_eligible"] = {"epoch": epoch, **validation["H"]}
-        save_checkpoint(epoch_path, model, optimizer, epoch, update, loader_generator, selection, identity)
+        early_result = early_stop.observe(
+            validation["H"]["JADE"], eligible, epoch)
+        save_checkpoint(
+            epoch_path, model, optimizer, epoch, update, loader_generator,
+            selection, identity, early_stop)
         shutil.copy2(epoch_path, output / "last.pt")
         last = output / "last.pt"; digest = file_sha256(epoch_path)
         if selection["best_jade"]["epoch"] == epoch:
@@ -408,18 +471,41 @@ def main() -> None:
                         "H_JFDE": validation["H"]["JFDE"],
                         "eligible": eligible, "training_seconds": training_seconds,
                         "validation_seconds": validation_seconds,
-                        "elapsed_seconds": time.perf_counter() - started}
+                        "elapsed_seconds": time.perf_counter() - started,
+                        "early_stop_phase": (
+                            "eligible" if early_stop.eligible_phase
+                            else "pre_eligible"),
+                        "early_stop_stale": early_stop.state.stale_validations,
+                        "early_stop_patience": early_stop.state.patience,
+                        "early_stop_significant_best": (
+                            early_stop.state.significant_best)}
         with (output / "epoch_metrics.csv").open("a", newline="", encoding="utf-8") as handle:
             writer = csv.DictWriter(handle, fieldnames=epoch_record.keys())
             if handle.tell() == 0: writer.writeheader()
             writer.writerow(epoch_record)
         atomic_json(output / "STATUS.json", {"status": "TRAINING", **epoch_record,
-                    "best": selection})
+                    "best": selection,
+                    "early_stop_state": early_stop.state_dict(),
+                    "early_stop_restore": early_stop_restore})
         elapsed = time.perf_counter() - started
-        eta = elapsed / epoch * (30 - epoch)
-        print(f"fold={args.fold} seed={args.training_seed} | E{epoch:02d}/30 | loss={epoch_record['loss']:.6f} pair={epoch_record['pair_loss']:.6f} bridge={epoch_record['bridge_loss']:.6f} | G: ADE/FDE/JADE/JFDE={validation['G']['minADE']:.4f}/{validation['G']['minFDE']:.4f}/{validation['G']['JADE']:.4f}/{validation['G']['JFDE']:.4f} | H: ADE/FDE/JADE/JFDE={validation['H']['minADE']:.4f}/{validation['H']['minFDE']:.4f}/{validation['H']['JADE']:.4f}/{validation['H']['JFDE']:.4f} | train={training_seconds/60:.1f}m val={validation_seconds/60:.1f}m total={(training_seconds+validation_seconds)/60:.1f}m ETA={eta/3600:.2f}h", flush=True)
-    if completed_normally and start_epoch <= 30:
-        atomic_json(output / "STATUS.json", {"status": "TRAINING_COMPLETE_PENDING_FINAL_EVALUATION", "epoch": 30, "update": update, "best": selection})
+        eta = elapsed / max(1, epoch - start_epoch + 1) * (max_epochs - epoch)
+        print(f"[EBJD] E{epoch:03d}/{max_epochs:03d} | loss={epoch_record['loss']:.6f} pair={epoch_record['pair_loss']:.6f} bridge={epoch_record['bridge_loss']:.6f} | H: ADE/FDE/JADE/JFDE={validation['H']['minADE']:.4f}/{validation['H']['minFDE']:.4f}/{validation['H']['JADE']:.4f}/{validation['H']['JFDE']:.4f} | eligible={eligible} phase={epoch_record['early_stop_phase']} stale={early_stop.state.stale_validations}/{early_stop.state.patience} | time={(training_seconds+validation_seconds)/60:.1f}m | max-epoch ETA={eta/3600:.2f}h", flush=True)
+        last_completed_epoch = epoch
+        if early_result["should_stop"]:
+            normal_stop_reason = "EARLY_STOP_PATIENCE"
+            atomic_json(output / "EARLY_STOP_RECEIPT.json", {
+                "status": "COMPLETED", "reason": normal_stop_reason,
+                "completed_epoch": epoch,
+                "early_stop_state": early_stop.state_dict(),
+                "selection_state": selection,
+            })
+            break
+    if completed_normally and start_epoch <= max_epochs:
+        atomic_json(output / "STATUS.json", {
+            "status": "TRAINING_COMPLETE_PENDING_FINAL_EVALUATION",
+            "epoch": last_completed_epoch, "update": update,
+            "completion_reason": normal_stop_reason or "MAX_EPOCHS",
+            "best": selection, "early_stop_state": early_stop.state_dict()})
     selected_name = "best_eligible.pt" if (output / "best_eligible.pt").exists() else "best_jade.pt"
     selected = output / selected_name
     if completed_normally and selected.exists() and time.perf_counter() - started < args.max_gpu_seconds:
