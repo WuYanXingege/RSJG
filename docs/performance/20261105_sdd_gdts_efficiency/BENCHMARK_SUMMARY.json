@@ -1,0 +1,34 @@
+{
+  "accepted_execution_change": null,
+  "baseline_workers": 2,
+  "candidate_workers": 4,
+  "baseline_seconds_per_update": [1.0437476154, 0.9142344824],
+  "candidate_seconds_per_update": [0.9227684902, 0.7368969335],
+  "paired_speedups": [1.131102, 1.240663],
+  "stability_recheck_seconds_per_update": {
+    "workers_2": 0.8587081735,
+    "workers_4": 0.9576031056,
+    "speedup": 0.896710
+  },
+  "peak_cuda_allocated_bytes": 6960819200,
+  "peak_cuda_reserved_bytes_max": 13262389248,
+  "correctness_eight_update": {
+    "loss_total_workers_2": 0.8987894729,
+    "loss_total_workers_4": 0.8987844884,
+    "loss_relative_difference": 0.00000555,
+    "max_gradient_norm_relative_difference": 0.0001394,
+    "all_parameters_finite": true,
+    "gradient_parameter_count": 94
+  },
+  "early_stopping": {
+    "monitor": "valid_ADE",
+    "unit": "pixel",
+    "max_epochs": 250,
+    "minimum_epochs": 50,
+    "earliest_stop_epoch": 50,
+    "validate_every_epochs": 10,
+    "patience_validations": 3,
+    "significant_relative_improvement": 0.001
+  },
+  "optimization_gpu_wall_seconds_approx": 255
+}

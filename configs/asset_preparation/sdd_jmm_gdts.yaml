@@ -44,7 +44,7 @@ gdts_baseline:
     max_epochs: 250
     minimum_epochs: 50
     earliest_stop_epoch: 50
-    patience_validations: 20
+    patience_validations: 3
     significant_relative_improvement: 0.001
     validation_frequency_epochs: 10
     selector: minimum_native_validation_ADE_strict_earlier_tie

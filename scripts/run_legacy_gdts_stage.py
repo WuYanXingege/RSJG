@@ -275,10 +275,21 @@ def patch_baseline_trainer(trainer, contract: dict) -> None:
                 self._paper_early_stop_restore = source
             else:
                 state = RelativeEarlyStop.from_state_dict(saved)
-                if state.state_dict()["monitor"] != str(contract["monitor"]):
-                    raise RuntimeError("early-stop monitor changed across resume")
-                self._paper_early_stop_state = state
-                self._paper_early_stop_restore = "checkpoint"
+                expected = fresh_state().state_dict()
+                actual = state.state_dict()
+                identity_fields = (
+                    "monitor", "direction", "earliest_stop_epoch",
+                    "patience", "relative_improvement",
+                )
+                if any(actual[name] != expected[name]
+                       for name in identity_fields):
+                    state, source = rebuild_state(self, start_epoch - 1)
+                    self._paper_early_stop_state = state
+                    self._paper_early_stop_restore = (
+                        "contract_changed_" + source)
+                else:
+                    self._paper_early_stop_state = state
+                    self._paper_early_stop_restore = "checkpoint"
             self._validations_without_improvement = int(
                 self._paper_early_stop_state.stale_validations)
         else:
