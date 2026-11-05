@@ -14,8 +14,10 @@ import hashlib
 import json
 import os
 import random
+import resource
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 import numpy as np
@@ -23,6 +25,9 @@ import torch
 import yaml
 
 from ebjd.early_stopping import RelativeEarlyStop
+from ebjd.legacy_sdd_input_pipeline import MODE as OPTIMIZED_INPUT_MODE
+from ebjd.legacy_sdd_input_pipeline import PREALLOC_MODE
+from ebjd.legacy_sdd_input_pipeline import install as install_sdd_input_pipeline
 
 
 def rng_state(loader) -> dict:
@@ -151,10 +156,13 @@ def patch_goal_pretrainer(goal_pretrainer) -> None:
     goal_pretrainer._load_checkpoint = load_checkpoint
 
 
-def patch_baseline_trainer(trainer, contract: dict) -> None:
+def patch_baseline_trainer(
+        trainer, contract: dict, *, input_pipeline_mode: str = "legacy",
+        first_epoch_receipt: Path | None = None) -> None:
     original_save = trainer._save_checkpoint
     original_restart = trainer._load_or_restart
     original_evaluate = trainer._evaluate_epoch
+    original_train_epoch = trainer._train_epoch
 
     required = {
         "monitor", "earliest_stop_epoch", "patience_validations",
@@ -258,6 +266,23 @@ def patch_baseline_trainer(trainer, contract: dict) -> None:
                 "full_runtime_resume_provider": "paper_adapter_v1",
             })
         atomic_torch_save(payload, path)
+        if (last_epoch and first_epoch_receipt is not None and
+                not first_epoch_receipt.exists()):
+            atomic_json({
+                "schema": "ebjd-sdd-input-pipeline-first-epoch-v1",
+                "epoch": int(epoch),
+                "optimizer_updates": int(len(self.data_loaders["train"])),
+                "input_pipeline_mode": input_pipeline_mode,
+                "train_seconds": float(getattr(
+                    self, "_paper_train_epoch_seconds", float("nan"))),
+                "recorded_at_unix": time.time(),
+            }, first_epoch_receipt)
+
+    def train_epoch(self, epoch):
+        started = time.perf_counter()
+        result = original_train_epoch(self, epoch)
+        self._paper_train_epoch_seconds = time.perf_counter() - started
+        return result
 
     def load_or_restart(self):
         start_epoch = original_restart(self)
@@ -301,6 +326,115 @@ def patch_baseline_trainer(trainer, contract: dict) -> None:
     trainer._record_validation_outcome = record_validation_outcome
     trainer._save_checkpoint = save_checkpoint
     trainer._load_or_restart = load_or_restart
+    trainer._train_epoch = train_epoch
+
+
+class _TimedLimitedLoader:
+    """Expose a fixed prefix while measuring blocking iterator time."""
+
+    def __init__(self, source, count: int):
+        self.source = source
+        self.count = int(count)
+        self.data_wait_seconds = 0.0
+
+    def __len__(self):
+        return self.count
+
+    def __iter__(self):
+        iterator = iter(self.source)
+        for _ in range(self.count):
+            started = time.perf_counter()
+            value = next(iterator)
+            self.data_wait_seconds += time.perf_counter() - started
+            yield value
+
+
+def patch_runtime_benchmark(
+        trainer, *, output: Path, warmup: int, measured: int,
+        input_pipeline_mode: str) -> None:
+    """Bound the normal restored trainer to a short, timed update window."""
+
+    def parameter_summary(self):
+        total = torch.zeros((), dtype=torch.float64, device=self.device)
+        squared = torch.zeros((), dtype=torch.float64, device=self.device)
+        finite = True
+        for parameter in self.net.parameters():
+            detached = parameter.detach()
+            finite = finite and bool(torch.isfinite(detached).all().item())
+            total += detached.double().sum()
+            squared += detached.double().square().sum()
+        return {
+            "finite": finite,
+            "sum": float(total.item()),
+            "l2": float(squared.sqrt().item()),
+        }
+
+    def benchmark_loop(self, start_epoch, end_epoch):
+        del end_epoch
+        source = self.data_loaders["train"]
+        gradient_norms = []
+        original_clip = torch.nn.utils.clip_grad_norm_
+
+        def recorded_clip(parameters, *args, **kwargs):
+            value = original_clip(parameters, *args, **kwargs)
+            gradient_norms.append(float(value.detach().cpu()))
+            return value
+
+        try:
+            torch.nn.utils.clip_grad_norm_ = recorded_clip
+            warmup_loader = _TimedLimitedLoader(source, warmup)
+            self.data_loaders["train"] = warmup_loader
+            self._train_epoch(start_epoch)
+            if self.device.type == "cuda":
+                torch.cuda.synchronize(self.device)
+                torch.cuda.reset_peak_memory_stats(self.device)
+            measured_loader = _TimedLimitedLoader(source, measured)
+            self.data_loaders["train"] = measured_loader
+            gradient_norms.clear()
+            started = time.perf_counter()
+            losses = self._train_epoch(start_epoch)
+            if self.device.type == "cuda":
+                torch.cuda.synchronize(self.device)
+            elapsed = time.perf_counter() - started
+            try:
+                import psutil
+                process = psutil.Process()
+                rss = process.memory_info().rss + sum(
+                    child.memory_info().rss for child in process.children())
+            except Exception:
+                rss = None
+            atomic_json({
+                "schema": "ebjd-sdd-gdts-runtime-benchmark-v2",
+                "input_pipeline_mode": input_pipeline_mode,
+                "warmup_updates": warmup,
+                "measured_updates": measured,
+                "elapsed_seconds": elapsed,
+                "seconds_per_update": elapsed / measured,
+                "data_wait_seconds": measured_loader.data_wait_seconds,
+                "data_wait_seconds_per_update": (
+                    measured_loader.data_wait_seconds / measured),
+                "non_data_seconds": elapsed - measured_loader.data_wait_seconds,
+                "losses": {name: float(value) for name, value in losses.items()},
+                "gradient_norms": gradient_norms,
+                "parameters": parameter_summary(self),
+                "peak_cuda_allocated_bytes": (
+                    int(torch.cuda.max_memory_allocated(self.device))
+                    if self.device.type == "cuda" else 0),
+                "peak_cuda_reserved_bytes": (
+                    int(torch.cuda.max_memory_reserved(self.device))
+                    if self.device.type == "cuda" else 0),
+                "process_tree_rss_bytes": rss,
+                "main_process_peak_rss_bytes": int(
+                    resource.getrusage(resource.RUSAGE_SELF).ru_maxrss * 1024),
+                "worker_processes_peak_rss_bytes": int(
+                    resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss *
+                    1024),
+            }, output)
+        finally:
+            torch.nn.utils.clip_grad_norm_ = original_clip
+            self.data_loaders["train"] = source
+
+    trainer._train_loop = benchmark_loop
 
 
 def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> list[str]:
@@ -372,12 +506,39 @@ def main() -> None:
     parser.add_argument("--runtime-root", required=True)
     parser.add_argument("--batch-cache-root", required=True)
     parser.add_argument("--goal-checkpoint")
+    parser.add_argument(
+        "--input-pipeline-mode",
+        choices=("legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE))
+    parser.add_argument("--runtime-benchmark-output")
+    parser.add_argument("--runtime-benchmark-checkpoint")
+    parser.add_argument("--runtime-benchmark-name")
+    parser.add_argument("--runtime-benchmark-warmup", type=int, default=10)
+    parser.add_argument("--runtime-benchmark-batches", type=int, default=100)
+    parser.add_argument(
+        "--runtime-benchmark-disable-augmentation", action="store_true")
     args = parser.parse_args()
     if args.stage in ("scene_cache", "scene_cache_independent"):
         torch.set_num_threads(2)
         torch.set_num_interop_threads(1)
         os.nice(10)
     recipe = yaml.safe_load(Path(args.recipe).read_text(encoding="utf-8"))
+    input_pipeline_mode = (
+        args.input_pipeline_mode or
+        str(recipe.get("gdts_baseline", {}).get(
+            "input_pipeline_mode", "legacy")))
+    if input_pipeline_mode not in {
+            "legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE}:
+        raise RuntimeError(
+            f"unsupported input pipeline mode: {input_pipeline_mode}")
+    if input_pipeline_mode != "legacy" and not args.runtime_benchmark_output:
+        raise RuntimeError(
+            "rejected SDD input-pipeline candidates are benchmark-only")
+    if args.runtime_benchmark_output and args.stage != "baseline":
+        raise RuntimeError("runtime benchmark is baseline-only")
+    if bool(args.runtime_benchmark_output) != bool(
+            args.runtime_benchmark_checkpoint):
+        raise RuntimeError(
+            "runtime benchmark output and checkpoint are both required")
     fold = str(recipe["fold"])
     output_key = (
         str(recipe.get("legacy_dataset"))
@@ -410,25 +571,69 @@ def main() -> None:
                 "nexus_2", verbose, load_visual_data=load_visual_data)
 
         Dataset_sdd.__init__ = exact_jmm_init
+    if args.stage == "baseline" and input_pipeline_mode != "legacy":
+        from src import batch_cache_io, data_loader
+        install_sdd_input_pipeline(
+            data_loader, batch_cache_io, mode=input_pipeline_mode)
+        print(
+            f"[SDD input pipeline] mode={input_pipeline_mode}",
+            flush=True,
+        )
     from src.models.goal_pretrain import goal_pretrainer
     from src.trainer import trainer
     patch_goal_pretrainer(goal_pretrainer)
+    first_epoch_receipt = (
+        Path(recipe["pipeline_root"]) /
+        "receipts/INPUT_PIPELINE_FIRST_FULL_EPOCH.json")
     patch_baseline_trainer(
-        trainer, recipe["gdts_baseline"]["early_stopping"])
+        trainer, recipe["gdts_baseline"]["early_stopping"],
+        input_pipeline_mode=input_pipeline_mode,
+        first_epoch_receipt=first_epoch_receipt)
+    if args.runtime_benchmark_output:
+        patch_runtime_benchmark(
+            trainer,
+            output=Path(args.runtime_benchmark_output).resolve(),
+            warmup=args.runtime_benchmark_warmup,
+            measured=args.runtime_benchmark_batches,
+            input_pipeline_mode=input_pipeline_mode)
     argv = fixed_arguments(recipe, args.stage, args.goal_checkpoint)
+    if args.runtime_benchmark_disable_augmentation:
+        index = argv.index("--data_augmentation")
+        argv[index + 1] = "False"
+    if args.runtime_benchmark_output:
+        benchmark_name = (
+            args.runtime_benchmark_name or
+            f"sdd_gdts_input_benchmark_{input_pipeline_mode}")
+        index = argv.index("--run_name")
+        argv[index + 1] = benchmark_name
     argv += ["--batch_cache_root", str(Path(args.batch_cache_root).resolve())]
     if args.stage == "goal":
         last = runtime / "output" / output_key / "runs" / recipe["goal_pretrain"]["run_name"] / "saved_models" / "goal_pretrain_last_model.pt"
         if last.is_file():
             argv += ["--load_checkpoint", "last"]
     elif args.stage == "baseline":
-        last = runtime / "output" / output_key / "runs" / recipe["gdts_baseline"]["run_name"] / "saved_models" / "last_model.pt"
+        run_name = (
+            args.runtime_benchmark_name or
+            f"sdd_gdts_input_benchmark_{input_pipeline_mode}"
+            if args.runtime_benchmark_output else
+            recipe["gdts_baseline"]["run_name"])
+        last = (
+            runtime / "output" / output_key / "runs" / run_name /
+            "saved_models/last_model.pt")
+        if args.runtime_benchmark_output:
+            source = Path(args.runtime_benchmark_checkpoint).resolve()
+            if not source.is_file():
+                raise FileNotFoundError(source)
+            last.parent.mkdir(parents=True, exist_ok=True)
+            if last.exists() or last.is_symlink():
+                last.unlink()
+            last.symlink_to(source)
         if last.is_file():
             argv += ["--load_checkpoint", "last"]
     sys.argv = [str(legacy / "main.py"), *argv]
     from main import main as legacy_main
     legacy_main()
-    if args.stage == "baseline":
+    if args.stage == "baseline" and not args.runtime_benchmark_output:
         section = recipe["gdts_baseline"]
         model_dir = (
             runtime / "output" / output_key / "runs" /

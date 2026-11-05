@@ -32,7 +32,9 @@ def atomic_json(path, value):
 class Pipeline:
     MINIMUM_STAGE_FREE_BYTES = 32 * 1024 ** 3
 
-    def __init__(self, root, commit):
+    def __init__(
+            self, root, commit, migration_reason=None,
+            migration_optimizer_updates=None):
         self.root, self.commit = Path(root).resolve(), commit
         self.runtime = self.root / "04_matched_gdts/runtime"
         self.cache = self.root / "04_matched_gdts/cache"
@@ -60,8 +62,10 @@ class Pipeline:
             if identity.get("source_commit") != self.commit:
                 identity.setdefault("execution_migrations",[]).append({
                     "from":identity.get("source_commit"), "to":self.commit,
-                    "reason":"stage-boundary resumable early-stopping handoff",
-                    "optimizer_updates_before_migration":0})
+                    "reason": migration_reason or
+                    "stage-boundary resumable execution handoff",
+                    "optimizer_updates_before_migration":
+                    migration_optimizer_updates})
                 identity["source_commit"]=self.commit
                 atomic_json(run_manifest,identity)
         for filename, schema in (("CONFIG_HASHES.json","ebjd-sdd-config-hashes-v1"),
@@ -215,7 +219,7 @@ class Pipeline:
         checkpoints={str(p):sha256(p) for p in (goal,base,self.root/"06_ebjd_training/best_jade.pt",self.root/"06_ebjd_training/last.pt") if p.exists()}; atomic_json(self.root/"CHECKPOINT_MANIFEST.json",checkpoints); self.state("COMPLETE","COMPLETE")
 
 def main():
-    parser=argparse.ArgumentParser(); parser.add_argument("--root",required=True); parser.add_argument("--source-commit",required=True); args=parser.parse_args()
+    parser=argparse.ArgumentParser(); parser.add_argument("--root",required=True); parser.add_argument("--source-commit",required=True); parser.add_argument("--migration-reason"); parser.add_argument("--migration-optimizer-updates",type=int); args=parser.parse_args()
     root=Path(args.root).resolve(); root.mkdir(parents=True,exist_ok=True)
     lock_path=root/"SUPERVISOR.lock"
     with lock_path.open("a+",encoding="utf-8") as lock:
@@ -224,5 +228,9 @@ def main():
         except BlockingIOError as error:
             raise RuntimeError("another SDD supervisor owns the pipeline lock") from error
         lock.seek(0); lock.truncate(); lock.write(f"{os.getpid()}\n"); lock.flush(); os.fsync(lock.fileno())
-        Pipeline(root,args.source_commit).execute()
+        Pipeline(
+            root, args.source_commit,
+            migration_reason=args.migration_reason,
+            migration_optimizer_updates=args.migration_optimizer_updates,
+        ).execute()
 if __name__=="__main__": main()

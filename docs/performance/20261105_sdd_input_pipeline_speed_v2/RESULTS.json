@@ -1,0 +1,35 @@
+{
+  "accepted_mode": "legacy",
+  "decision": "NO_ACCEPTED_SPEEDUP",
+  "last_complete_checkpoint": {
+    "epoch": 8,
+    "sha256": "6bbf73973b31822685fb2e7f4ba4c6927c95438394710162e8a3ede1622f5973"
+  },
+  "discarded_partial_epoch": {
+    "epoch": 9,
+    "updates": 1137,
+    "updates_per_epoch": 2544
+  },
+  "performance": {
+    "legacy_seconds_per_update": [1.0071484730299562, 1.010864978270256],
+    "prealloc_seconds_per_update": [1.0034216218200163, 0.8959589050299838],
+    "prealloc_paired_speedup": [1.0037141428178318, 1.1282492674554385],
+    "combined_seconds_per_update": [0.9862406310399819, 1.0146139211999252],
+    "combined_paired_speedup": [1.021199534202852, 0.996305054709642]
+  },
+  "correctness": {
+    "prealloc_total_loss_relative_difference": 4.425099730345825e-06,
+    "prealloc_gradient_norm_max_relative_difference": 0.00021523059726172487,
+    "combined_total_loss_relative_difference": 4.3436561770265764e-07,
+    "combined_gradient_norm_max_relative_difference": 7.326184126830899e-05,
+    "loss_threshold": 0.001,
+    "gradient_norm_threshold": 0.01,
+    "passed": true
+  },
+  "formal_runtime": {
+    "fp32": true,
+    "num_workers": 2,
+    "input_pipeline_mode": "legacy",
+    "patience_validations": 3
+  }
+}
