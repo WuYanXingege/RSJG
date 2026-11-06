@@ -28,6 +28,9 @@ from ebjd.early_stopping import RelativeEarlyStop
 from ebjd.legacy_sdd_input_pipeline import MODE as OPTIMIZED_INPUT_MODE
 from ebjd.legacy_sdd_input_pipeline import PREALLOC_MODE
 from ebjd.legacy_sdd_input_pipeline import install as install_sdd_input_pipeline
+from ebjd.compact_sdd_heatmap_pipeline import MODE as COMPACT_HEATMAP_MODE
+from ebjd.compact_sdd_heatmap_pipeline import install as install_compact_heatmaps
+from ebjd.compact_sdd_heatmap_pipeline import install_fixed_legacy_augmentation
 
 
 def rng_state(loader) -> dict:
@@ -336,6 +339,7 @@ class _TimedLimitedLoader:
         self.source = source
         self.count = int(count)
         self.data_wait_seconds = 0.0
+        self.batch_identities = []
 
     def __len__(self):
         return self.count
@@ -346,6 +350,22 @@ class _TimedLimitedLoader:
             started = time.perf_counter()
             value = next(iterator)
             self.data_wait_seconds += time.perf_counter() - started
+            try:
+                identity = value[1]
+                def integer_list(field):
+                    raw = identity[field]
+                    if torch.is_tensor(raw):
+                        return [int(v) for v in raw.reshape(-1).tolist()]
+                    return [
+                        int(v.item()) if torch.is_tensor(v) else int(v)
+                        for v in raw]
+                self.batch_identities.append({
+                    "scene_name": str(identity["scene_name"][0]),
+                    "starting_frames": integer_list("starting_frames"),
+                    "agent_ids": integer_list("agent_ids"),
+                })
+            except Exception:
+                self.batch_identities.append({"unavailable": True})
             yield value
 
 
@@ -411,6 +431,7 @@ def patch_runtime_benchmark(
                 "elapsed_seconds": elapsed,
                 "seconds_per_update": elapsed / measured,
                 "data_wait_seconds": measured_loader.data_wait_seconds,
+                "batch_identities": measured_loader.batch_identities,
                 "data_wait_seconds_per_update": (
                     measured_loader.data_wait_seconds / measured),
                 "non_data_seconds": elapsed - measured_loader.data_wait_seconds,
@@ -508,7 +529,9 @@ def main() -> None:
     parser.add_argument("--goal-checkpoint")
     parser.add_argument(
         "--input-pipeline-mode",
-        choices=("legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE))
+        choices=("legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE,
+                 COMPACT_HEATMAP_MODE))
+    parser.add_argument("--compact-cache-root")
     parser.add_argument("--runtime-benchmark-output")
     parser.add_argument("--runtime-benchmark-checkpoint")
     parser.add_argument("--runtime-benchmark-name")
@@ -516,21 +539,29 @@ def main() -> None:
     parser.add_argument("--runtime-benchmark-batches", type=int, default=100)
     parser.add_argument(
         "--runtime-benchmark-disable-augmentation", action="store_true")
+    parser.add_argument("--runtime-benchmark-fixed-augmentation-seed", type=int)
     args = parser.parse_args()
     if args.stage in ("scene_cache", "scene_cache_independent"):
         torch.set_num_threads(2)
         torch.set_num_interop_threads(1)
         os.nice(10)
     recipe = yaml.safe_load(Path(args.recipe).read_text(encoding="utf-8"))
+    if args.runtime_benchmark_fixed_augmentation_seed is not None:
+        if not args.runtime_benchmark_output:
+            raise RuntimeError("fixed augmentation is benchmark-only")
+        os.environ["EBJD_SDD_FIXED_AUGMENTATION_SEED"] = str(
+            args.runtime_benchmark_fixed_augmentation_seed)
     input_pipeline_mode = (
         args.input_pipeline_mode or
         str(recipe.get("gdts_baseline", {}).get(
             "input_pipeline_mode", "legacy")))
     if input_pipeline_mode not in {
-            "legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE}:
+            "legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE,
+            COMPACT_HEATMAP_MODE}:
         raise RuntimeError(
             f"unsupported input pipeline mode: {input_pipeline_mode}")
-    if input_pipeline_mode != "legacy" and not args.runtime_benchmark_output:
+    if (input_pipeline_mode not in {"legacy", COMPACT_HEATMAP_MODE}
+            and not args.runtime_benchmark_output):
         raise RuntimeError(
             "rejected SDD input-pipeline candidates are benchmark-only")
     if args.runtime_benchmark_output and args.stage != "baseline":
@@ -571,7 +602,8 @@ def main() -> None:
                 "nexus_2", verbose, load_visual_data=load_visual_data)
 
         Dataset_sdd.__init__ = exact_jmm_init
-    if args.stage == "baseline" and input_pipeline_mode != "legacy":
+    if (args.stage == "baseline" and input_pipeline_mode not in
+            {"legacy", COMPACT_HEATMAP_MODE}):
         from src import batch_cache_io, data_loader
         install_sdd_input_pipeline(
             data_loader, batch_cache_io, mode=input_pipeline_mode)
@@ -579,7 +611,24 @@ def main() -> None:
             f"[SDD input pipeline] mode={input_pipeline_mode}",
             flush=True,
         )
+    elif (args.stage == "baseline" and input_pipeline_mode == "legacy" and
+          args.runtime_benchmark_fixed_augmentation_seed is not None):
+        from src import data_loader
+        install_fixed_legacy_augmentation(data_loader)
     from src.models.goal_pretrain import goal_pretrainer
+    if args.stage == "baseline" and input_pipeline_mode == COMPACT_HEATMAP_MODE:
+        from src import data_loader
+        from src.models.model import GDTS
+        compact_root = Path(
+            args.compact_cache_root or
+            recipe["gdts_baseline"]["compact_cache_root"]).resolve()
+        receipt = compact_root / "COMPACT_CACHE_RECEIPT.json"
+        if not receipt.is_file():
+            raise RuntimeError(f"compact cache receipt missing: {receipt}")
+        install_compact_heatmaps(data_loader, GDTS, compact_root)
+        print(
+            f"[SDD input pipeline] mode={input_pipeline_mode} "
+            f"cache={compact_root}", flush=True)
     from src.trainer import trainer
     patch_goal_pretrainer(goal_pretrainer)
     first_epoch_receipt = (
