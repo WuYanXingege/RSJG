@@ -30,14 +30,28 @@ class SceneBatch:
     # stores metres internally and supplies px/m independently per scene.
     paper_metric_scale: torch.Tensor | None = None
 
-    def to(self, device: torch.device | str) -> "SceneBatch":
+    def to(
+        self, device: torch.device | str, *, non_blocking: bool = False,
+    ) -> "SceneBatch":
         return SceneBatch(
-            self.observed.to(device), self.future.to(device),
-            self.semantic_maps.to(device), self.valid.to(device), self.scene_ids,
+            self.observed.to(device, non_blocking=non_blocking),
+            self.future.to(device, non_blocking=non_blocking),
+            self.semantic_maps.to(device, non_blocking=non_blocking),
+            self.valid.to(device, non_blocking=non_blocking), self.scene_ids,
             self.agent_ids, self.frame_ids, self.timestamps,
             self.source_sequences, self.metadata,
             None if self.paper_metric_scale is None else
-            self.paper_metric_scale.to(device))
+            self.paper_metric_scale.to(device, non_blocking=non_blocking))
+
+    def pin_memory(self) -> "SceneBatch":
+        """Pin only tensor storage; identities and metadata remain shared."""
+        return SceneBatch(
+            self.observed.pin_memory(), self.future.pin_memory(),
+            self.semantic_maps.pin_memory(), self.valid.pin_memory(),
+            self.scene_ids, self.agent_ids, self.frame_ids, self.timestamps,
+            self.source_sequences, self.metadata,
+            None if self.paper_metric_scale is None else
+            self.paper_metric_scale.pin_memory())
 
     def slice_scenes(self, start: int, stop: int) -> "SceneBatch":
         """Slice only the scene dimension while retaining the original N padding."""
@@ -233,7 +247,9 @@ class SceneManifestDataset(Dataset):
 NPZSceneDataset = SceneManifestDataset
 
 
-def collate_scenes(samples: list[dict]) -> SceneBatch:
+def _collate_scenes(
+    samples: list[dict], *, preserve_map_storage_dtype: bool,
+) -> SceneBatch:
     if not samples:
         raise ValueError("cannot collate an empty batch")
     metadata = samples[0]["metadata"]
@@ -244,7 +260,11 @@ def collate_scenes(samples: list[dict]) -> SceneBatch:
         len(samples), *samples[0]["semantic_maps"].shape[1:])
     observed = torch.zeros(batch, maximum, 8, 2)
     future = torch.zeros(batch, maximum, 12, 2)
-    maps = torch.zeros(batch, maximum, channels, height, width)
+    map_dtype = (
+        samples[0]["semantic_maps"].dtype
+        if preserve_map_storage_dtype else torch.float32)
+    maps = torch.zeros(
+        batch, maximum, channels, height, width, dtype=map_dtype)
     valid = torch.zeros(batch, maximum, dtype=torch.bool)
     paper_metric_scale = torch.as_tensor([
         float(item.get("paper_metric_scale", 1.0)) for item in samples
@@ -267,6 +287,22 @@ def collate_scenes(samples: list[dict]) -> SceneBatch:
         [item["timestamps"] for item in samples],
         [item["source_sequence"] for item in samples], metadata,
         paper_metric_scale)
+
+
+def collate_scenes(samples: list[dict]) -> SceneBatch:
+    """Legacy collation: materialize semantic maps as CPU float32."""
+    return _collate_scenes(samples, preserve_map_storage_dtype=False)
+
+
+def collate_scenes_compact_maps(samples: list[dict]) -> SceneBatch:
+    """Keep categorical semantic maps uint8 until their first GPU operation.
+
+    Shards already store six-channel categorical crops as uint8.  Preserving
+    that representation avoids a four-fold expansion in DataLoader workers
+    and during host-to-device transfer.  The encoder still receives float maps
+    after the existing training augmentation, so model semantics are unchanged.
+    """
+    return _collate_scenes(samples, preserve_map_storage_dtype=True)
 
 
 class SyntheticSceneDataset(Dataset):
@@ -305,6 +341,89 @@ class SyntheticSceneDataset(Dataset):
         return self.items[index]
 
 
+@dataclass(frozen=True)
+class SceneRigidPlan:
+    """CPU-sampled scene transform shared by coordinates, maps and proposals."""
+
+    centers: torch.Tensor  # [B,2], deliberately computed on CPU once
+    rotations: torch.Tensor  # [B,2,2], forward row-vector transform
+
+    def to(self, device: torch.device | str) -> "SceneRigidPlan":
+        return SceneRigidPlan(
+            self.centers.to(device), self.rotations.to(device))
+
+
+def sample_scene_rigid_plan(
+    batch: SceneBatch, generator: torch.Generator | None = None,
+) -> SceneRigidPlan:
+    """Draw the legacy rotation/reflection without changing its RNG stream."""
+    if batch.observed.device.type != "cpu":
+        raise ValueError("formal scene augmentation plans must be sampled on CPU")
+    batch_size = int(batch.observed.shape[0])
+    angles = 2 * torch.pi * torch.rand(batch_size, generator=generator)
+    reflected = torch.rand(batch_size, generator=generator) < 0.5
+    centers = torch.stack([
+        batch.observed[scene, batch.valid[scene], -1].mean(0)
+        for scene in range(batch_size)
+    ])
+    rotations = []
+    for scene in range(batch_size):
+        cosine, sine = angles[scene].cos(), angles[scene].sin()
+        rotation = torch.stack((
+            torch.stack((cosine, -sine)),
+            torch.stack((sine, cosine)),
+        ))
+        if reflected[scene]:
+            rotation = rotation @ torch.diag(torch.tensor([-1.0, 1.0]))
+        rotations.append(rotation)
+    return SceneRigidPlan(centers=centers, rotations=torch.stack(rotations))
+
+
+def apply_scene_rigid_plan(
+    batch: SceneBatch, points: torch.Tensor, plan: SceneRigidPlan,
+) -> tuple[SceneBatch, torch.Tensor]:
+    """Apply one explicit plan on CPU or GPU without sampling randomness."""
+    batch_size = int(batch.observed.shape[0])
+    if points.shape[0] != batch_size or points.shape[-2:] != (
+        batch.observed.shape[1], 2,
+    ):
+        raise ValueError("points must have shape [B,...,N,2] with batch padding")
+    if plan.centers.shape != (batch_size, 2) or plan.rotations.shape != (
+        batch_size, 2, 2,
+    ):
+        raise ValueError("scene rigid plan has incompatible dimensions")
+    if points.device != batch.observed.device:
+        raise ValueError("points and scene batch must be on the same device")
+    device_plan = plan.to(batch.observed.device)
+    observed, future = batch.observed.clone(), batch.future.clone()
+    # Categorical crops remain compact uint8 through collation and transfer,
+    # then become float32 immediately before the same bilinear grid_sample.
+    maps = batch.semantic_maps.float().clone()
+    transformed_points = points.clone()
+    for scene in range(batch_size):
+        center = device_plan.centers[scene].to(observed)
+        rotation = device_plan.rotations[scene].to(observed)
+        observed[scene] = (observed[scene] - center) @ rotation.T + center
+        future[scene] = (future[scene] - center) @ rotation.T + center
+        transformed_points[scene] = (
+            transformed_points[scene] - center) @ rotation.T + center
+        inverse = rotation.T
+        theta = torch.zeros(
+            maps.shape[1], 2, 3, dtype=maps.dtype, device=maps.device)
+        theta[:, :, :2] = inverse.to(theta)
+        grid = F.affine_grid(theta, maps[scene].shape, align_corners=False)
+        maps[scene] = F.grid_sample(
+            maps[scene], grid, mode="bilinear", padding_mode="zeros",
+            align_corners=False)
+    augmented = SceneBatch(
+        observed, future, maps, batch.valid.clone(), list(batch.scene_ids),
+        batch.agent_ids, batch.frame_ids, batch.timestamps,
+        batch.source_sequences, batch.metadata,
+        None if batch.paper_metric_scale is None else
+        batch.paper_metric_scale.clone())
+    return augmented, transformed_points
+
+
 def augment_batch_with_points(
     batch: SceneBatch,
     points: torch.Tensor,
@@ -316,39 +435,28 @@ def augment_batch_with_points(
     sampled rigid transform is applied to observations, labels, map crops and
     external point conditions without drawing any additional randomness.
     """
-    batch_size = batch.observed.shape[0]
-    if points.shape[0] != batch_size or points.shape[-2:] != (
-        batch.observed.shape[1], 2,
-    ):
-        raise ValueError("points must have shape [B,...,N,2] with batch padding")
-    angles = 2 * torch.pi * torch.rand(batch_size, generator=generator)
-    reflected = torch.rand(batch_size, generator=generator) < 0.5
-    observed, future, maps = batch.observed.clone(), batch.future.clone(), batch.semantic_maps.clone()
-    transformed_points = points.clone()
-    for scene in range(batch_size):
-        center = observed[scene, batch.valid[scene], -1].mean(0)
-        cosine, sine = angles[scene].cos(), angles[scene].sin()
-        rotation = torch.stack((
-            torch.stack((cosine, -sine)), torch.stack((sine, cosine))))
-        if reflected[scene]:
-            rotation = rotation @ torch.diag(torch.tensor([-1.0, 1.0]))
-        observed[scene] = (observed[scene] - center) @ rotation.T + center
-        future[scene] = (future[scene] - center) @ rotation.T + center
-        transformed_points[scene] = (
-            transformed_points[scene] - center) @ rotation.T + center
-        inverse = rotation.T
-        theta = torch.zeros(maps.shape[1], 2, 3, dtype=maps.dtype)
-        theta[:, :, :2] = inverse
-        grid = F.affine_grid(theta, maps[scene].shape, align_corners=False)
-        maps[scene] = F.grid_sample(
-            maps[scene], grid, mode="bilinear", padding_mode="zeros", align_corners=False)
-    augmented = SceneBatch(
-        observed, future, maps, batch.valid.clone(), list(batch.scene_ids),
-        batch.agent_ids, batch.frame_ids, batch.timestamps,
-        batch.source_sequences, batch.metadata,
-        None if batch.paper_metric_scale is None else
-        batch.paper_metric_scale.clone())
-    return augmented, transformed_points
+    plan = sample_scene_rigid_plan(batch, generator)
+    return apply_scene_rigid_plan(batch, points, plan)
+
+
+def augment_batch_with_points_on_device(
+    batch: SceneBatch,
+    points: torch.Tensor,
+    device: torch.device | str,
+    generator: torch.Generator | None = None,
+    *,
+    non_blocking: bool = False,
+) -> tuple[SceneBatch, torch.Tensor]:
+    """Transfer compact inputs, then run the existing rigid augmentation.
+
+    Only raw-input preparation is under ``no_grad``.  MSCE, the coupling head,
+    GCJD and CTF are invoked later by the caller and retain their full graph.
+    """
+    plan = sample_scene_rigid_plan(batch, generator)
+    with torch.no_grad():
+        device_batch = batch.to(device, non_blocking=non_blocking)
+        device_points = points.to(device, non_blocking=non_blocking)
+        return apply_scene_rigid_plan(device_batch, device_points, plan)
 
 
 def augment_batch(batch: SceneBatch, generator: torch.Generator | None = None) -> SceneBatch:

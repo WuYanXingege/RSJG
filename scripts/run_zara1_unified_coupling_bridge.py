@@ -19,7 +19,9 @@ import numpy as np
 import torch
 
 from ebjd.config import build_model, load_config
-from ebjd.data import augment_batch_with_points
+from ebjd.data import (
+    augment_batch_with_points, augment_batch_with_points_on_device,
+)
 from ebjd.early_stopping import EligibleJADEEarlyStop, RelativeEarlyStop
 from ebjd.metrics import MetricAccumulator
 from ebjd.objectives import (
@@ -289,6 +291,8 @@ def main() -> None:
         "worlds": 20, "ddim_steps": 20, "temperature": 1.0,
         "sinkhorn_iterations": 20, "pair_weight": 1.0,
         "compact_scenes": bool(args.compact_scenes),
+        "ebjd_input_pipeline": str(config["training"].get(
+            "ebjd_input_pipeline", "legacy_cpu_rigid")),
     }
     atomic_json(output / "RUN_IDENTITY.json", identity)
     model = UnifiedCouplingBridge(bridge).to(device)
@@ -301,6 +305,12 @@ def main() -> None:
     early_stop = make_early_stop(early_contract)
     early_stop_restore = "fresh_run"
     train_provider = FrozenNativeGoalProvider(train_bank)
+    input_pipeline = str(config["training"].get(
+        "ebjd_input_pipeline", "legacy_cpu_rigid"))
+    if input_pipeline not in {
+        "legacy_cpu_rigid", "compact_uint8_gpu_rigid_v1",
+    }:
+        raise ValueError(f"unsupported EBJD input pipeline: {input_pipeline}")
     loader_generator = torch.Generator().manual_seed(args.training_seed)
     update = 0
     selection = {"best_jade": None, "best_eligible": None}
@@ -357,28 +367,42 @@ def main() -> None:
         train_started = time.perf_counter(); pending = 0
         for cpu_batch in loader(config, "train", loader_generator):
             raw_proposals = train_provider(cpu_batch)
-            cpu_batch, proposals = augment_batch_with_points(
-                cpu_batch, raw_proposals, loader_generator)
-            logical_batch = int(cpu_batch.observed.shape[0])
-            total_agents = int(cpu_batch.valid.sum())
+            if input_pipeline == "compact_uint8_gpu_rigid_v1":
+                prepared_batch, proposals = augment_batch_with_points_on_device(
+                    cpu_batch, raw_proposals, device, loader_generator,
+                    non_blocking=True)
+                prepared_on_device = True
+            else:
+                prepared_batch, proposals = augment_batch_with_points(
+                    cpu_batch, raw_proposals, loader_generator)
+                prepared_on_device = False
+            logical_batch = int(prepared_batch.observed.shape[0])
+            total_agents = int(prepared_batch.valid.sum())
             logical_time = torch.randint(
                 1, 101, (logical_batch,), device=device).float() / 100
             logical_noise = torch.randn(
-                logical_batch, 1, cpu_batch.observed.shape[1], 12, 2,
+                logical_batch, 1, prepared_batch.observed.shape[1], 12, 2,
                 dtype=torch.float32, device=device)
             logical_total = logical_pair = logical_bridge = 0.0
             groups = (range(logical_batch) if args.compact_scenes else [None])
             for scene in groups:
                 if scene is None:
-                    batch = cpu_batch.to(device)
-                    physical_proposals = proposals.to(device)
+                    batch = (prepared_batch if prepared_on_device else
+                             prepared_batch.to(device))
+                    physical_proposals = (
+                        proposals if prepared_on_device else proposals.to(device))
                     time_draw, noise = logical_time, logical_noise
                     agent_weight = scene_weight = 1.0
                 else:
-                    positions = cpu_batch.valid[scene].nonzero(
+                    positions = prepared_batch.valid[scene].nonzero(
                         as_tuple=False).flatten()
-                    batch = cpu_batch.compact_scenes(scene, scene + 1).to(device)
-                    physical_proposals = proposals[scene:scene + 1, :, positions].to(device)
+                    batch = prepared_batch.compact_scenes(scene, scene + 1)
+                    if not prepared_on_device:
+                        batch = batch.to(device)
+                    physical_proposals = proposals[
+                        scene:scene + 1, :, positions.to(proposals.device)]
+                    if not prepared_on_device:
+                        physical_proposals = physical_proposals.to(device)
                     time_draw = logical_time[scene:scene + 1]
                     noise = logical_noise[
                         scene:scene + 1, :, positions.to(device)]

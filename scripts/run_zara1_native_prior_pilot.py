@@ -23,6 +23,7 @@ from torch.utils.data import DataLoader
 from ebjd.config import build_model, load_config, trainer_options
 from ebjd.data import (
     SceneManifestDataset, augment_batch_with_points, collate_scenes,
+    collate_scenes_compact_maps,
 )
 from ebjd.metrics import MetricAccumulator
 from ebjd.proposals import NativeProposalBank
@@ -62,6 +63,11 @@ def seed_all(seed: int) -> None:
 def loader(config: dict, split: str, generator: torch.Generator) -> DataLoader:
     dataset = SceneManifestDataset(config["paths"][f"{split}_manifest"])
     workers = int(config["training"].get("data_loader_workers", 0))
+    input_pipeline = str(config["training"].get(
+        "ebjd_input_pipeline", "legacy_cpu_rigid"))
+    if input_pipeline not in {"legacy_cpu_rigid", "compact_uint8_gpu_rigid_v1"}:
+        raise ValueError(f"unsupported EBJD input pipeline: {input_pipeline}")
+    compact_maps = input_pipeline == "compact_uint8_gpu_rigid_v1"
     arguments = dict(
         dataset=dataset,
         # The frozen endpoint attribution used one complete scene per
@@ -69,8 +75,10 @@ def loader(config: dict, split: str, generator: torch.Generator) -> DataLoader:
         # training retains the formal four-scene logical microbatch.
         batch_size=(int(config["training"]["batch_scenes"])
                     if split == "train" else 1),
-        shuffle=split == "train", collate_fn=collate_scenes,
-        num_workers=workers, generator=generator)
+        shuffle=split == "train",
+        collate_fn=(collate_scenes_compact_maps if compact_maps else collate_scenes),
+        num_workers=workers, generator=generator,
+        pin_memory=compact_maps and torch.cuda.is_available())
     if workers:
         arguments.update(
             prefetch_factor=int(config["training"].get(

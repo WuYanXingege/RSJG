@@ -5,8 +5,9 @@ import torch
 from ebjd.encoders import EBJDContext
 from ebjd.model import EBJDModel
 from ebjd.data import (
-    SceneBatch, augment_batch, augment_batch_with_gt_endpoint_condition,
-    augment_batch_with_points,
+    SceneBatch, apply_scene_rigid_plan, augment_batch,
+    augment_batch_with_gt_endpoint_condition, augment_batch_with_points,
+    collate_scenes, collate_scenes_compact_maps, sample_scene_rigid_plan,
 )
 from ebjd.proposals import NativeProposalBank
 from ebjd.representation import EndpointBridgeDecomposition
@@ -120,6 +121,36 @@ def test_joint_augmentation_preserves_legacy_and_point_offsets():
     transformed_distance = torch.linalg.vector_norm(
         transformed[:, 0] - paired.observed[:, :, -1, :], dim=-1)
     torch.testing.assert_close(original_distance, transformed_distance)
+
+
+def test_compact_map_collation_and_explicit_plan_preserve_training_values():
+    sample = {
+        "observed": torch.randn(2, 8, 2),
+        "future": torch.randn(2, 12, 2),
+        "semantic_maps": torch.randint(0, 2, (2, 6, 8, 8), dtype=torch.uint8),
+        "scene_id": "s", "agent_ids": ["1", "2"],
+        "frame_ids": list(range(20)),
+        "timestamps": [0.4 * i for i in range(20)],
+        "source_sequence": "x", "metadata": {},
+        "paper_metric_scale": 1.0,
+    }
+    # Make the categorical channels valid one-hot labels.
+    sample["semantic_maps"][:, 1:] = 0
+    legacy = collate_scenes([sample])
+    compact = collate_scenes_compact_maps([sample])
+    assert legacy.semantic_maps.dtype == torch.float32
+    assert compact.semantic_maps.dtype == torch.uint8
+    torch.testing.assert_close(legacy.semantic_maps, compact.semantic_maps.float())
+
+    points = legacy.observed[:, None, :, -1] + 0.25
+    plan = sample_scene_rigid_plan(
+        legacy, torch.Generator().manual_seed(109))
+    legacy_aug, legacy_points = apply_scene_rigid_plan(legacy, points, plan)
+    compact_aug, compact_points = apply_scene_rigid_plan(compact, points, plan)
+    torch.testing.assert_close(compact_aug.observed, legacy_aug.observed)
+    torch.testing.assert_close(compact_aug.future, legacy_aug.future)
+    torch.testing.assert_close(compact_aug.semantic_maps, legacy_aug.semantic_maps)
+    torch.testing.assert_close(compact_points, legacy_points)
 
 
 def test_gt_condition_roundtrip_matches_original_bridge_and_zeroes_padding():
