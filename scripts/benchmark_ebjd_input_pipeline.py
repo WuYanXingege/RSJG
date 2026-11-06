@@ -101,8 +101,10 @@ def prepare_batch(
         augmented, proposals = apply_scene_rigid_plan(cpu_batch, proposals, plan)
         return augmented.to(device), proposals.to(device)
     if mode == "compact_uint8_gpu_rigid_v1":
-        compact = compact_map_batch(cpu_batch).to(device)
-        proposals = proposals.to(device)
+        compact_cpu = compact_map_batch(cpu_batch)
+        non_blocking = bool(compact_cpu.semantic_maps.is_pinned())
+        compact = compact_cpu.to(device, non_blocking=non_blocking)
+        proposals = proposals.to(device, non_blocking=non_blocking)
         with torch.no_grad():
             return apply_scene_rigid_plan(compact, proposals, plan)
     raise ValueError(mode)
@@ -360,6 +362,8 @@ def performance_run(
     logical_target = (warmup_updates + measured_updates) * accumulation
     data_wait = input_prepare = 0.0
     measured_losses = []
+    measured_scenes = measured_agents = measured_slots = 0
+    measured_host_map_bytes = 0
     measured_started = None
     torch.cuda.reset_peak_memory_stats(device)
     rss_before = process_rss_mib()
@@ -387,6 +391,12 @@ def performance_run(
         value, _ = logical_backward(model, batch, proposals, local, device)
         if update_index >= warmup_updates:
             measured_losses.append(value)
+            measured_scenes += int(batch.observed.shape[0])
+            measured_agents += int(batch.valid.sum())
+            measured_slots += int(batch.valid.numel())
+            measured_host_map_bytes += int(
+                cpu_batch.semantic_maps.numel()
+                * cpu_batch.semantic_maps.element_size())
         if (logical_index + 1) % accumulation == 0:
             optimizer_update(model, optimizer)
     torch.cuda.synchronize(device)
@@ -401,6 +411,17 @@ def performance_run(
         "peak_reserved_mib": torch.cuda.max_memory_reserved(device) / 2**20,
         "rss_before_mib": rss_before, "rss_peak_mib": process_rss_mib(),
         "mean_logical_loss": statistics.fmean(measured_losses),
+        "measured_scenes": measured_scenes,
+        "measured_valid_agents": measured_agents,
+        "measured_padding_slots": measured_slots - measured_agents,
+        "mean_valid_agents_per_logical_batch": (
+            measured_agents / len(measured_losses)),
+        "mean_padding_slots_per_logical_batch": (
+            (measured_slots - measured_agents) / len(measured_losses)),
+        "mean_host_map_bytes_per_logical_batch": (
+            measured_host_map_bytes / len(measured_losses)),
+        "map_height": int(cpu_batch.semantic_maps.shape[-2]),
+        "map_width": int(cpu_batch.semantic_maps.shape[-1]),
     }
     del iterator, train_loader, model, optimizer
     torch.cuda.empty_cache()
@@ -428,9 +449,30 @@ def profile_one_batch(
         wait = time.perf_counter() - started
         proposals = provider(cpu_batch)
         plan = sample_scene_rigid_plan(cpu_batch, generator)
-        torch.cuda.synchronize(device); started = time.perf_counter()
-        batch, proposals = prepare_batch(cpu_batch, proposals, plan, mode, device)
-        torch.cuda.synchronize(device); prep = time.perf_counter() - started
+        cpu_augment = transfer = gpu_augment = 0.0
+        if mode == "legacy_cpu_rigid":
+            started = time.perf_counter()
+            prepared_cpu, prepared_proposals = apply_scene_rigid_plan(
+                cpu_batch, proposals, plan)
+            cpu_augment = time.perf_counter() - started
+            torch.cuda.synchronize(device); started = time.perf_counter()
+            batch = prepared_cpu.to(device)
+            proposals = prepared_proposals.to(device)
+            torch.cuda.synchronize(device); transfer = time.perf_counter() - started
+        else:
+            compact_cpu = compact_map_batch(cpu_batch)
+            non_blocking = bool(compact_cpu.semantic_maps.is_pinned())
+            torch.cuda.synchronize(device); started = time.perf_counter()
+            compact = compact_cpu.to(device, non_blocking=non_blocking)
+            proposals = proposals.to(device, non_blocking=non_blocking)
+            torch.cuda.synchronize(device); transfer = time.perf_counter() - started
+            torch.cuda.synchronize(device); started = time.perf_counter()
+            with torch.no_grad():
+                batch, proposals = apply_scene_rigid_plan(
+                    compact, proposals, plan)
+            torch.cuda.synchronize(device)
+            gpu_augment = time.perf_counter() - started
+        prep = cpu_augment + transfer + gpu_augment
         value, components = timed_logical_backward(
             model, batch, proposals, local, device)
         optimizer_seconds = 0.0
@@ -442,6 +484,9 @@ def profile_one_batch(
         rows.append({
             "data_wait_seconds": wait,
             "augment_transfer_seconds": prep,
+            "cpu_augment_seconds": cpu_augment,
+            "cpu_to_gpu_transfer_seconds": transfer,
+            "gpu_augment_seconds": gpu_augment,
             **{name + "_seconds": value for name, value in components.items()},
             "optimizer_seconds": optimizer_seconds,
             "agents": int(batch.valid.sum()),
@@ -515,8 +560,13 @@ def main() -> None:
         config = load_config(case["config"])
         bank = build_bank(config, case["train_bank"])
         accumulation = int(config["training"]["gradient_accumulation"])
+        correctness_updates = int(case.get(
+            "correctness_updates", args.correctness_updates))
+        measured_updates = int(case.get(
+            "measured_updates", args.measured_updates))
+        repeats = int(case.get("repeats", args.repeats))
         batches = fixed_batches(
-            config, args.correctness_updates * accumulation,
+            config, correctness_updates * accumulation,
             7100 + case_index)
         correctness_runs = {
             "legacy_a": correctness_run(
@@ -534,12 +584,12 @@ def main() -> None:
             config, case["checkpoint"], bank, mode, device,
             9100 + case_index) for mode in MODES]
         performance = []
-        for repeat in range(args.repeats):
+        for repeat in range(repeats):
             for mode in MODES:
                 performance.append(performance_run(
                     config, case["checkpoint"], bank, mode, device,
                     10100 + case_index * 100 + repeat,
-                    args.warmup_updates, args.measured_updates))
+                    args.warmup_updates, measured_updates))
         legacy = [row["seconds_per_update"] for row in performance
                   if row["mode"] == "legacy_cpu_rigid"]
         candidate = [row["seconds_per_update"] for row in performance

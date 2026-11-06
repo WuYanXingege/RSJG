@@ -14,6 +14,25 @@ def mean(rows, key):
     return statistics.fmean(float(row[key]) for row in rows)
 
 
+def recommendation(case):
+    correctness = case["correctness"]
+    baseline = float(correctness["legacy_repeat_loss"]["max_relative"])
+    candidate = float(correctness["candidate_vs_legacy_loss"]["max_relative"])
+    numerical_limit = max(1e-3, 3.0 * baseline + 1e-6)
+    correct = (
+        bool(correctness["finite"])
+        and bool(correctness["all_required_gradients_present"])
+        and candidate <= numerical_limit)
+    speedups = [float(value) for value in case["paired_speedups"]]
+    speed_ok = bool(speedups) and min(speedups) >= 1.03
+    return {
+        "runtime": ("compact_uint8_gpu_rigid_v1" if correct and speed_ok
+                    else "legacy_cpu_rigid"),
+        "correct": correct, "speed_ok": speed_ok,
+        "numerical_limit": numerical_limit,
+    }
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--results", required=True)
@@ -29,8 +48,10 @@ def main() -> None:
     rows = []
     all_correct = True
     all_speedups = []
+    recommendations = {}
     for case in results["cases"]:
         correctness = case["correctness"]
+        recommendations[case["name"]] = recommendation(case)
         all_correct &= bool(correctness["finite"])
         all_correct &= bool(correctness["all_required_gradients_present"])
         for repeat, (legacy, candidate) in enumerate(zip(
@@ -53,12 +74,22 @@ def main() -> None:
                 "candidate_peak_allocated_mib": candidate["peak_allocated_mib"],
                 "legacy_rss_peak_mib": legacy["rss_peak_mib"],
                 "candidate_rss_peak_mib": candidate["rss_peak_mib"],
+                "runtime_recommendation": recommendations[case["name"]]["runtime"],
+                "mean_valid_agents_per_logical_batch": candidate[
+                    "mean_valid_agents_per_logical_batch"],
+                "mean_padding_slots_per_logical_batch": candidate[
+                    "mean_padding_slots_per_logical_batch"],
+                "map_height": candidate["map_height"],
+                "map_width": candidate["map_width"],
+                "legacy_host_map_bytes_per_batch": legacy[
+                    "mean_host_map_bytes_per_logical_batch"],
+                "candidate_host_map_bytes_per_batch": candidate[
+                    "mean_host_map_bytes_per_logical_batch"],
             })
-    accepted = (
-        all_correct and all(speedup >= 1.03 for speedup in all_speedups))
-    conclusion = (
-        "经适配后有稳定收益" if accepted else
-        "输入侧候选未满足跨场景稳定采用门槛")
+    accepted_count = sum(
+        item["runtime"] == "compact_uint8_gpu_rigid_v1"
+        for item in recommendations.values())
+    conclusion = f"{accepted_count}/{len(recommendations)} 个输入推荐紧凑 GPU 路径"
 
     with (output / "RESULTS.csv").open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]))
@@ -88,8 +119,8 @@ def main() -> None:
         "",
         "## 真实 optimizer update 性能",
         "",
-        "|输入|重复|旧路径 s/update|候选 s/update|提速|旧/新等待 s/update|旧/新显存 MiB|",
-        "|---|---:|---:|---:|---:|---:|---:|",
+        "|输入|重复|旧路径 s/update|候选 s/update|提速|旧/新等待 s/update|旧/新显存 MiB|选择|",
+        "|---|---:|---:|---:|---:|---:|---:|---|",
     ]
     for row in rows:
         lines.append(
@@ -100,10 +131,11 @@ def main() -> None:
             f"{row['legacy_data_wait_s_per_update']:.6f}/"
             f"{row['candidate_data_wait_s_per_update']:.6f}|"
             f"{row['legacy_peak_allocated_mib']:.1f}/"
-            f"{row['candidate_peak_allocated_mib']:.1f}|")
+            f"{row['candidate_peak_allocated_mib']:.1f}|"
+            f"{row['runtime_recommendation']}|")
     lines.extend([
         "",
-        f"两折两次配对平均提速：**{statistics.fmean(all_speedups):.3f}×**；"
+        f"全部输入配对平均提速：**{statistics.fmean(all_speedups):.3f}×**；"
         f"最小配对提速：**{min(all_speedups):.3f}×**。",
         "",
         "这些数字包含真实 DataLoader、增强、传输、完整 forward/loss/backward、"
@@ -114,6 +146,9 @@ def main() -> None:
     ])
     for case in results["cases"]:
         c = case["correctness"]
+        selected = recommendations[case["name"]]
+        candidate_rows = [row for row in case["performance"]
+                          if row["mode"] == "compact_uint8_gpu_rigid_v1"]
         lines.extend([
             f"### {case['name']}", "",
             f"- 参数有限：{c['finite']}；MSCE/U-Net、coupling、GCJD/CTF 梯度均存在："
@@ -126,6 +161,14 @@ def main() -> None:
             f"{c['candidate_vs_legacy_parameter_relative_l2']['goal_unet']:.3e}。",
             f"- candidate 对 legacy 全模型参数相对 L2："
             f"{c['candidate_vs_legacy_parameter_relative_l2']['trajectory_and_coupling']:.3e}。",
+            f"- 实测 logical batch：平均有效行人 "
+            f"{mean(candidate_rows, 'mean_valid_agents_per_logical_batch'):.2f}，"
+            f"平均 padding 槽位 "
+            f"{mean(candidate_rows, 'mean_padding_slots_per_logical_batch'):.2f}，"
+            f"地图 {int(candidate_rows[0]['map_height'])}×"
+            f"{int(candidate_rows[0]['map_width'])}。",
+            f"- 决策：`{selected['runtime']}`（correct={selected['correct']}，"
+            f"speed_pass={selected['speed_ok']}）。",
             "",
         ])
     lines.extend([
@@ -136,9 +179,8 @@ def main() -> None:
         "- 20 worlds/20 DDIM steps 仅属于正式推理，不在 rollout-OFF 训练更新计时中。",
         "",
         "## 固定结论", "",
-        ("候选可作为后续统一 EBJD 的可选执行配置 `compact_uint8_gpu_rigid_v1`；"
-         "方法、损失、增强分布和 checkpoint 键空间不变。" if accepted else
-         "保留 `legacy_cpu_rigid` 为正式默认；输入侧不是值得继续扩展的主要提速方向。"),
+        "各折按上表独立选择执行路径；方法、损失、增强分布和 checkpoint 键空间不变。",
+        f"SDD 正式选择：`{recommendations.get('sdd_jmm', {}).get('runtime', '未评测')}`。",
         "",
         f"代码提交：`{results['source_commit']}`。",
     ])

@@ -12,6 +12,10 @@ PYTHON = Path("/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsj
 RECIPE = PAPER / "configs/asset_preparation/sdd_jmm_gdts.yaml"
 BASE_CONFIG = PAPER / "configs/resolved/zara1.json"
 SEEDS = tuple(range(2035, 2040))
+INPUT_ACCEPTANCE = Path(
+    "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/"
+    "RSJG_EBJD_assets/experiments/"
+    "ebjd_input_pipeline_applicability_20261106_221435")
 
 def sha256(path):
     digest = hashlib.sha256()
@@ -213,8 +217,151 @@ class Pipeline:
         config["training"].update({"epochs":30,"rollout_training_enabled":False,"paired_marginal_actual_step_projection_enabled":False,"early_stopping":recipe["ebjd_training"]["early_stopping"]}); atomic_json(target,config)
         atomic_json(self.root/"CONFIG_HASHES.json",{"resolved_config":str(target),"resolved_config_sha256":sha256(target),"recipe":str(RECIPE),"recipe_sha256":sha256(RECIPE),"source_commit":self.commit}); return target
 
+    @staticmethod
+    def _runtime_recommendation(case):
+        correctness=case["correctness"]
+        baseline=float(correctness["legacy_repeat_loss"]["max_relative"])
+        candidate=float(correctness["candidate_vs_legacy_loss"]["max_relative"])
+        numerical_limit=max(1e-3,3.0*baseline+1e-6)
+        correct=(bool(correctness["finite"]) and
+                 bool(correctness["all_required_gradients_present"]) and
+                 candidate <= numerical_limit)
+        speedups=[float(value) for value in case["paired_speedups"]]
+        speed_ok=bool(speedups) and min(speedups) >= 1.03
+        return {
+            "runtime": ("compact_uint8_gpu_rigid_v1" if correct and speed_ok
+                        else "legacy_cpu_rigid"),
+            "correctness_pass":correct,
+            "candidate_loss_max_relative":candidate,
+            "calibrated_loss_limit":numerical_limit,
+            "paired_speedups":speedups,
+            "mean_speedup":sum(speedups)/len(speedups),
+            "speed_pass":speed_ok,
+        }
+
+    def input_pipeline_acceptance(self, config, train_bank):
+        INPUT_ACCEPTANCE.mkdir(parents=True,exist_ok=True)
+        experiment=Path(
+            "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/"
+            "RSJG/RSJG_EBJD_assets/experiments")
+        cases=[
+            {
+                "name":"eth", "correctness_updates":8,
+                "measured_updates":16, "repeats":2,
+                "config":str(experiment/"eth_unified_coupling_bridge_v1_20261030_104912/configs/RESOLVED_ETH_UNIFIED.json"),
+                "checkpoint":str(experiment/"eth_unified_coupling_bridge_v1_20261030_104912/training/best_jade.pt"),
+                "train_bank":str(experiment/"eth_unified_coupling_bridge_v1_20261030_104912/proposal_banks/native_train/gdts_proposal_train_manifest_seed3101.npz"),
+            },
+            {
+                "name":"hotel", "correctness_updates":8,
+                "measured_updates":32, "repeats":2,
+                "config":str(experiment/"hotel_unified_coupling_bridge_v1_20261030_211601/configs/RESOLVED_HOTEL_UNIFIED.json"),
+                "checkpoint":str(experiment/"hotel_unified_coupling_bridge_v1_20261030_211601/training/best_jade.pt"),
+                "train_bank":str(experiment/"hotel_unified_coupling_bridge_v1_20261030_211601/proposal_banks/native_train/gdts_proposal_train_manifest_seed3101.npz"),
+            },
+            {
+                "name":"univ", "correctness_updates":8,
+                "measured_updates":32, "repeats":2,
+                "config":str(experiment/"univ_unified_coupling_bridge_v1_20261031_111541/configs/RESOLVED_UNIV_UNIFIED.json"),
+                "checkpoint":str(experiment/"univ_unified_coupling_bridge_v1_20261031_111541/training/best_jade.pt"),
+                "train_bank":str(experiment/"univ_unified_coupling_bridge_v1_20261031_111541/proposal_banks/native_train/gdts_proposal_train_manifest_seed3101.npz"),
+            },
+            {
+                "name":"zara1", "correctness_updates":8,
+                "measured_updates":16, "repeats":2,
+                "config":str(experiment/"zara1_unified_coupling_bridge_v1_20261028_214026/configs/model_config.json"),
+                "checkpoint":str(experiment/"zara1_unified_coupling_bridge_v1_20261028_214026/training/best_jade.pt"),
+                "train_bank":str(experiment/"zara1_unified_coupling_bridge_v1_20261028_214026/proposal_banks/train_seed3101.npz"),
+            },
+            {
+                "name":"zara2", "correctness_updates":8,
+                "measured_updates":16, "repeats":2,
+                "config":str(experiment/"zara2_unified_coupling_bridge_v1_20261029_094715/configs/RESOLVED_ZARA2_UNIFIED.json"),
+                "checkpoint":str(experiment/"zara2_unified_coupling_bridge_v1_20261029_094715/training/best_jade.pt"),
+                "train_bank":str(experiment/"zara2_unified_coupling_bridge_v1_20261029_094715/proposal_banks/native_train/gdts_proposal_train_seed3101.npz"),
+            },
+            {
+                "name":"sdd_jmm", "correctness_updates":8,
+                "measured_updates":16, "repeats":2,
+                "config":str(config),
+                # Benchmark-only same-architecture state.  It never becomes a
+                # formal SDD initialization or selector candidate.
+                "checkpoint":str(experiment/"zara1_unified_coupling_bridge_v1_20261028_214026/training/best_jade.pt"),
+                "train_bank":str(train_bank),
+                "checkpoint_role":"benchmark_only_same_architecture_state",
+            },
+        ]
+        for case in cases:
+            for key in ("config","checkpoint","train_bank"):
+                if not Path(case[key]).exists():
+                    raise RuntimeError(
+                        f"input acceptance asset absent: {case['name']} {key}")
+        spec=INPUT_ACCEPTANCE/"BENCHMARK_SPEC.json"
+        atomic_json(spec,{"schema":"ebjd-input-pipeline-benchmark-spec-v2",
+                          "source_commit":self.commit,"cases":cases})
+        results=INPUT_ACCEPTANCE/"BENCHMARK_RESULTS.json"
+        fallback_reason=None
+        if not results.exists():
+            try:
+                self.run("EBJD_INPUT_PIPELINE_ACCEPTANCE",[
+                    str(PYTHON),"-u","scripts/benchmark_ebjd_input_pipeline.py",
+                    "--spec",str(spec),"--output",str(INPUT_ACCEPTANCE),
+                    "--correctness-updates","8","--warmup-updates","4",
+                    "--measured-updates","16","--repeats","2"])
+            except BaseException as error:
+                fallback_reason=f"{type(error).__name__}: {error}"
+        recommendations={}
+        if results.exists():
+            payload=json.loads(results.read_text(encoding="utf-8"))
+            if payload.get("status") != "COMPLETE":
+                fallback_reason="benchmark receipt is not COMPLETE"
+            else:
+                recommendations={case["name"]:self._runtime_recommendation(case)
+                                 for case in payload["cases"]}
+        if not recommendations:
+            recommendations={case["name"]:{
+                "runtime":"legacy_cpu_rigid","correctness_pass":False,
+                "speed_pass":False,"fallback_reason":fallback_reason,
+            } for case in cases}
+        selected=recommendations["sdd_jmm"]["runtime"]
+        resolved=json.loads(Path(config).read_text(encoding="utf-8"))
+        resolved["training"]["ebjd_input_pipeline"]=selected
+        resolved["training"]["ebjd_input_pipeline_receipt"]=str(
+            self.root/"receipts/EBJD_INPUT_PIPELINE_ACCEPTANCE.json")
+        atomic_json(config,resolved)
+        receipt={
+            "schema":"ebjd-input-pipeline-acceptance-v1",
+            "source_commit":self.commit,"benchmark_results":str(results),
+            "recommendations":recommendations,
+            "sdd_selected_runtime":selected,
+            "fallback_reason":fallback_reason,
+            "formal_checkpoint_or_optimizer_modified":False,
+        }
+        atomic_json(
+            self.root/"receipts/EBJD_INPUT_PIPELINE_ACCEPTANCE.json",receipt)
+        atomic_json(self.root/"CONFIG_HASHES.json",{
+            "resolved_config":str(config),
+            "resolved_config_sha256":sha256(config),
+            "recipe":str(RECIPE),"recipe_sha256":sha256(RECIPE),
+            "source_commit":self.commit,
+            "ebjd_input_pipeline":selected,
+            "acceptance_receipt_sha256":sha256(
+                self.root/"receipts/EBJD_INPUT_PIPELINE_ACCEPTANCE.json")})
+        if results.exists():
+            report_dir=INPUT_ACCEPTANCE/"reports/fivefold_acceptance"
+            subprocess.run([
+                str(PYTHON),"scripts/report_ebjd_input_pipeline.py",
+                "--results",str(results),"--audit",
+                str(INPUT_ACCEPTANCE/"DATA_PATH_AUDIT.json"),
+                "--output-dir",str(report_dir)],cwd=PAPER,check=True)
+        self.state(
+            "EBJD_INPUT_PIPELINE_ACCEPTANCE","COMPLETE",
+            selected_runtime=selected,receipt=str(
+                self.root/"receipts/EBJD_INPUT_PIPELINE_ACCEPTANCE.json"))
+        return config
+
     def execute(self):
-        self.state("VERIFY_DATA","RUNNING"); self.verify(); self.wait_gpu(); self.caches(); goal,base=self.gdts(); bank,pattern,digest,result=self.assets(base); config=self.config(goal,base,digest,result)
+        self.state("VERIFY_DATA","RUNNING"); self.verify(); self.wait_gpu(); self.caches(); goal,base=self.gdts(); bank,pattern,digest,result=self.assets(base); config=self.config(goal,base,digest,result); config=self.input_pipeline_acceptance(config,bank)
         if not (self.root/"06_ebjd_training/FINAL_EVALUATION.json").exists(): self.run("EBJD_UNIFIED_TRAIN_EVAL",[str(PYTHON),"-u","scripts/run_zara1_unified_coupling_bridge.py","--config",str(config),"--fold","sdd_trajnet_jmm","--compact-scenes","--train-bank",str(bank),"--validation-bank-pattern",pattern,"--output",str(self.root/"06_ebjd_training"),"--source-commit",self.commit,"--training-seed","3101","--provider-seed","3101","--max-gpu-seconds","604800","--final-reserve-seconds","14400","--resume"])
         checkpoints={str(p):sha256(p) for p in (goal,base,self.root/"06_ebjd_training/best_jade.pt",self.root/"06_ebjd_training/last.pt") if p.exists()}; atomic_json(self.root/"CHECKPOINT_MANIFEST.json",checkpoints); self.state("COMPLETE","COMPLETE")
 
