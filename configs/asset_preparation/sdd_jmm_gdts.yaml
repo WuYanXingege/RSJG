@@ -27,7 +27,7 @@ goal_pretrain:
   selection: minimum_validation_goal_BCE_strict_earlier_tie
 gdts_baseline:
   run_name: sdd_jmm_matched_gdts_seed3101_v1
-  input_pipeline_mode: compact_gpu_heatmaps_v1
+  input_pipeline_mode: compact_gpu_heatmaps_v2_affine
   # Revalidated after compact-cache adoption; four workers reduce blocking
   # while preserving the legacy worker RNG lifecycle (no persistent workers).
   data_loader_workers: 4

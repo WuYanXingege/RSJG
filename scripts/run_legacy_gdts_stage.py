@@ -15,6 +15,7 @@ import json
 import os
 import random
 import resource
+import shutil
 import sys
 import tempfile
 import time
@@ -295,6 +296,8 @@ def patch_baseline_trainer(
                 COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE} else None)
         started = time.perf_counter()
         result = original_train_epoch(self, epoch)
+        self._paper_last_train_losses = {
+            name: float(value) for name, value in result.items()}
         self._paper_train_epoch_seconds = time.perf_counter() - started
         if (statistics_before is not None and
                 pipeline_statistics_receipt is not None):
@@ -355,6 +358,79 @@ def patch_baseline_trainer(
     trainer._save_checkpoint = save_checkpoint
     trainer._load_or_restart = load_or_restart
     trainer._train_epoch = train_epoch
+
+
+def patch_acceptance_epoch(
+        trainer, *, result_path: Path, input_pipeline_mode: str,
+        evaluation_seed: int) -> None:
+    """Run one ordinary epoch followed by selector-neutral validation."""
+    original_loop = trainer._train_loop
+
+    def acceptance_loop(self, start_epoch, end_epoch):
+        if int(start_epoch) != int(end_epoch):
+            raise RuntimeError(
+                "acceptance fork must cover exactly one complete epoch")
+        original_loop(self, start_epoch, end_epoch)
+        checkpoint = Path(self.args.model_dir) / "saved_models/last_model.pt"
+        if not checkpoint.is_file():
+            raise RuntimeError("acceptance epoch produced no full checkpoint")
+        saved = torch.load(checkpoint, map_location="cpu", weights_only=False)
+        required = {
+            "model_state_dict", "optimizer_state_dict",
+            "scheduler_state_dict", "runtime_rng_state",
+            "paper_early_stop_state",
+        }
+        missing = sorted(required - set(saved))
+        if missing:
+            raise RuntimeError(
+                f"acceptance checkpoint is not a full resume: {missing}")
+        if int(saved["epoch"]) != int(end_epoch):
+            raise RuntimeError("acceptance checkpoint epoch mismatch")
+        del saved
+        if self.device.type == "cuda":
+            torch.cuda.synchronize(self.device)
+        evaluation_started = time.perf_counter()
+        validation = self._evaluate_epoch(
+            int(end_epoch), mode="valid",
+            evaluation_seed=int(evaluation_seed))
+        if self.device.type == "cuda":
+            torch.cuda.synchronize(self.device)
+        evaluation_seconds = time.perf_counter() - evaluation_started
+        try:
+            import psutil
+            process = psutil.Process()
+            rss = process.memory_info().rss + sum(
+                child.memory_info().rss for child in process.children())
+        except Exception:
+            rss = None
+        atomic_json({
+            "schema": "ebjd-sdd-gpu-affine-acceptance-arm-v1",
+            "input_pipeline_mode": input_pipeline_mode,
+            "epoch": int(end_epoch),
+            "optimizer_updates_this_epoch": int(
+                len(self.data_loaders["train"])),
+            "evaluation_seed": int(evaluation_seed),
+            "validation": {
+                name: float(value) for name, value in validation.items()},
+            "training_losses": dict(getattr(
+                self, "_paper_last_train_losses", {})),
+            "goal_bce_definition": "one-epoch mean training goal_BCE_loss",
+            "train_seconds": float(getattr(
+                self, "_paper_train_epoch_seconds", float("nan"))),
+            "evaluation_seconds": float(evaluation_seconds),
+            "checkpoint": str(checkpoint.resolve()),
+            "checkpoint_sha256": sha256(checkpoint),
+            "peak_cuda_allocated_bytes": (
+                int(torch.cuda.max_memory_allocated(self.device))
+                if self.device.type == "cuda" else 0),
+            "peak_cuda_reserved_bytes": (
+                int(torch.cuda.max_memory_reserved(self.device))
+                if self.device.type == "cuda" else 0),
+            "process_tree_rss_bytes": rss,
+            "recorded_at_unix": time.time(),
+        }, result_path)
+
+    trainer._train_loop = acceptance_loop
 
 
 class _TimedLimitedLoader:
@@ -485,6 +561,8 @@ def patch_runtime_benchmark(
                         for name, value in self.net.state_dict().items()
                     },
                     "optimizer_state_dict": self.optimizer.state_dict(),
+                    "parameter_names": [
+                        name for name, _ in self.net.named_parameters()],
                 }, state_output)
         finally:
             torch.nn.utils.clip_grad_norm_ = original_clip
@@ -574,11 +652,28 @@ def main() -> None:
     parser.add_argument("--runtime-benchmark-warmup", type=int, default=10)
     parser.add_argument("--runtime-benchmark-batches", type=int, default=100)
     parser.add_argument("--runtime-benchmark-state-output")
+    parser.add_argument("--acceptance-fork-name")
+    parser.add_argument("--acceptance-parent-checkpoint")
+    parser.add_argument("--acceptance-output-dir")
+    parser.add_argument("--acceptance-result")
+    parser.add_argument("--acceptance-evaluation-seed", type=int, default=2035)
     parser.add_argument("--data-loader-workers", type=int)
     parser.add_argument(
         "--runtime-benchmark-disable-augmentation", action="store_true")
     parser.add_argument("--runtime-benchmark-fixed-augmentation-seed", type=int)
     args = parser.parse_args()
+    acceptance_values = (
+        args.acceptance_fork_name, args.acceptance_parent_checkpoint,
+        args.acceptance_output_dir, args.acceptance_result)
+    acceptance_mode = any(value is not None for value in acceptance_values)
+    if acceptance_mode and not all(
+            value is not None for value in acceptance_values):
+        raise RuntimeError("all acceptance-fork arguments are required")
+    if acceptance_mode and args.stage != "baseline":
+        raise RuntimeError("acceptance fork is baseline-only")
+    if acceptance_mode and args.runtime_benchmark_output:
+        raise RuntimeError(
+            "acceptance fork and runtime benchmark are mutually exclusive")
     if args.stage in ("scene_cache", "scene_cache_independent"):
         torch.set_num_threads(2)
         torch.set_num_interop_threads(1)
@@ -600,14 +695,9 @@ def main() -> None:
             f"unsupported input pipeline mode: {input_pipeline_mode}")
     if (input_pipeline_mode not in {
             "legacy", COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE}
-            and not args.runtime_benchmark_output):
+            and not args.runtime_benchmark_output and not acceptance_mode):
         raise RuntimeError(
             "rejected SDD input-pipeline candidates are benchmark-only")
-    if (input_pipeline_mode == COMPACT_AFFINE_MODE and
-            not args.runtime_benchmark_output):
-        raise RuntimeError(
-            "compact GPU affine replay did not pass the formal parameter "
-            "update gate and remains benchmark-only")
     if args.runtime_benchmark_output and args.stage != "baseline":
         raise RuntimeError("runtime benchmark is baseline-only")
     if bool(args.runtime_benchmark_output) != bool(
@@ -681,7 +771,12 @@ def main() -> None:
         int(args.data_loader_workers) if args.data_loader_workers is not None
         else int(recipe.get("gdts_baseline", {}).get(
             "data_loader_workers", 2)))
+    acceptance_output = (
+        Path(args.acceptance_output_dir).resolve()
+        if acceptance_mode else None)
     first_epoch_receipt = (
+        acceptance_output / "FIRST_FULL_EPOCH.json"
+        if acceptance_output is not None else
         Path(recipe["pipeline_root"]) / "receipts" /
         f"INPUT_PIPELINE_FIRST_FULL_EPOCH_{input_pipeline_mode}_"
         f"w{effective_workers}.json")
@@ -693,6 +788,8 @@ def main() -> None:
             Path(args.runtime_benchmark_output).resolve().with_suffix(
                 ".pipeline_stats.json")
             if args.runtime_benchmark_output else
+            acceptance_output / "INPUT_PIPELINE_EPOCH_STATISTICS.json"
+            if acceptance_output is not None else
             Path(recipe["pipeline_root"]) /
             "receipts/INPUT_PIPELINE_EPOCH_STATISTICS.json"))
     if args.runtime_benchmark_output:
@@ -705,6 +802,12 @@ def main() -> None:
             state_output=(
                 Path(args.runtime_benchmark_state_output).resolve()
                 if args.runtime_benchmark_state_output else None))
+    if acceptance_mode:
+        patch_acceptance_epoch(
+            trainer,
+            result_path=Path(args.acceptance_result).resolve(),
+            input_pipeline_mode=input_pipeline_mode,
+            evaluation_seed=args.acceptance_evaluation_seed)
     argv = fixed_arguments(recipe, args.stage, args.goal_checkpoint)
     if args.data_loader_workers is not None:
         if args.data_loader_workers not in {2, 4}:
@@ -720,6 +823,24 @@ def main() -> None:
             f"sdd_gdts_input_benchmark_{input_pipeline_mode}")
         index = argv.index("--run_name")
         argv[index + 1] = benchmark_name
+    if acceptance_mode:
+        parent = Path(args.acceptance_parent_checkpoint).resolve()
+        if not parent.is_file():
+            raise FileNotFoundError(parent)
+        payload = torch.load(parent, map_location="cpu", weights_only=False)
+        parent_epoch = int(payload["epoch"])
+        if not payload.get("full_runtime_resume_contract"):
+            raise RuntimeError("acceptance parent lacks full runtime contract")
+        if payload.get("runtime_rng_state") is None:
+            raise RuntimeError("acceptance parent lacks runtime RNG state")
+        del payload
+        target_epoch = parent_epoch + 1
+        for flag, value in (
+                ("--run_name", args.acceptance_fork_name),
+                ("--num_epochs", str(target_epoch)),
+                ("--start_validation", str(target_epoch + 1))):
+            index = argv.index(flag)
+            argv[index + 1] = value
     argv += ["--batch_cache_root", str(Path(args.batch_cache_root).resolve())]
     if args.stage == "goal":
         last = runtime / "output" / output_key / "runs" / recipe["goal_pretrain"]["run_name"] / "saved_models" / "goal_pretrain_last_model.pt"
@@ -727,6 +848,7 @@ def main() -> None:
             argv += ["--load_checkpoint", "last"]
     elif args.stage == "baseline":
         run_name = (
+            args.acceptance_fork_name if acceptance_mode else
             args.runtime_benchmark_name or
             f"sdd_gdts_input_benchmark_{input_pipeline_mode}"
             if args.runtime_benchmark_output else
@@ -734,7 +856,28 @@ def main() -> None:
         last = (
             runtime / "output" / output_key / "runs" / run_name /
             "saved_models/last_model.pt")
-        if args.runtime_benchmark_output:
+        if acceptance_mode:
+            output = Path(args.acceptance_output_dir).resolve()
+            output.mkdir(parents=True, exist_ok=True)
+            run_dir = last.parent.parent
+            run_dir.parent.mkdir(parents=True, exist_ok=True)
+            if run_dir.exists() or run_dir.is_symlink():
+                if not run_dir.is_symlink() or run_dir.resolve() != output:
+                    raise RuntimeError(
+                        f"acceptance run path already occupied: {run_dir}")
+            else:
+                run_dir.symlink_to(output, target_is_directory=True)
+            source = Path(args.acceptance_parent_checkpoint).resolve()
+            last.parent.mkdir(parents=True, exist_ok=True)
+            if last.exists() or last.is_symlink():
+                raise RuntimeError(
+                    f"acceptance output already has a checkpoint: {last}")
+            shutil.copy2(source, last)
+            formal_curve = source.parent.parent / "log_curve.txt"
+            target_curve = output / "log_curve.txt"
+            if formal_curve.is_file() and not target_curve.exists():
+                shutil.copy2(formal_curve, target_curve)
+        elif args.runtime_benchmark_output:
             source = Path(args.runtime_benchmark_checkpoint).resolve()
             if not source.is_file():
                 raise FileNotFoundError(source)
@@ -747,7 +890,8 @@ def main() -> None:
     sys.argv = [str(legacy / "main.py"), *argv]
     from main import main as legacy_main
     legacy_main()
-    if args.stage == "baseline" and not args.runtime_benchmark_output:
+    if (args.stage == "baseline" and not args.runtime_benchmark_output and
+            not acceptance_mode):
         section = recipe["gdts_baseline"]
         model_dir = (
             runtime / "output" / output_key / "runs" /
