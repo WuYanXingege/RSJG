@@ -28,6 +28,9 @@ goal_pretrain:
 gdts_baseline:
   run_name: sdd_jmm_matched_gdts_seed3101_v1
   input_pipeline_mode: compact_gpu_heatmaps_v1
+  # Revalidated after compact-cache adoption; four workers reduce blocking
+  # while preserving the legacy worker RNG lifecycle (no persistent workers).
+  data_loader_workers: 4
   compact_cache_root: /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/sdd_heatmap_pipeline_v3_20261106_095500/compact_cache
   epochs: 250
   batch_size: 64

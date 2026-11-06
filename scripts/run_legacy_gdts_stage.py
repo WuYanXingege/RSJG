@@ -29,8 +29,14 @@ from ebjd.legacy_sdd_input_pipeline import MODE as OPTIMIZED_INPUT_MODE
 from ebjd.legacy_sdd_input_pipeline import PREALLOC_MODE
 from ebjd.legacy_sdd_input_pipeline import install as install_sdd_input_pipeline
 from ebjd.compact_sdd_heatmap_pipeline import MODE as COMPACT_HEATMAP_MODE
+from ebjd.compact_sdd_heatmap_pipeline import AFFINE_MODE as COMPACT_AFFINE_MODE
 from ebjd.compact_sdd_heatmap_pipeline import install as install_compact_heatmaps
 from ebjd.compact_sdd_heatmap_pipeline import install_fixed_legacy_augmentation
+from ebjd.compact_sdd_heatmap_pipeline import (
+    append_epoch_statistics,
+    pipeline_statistics_delta,
+    pipeline_statistics_snapshot,
+)
 
 
 def rng_state(loader) -> dict:
@@ -161,7 +167,8 @@ def patch_goal_pretrainer(goal_pretrainer) -> None:
 
 def patch_baseline_trainer(
         trainer, contract: dict, *, input_pipeline_mode: str = "legacy",
-        first_epoch_receipt: Path | None = None) -> None:
+        first_epoch_receipt: Path | None = None,
+        pipeline_statistics_receipt: Path | None = None) -> None:
     original_save = trainer._save_checkpoint
     original_restart = trainer._load_or_restart
     original_evaluate = trainer._evaluate_epoch
@@ -282,9 +289,27 @@ def patch_baseline_trainer(
             }, first_epoch_receipt)
 
     def train_epoch(self, epoch):
+        statistics_before = (
+            pipeline_statistics_snapshot()
+            if input_pipeline_mode in {
+                COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE} else None)
         started = time.perf_counter()
         result = original_train_epoch(self, epoch)
         self._paper_train_epoch_seconds = time.perf_counter() - started
+        if (statistics_before is not None and
+                pipeline_statistics_receipt is not None):
+            statistics = pipeline_statistics_delta(
+                statistics_before, pipeline_statistics_snapshot())
+            statistics["train_seconds"] = self._paper_train_epoch_seconds
+            statistics["input_pipeline_mode"] = input_pipeline_mode
+            append_epoch_statistics(
+                pipeline_statistics_receipt, epoch, statistics)
+            print(
+                "[SDD input routes] "
+                f"E{int(epoch):03d} fast={statistics['gpu_fast_batches']} "
+                f"fallback={statistics['cpu_fallback_batches']} "
+                f"fallback_reasons={statistics['fallback_reasons']}",
+                flush=True)
         return result
 
     def load_or_restart(self):
@@ -371,7 +396,8 @@ class _TimedLimitedLoader:
 
 def patch_runtime_benchmark(
         trainer, *, output: Path, warmup: int, measured: int,
-        input_pipeline_mode: str) -> None:
+        input_pipeline_mode: str,
+        state_output: Path | None = None) -> None:
     """Bound the normal restored trainer to a short, timed update window."""
 
     def parameter_summary(self):
@@ -451,6 +477,15 @@ def patch_runtime_benchmark(
                     resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss *
                     1024),
             }, output)
+            if state_output is not None:
+                state_output.parent.mkdir(parents=True, exist_ok=True)
+                atomic_torch_save({
+                    "model_state_dict": {
+                        name: value.detach().cpu()
+                        for name, value in self.net.state_dict().items()
+                    },
+                    "optimizer_state_dict": self.optimizer.state_dict(),
+                }, state_output)
         finally:
             torch.nn.utils.clip_grad_norm_ = original_clip
             self.data_loaders["train"] = source
@@ -494,7 +529,8 @@ def fixed_arguments(recipe: dict, stage: str, goal_checkpoint: str | None) -> li
         section = recipe["gdts_baseline"]
         return common + [
             "--phase", "train", "--run_name", section["run_name"],
-            "--num_epochs", str(section["epochs"]), "--num_workers", "2",
+            "--num_epochs", str(section["epochs"]), "--num_workers", str(
+                section.get("data_loader_workers", 2)),
             "--data_augmentation", "True", "--shuffle_train_batches", "True",
             "--start_validation", "1", "--validate_every", "10",
             "--early_stopping_patience", str(
@@ -530,13 +566,15 @@ def main() -> None:
     parser.add_argument(
         "--input-pipeline-mode",
         choices=("legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE,
-                 COMPACT_HEATMAP_MODE))
+                 COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE))
     parser.add_argument("--compact-cache-root")
     parser.add_argument("--runtime-benchmark-output")
     parser.add_argument("--runtime-benchmark-checkpoint")
     parser.add_argument("--runtime-benchmark-name")
     parser.add_argument("--runtime-benchmark-warmup", type=int, default=10)
     parser.add_argument("--runtime-benchmark-batches", type=int, default=100)
+    parser.add_argument("--runtime-benchmark-state-output")
+    parser.add_argument("--data-loader-workers", type=int)
     parser.add_argument(
         "--runtime-benchmark-disable-augmentation", action="store_true")
     parser.add_argument("--runtime-benchmark-fixed-augmentation-seed", type=int)
@@ -557,13 +595,19 @@ def main() -> None:
             "input_pipeline_mode", "legacy")))
     if input_pipeline_mode not in {
             "legacy", PREALLOC_MODE, OPTIMIZED_INPUT_MODE,
-            COMPACT_HEATMAP_MODE}:
+            COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE}:
         raise RuntimeError(
             f"unsupported input pipeline mode: {input_pipeline_mode}")
-    if (input_pipeline_mode not in {"legacy", COMPACT_HEATMAP_MODE}
+    if (input_pipeline_mode not in {
+            "legacy", COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE}
             and not args.runtime_benchmark_output):
         raise RuntimeError(
             "rejected SDD input-pipeline candidates are benchmark-only")
+    if (input_pipeline_mode == COMPACT_AFFINE_MODE and
+            not args.runtime_benchmark_output):
+        raise RuntimeError(
+            "compact GPU affine replay did not pass the formal parameter "
+            "update gate and remains benchmark-only")
     if args.runtime_benchmark_output and args.stage != "baseline":
         raise RuntimeError("runtime benchmark is baseline-only")
     if bool(args.runtime_benchmark_output) != bool(
@@ -603,7 +647,7 @@ def main() -> None:
 
         Dataset_sdd.__init__ = exact_jmm_init
     if (args.stage == "baseline" and input_pipeline_mode not in
-            {"legacy", COMPACT_HEATMAP_MODE}):
+            {"legacy", COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE}):
         from src import batch_cache_io, data_loader
         install_sdd_input_pipeline(
             data_loader, batch_cache_io, mode=input_pipeline_mode)
@@ -616,7 +660,8 @@ def main() -> None:
         from src import data_loader
         install_fixed_legacy_augmentation(data_loader)
     from src.models.goal_pretrain import goal_pretrainer
-    if args.stage == "baseline" and input_pipeline_mode == COMPACT_HEATMAP_MODE:
+    if (args.stage == "baseline" and input_pipeline_mode in {
+            COMPACT_HEATMAP_MODE, COMPACT_AFFINE_MODE}):
         from src import data_loader
         from src.models.model import GDTS
         compact_root = Path(
@@ -625,27 +670,47 @@ def main() -> None:
         receipt = compact_root / "COMPACT_CACHE_RECEIPT.json"
         if not receipt.is_file():
             raise RuntimeError(f"compact cache receipt missing: {receipt}")
-        install_compact_heatmaps(data_loader, GDTS, compact_root)
+        install_compact_heatmaps(
+            data_loader, GDTS, compact_root, mode=input_pipeline_mode)
         print(
             f"[SDD input pipeline] mode={input_pipeline_mode} "
             f"cache={compact_root}", flush=True)
     from src.trainer import trainer
     patch_goal_pretrainer(goal_pretrainer)
+    effective_workers = (
+        int(args.data_loader_workers) if args.data_loader_workers is not None
+        else int(recipe.get("gdts_baseline", {}).get(
+            "data_loader_workers", 2)))
     first_epoch_receipt = (
-        Path(recipe["pipeline_root"]) /
-        "receipts/INPUT_PIPELINE_FIRST_FULL_EPOCH.json")
+        Path(recipe["pipeline_root"]) / "receipts" /
+        f"INPUT_PIPELINE_FIRST_FULL_EPOCH_{input_pipeline_mode}_"
+        f"w{effective_workers}.json")
     patch_baseline_trainer(
         trainer, recipe["gdts_baseline"]["early_stopping"],
         input_pipeline_mode=input_pipeline_mode,
-        first_epoch_receipt=first_epoch_receipt)
+        first_epoch_receipt=first_epoch_receipt,
+        pipeline_statistics_receipt=(
+            Path(args.runtime_benchmark_output).resolve().with_suffix(
+                ".pipeline_stats.json")
+            if args.runtime_benchmark_output else
+            Path(recipe["pipeline_root"]) /
+            "receipts/INPUT_PIPELINE_EPOCH_STATISTICS.json"))
     if args.runtime_benchmark_output:
         patch_runtime_benchmark(
             trainer,
             output=Path(args.runtime_benchmark_output).resolve(),
             warmup=args.runtime_benchmark_warmup,
             measured=args.runtime_benchmark_batches,
-            input_pipeline_mode=input_pipeline_mode)
+            input_pipeline_mode=input_pipeline_mode,
+            state_output=(
+                Path(args.runtime_benchmark_state_output).resolve()
+                if args.runtime_benchmark_state_output else None))
     argv = fixed_arguments(recipe, args.stage, args.goal_checkpoint)
+    if args.data_loader_workers is not None:
+        if args.data_loader_workers not in {2, 4}:
+            raise RuntimeError("this comparison only permits 2 or 4 workers")
+        index = argv.index("--num_workers")
+        argv[index + 1] = str(args.data_loader_workers)
     if args.runtime_benchmark_disable_augmentation:
         index = argv.index("--data_augmentation")
         argv[index + 1] = "False"

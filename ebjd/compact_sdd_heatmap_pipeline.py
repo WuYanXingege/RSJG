@@ -13,6 +13,10 @@ import pickle
 import random
 import hashlib
 import math
+import json
+import tempfile
+import time
+from copy import deepcopy
 from pathlib import Path
 
 import numpy as np
@@ -26,8 +30,74 @@ from .legacy_sdd_input_pipeline import (
 
 
 MODE = "compact_gpu_heatmaps_v1"
+AFFINE_MODE = "compact_gpu_heatmaps_v2_affine"
 SCHEMA = "ebjd-sdd-compact-heatmap-cache-v1"
 _INTERNAL_PREFIX = "_paper_compact_"
+_PIPELINE_STATS = {
+    "total_batches": 0,
+    "gpu_fast_batches": 0,
+    "cpu_fallback_batches": 0,
+    "worker_prepare_seconds": 0.0,
+    "worker_prepare_seconds_gpu_fast": 0.0,
+    "worker_prepare_seconds_cpu_fallback": 0.0,
+    "applied_operations": {},
+    "fallback_reasons": {},
+    "map_sizes": {},
+}
+
+
+def pipeline_statistics_snapshot():
+    return deepcopy(_PIPELINE_STATS)
+
+
+def pipeline_statistics_delta(before, after):
+    result = {}
+    for key in (
+            "total_batches", "gpu_fast_batches", "cpu_fallback_batches",
+            "worker_prepare_seconds", "worker_prepare_seconds_gpu_fast",
+            "worker_prepare_seconds_cpu_fallback"):
+        result[key] = after[key] - before[key]
+    for key in ("applied_operations", "fallback_reasons", "map_sizes"):
+        names = set(before[key]) | set(after[key])
+        result[key] = {
+            name: after[key].get(name, 0) - before[key].get(name, 0)
+            for name in sorted(names)
+            if after[key].get(name, 0) != before[key].get(name, 0)
+        }
+    return result
+
+
+def _atomic_json(payload, destination):
+    destination = Path(destination)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    descriptor, temporary = tempfile.mkstemp(
+        prefix=destination.name + ".", suffix=".tmp",
+        dir=destination.parent)
+    try:
+        with os.fdopen(descriptor, "w", encoding="utf-8") as handle:
+            json.dump(payload, handle, indent=2, sort_keys=True)
+            handle.write("\n")
+        os.replace(temporary, destination)
+    finally:
+        if os.path.exists(temporary):
+            os.unlink(temporary)
+
+
+def append_epoch_statistics(destination, epoch, statistics):
+    destination = Path(destination)
+    payload = {
+        "schema": "ebjd-sdd-input-pipeline-epoch-statistics-v1",
+        "epochs": [],
+    }
+    if destination.is_file():
+        payload = json.loads(destination.read_text(encoding="utf-8"))
+    payload["epochs"] = [
+        row for row in payload.get("epochs", [])
+        if int(row["epoch"]) != int(epoch)
+    ]
+    payload["epochs"].append({"epoch": int(epoch), **statistics})
+    payload["epochs"].sort(key=lambda row: int(row["epoch"]))
+    _atomic_json(payload, destination)
 
 
 def _fixed_seed(coordinates):
@@ -48,11 +118,19 @@ def _applied_transforms(replay):
             yield item
 
 
-def _requires_exact_cpu_replay(replay):
-    resampling = {"Perspective", "Affine", "ShiftScaleRotate", "Rotate"}
-    return any(
-        item["__class_fullname__"].split(".")[-1] in resampling
-        for item in _applied_transforms(replay))
+def _requires_exact_cpu_replay(replay, mode=MODE):
+    return bool(_cpu_fallback_reasons(replay, mode))
+
+
+def _cpu_fallback_reasons(replay, mode=MODE):
+    unsupported = (
+        {"Perspective"} if mode == AFFINE_MODE else
+        {"Perspective", "Affine", "ShiftScaleRotate", "Rotate"})
+    return sorted({
+        item["__class_fullname__"].split(".")[-1]
+        for item in _applied_transforms(replay)
+        if item["__class_fullname__"].split(".")[-1] in unsupported
+    })
 
 
 def gaussian_maps_gpu(centers, height, width, chunk_size=256):
@@ -82,7 +160,7 @@ def gaussian_maps_gpu(centers, height, width, chunk_size=256):
     return output.view(agents, steps, height, width)
 
 
-def _warp_perspective(images, matrix, output_hw):
+def _warp_perspective(images, matrix, output_hw, channel_chunk_size=128):
     """OpenCV-style forward pixel homography via CUDA grid_sample."""
     height, width = images.shape[-2:]
     out_height, out_width = map(int, output_hw)
@@ -105,10 +183,10 @@ def _warp_perspective(images, matrix, output_hw):
     y0 = torch.floor(source_y).long()
     fx = (source_x - x0).float()
     fy = (source_y - y0).float()
-    flat = images.reshape(images.shape[0], -1)
     result = torch.zeros(
         (images.shape[0], source_x.numel()), device=device,
         dtype=images.dtype)
+    sampling_plan = []
     for x, y, weight in (
             (x0, y0, (1 - fx) * (1 - fy)),
             (x0 + 1, y0, fx * (1 - fy)),
@@ -116,7 +194,15 @@ def _warp_perspective(images, matrix, output_hw):
             (x0 + 1, y0 + 1, fx * fy)):
         valid = (x >= 0) & (x < width) & (y >= 0) & (y < height)
         index = y.clamp(0, height - 1) * width + x.clamp(0, width - 1)
-        result.add_(flat[:, index] * (weight * valid).to(images.dtype))
+        sampling_plan.append(
+            (index, (weight * valid).to(images.dtype)))
+    flat = images.reshape(images.shape[0], -1)
+    for start in range(0, images.shape[0], channel_chunk_size):
+        stop = min(start + channel_chunk_size, images.shape[0])
+        output = result[start:stop]
+        source_values = flat[start:stop]
+        for index, weight in sampling_plan:
+            output.add_(source_values[:, index] * weight)
     return result.view(images.shape[0], out_height, out_width)
 
 
@@ -155,6 +241,7 @@ def replay_maps_gpu(maps, replay):
 
 
 def augment_compact(self, batch_data):
+    worker_started = time.perf_counter()
     image = batch_data["tensor_image"].permute(1, 2, 0).numpy().astype(
         np.float32, copy=False)
     original = np.asarray(batch_data["abs_pixel_coord"]).copy()
@@ -175,8 +262,14 @@ def augment_compact(self, batch_data):
         image=image,
         keypoints=list(map(tuple, keypoint_coords.reshape(-1, 2))))
     coordinates = torch.tensor(transformed["keypoints"]).view(original.shape)
+    applied_operations = [
+        item["__class_fullname__"].split(".")[-1]
+        for item in _applied_transforms(transformed["replay"])]
+    fallback_reasons = _cpu_fallback_reasons(
+        transformed["replay"], self._paper_compact_mode)
     exact_maps = None
-    if _requires_exact_cpu_replay(transformed["replay"]):
+    if _requires_exact_cpu_replay(
+            transformed["replay"], self._paper_compact_mode):
         legacy_path = batch_data[f"{_INTERNAL_PREFIX}legacy_path"]
         legacy_batch, _ = load_batch_cache_inprocess(legacy_path)
         legacy_maps = legacy_batch["input_traj_maps"]
@@ -206,6 +299,15 @@ def augment_compact(self, batch_data):
     if exact_maps is not None:
         batch_data["input_traj_maps"] = exact_maps
         batch_data[f"{_INTERNAL_PREFIX}exact_maps"] = True
+    route = "cpu_fallback" if exact_maps is not None else "gpu_fast"
+    batch_data[f"{_INTERNAL_PREFIX}statistics"] = pickle.dumps({
+        "route": route,
+        "worker_prepare_seconds": time.perf_counter() - worker_started,
+        "applied_operations": applied_operations,
+        "fallback_reasons": (
+            fallback_reasons if exact_maps is not None else []),
+        "map_size": f"{height}x{width}",
+    }, protocol=pickle.HIGHEST_PROTOCOL)
     return batch_data
 
 
@@ -253,14 +355,39 @@ def install_fixed_legacy_augmentation(data_loader_module):
         augment_legacy_fixed)
 
 
-def install(data_loader_module, model_class, compact_cache_root):
+def install(data_loader_module, model_class, compact_cache_root, mode=MODE):
     """Install the compact SDD loader and device materialization hook."""
+    if mode not in {MODE, AFFINE_MODE}:
+        raise ValueError(f"unsupported compact heatmap mode: {mode}")
     compact_cache_root = Path(compact_cache_root).resolve()
     old_init = data_loader_module.dataset_set_name.__init__
     old_prepare = model_class.prepare_inputs
+    old_data_loader = data_loader_module.DataLoader
+
+    def worker_init(worker_id):
+        del worker_id
+        # The worker RNG has already been initialized by PyTorch. Restrict
+        # only nested compute threads; do not resample or overwrite RNG state.
+        torch.set_num_threads(1)
+        try:
+            import cv2
+            cv2.setNumThreads(1)
+        except ImportError:
+            pass
+
+    def compact_data_loader(*args, **kwargs):
+        workers = int(kwargs.get("num_workers", 0))
+        if workers > 0:
+            kwargs.setdefault("prefetch_factor", 2)
+            kwargs.setdefault("worker_init_fn", worker_init)
+            # Keep the legacy epoch-boundary worker lifecycle. Enabling
+            # persistent workers would change its augmentation RNG sequence.
+            kwargs.setdefault("persistent_workers", False)
+        return old_data_loader(*args, **kwargs)
 
     def compact_init(self, args, set_name, logical_role=None):
         old_init(self, args, set_name, logical_role=logical_role)
+        self._paper_compact_mode = mode
         self._paper_legacy_path_to_folder = self.path_to_folder
         folder = compact_cache_root / f"{set_name}_batches"
         if not folder.is_dir():
@@ -289,12 +416,21 @@ def install(data_loader_module, model_class, compact_cache_root):
             batch_data[f"{_INTERNAL_PREFIX}centers"] = centers
             batch_data[f"{_INTERNAL_PREFIX}replay"] = b""
             batch_data[f"{_INTERNAL_PREFIX}reverse"] = False
+            batch_data[f"{_INTERNAL_PREFIX}statistics"] = pickle.dumps({
+                "route": "gpu_fast",
+                "worker_prepare_seconds": 0.0,
+                "applied_operations": [],
+                "fallback_reasons": [],
+                "map_size": "%dx%d" % tuple(
+                    batch_data["_paper_compact_original_hw"]),
+            }, protocol=pickle.HIGHEST_PROTOCOL)
         return batch_data, batch_id
 
     def compact_prepare(self, batch_data, batch_id):
         centers = batch_data.pop(f"{_INTERNAL_PREFIX}centers").squeeze(0)
         replay_value = batch_data.pop(f"{_INTERNAL_PREFIX}replay")
         reverse_value = batch_data.pop(f"{_INTERNAL_PREFIX}reverse")
+        statistics_value = batch_data.pop(f"{_INTERNAL_PREFIX}statistics")
         batch_data.pop("_paper_compact_schema", None)
         batch_data.pop(f"{_INTERNAL_PREFIX}legacy_path", None)
         original_hw = batch_data.pop("_paper_compact_original_hw")
@@ -329,12 +465,32 @@ def install(data_loader_module, model_class, compact_cache_root):
                 f"trajectory-map/image shape mismatch: "
                 f"maps={tuple(maps.shape[-2:])}, image={expected_hw}")
         batch_data["input_traj_maps"] = maps.unsqueeze(0)
+        statistics_bytes = (
+            statistics_value[0] if isinstance(statistics_value, (list, tuple))
+            else statistics_value)
+        statistics = pickle.loads(statistics_bytes)
+        route = statistics["route"]
+        _PIPELINE_STATS["total_batches"] += 1
+        _PIPELINE_STATS[f"{route}_batches"] += 1
+        seconds = float(statistics["worker_prepare_seconds"])
+        _PIPELINE_STATS["worker_prepare_seconds"] += seconds
+        _PIPELINE_STATS[f"worker_prepare_seconds_{route}"] += seconds
+        for name in statistics["applied_operations"]:
+            _PIPELINE_STATS["applied_operations"][name] = (
+                _PIPELINE_STATS["applied_operations"].get(name, 0) + 1)
+        for name in statistics["fallback_reasons"]:
+            _PIPELINE_STATS["fallback_reasons"][name] = (
+                _PIPELINE_STATS["fallback_reasons"].get(name, 0) + 1)
+        size = statistics["map_size"]
+        _PIPELINE_STATS["map_sizes"][size] = (
+            _PIPELINE_STATS["map_sizes"].get(size, 0) + 1)
         return old_prepare(self, batch_data, batch_id)
 
     data_loader_module.load_batch_cache = load_batch_cache_inprocess
+    data_loader_module.DataLoader = compact_data_loader
     data_loader_module.dataset_set_name.__init__ = compact_init
     data_loader_module.dataset_set_name.__getitem__ = compact_getitem
     data_loader_module.dataset_set_name.augment_traj_and_images = augment_compact
     model_class.prepare_inputs = compact_prepare
-    data_loader_module._paper_sdd_input_pipeline = MODE
+    data_loader_module._paper_sdd_input_pipeline = mode
 
