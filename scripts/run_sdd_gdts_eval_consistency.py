@@ -356,6 +356,13 @@ def main() -> None:
 
 训练期 `814` 项 cache 不是 `1999` 个同步窗口的等价物理重排。它是旧 independent-GDTS 的单轨迹滑窗缓存；同步窗口 cache 才逐项绑定 JMM manifest，并保留同一窗口内全部有效行人。因此，旧训练曲线和正式 scene-window 五种子结果的差异不能只解释为 RNG 或单 seed 选模偏好。
 
+当前 legacy 冻结入口的 packed/3101 回放与训练日志仍有
+`{log_reproduction['absolute_difference_minADE']:.6f}` px ADE、
+`{log_reproduction['absolute_difference_minFDE']:.6f}` px FDE 的微小差异。
+训练期采用 `compact_gpu_heatmaps_v2_affine`，冻结入口采用 legacy 密集缓存；
+这项执行实现差异和 CUDA 数值波动尚未逐项拆分，因此不宣称旧日志被逐值
+复现。不过该差异远小于 scene/packed 的 1 px 以上主差距，不改变身份结论。
+
 seed 与 layout 的数值效应已分离记录在 `EFFECTS.json`。逐行人误差和位移误差 bank 位于 `cases/`，可在 CPU 上重新归约。
 
 ## 统一 baseline 口径

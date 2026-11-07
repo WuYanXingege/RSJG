@@ -13,7 +13,7 @@ import torch
 import yaml
 
 from export_zara1_endpoint_banks import (
-    configure_legacy_evaluator, gdts_scene_identity, manifest_identity,
+    configure_legacy_evaluator, gdts_scalar, gdts_scene_identity, manifest_identity,
     pack_bank, save_bank, sha256,
 )
 
@@ -61,7 +61,7 @@ def main() -> None:
             with evaluator._autocast_context():
                 _, auxiliary = evaluator.net._legacy_encode(inputs, if_test=True)
             frames, agents = gdts_scene_identity(batch_id)
-            source = Path(str(batch_id["data_file_path"])).stem
+            source = Path(str(gdts_scalar(batch_id["data_file_path"]))).stem
             record = lookup.get((source, tuple(frames), tuple(agents)))
             if record is None:
                 raise RuntimeError(

@@ -198,18 +198,21 @@ def configure_legacy_evaluator(args):
     return evaluator
 
 
-def gdts_scene_identity(batch_id: dict) -> tuple[list[int], list[str]]:
-    def scalar(value):
-        while isinstance(value, (tuple, list)) and len(value) == 1:
-            value = value[0]
-        if torch.is_tensor(value):
-            value = value.detach().cpu().reshape(-1)[0].item()
-        elif isinstance(value, np.ndarray):
-            value = value.reshape(-1)[0].item()
-        return value
+def gdts_scalar(value):
+    """Undo singleton DataLoader collation without guessing tensor shapes."""
+    while isinstance(value, (tuple, list)) and len(value) == 1:
+        value = value[0]
+    if torch.is_tensor(value):
+        value = value.detach().cpu().reshape(-1)[0].item()
+    elif isinstance(value, np.ndarray):
+        value = value.reshape(-1)[0].item()
+    return value
 
-    frame_ids = [int(scalar(value)) for value in batch_id["frame_ids"]]
-    agent_ids = [str(int(scalar(value))) for value in batch_id["agent_ids"]]
+
+def gdts_scene_identity(batch_id: dict) -> tuple[list[int], list[str]]:
+
+    frame_ids = [int(gdts_scalar(value)) for value in batch_id["frame_ids"]]
+    agent_ids = [str(int(gdts_scalar(value))) for value in batch_id["agent_ids"]]
     return frame_ids, agent_ids
 
 
