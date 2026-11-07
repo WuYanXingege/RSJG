@@ -86,12 +86,15 @@ ALLOWED_KEYS = {
         "rollout_training_enabled",
         "paired_marginal_actual_step_projection_enabled",
         "ctf_feedback_transition_start_update", "ctf_feedback_transition_updates",
+        "early_stopping", "ebjd_input_pipeline",
+        "ebjd_input_pipeline_receipt",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
         "minimum_training_seeds", "metrics",
         "per_agent_reordering", "final_test_used_for_checkpoint_selection",
         "validation_test_identity", "marginal_tolerance", "matched_gdts_validation",
+        "unit",
     },
     "ablations": {"available"},
 }
@@ -108,7 +111,9 @@ OPTIONAL_KEYS = {"training": {
     "rollout_training_enabled",
     "paired_marginal_actual_step_projection_enabled",
     "ctf_feedback_transition_start_update", "ctf_feedback_transition_updates",
-}, "denoiser": {"ctf_feedback_basis"}}
+    "early_stopping", "ebjd_input_pipeline",
+    "ebjd_input_pipeline_receipt",
+}, "denoiser": {"ctf_feedback_basis"}, "evaluation": {"unit"}}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
     ("experiment", "source_commit"),
@@ -124,6 +129,8 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "training_runtime_optimizations"),
     ("training", "data_loader_workers"),
     ("training", "data_loader_prefetch_factor"),
+    ("training", "ebjd_input_pipeline"),
+    ("training", "ebjd_input_pipeline_receipt"),
 }
 
 
@@ -302,6 +309,18 @@ def validate_supported_config(config: dict) -> None:
     ):
         if key in training and not isinstance(training[key], bool):
             raise ValueError(f"training.{key} must be boolean")
+    input_pipeline = training.get("ebjd_input_pipeline", "legacy_cpu_rigid")
+    if input_pipeline not in {
+        "legacy_cpu_rigid", "compact_uint8_gpu_rigid_v1",
+    }:
+        raise ValueError(
+            f"unsupported training.ebjd_input_pipeline={input_pipeline!r}")
+    if "ebjd_input_pipeline_receipt" in training and not isinstance(
+            training["ebjd_input_pipeline_receipt"], str):
+        raise ValueError("training.ebjd_input_pipeline_receipt must be a string")
+    if "early_stopping" in training and not isinstance(
+            training["early_stopping"], dict):
+        raise ValueError("training.early_stopping must be a mapping")
     for key in ("physical_group_max_scenes", "physical_group_max_agent_slots"):
         if key in training:
             value = training[key]
@@ -381,7 +400,8 @@ def validate_supported_config(config: dict) -> None:
     if not isinstance(baseline, dict):
         raise ValueError("evaluation.matched_gdts_validation must be a mapping")
     allowed_baseline = {
-        "status", "minADE", "minFDE", "source", "reference_limitation",
+        "status", "minADE", "minFDE", "JADE", "JFDE", "source",
+        "reference_limitation",
         "manifest_sha256", "checkpoint_sha256", "ebjd_initialization_sha256",
         "fold", "unit", "worlds", "steps", "evaluation_seed",
         "scene_count", "agent_occurrence_count", "result_sha256",
