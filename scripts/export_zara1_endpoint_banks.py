@@ -225,10 +225,17 @@ def export_gdts(args) -> None:
     if sha256(manifest_path) != args.manifest_sha256:
         raise ValueError("validation manifest SHA256 mismatch")
     records, manifest = manifest_identity(manifest_path)
+    # Frame numbers and agent identifiers are local to an SDD source sequence.
+    # Omitting the source silently aliases windows from different videos when
+    # they happen to share both fields, and the export then cannot cover the
+    # complete multi-sequence manifest.
     lookup = {
-        (tuple(record["frame_ids"]), tuple(sorted(record["agent_ids"], key=int))): record
+        (record["source_sequence"], tuple(record["frame_ids"]),
+         tuple(sorted(record["agent_ids"], key=int))): record
         for record in records
     }
+    if len(lookup) != len(records):
+        raise RuntimeError("manifest contains duplicate source-bound identities")
     evaluator = configure_legacy_evaluator(args)
     from src.utils import isolated_random_seed
 
@@ -258,11 +265,13 @@ def export_gdts(args) -> None:
             with evaluator._autocast_context():
                 trajectories, auxiliary = evaluator.net.forward(inputs, if_test=True)
             frame_ids, agent_ids = gdts_scene_identity(batch_id)
+            source = Path(str(gdts_scalar(batch_id["data_file_path"]))).stem
             record = lookup.get((
-                tuple(frame_ids), tuple(sorted(agent_ids, key=int))))
+                source, tuple(frame_ids), tuple(sorted(agent_ids, key=int))))
             if record is None:
                 raise RuntimeError(
-                    f"GDTS window not present in manifest: frames={frame_ids}, agents={agent_ids}")
+                    "GDTS window not present in manifest: "
+                    f"source={source}, frames={frame_ids}, agents={agent_ids}")
             scene = inputs["scene"]
             final_pixel = trajectories[:, -1].detach() * float(evaluator.args.down_factor)
             proposal_pixel = auxiliary["goal_point"][:20].detach() * float(
