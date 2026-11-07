@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse, fcntl, hashlib, json, os, shutil, subprocess, tempfile, time
 from datetime import datetime, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import yaml
 
@@ -201,6 +202,7 @@ class Pipeline:
     def assets(self, base):
         digest=sha256(base); result=self.root/"04_matched_gdts/evaluation/results.json"
         if not result.exists(): self.run("MATCHED_GDTS_EVAL",[str(PYTHON),"scripts/evaluate_matched_gdts.py","--recipe",str(RECIPE),"--runtime-root",str(self.runtime),"--scene-cache-root",str(self.cache),"--checkpoint",str(base),"--checkpoint-sha256",digest,"--manifest",str(self.valid),"--parity-receipt",str(self.root/"receipts/CACHE_PARITY_VALID.json"),"--output-dir",str(result.parent),"--split","valid","--seeds",*map(str,SEEDS)])
+        self.gdts_eval_consistency(base, digest, result)
         train_dir=self.root/"05_proposal_banks/train"; train_bank=train_dir/"gdts_proposal_train_seed3101.npz"
         if not train_bank.exists(): self.run("EXPORT_TRAIN_BANK",[str(PYTHON),"scripts/export_zara1_train_proposals.py","--recipe",str(RECIPE),"--checkpoint",str(base),"--checkpoint-sha256",digest,"--manifest",str(self.train),"--manifest-sha256",sha256(self.train),"--scene-cache-root",str(self.cache),"--runtime-root",str(self.runtime),"--output-dir",str(train_dir),"--seed","3101"])
         pattern=self.root/"05_proposal_banks/validation/seed_{seed}/gdts_proposal_B_seed{seed}.npz"
@@ -208,6 +210,87 @@ class Pipeline:
             target=Path(str(pattern).format(seed=seed))
             if not target.exists(): self.run(f"EXPORT_VALIDATION_BANK_{seed}",[str(PYTHON),"scripts/export_zara1_endpoint_banks.py","gdts","--recipe",str(RECIPE),"--runtime-root",str(self.runtime),"--scene-cache-root",str(self.cache),"--checkpoint",str(base),"--checkpoint-sha256",digest,"--manifest",str(self.valid),"--manifest-sha256",sha256(self.valid),"--output-dir",str(target.parent),"--seed",str(seed)])
         return train_bank,str(pattern),digest,result
+
+    def gdts_eval_consistency(self, base, digest, formal_result):
+        """Freeze the SDD baseline protocol before creating proposal banks."""
+        receipt_path=(
+            self.root/"receipts/SDD_GDTS_EVAL_CONSISTENCY.json")
+        receipt=(json.loads(receipt_path.read_text(encoding="utf-8"))
+                 if receipt_path.exists() else {})
+        if receipt.get("status") == "COMPLETE":
+            summary_path=Path(receipt["summary"])
+            protocol_path=Path(receipt["frozen_protocol"])
+            if (not summary_path.exists() or not protocol_path.exists() or
+                    receipt.get("checkpoint_sha256") != digest or
+                    receipt.get("manifest_sha256") != sha256(self.valid)):
+                raise RuntimeError(
+                    "invalid SDD GDTS evaluation-consistency receipt")
+            summary=json.loads(summary_path.read_text(encoding="utf-8"))
+            protocol=json.loads(protocol_path.read_text(encoding="utf-8"))
+            if (summary.get("status") != "COMPLETE" or
+                    protocol.get("status") != "FROZEN"):
+                raise RuntimeError("SDD GDTS baseline protocol is not frozen")
+            return
+
+        if receipt.get("output_dir"):
+            output=Path(receipt["output_dir"])
+        else:
+            stamp=datetime.now(ZoneInfo("Asia/Shanghai")).strftime(
+                "%Y%m%d_%H%M%S")
+            output=(self.root.parents[1]/"analyses"/
+                    f"sdd_gdts_eval_consistency_{stamp}")
+        atomic_json(receipt_path,{
+            "schema":"sdd-gdts-eval-consistency-receipt-v1",
+            "status":"RUNNING","output_dir":str(output),
+            "checkpoint":str(base),"checkpoint_sha256":digest,
+            "manifest":str(self.valid),
+            "manifest_sha256":sha256(self.valid),
+            "formal_results":str(formal_result),
+            "source_commit":self.commit,
+        })
+        training_log=self.root/"logs/matched_gdts.log"
+        try:
+            self.run("SDD_GDTS_EVAL_CONSISTENCY",[
+                str(PYTHON),"scripts/run_sdd_gdts_eval_consistency.py",
+                "--recipe",str(RECIPE),"--runtime-root",str(self.runtime),
+                "--cache-root",str(self.cache),"--checkpoint",str(base),
+                "--checkpoint-sha256",digest,"--manifest",str(self.valid),
+                "--formal-results",str(formal_result),
+                "--training-log",str(training_log),
+                "--output-dir",str(output)])
+            summary_path=output/"SUMMARY.json"
+            protocol_path=output/"FROZEN_BASELINE_PROTOCOL.json"
+            summary=json.loads(summary_path.read_text(encoding="utf-8"))
+            protocol=json.loads(protocol_path.read_text(encoding="utf-8"))
+            if (summary.get("status") != "COMPLETE" or
+                    protocol.get("status") != "FROZEN"):
+                raise RuntimeError(
+                    "SDD GDTS consistency audit did not freeze a protocol")
+        except BaseException as error:
+            atomic_json(receipt_path,{
+                "schema":"sdd-gdts-eval-consistency-receipt-v1",
+                "status":"FAILED","output_dir":str(output),
+                "checkpoint":str(base),"checkpoint_sha256":digest,
+                "manifest":str(self.valid),
+                "manifest_sha256":sha256(self.valid),
+                "formal_results":str(formal_result),
+                "source_commit":self.commit,
+                "reason":f"{type(error).__name__}: {error}",
+            })
+            raise
+        atomic_json(receipt_path,{
+            "schema":"sdd-gdts-eval-consistency-receipt-v1",
+            "status":"COMPLETE","output_dir":str(output),
+            "checkpoint":str(base),"checkpoint_sha256":digest,
+            "manifest":str(self.valid),
+            "manifest_sha256":sha256(self.valid),
+            "formal_results":str(formal_result),
+            "summary":str(summary_path),
+            "summary_sha256":sha256(summary_path),
+            "frozen_protocol":str(protocol_path),
+            "frozen_protocol_sha256":sha256(protocol_path),
+            "source_commit":self.commit,
+        })
 
     def config(self,goal,base,base_sha,result):
         target=self.root/"00_identity/RESOLVED_SDD_JMM_UNIFIED.json"; config=json.loads(BASE_CONFIG.read_text()); matched=json.loads(result.read_text()); run=next(x for x in matched["runs"] if x["seed"]==2035); recipe=yaml.safe_load(RECIPE.read_text())
