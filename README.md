@@ -8,9 +8,19 @@ This is the only paper-development workspace for EBJD. The default path is
 the **FULL** architecture with Raw decoding. New formal training uses the
 192-wide, four-head, FFN-768 profile. Historical 128/4/512 checkpoints remain
 registered references and are loaded only with their legacy profile.
-It does not import code from another RSJG worktree and does not include
-native-goal, Fixed-anchor, SELF_ONLY, HALF, V2 token/anchor, or extra path-loss
-logic in the default model.
+
+The current completed unified experiments use the frozen native endpoint
+provider + learned joint coupling + GT-consistent conditional bridge entry
+`scripts/run_zara1_unified_coupling_bridge.py` (192/4/768, six FJAB,
+rollout/projection OFF). The original unconditional entry documented below is
+retained for historical reproducibility. See the current-path note in
+[METHOD.md](docs/METHOD.md) and the optional
+[acceleration-bridge research implementation](docs/research/20261109_acceleration_bridge_v1/REPORT_ZH.md).
+
+The independent `ebjd` model package does not import code from another RSJG
+worktree. Its original unconditional model excludes native-goal, Fixed-anchor,
+SELF_ONLY, HALF, V2 token/anchor and extra path-loss logic; the current unified
+runner explicitly supplies the frozen native endpoint conditions described above.
 
 ## Layout
 

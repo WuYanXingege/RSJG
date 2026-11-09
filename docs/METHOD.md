@@ -4,6 +4,27 @@ Working title: **Endpoint–Bridge Joint Diffusion for Joint Pedestrian
 Trajectory Prediction**. EBJD jointly samples all valid pedestrians in each
 world while keeping different worlds independent.
 
+## Current unified experiment path
+
+The completed unified experiments use `ebjd.unified.UnifiedCouplingBridge`
+and `scripts/run_zara1_unified_coupling_bridge.py`. Their actual chain is a
+frozen native endpoint provider, shared MSCE, learned bijective joint coupling,
+and a proposal-conditioned six-FJAB bridge. Bridge training conditions on the
+ground-truth endpoint paired with its ground-truth path; the separate coupling
+objective uses the frozen training-fold proposals. Inference conditions on
+native G or reordered H and gathers the initial bridge noise with the same
+per-agent permutation. The fixed endpoint is concatenated literally (`eta=0`).
+Consequently, coupling cannot improve per-agent endpoint coverage/minFDE; its
+role is joint world organization. These experiments use 192/4/768, FULL/CTF,
+Raw, 20 worlds/20 DDIM steps, with rollout/projection OFF. The descriptions
+below of jointly generated endpoint residuals and scheduled rollout document
+the original unconditional implementation, not this unified training contract.
+
+The optional `invertible_endpoint_acceleration_bridge_v1` research prior and
+the independent singleton-backward correction are documented in
+[the architecture review](research/20261109_acceleration_bridge_v1/REPORT_ZH.md).
+They do not replace the frozen formal Brownian model or its results.
+
 ## Data flow
 
 ```mermaid
