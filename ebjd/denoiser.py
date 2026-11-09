@@ -1,4 +1,4 @@
-"""Six-block factorized joint denoiser with clean-future geometry."""
+"""Factorized joint denoisers with clean-future geometry."""
 
 from __future__ import annotations
 
@@ -126,8 +126,9 @@ class GeometryConditionedJointDenoiser(nn.Module):
 
     The clean trajectory feedback (CTF) path is the logical combination of
     clean motion features, full-resolution map sampling, future pair geometry,
-    and the alpha-squared gate.  It deliberately remains inside this class so
-    the certified FULL checkpoint key space is unchanged.
+    and the alpha-squared gate.  The default legacy branch retains the
+    certified FULL key space.  The explicit endpoint-gated research branch
+    has its own parameters and must be trained/restored as that architecture.
     """
     def __init__(
         self,
@@ -138,14 +139,31 @@ class GeometryConditionedJointDenoiser(nn.Module):
         activation_checkpointing: bool = True,
         ctf_feedback_basis: str = "legacy",
         proposal_conditioned: bool = False,
+        block_type: str = "legacy_fjab",
+        coarse_blocks: int = 3,
+        refinement_blocks: int = 3,
     ) -> None:
         super().__init__()
         if ctf_feedback_basis not in {"legacy", "decoder_energy"}:
             raise ValueError(
                 "ctf_feedback_basis must be 'legacy' or 'decoder_energy'")
+        if block_type not in {"legacy_fjab", "endpoint_gated_dit_v1"}:
+            raise ValueError(f"unsupported denoiser block_type={block_type!r}")
+        depths = (coarse_blocks, refinement_blocks)
+        if (any(type(value) is not int for value in depths) or
+                (block_type == "legacy_fjab" and depths != (3, 3)) or
+                (block_type == "endpoint_gated_dit_v1" and depths not in {(3, 3), (4, 4)})):
+            raise ValueError("unsupported coarse/refinement depth for block_type")
+        if block_type == "endpoint_gated_dit_v1" and (
+                not proposal_conditioned or ctf_feedback_basis != "legacy"):
+            raise ValueError("endpoint-gated DiT requires proposal conditioning and legacy CTF")
         self.representation = representation
         self.dim = int(dim)
         self.heads = int(heads)
+        self.ff_dim = int(ff_dim)
+        self.block_type = block_type
+        self.coarse_blocks = coarse_blocks
+        self.refinement_blocks = refinement_blocks
         self.activation_checkpointing = bool(activation_checkpointing)
         self.checkpoint_preserve_rng_state = True
         # Plain Python attributes deliberately keep the certified checkpoint
@@ -165,8 +183,13 @@ class GeometryConditionedJointDenoiser(nn.Module):
         self.token_type = nn.Parameter(torch.zeros(2, dim))
         self.register_buffer(
             "future_time", sinusoidal_embedding(torch.arange(12).float(), dim))
+        block_class = FactorizedJointAttentionBlock
+        if block_type == "endpoint_gated_dit_v1":
+            from .gated_dit import EndpointGatedJointBlock
+            block_class = EndpointGatedJointBlock
         self.blocks = nn.ModuleList([
-            FactorizedJointAttentionBlock(dim, heads, ff_dim) for _ in range(6)])
+            block_class(dim, heads, ff_dim)
+            for _ in range(coarse_blocks + refinement_blocks)])
         self.pre_bridge_head = self._head(dim)
         self.pre_goal_head = self._head(dim)
         self.final_bridge_head = self._head(dim)
@@ -181,6 +204,25 @@ class GeometryConditionedJointDenoiser(nn.Module):
         ):
             nn.init.normal_(head[-1].weight, std=1e-3)
             nn.init.zeros_(head[-1].bias)
+        if block_type == "endpoint_gated_dit_v1":
+            # A dedicated condition reaches every block, including every
+            # world/agent.  It is distinct from the legacy zero-initialized
+            # proposal input embedding; no ground-truth future is read here.
+            self.endpoint_condition = nn.Sequential(
+                nn.Linear(2, dim), nn.SiLU(), nn.Linear(dim, dim))
+
+    def architecture_signature(self) -> dict:
+        return {"block_type": self.block_type, "hidden_dim": self.dim,
+                "heads": self.heads, "ff_dim": self.ff_dim,
+                "coarse_blocks": self.coarse_blocks,
+                "refinement_blocks": self.refinement_blocks}
+
+    def _run_block(self, block, hidden, context, time_embedding, bias, endpoint):
+        arguments = (hidden, context.memory, context.social_h, time_embedding,
+                     bias, context.valid)
+        if self.block_type == "legacy_fjab":
+            return block(*arguments)
+        return block(*arguments, endpoint_condition=endpoint)
 
     @staticmethod
     def _head(dim: int) -> nn.Sequential:
@@ -309,6 +351,7 @@ class GeometryConditionedJointDenoiser(nn.Module):
             + self.token_type[types].view(1, 1, 1, 12, self.dim)
             + context.social_h[:, None, :, None, :]
         )
+        block_endpoint_condition = None
         if self.proposal_conditioned:
             if proposal_goals is None:
                 raise ValueError("proposal-conditioned denoising requires proposal_goals")
@@ -321,23 +364,26 @@ class GeometryConditionedJointDenoiser(nn.Module):
             ) / self.representation.goal_scale.float()
             hidden = hidden + self.proposal_embedding(
                 normalized.to(hidden.dtype)).unsqueeze(-2)
+            if self.block_type == "endpoint_gated_dit_v1":
+                block_endpoint_condition = self.endpoint_condition(
+                    normalized.to(hidden.dtype))
         elif proposal_goals is not None:
             raise ValueError("legacy denoiser does not accept proposal_goals")
         observed = context.observed_bias[:, None, None].expand(
             batch, worlds, 12, self.heads, agents, agents)
-        for block in self.blocks[:3]:
+        for block in self.blocks[:self.coarse_blocks]:
             if use_block_checkpoints and self.training and torch.is_grad_enabled():
                 with record_function("ebjd.denoiser_block_checkpoint"):
                     hidden = checkpoint(
-                        lambda value, module=block: module(
-                            value, context.memory, context.social_h, time_embedding,
-                            observed, context.valid),
+                        lambda value, module=block: self._run_block(
+                            module, value, context, time_embedding, observed,
+                            block_endpoint_condition),
                         hidden, use_reentrant=False,
                         preserve_rng_state=self.checkpoint_preserve_rng_state)
             else:
-                hidden = block(
-                    hidden, context.memory, context.social_h, time_embedding,
-                    observed, context.valid)
+                hidden = self._run_block(
+                    block, hidden, context, time_embedding, observed,
+                    block_endpoint_condition)
         pre = self._combine(
             self.pre_bridge_head(hidden[..., :11, :]),
             self.pre_goal_head(hidden[..., 11, :]),
@@ -364,19 +410,19 @@ class GeometryConditionedJointDenoiser(nn.Module):
             physical_feedback, future)
         hidden = hidden + gate * physical_feedback
         combined = observed + gate.view(batch, 1, 1, 1, 1, 1) * future
-        for block in self.blocks[3:]:
+        for block in self.blocks[self.coarse_blocks:]:
             if use_block_checkpoints and self.training and torch.is_grad_enabled():
                 with record_function("ebjd.denoiser_block_checkpoint"):
                     hidden = checkpoint(
-                        lambda value, module=block: module(
-                            value, context.memory, context.social_h, time_embedding,
-                            combined, context.valid),
+                        lambda value, module=block: self._run_block(
+                            module, value, context, time_embedding, combined,
+                            block_endpoint_condition),
                         hidden, use_reentrant=False,
                         preserve_rng_state=self.checkpoint_preserve_rng_state)
             else:
-                hidden = block(
-                    hidden, context.memory, context.social_h, time_embedding,
-                    combined, context.valid)
+                hidden = self._run_block(
+                    block, hidden, context, time_embedding, combined,
+                    block_endpoint_condition)
         final = self._combine(
             self.final_bridge_head(hidden[..., :11, :]),
             self.final_goal_head(hidden[..., 11, :]),

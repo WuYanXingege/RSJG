@@ -61,12 +61,15 @@ def relative_parameter_difference(left, right):
     return (numerator / max(denominator, 1e-30)) ** 0.5
 
 
-def run_arm(config, dataset, bank, plan, arm, updates, device, deadline):
+def run_arm(config, dataset, bank, plan, arm, updates, device, deadline,
+            architecture_profile=None):
     seed_all(3101)
     local = deepcopy(config)
     local["representation"]["type"] = (
         "invertible_endpoint_acceleration_bridge_v1" if arm == "acceleration"
         else "invertible_endpoint_brownian_bridge")
+    if architecture_profile is not None:
+        local["denoiser"].update(architecture_profile)
     bridge = build_model(local, proposal_conditioned=True)
     scales = fit_training_scales(
         bridge, coordinate_batches(Path(local["paths"]["train_manifest"])))
@@ -86,6 +89,7 @@ def run_arm(config, dataset, bank, plan, arm, updates, device, deadline):
     started = time.perf_counter()
     rows, seen, input_digests = [], [], []
     gradient_seen = set()
+    sampling_batch = sampling_goals = None
     for update in range(updates):
         if time.perf_counter() > deadline:
             raise TimeoutError("bounded validation wall-clock budget exhausted")
@@ -109,6 +113,8 @@ def run_arm(config, dataset, bank, plan, arm, updates, device, deadline):
                 active = prepared.valid[scene].nonzero(as_tuple=False).flatten()
                 physical = prepared.compact_scenes(scene, scene + 1).to(device)
                 physical_goals = proposal[scene:scene + 1, :, active].to(device)
+                if sampling_batch is None and int(physical.valid.sum()) > 1:
+                    sampling_batch, sampling_goals = physical, physical_goals
                 with torch.autocast(device_type=device.type, dtype=torch.bfloat16,
                                     enabled=device.type == "cuda" and
                                     local["training"]["mixed_precision"] != "fp32"):
@@ -143,9 +149,12 @@ def run_arm(config, dataset, bank, plan, arm, updates, device, deadline):
         raise FloatingPointError("non-finite updated parameter")
     required = ["bridge.encoder.map_unet", "bridge.encoder.history_gru",
                 "bridge.encoder.history_social", "bridge.denoiser.blocks.0",
-                "bridge.denoiser.blocks.5", "bridge.denoiser.clean_injection",
+                f"bridge.denoiser.blocks.{len(model.bridge.denoiser.blocks) - 1}",
+                "bridge.denoiser.clean_injection",
                 "bridge.denoiser.map_injection", "bridge.denoiser.future_geometry_mlp",
                 "bridge.denoiser.proposal_embedding", "coupling"]
+    if model.bridge.denoiser.block_type == "endpoint_gated_dit_v1":
+        required.append("bridge.denoiser.endpoint_condition")
     gradients = {prefix: any(k.startswith(prefix) for k in gradient_seen) for prefix in required}
     if not all(gradients.values()):
         raise RuntimeError(f"missing nonzero training-module gradients: {gradients}")
@@ -153,9 +162,11 @@ def run_arm(config, dataset, bank, plan, arm, updates, device, deadline):
     if delta == 0:
         raise RuntimeError("optimizer did not update model parameters")
     sampling_receipt = None
-    if arm == "acceleration":
+    if arm == "acceleration" or architecture_profile is not None:
         model.eval()
         with torch.no_grad():
+            if sampling_batch is not None:
+                physical, physical_goals = sampling_batch, sampling_goals
             context = model.encode_context(physical.observed, physical.semantic_maps, physical.valid)
             initial_noise = torch.randn(1, 20, physical.observed.shape[1], 12, 2, device=device)
             h, indices, _ = model.coupling.assign(
@@ -179,6 +190,12 @@ def run_arm(config, dataset, bank, plan, arm, updates, device, deadline):
                                 "scenes": 1, "agents": int(physical.valid.sum())}
     receipt = {
         "arm": arm, "optimizer_updates": updates,
+        "denoiser_architecture": model.bridge.denoiser.architecture_signature(),
+        "trainable_parameters": sum(p.numel() for p in model.parameters() if p.requires_grad),
+        "attention_ffn_nonzero_gradients": {
+            branch: any((".blocks." in name and f".{branch}." in name)
+                        for name in gradient_seen)
+            for branch in ("temporal", "social", "cross", "ff")},
         "logical_batch_scenes": int(local["training"]["batch_scenes"]),
         "gradient_accumulation": accumulation,
         "map_pixels": list(physical.semantic_maps.shape[-2:]),

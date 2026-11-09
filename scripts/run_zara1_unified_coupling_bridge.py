@@ -286,6 +286,7 @@ def main() -> None:
             "goal": goal_scale, "bridge": bridge_scale,
             "source": "training_fold_only_existing_rms_rule"},
         "bridge_prior": bridge.representation.bridge_prior,
+        "denoiser_architecture": bridge.denoiser.architecture_signature(),
         "coupling_singleton_backward": config["training"].get(
             "coupling_singleton_backward", "legacy"),
         "train_bank_sha256": train_bank.sha256,
@@ -323,6 +324,14 @@ def main() -> None:
     if args.resume and last_checkpoint.exists():
         payload = torch.load(last_checkpoint, map_location=device, weights_only=False)
         saved_identity = payload["run_identity"]
+        saved_architecture = saved_identity.get("denoiser_architecture")
+        if saved_architecture is None:
+            if (identity["denoiser_architecture"]["block_type"] != "legacy_fjab" or
+                    identity["denoiser_architecture"]["coarse_blocks"] != 3 or
+                    identity["denoiser_architecture"]["refinement_blocks"] != 3):
+                raise RuntimeError("legacy checkpoint cannot resume a different denoiser architecture")
+        elif saved_architecture != identity["denoiser_architecture"]:
+            raise RuntimeError("denoiser architecture changed on resume")
         for key, default in (("bridge_prior", "brownian_position"),
                              ("coupling_singleton_backward", "legacy")):
             if saved_identity.get(key, default) != identity[key]:

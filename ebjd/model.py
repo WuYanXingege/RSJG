@@ -24,6 +24,9 @@ class EBJDModel(nn.Module):
         ctf_feedback_basis: str = "legacy",
         proposal_conditioned: bool = False,
         bridge_prior: str = "brownian_position",
+        block_type: str = "legacy_fjab",
+        coarse_blocks: int = 3,
+        refinement_blocks: int = 3,
     ) -> None:
         super().__init__()
         self.representation = EndpointBridgeDecomposition(
@@ -36,7 +39,9 @@ class EBJDModel(nn.Module):
         self.denoiser = GeometryConditionedJointDenoiser(
             self.representation, dim=hidden_dim, heads=attention_heads,
             ff_dim=ff_dim, ctf_feedback_basis=ctf_feedback_basis,
-            proposal_conditioned=proposal_conditioned)
+            proposal_conditioned=proposal_conditioned,
+            block_type=block_type, coarse_blocks=coarse_blocks,
+            refinement_blocks=refinement_blocks)
 
     def encode_context(
         self, observed: torch.Tensor, semantic_maps: torch.Tensor, valid: torch.Tensor

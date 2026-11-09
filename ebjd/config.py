@@ -52,6 +52,7 @@ ALLOWED_KEYS = {
         "sublayers", "memory_tokens_per_agent", "cross_world_attention",
         "target_parameterization", "geometry_gate", "clean_future_detach",
         "ctf_feedback_basis",
+        "block_type",
     },
     "diffusion": {
         "schedule", "exact_terminal_snr_zero", "training_noise_bins",
@@ -115,7 +116,7 @@ OPTIONAL_KEYS = {"training": {
     "early_stopping", "ebjd_input_pipeline",
     "ebjd_input_pipeline_receipt",
     "coupling_singleton_backward",
-}, "denoiser": {"ctf_feedback_basis"}, "evaluation": {"unit"}}
+}, "denoiser": {"ctf_feedback_basis", "block_type"}, "evaluation": {"unit"}}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
     ("experiment", "source_commit"),
@@ -234,8 +235,7 @@ def validate_supported_config(config: dict) -> None:
         ("representation", "goal_rms_floor_m", 0.5),
         ("representation", "bridge_rms_floor_m", 0.1),
         ("representation", "literal_endpoint_concatenation", True),
-        ("denoiser", "heads", 4), ("denoiser", "coarse_blocks", 3),
-        ("denoiser", "refinement_blocks", 3),
+        ("denoiser", "heads", 4),
         ("denoiser", "memory_tokens_per_agent", 72),
         ("denoiser", "cross_world_attention", False),
         ("denoiser", "target_parameterization", "v"),
@@ -270,6 +270,16 @@ def validate_supported_config(config: dict) -> None:
         ("ablations", "available", []),
     ):
         _require(config, section, key, expected)
+    denoiser = config["denoiser"]
+    block_type = denoiser.get("block_type", "legacy_fjab")
+    depths = (denoiser["coarse_blocks"], denoiser["refinement_blocks"])
+    allowed_depths = ({(3, 3)} if block_type == "legacy_fjab" else {(3, 3), (4, 4)})
+    if (block_type not in {"legacy_fjab", "endpoint_gated_dit_v1"} or
+            any(type(value) is not int for value in depths) or depths not in allowed_depths):
+        raise ValueError("unsupported denoiser block_type/coarse/refinement depth")
+    if (block_type == "endpoint_gated_dit_v1" and
+            denoiser.get("ctf_feedback_basis", "legacy") != "legacy"):
+        raise ValueError("endpoint-gated DiT requires legacy CTF feedback")
     if config["representation"]["type"] not in {
         "invertible_endpoint_brownian_bridge",
         "invertible_endpoint_acceleration_bridge_v1",
@@ -468,6 +478,9 @@ def build_model(
         ctf_feedback_basis=str(
             config["denoiser"].get("ctf_feedback_basis", "legacy")),
         proposal_conditioned=proposal_conditioned,
+        block_type=str(config["denoiser"].get("block_type", "legacy_fjab")),
+        coarse_blocks=int(config["denoiser"]["coarse_blocks"]),
+        refinement_blocks=int(config["denoiser"]["refinement_blocks"]),
         bridge_prior=(
             "integrated_acceleration_v1"
             if rep["type"] == "invertible_endpoint_acceleration_bridge_v1"

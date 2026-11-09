@@ -1,0 +1,42 @@
+schema: ebjd-endpoint-gated-dit-research-v1
+status: implemented_not_accuracy_validated
+default_research_arm: gated8
+shared:
+  hidden_dim: 192
+  heads: 4
+  ff_dim: 768
+  representation_type: invertible_endpoint_brownian_bridge
+  coupling_singleton_backward: legacy
+  ctf_feedback_basis: legacy
+  endpoint: fixed_native_or_bijectively_coupled
+  rollout: false
+  paired_actual_step_projection: false
+  diffusion: cosine_vp_v_prediction
+  worlds: 20
+  ddim_steps: 20
+arms:
+  legacy6:
+    block_type: legacy_fjab
+    coarse_blocks: 3
+    refinement_blocks: 3
+  gated6:
+    block_type: endpoint_gated_dit_v1
+    coarse_blocks: 3
+    refinement_blocks: 3
+  gated8:
+    block_type: endpoint_gated_dit_v1
+    coarse_blocks: 4
+    refinement_blocks: 4
+block:
+  condition: diffusion_time_plus_history_plus_world_endpoint
+  modulation: independent_shift_scale_gate_per_branch
+  residual_gate: tanh_zero_initialized
+  attention: qk_rms_normalized_with_fp32_logits
+  geometry: original_additive_observed_and_alpha_squared_ctf_bias
+  branches: [temporal, within_world_social, per_person_context, gelu_ffn]
+  cross_world_attention: false
+initialization: fresh_main_model_verified_same_fold_map_unet_only
+scope:
+  automatic_long_training: false
+  combine_acceleration_prior: false
+  optimal_depth_claim: not_established
