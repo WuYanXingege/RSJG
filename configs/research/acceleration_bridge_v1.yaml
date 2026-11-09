@@ -1,0 +1,36 @@
+schema: ebjd-acceleration-bridge-research-v1
+status: implemented_not_metric_validated
+base: existing_fold_resolved_unified_config
+initialization: fresh_main_model_with_verified_same_fold_map_unet
+scale_fit: complete_training_fold_only_refit_for_each_prior
+architecture:
+  hidden_dim: 192
+  heads: 4
+  ff_dim: 768
+  fjab_blocks: 6
+  ctf_feedback_basis: legacy
+  goal: fixed_native_or_bijectively_coupled
+  output: Raw
+arms:
+  control:
+    representation_type: invertible_endpoint_brownian_bridge
+    coupling_singleton_backward: legacy
+  acceleration:
+    representation_type: invertible_endpoint_acceleration_bridge_v1
+    coupling_singleton_backward: legacy
+  singleton_fix:
+    representation_type: invertible_endpoint_brownian_bridge
+    coupling_singleton_backward: identity
+training:
+  use_existing_batch_accumulation_losses_optimizer_schedule: true
+  rollout: false
+  paired_actual_step_projection: false
+evaluation:
+  worlds: 20
+  steps: 20
+  inference_seeds: [2035, 2036, 2037, 2038, 2039]
+  do_not_reselect_historical_models: true
+scope:
+  automatic_long_training: false
+  combine_interventions: false
+  improvement_claim: requires_paired_training_and_frozen_evaluation

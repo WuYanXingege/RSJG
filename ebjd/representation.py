@@ -1,9 +1,45 @@
-"""Invertible endpoint--Brownian-bridge trajectory representations."""
+"""Invertible endpoint-conditioned trajectory representations."""
 
 from __future__ import annotations
 
 import torch
 from torch import nn
+
+
+BRIDGE_PRIORS = {"brownian_position", "integrated_acceleration_v1"}
+
+
+def conditional_bridge_statistics(
+    times: torch.Tensor, bridge_prior: str = "brownian_position",
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return conditional mean coefficients and covariance on normalized time.
+
+    The acceleration prior is the position process driven by white acceleration,
+    with zero initial residual position/velocity and a fixed terminal position.
+    Its terminal velocity is free.  These statistics specify an inductive bias
+    for reversible whitening, not a guarantee about learned finite differences.
+    FP64 construction avoids jitter or a hidden change to the conditioned GP.
+    """
+    if bridge_prior not in BRIDGE_PRIORS:
+        raise ValueError(f"unsupported bridge prior: {bridge_prior!r}")
+    times = torch.as_tensor(times, dtype=torch.float64)
+    if times.ndim != 1 or not torch.isfinite(times).all():
+        raise ValueError("bridge times must be a finite vector")
+    if ((times < 0) | (times > 1)).any():
+        raise ValueError("bridge times must lie in [0, 1]")
+    lo = torch.minimum(times[:, None], times[None, :])
+    hi = torch.maximum(times[:, None], times[None, :])
+    if bridge_prior == "brownian_position":
+        # Keep the archived arithmetic and values exactly unchanged.
+        return times, lo - times[:, None] * times[None, :]
+    terminal_cross_covariance = times.square() * (3 - times) / 6
+    terminal_variance = 1 / 3
+    mean = terminal_cross_covariance / terminal_variance
+    covariance = (
+        lo.square() * (3 * hi - lo) / 6
+        - terminal_cross_covariance[:, None]
+        * terminal_cross_covariance[None, :] / terminal_variance)
+    return mean, covariance
 
 
 def cosine_vp(t: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
@@ -35,7 +71,7 @@ def cv_baseline(observed: torch.Tensor, dt: float = 0.4) -> tuple[torch.Tensor, 
 class EndpointBridgeDecomposition(nn.Module):
     """Endpoint--Bridge Decomposition (EBD) with exact reversible decoding.
 
-    Brownian-bridge covariance is used only to whiten path residuals.  It is
+    A conditional Gaussian covariance is used only to whiten path residuals. It is
     not a separate diffusion bridge and does not assert probabilistic
     independence between endpoint and bridge variables.
     """
@@ -45,19 +81,46 @@ class EndpointBridgeDecomposition(nn.Module):
         goal_scale: float = 1.0,
         bridge_scale: float = 1.0,
         pred_length: int = 12,
+        bridge_prior: str = "brownian_position",
     ) -> None:
         super().__init__()
         if pred_length != 12:
             raise ValueError("EBJD v1 requires a 12-frame prediction horizon")
         if goal_scale <= 0 or bridge_scale <= 0:
             raise ValueError("representation scales must be positive")
-        a = torch.arange(1, pred_length, dtype=torch.float64) / pred_length
-        covariance = torch.minimum(a[:, None], a[None, :]) - a[:, None] * a[None, :]
+        self.bridge_prior = bridge_prior
+        times = torch.arange(1, pred_length, dtype=torch.float64) / pred_length
+        a, covariance = conditional_bridge_statistics(times, bridge_prior)
         cholesky = torch.linalg.cholesky(covariance)
         self.register_buffer("a", a.float())
         self.register_buffer("bridge_cholesky", cholesky.float())
         self.register_buffer("goal_scale", torch.tensor(float(goal_scale)))
         self.register_buffer("bridge_scale", torch.tensor(float(bridge_scale)))
+
+    def _load_from_state_dict(
+        self, state_dict, prefix, local_metadata, strict, missing_keys,
+        unexpected_keys, error_msgs,
+    ):
+        # A same-shaped checkpoint can otherwise silently replace the new
+        # mean/kernel with the old Brownian buffers (or vice versa).  Shapes
+        # alone are insufficient for a semantically correct strict restore.
+        times = torch.arange(1, 12, dtype=torch.float64) / 12
+        expected_a, covariance = conditional_bridge_statistics(
+            times, self.bridge_prior)
+        expected_l = torch.linalg.cholesky(covariance)
+        for name, expected in (("a", expected_a), ("bridge_cholesky", expected_l)):
+            incoming = state_dict.get(prefix + name)
+            if incoming is not None and (
+                incoming.shape != expected.shape or not torch.allclose(
+                    incoming.detach().cpu().float(), expected.float(),
+                    atol=1e-7, rtol=1e-6)):
+                error_msgs.append(
+                    f"{prefix}{name}: checkpoint bridge prior does not match "
+                    f"{self.bridge_prior!r}; use fresh initialization and "
+                    "refit training-fold scales for a different bridge prior")
+        super()._load_from_state_dict(
+            state_dict, prefix, local_metadata, strict, missing_keys,
+            unexpected_keys, error_msgs)
 
     def set_scales(self, goal_scale: float, bridge_scale: float) -> None:
         if goal_scale <= 0 or bridge_scale <= 0:

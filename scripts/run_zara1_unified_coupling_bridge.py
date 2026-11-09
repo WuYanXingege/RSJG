@@ -285,6 +285,9 @@ def main() -> None:
         "representation_scales": {
             "goal": goal_scale, "bridge": bridge_scale,
             "source": "training_fold_only_existing_rms_rule"},
+        "bridge_prior": bridge.representation.bridge_prior,
+        "coupling_singleton_backward": config["training"].get(
+            "coupling_singleton_backward", "legacy"),
         "train_bank_sha256": train_bank.sha256,
         "validation_bank_sha256": {str(k): v.sha256 for k, v in validation_banks.items()},
         "rollout": False, "actual_step_projection": False,
@@ -294,8 +297,9 @@ def main() -> None:
         "ebjd_input_pipeline": str(config["training"].get(
             "ebjd_input_pipeline", "legacy_cpu_rigid")),
     }
-    atomic_json(output / "RUN_IDENTITY.json", identity)
-    model = UnifiedCouplingBridge(bridge).to(device)
+    model = UnifiedCouplingBridge(
+        bridge, singleton_backward=config["training"].get(
+            "coupling_singleton_backward", "legacy")).to(device)
     model.training_options = {"coarse": 0.25, "geometry": 0.05, "map": 0.10}
     optimizer = optimizer_for(model, config)
     early_contract = config["training"]["early_stopping"]
@@ -318,6 +322,11 @@ def main() -> None:
     last_checkpoint = output / "last.pt"
     if args.resume and last_checkpoint.exists():
         payload = torch.load(last_checkpoint, map_location=device, weights_only=False)
+        saved_identity = payload["run_identity"]
+        for key, default in (("bridge_prior", "brownian_position"),
+                             ("coupling_singleton_backward", "legacy")):
+            if saved_identity.get(key, default) != identity[key]:
+                raise RuntimeError(f"research semantics changed on resume: {key}")
         model.load_state_dict(payload["model"], strict=True)
         optimizer.load_state_dict(payload["optimizer"])
         update = int(payload["update_index"])
@@ -344,6 +353,7 @@ def main() -> None:
         torch.set_rng_state(payload["rng"]["torch_cpu"])
         torch.cuda.set_rng_state_all(payload["rng"]["torch_cuda"])
         loader_generator.set_state(payload["rng"]["loader"])
+    atomic_json(output / "RUN_IDENTITY.json", identity)
     gdts = bound_reference_metrics(
         config["paths"]["matched_gdts_validation_result"], 2035,
         validation_sha)

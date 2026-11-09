@@ -80,8 +80,17 @@ def gather_candidates(values: torch.Tensor, indices: torch.Tensor) -> torch.Tens
 class LearnableJointCouplingHead(nn.Module):
     """Candidate-order-equivariant scene coupling with shared world queries."""
 
-    def __init__(self, dim: int = 192, heads: int = 4, worlds: int = 20) -> None:
+    def __init__(
+        self, dim: int = 192, heads: int = 4, worlds: int = 20,
+        singleton_backward: str = "legacy",
+    ) -> None:
         super().__init__()
+        if singleton_backward not in {"legacy", "identity"}:
+            raise ValueError("singleton_backward must be 'legacy' or 'identity'")
+        # This changes only the straight-through surrogate, not checkpoint
+        # tensors or the hard permutation used at inference.  Keep archived
+        # training behavior as the default for controlled research comparisons.
+        self.singleton_backward = singleton_backward
         self.worlds = int(worlds)
         self.endpoint = nn.Sequential(
             nn.Linear(2, dim), nn.LayerNorm(dim), nn.SiLU(), nn.Linear(dim, dim))
@@ -129,6 +138,11 @@ class LearnableJointCouplingHead(nn.Module):
         hard = permutation_matrix(indices, self.worlds).to(scores)
         soft = log_sinkhorn(scores, iterations=20)
         valid = context.valid[:, :, None, None]
+        if self.singleton_backward == "identity":
+            # A single agent has no joint pairing decision: the hard branch is
+            # the identity and the best-of-K objective is permutation invariant.
+            # Its surrogate must not teach unrealizable assignment changes.
+            valid = valid & (context.valid.sum(-1) > 1)[:, None, None, None]
         identity = torch.eye(self.worlds, device=scores.device)[None, None]
         soft = torch.where(valid, soft, identity)
         st = hard + soft - soft.detach()
@@ -156,7 +170,10 @@ def joint_pair_loss(
 class UnifiedCouplingBridge(nn.Module):
     """One checkpoint containing shared MSCE, coupling and conditional bridge."""
 
-    def __init__(self, bridge: EBJDModel, worlds: int = 20) -> None:
+    def __init__(
+        self, bridge: EBJDModel, worlds: int = 20,
+        singleton_backward: str = "legacy",
+    ) -> None:
         super().__init__()
         if not bridge.denoiser.proposal_conditioned:
             raise ValueError("unified bridge must use proposal conditioning")
@@ -164,7 +181,7 @@ class UnifiedCouplingBridge(nn.Module):
         self.coupling = LearnableJointCouplingHead(
             dim=bridge.encoder.history_stem[0].out_features,
             heads=bridge.encoder.history_social[0].attn.heads,
-            worlds=worlds)
+            worlds=worlds, singleton_backward=singleton_backward)
 
     def encode_context(self, *args, **kwargs) -> EBJDContext:
         return self.bridge.encode_context(*args, **kwargs)

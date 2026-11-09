@@ -23,9 +23,11 @@ class EBJDModel(nn.Module):
         history_social_blocks: int = 2,
         ctf_feedback_basis: str = "legacy",
         proposal_conditioned: bool = False,
+        bridge_prior: str = "brownian_position",
     ) -> None:
         super().__init__()
-        self.representation = EndpointBridgeDecomposition(goal_scale, bridge_scale)
+        self.representation = EndpointBridgeDecomposition(
+            goal_scale, bridge_scale, bridge_prior=bridge_prior)
         self.encoder = MotionSceneContextEncoder(
             goal_scale, crop_width_m, dim=hidden_dim,
             map_agent_chunk=map_agent_chunk,

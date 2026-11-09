@@ -88,6 +88,7 @@ ALLOWED_KEYS = {
         "ctf_feedback_transition_start_update", "ctf_feedback_transition_updates",
         "early_stopping", "ebjd_input_pipeline",
         "ebjd_input_pipeline_receipt",
+        "coupling_singleton_backward",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -113,6 +114,7 @@ OPTIONAL_KEYS = {"training": {
     "ctf_feedback_transition_start_update", "ctf_feedback_transition_updates",
     "early_stopping", "ebjd_input_pipeline",
     "ebjd_input_pipeline_receipt",
+    "coupling_singleton_backward",
 }, "denoiser": {"ctf_feedback_basis"}, "evaluation": {"unit"}}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
@@ -226,7 +228,6 @@ def validate_supported_config(config: dict) -> None:
         ("history_encoder", "observed_geometry_dim", 10),
         ("history_encoder", "observed_bias_bound", 2.0),
         ("history_encoder", "dropout", 0.0),
-        ("representation", "type", "invertible_endpoint_brownian_bridge"),
         ("representation", "goal_tokens", 1),
         ("representation", "bridge_tokens", 11),
         ("representation", "train_fold_rms_scaling", True),
@@ -269,6 +270,14 @@ def validate_supported_config(config: dict) -> None:
         ("ablations", "available", []),
     ):
         _require(config, section, key, expected)
+    if config["representation"]["type"] not in {
+        "invertible_endpoint_brownian_bridge",
+        "invertible_endpoint_acceleration_bridge_v1",
+    }:
+        raise ValueError("unsupported representation.type")
+    if config["representation"]["type"] == "invertible_endpoint_acceleration_bridge_v1":
+        if config["denoiser"].get("ctf_feedback_basis", "legacy") != "legacy":
+            raise ValueError("acceleration bridge requires legacy CTF feedback")
     width_profile = (
         int(config["history_encoder"]["hidden_dim"]),
         int(config["history_encoder"]["social_ff_dim"]),
@@ -295,6 +304,10 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(
                 "training.scene_forward_chunk currently supports only the OOM-safe value 1")
     training = config["training"]
+    if training.get("coupling_singleton_backward", "legacy") not in {
+        "legacy", "identity",
+    }:
+        raise ValueError("unsupported training.coupling_singleton_backward")
     strategy = training.get("execution_strategy", "legacy_or_oom_safe_v1")
     if strategy not in {
         "legacy_or_oom_safe_v1", "compact_grouped_v1",
@@ -455,6 +468,10 @@ def build_model(
         ctf_feedback_basis=str(
             config["denoiser"].get("ctf_feedback_basis", "legacy")),
         proposal_conditioned=proposal_conditioned,
+        bridge_prior=(
+            "integrated_acceleration_v1"
+            if rep["type"] == "invertible_endpoint_acceleration_bridge_v1"
+            else "brownian_position"),
     )
     model.denoiser.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])
