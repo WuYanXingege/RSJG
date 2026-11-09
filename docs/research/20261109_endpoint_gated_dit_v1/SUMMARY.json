@@ -1,0 +1,260 @@
+{
+  "status": "IMPLEMENTED_INTERFACE_VALIDATED_NOT_ACCURACY_VALIDATED",
+  "implementation_commit": "1392916720348ebc0aa1c9f0049f969bd56cd035",
+  "source_parent": "5bcb87c58e89f8af4335cd32d2cca1e959598193",
+  "default_research_arm": "gated8",
+  "formal_default_changed": false,
+  "tests_passed": 130,
+  "legacy_archived_state_forward_gradient_exact": true,
+  "core_endpoint_projection_gradient_verified_by_tests": true,
+  "temporary_optimizer_updates": 8,
+  "formal_optimizer_updates": 0,
+  "device": "CPU",
+  "effective_precision": "FP32",
+  "gpu_wall_seconds": 0,
+  "real_check_wall_seconds": 167.04327647999162,
+  "raw_receipt": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_endpoint_gated_dit_v1_20261109/sdd_check/RESULTS.json",
+    "sha256": "0c7e23bc6b6b89eba18a1c3c8393d9b6b1da30a3122998d07d07106ce04c267b"
+  },
+  "arms": [
+    {
+      "arm": "legacy6",
+      "optimizer_updates": 2,
+      "denoiser_architecture": {
+        "block_type": "legacy_fjab",
+        "coarse_blocks": 3,
+        "ff_dim": 768,
+        "heads": 4,
+        "hidden_dim": 192,
+        "refinement_blocks": 3
+      },
+      "trainable_parameters": 7587805,
+      "logical_batch_scenes": 4,
+      "gradient_accumulation": 4,
+      "map_pixels": [
+        256,
+        256
+      ],
+      "finite": true,
+      "required_module_nonzero_gradients": {
+        "bridge.denoiser.blocks.0": true,
+        "bridge.denoiser.blocks.5": true,
+        "bridge.denoiser.clean_injection": true,
+        "bridge.denoiser.future_geometry_mlp": true,
+        "bridge.denoiser.map_injection": true,
+        "bridge.denoiser.proposal_embedding": true,
+        "bridge.encoder.history_gru": true,
+        "bridge.encoder.history_social": true,
+        "bridge.encoder.map_unet": true,
+        "coupling": true
+      },
+      "attention_ffn_nonzero_gradients": {
+        "cross": true,
+        "ff": true,
+        "social": true,
+        "temporal": true
+      },
+      "diagnostic_wall_seconds": 33.44518757099286,
+      "sampling": {
+        "G_H_endpoint_multisets_equal": true,
+        "agents": 2,
+        "finite": true,
+        "literal_endpoints_exact": true,
+        "scenes": 1,
+        "steps": 20,
+        "worlds": 20
+      },
+      "min_agents": 1,
+      "max_agents": 9,
+      "input_augmentation_noise_hashes_match": true,
+      "parameter_relative_l2_vs_control": null,
+      "update_losses": [
+        2.3425151985138655,
+        1.9980210475623608
+      ]
+    },
+    {
+      "arm": "legacy6_repeat",
+      "optimizer_updates": 2,
+      "denoiser_architecture": {
+        "block_type": "legacy_fjab",
+        "coarse_blocks": 3,
+        "ff_dim": 768,
+        "heads": 4,
+        "hidden_dim": 192,
+        "refinement_blocks": 3
+      },
+      "trainable_parameters": 7587805,
+      "logical_batch_scenes": 4,
+      "gradient_accumulation": 4,
+      "map_pixels": [
+        256,
+        256
+      ],
+      "finite": true,
+      "required_module_nonzero_gradients": {
+        "bridge.denoiser.blocks.0": true,
+        "bridge.denoiser.blocks.5": true,
+        "bridge.denoiser.clean_injection": true,
+        "bridge.denoiser.future_geometry_mlp": true,
+        "bridge.denoiser.map_injection": true,
+        "bridge.denoiser.proposal_embedding": true,
+        "bridge.encoder.history_gru": true,
+        "bridge.encoder.history_social": true,
+        "bridge.encoder.map_unet": true,
+        "coupling": true
+      },
+      "attention_ffn_nonzero_gradients": {
+        "cross": true,
+        "ff": true,
+        "social": true,
+        "temporal": true
+      },
+      "diagnostic_wall_seconds": 29.150031595956534,
+      "sampling": {
+        "G_H_endpoint_multisets_equal": true,
+        "agents": 2,
+        "finite": true,
+        "literal_endpoints_exact": true,
+        "scenes": 1,
+        "steps": 20,
+        "worlds": 20
+      },
+      "min_agents": 1,
+      "max_agents": 9,
+      "input_augmentation_noise_hashes_match": true,
+      "parameter_relative_l2_vs_control": 0,
+      "update_losses": [
+        2.3425151985138655,
+        1.9980210475623608
+      ]
+    },
+    {
+      "arm": "gated6",
+      "optimizer_updates": 2,
+      "denoiser_architecture": {
+        "block_type": "endpoint_gated_dit_v1",
+        "coarse_blocks": 3,
+        "ff_dim": 768,
+        "heads": 4,
+        "hidden_dim": 192,
+        "refinement_blocks": 3
+      },
+      "trainable_parameters": 9397789,
+      "logical_batch_scenes": 4,
+      "gradient_accumulation": 4,
+      "map_pixels": [
+        256,
+        256
+      ],
+      "finite": true,
+      "required_module_nonzero_gradients": {
+        "bridge.denoiser.blocks.0": true,
+        "bridge.denoiser.blocks.5": true,
+        "bridge.denoiser.clean_injection": true,
+        "bridge.denoiser.future_geometry_mlp": true,
+        "bridge.denoiser.map_injection": true,
+        "bridge.denoiser.proposal_embedding": true,
+        "bridge.encoder.history_gru": true,
+        "bridge.encoder.history_social": true,
+        "bridge.encoder.map_unet": true,
+        "coupling": true
+      },
+      "attention_ffn_nonzero_gradients": {
+        "cross": true,
+        "ff": true,
+        "social": true,
+        "temporal": true
+      },
+      "diagnostic_wall_seconds": 32.08702709397767,
+      "sampling": {
+        "G_H_endpoint_multisets_equal": true,
+        "agents": 2,
+        "finite": true,
+        "literal_endpoints_exact": true,
+        "scenes": 1,
+        "steps": 20,
+        "worlds": 20
+      },
+      "min_agents": 1,
+      "max_agents": 9,
+      "input_augmentation_noise_hashes_match": true,
+      "parameter_relative_l2_vs_control": null,
+      "update_losses": [
+        2.3422797825187445,
+        2.039294969290495
+      ]
+    },
+    {
+      "arm": "gated8",
+      "optimizer_updates": 2,
+      "denoiser_architecture": {
+        "block_type": "endpoint_gated_dit_v1",
+        "coarse_blocks": 4,
+        "ff_dim": 768,
+        "heads": 4,
+        "hidden_dim": 192,
+        "refinement_blocks": 4
+      },
+      "trainable_parameters": 11768797,
+      "logical_batch_scenes": 4,
+      "gradient_accumulation": 4,
+      "map_pixels": [
+        256,
+        256
+      ],
+      "finite": true,
+      "required_module_nonzero_gradients": {
+        "bridge.denoiser.blocks.0": true,
+        "bridge.denoiser.blocks.7": true,
+        "bridge.denoiser.clean_injection": true,
+        "bridge.denoiser.future_geometry_mlp": true,
+        "bridge.denoiser.map_injection": true,
+        "bridge.denoiser.proposal_embedding": true,
+        "bridge.encoder.history_gru": true,
+        "bridge.encoder.history_social": true,
+        "bridge.encoder.map_unet": true,
+        "coupling": true
+      },
+      "attention_ffn_nonzero_gradients": {
+        "cross": true,
+        "ff": true,
+        "social": true,
+        "temporal": true
+      },
+      "diagnostic_wall_seconds": 33.65825479995692,
+      "sampling": {
+        "G_H_endpoint_multisets_equal": true,
+        "agents": 2,
+        "finite": true,
+        "literal_endpoints_exact": true,
+        "scenes": 1,
+        "steps": 20,
+        "worlds": 20
+      },
+      "min_agents": 1,
+      "max_agents": 9,
+      "input_augmentation_noise_hashes_match": true,
+      "parameter_relative_l2_vs_control": null,
+      "update_losses": [
+        2.3550985530018806,
+        2.025398161262274
+      ]
+    }
+  ],
+  "prepared_configs": {
+    "legacy6": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_endpoint_gated_dit_v1_20261109/prepared_legacy6/RESOLVED.json",
+      "sha256": "7e007f76c3ee551df2b2066c81490966f3cb35a76f93505dd7c0c2ede811450e"
+    },
+    "gated6": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_endpoint_gated_dit_v1_20261109/prepared_gated6/RESOLVED.json",
+      "sha256": "223bb284faafa1cde05632d18c62e2a81b48c02d14298476347d469048c4c977"
+    },
+    "gated8": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_endpoint_gated_dit_v1_20261109/prepared_gated8/RESOLVED.json",
+      "sha256": "860c5b71e60f99bdedf84ddc6e7265eed690a2b7f89019657817d67eebd8a66e"
+    }
+  }
+}

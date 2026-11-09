@@ -17,6 +17,13 @@ retained for historical reproducibility. See the current-path note in
 [METHOD.md](docs/METHOD.md) and the optional
 [acceleration-bridge research implementation](docs/research/20261109_acceleration_bridge_v1/REPORT_ZH.md).
 
+An independently selectable research backbone is now available as
+`endpoint_gated_dit_v1`: endpoint/history/noise-conditioned branch gates and
+QK-normalized attention, with explicit 3+3 and 4+4 depths. The
+[implementation and checks](docs/research/20261109_endpoint_gated_dit_v1/REPORT_ZH.md)
+include fresh-run configuration preparation. It is not an accuracy-validated
+replacement for the completed six-block formal models.
+
 The independent `ebjd` model package does not import code from another RSJG
 worktree. Its original unconditional model excludes native-goal, Fixed-anchor,
 SELF_ONLY, HALF, V2 token/anchor and extra path-loss logic; the current unified

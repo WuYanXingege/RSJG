@@ -25,6 +25,13 @@ the independent singleton-backward correction are documented in
 [the architecture review](research/20261109_acceleration_bridge_v1/REPORT_ZH.md).
 They do not replace the frozen formal Brownian model or its results.
 
+The optional `endpoint_gated_dit_v1` backbone replaces FJAB internals with
+endpoint-conditioned, branch-wise adaLN-Zero/tanh residual gates and
+QK-normalized attention. It supports 3+3 and 4+4 block profiles. Its
+[research report](research/20261109_endpoint_gated_dit_v1/REPORT_ZH.md) records
+the parameter increase, compatibility boundary and interface-only evidence.
+This backbone is tested separately from the acceleration-prior intervention.
+
 ## Data flow
 
 ```mermaid
