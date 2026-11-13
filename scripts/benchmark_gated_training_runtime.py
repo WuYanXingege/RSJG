@@ -14,6 +14,7 @@ import hashlib
 import json
 from pathlib import Path
 import resource
+import random
 import statistics
 import time
 import traceback
@@ -121,6 +122,8 @@ def main():
     parser.add_argument("--skip-profile", action="store_true")
     parser.add_argument("--gate-updates", type=int, default=8)
     parser.add_argument("--gate-only", action="store_true")
+    parser.add_argument("--matched-parent-gate", action="store_true",
+                        help="Compare single updates from identical reference states when baseline trajectories diverge")
     args = parser.parse_args()
     output = args.output.resolve()
     if output.exists():
@@ -157,6 +160,8 @@ def main():
                          "bridge": config["representation"]["bridge_scale_m"]},
               "budget_seconds": args.max_gpu_seconds}
     report["candidate"] = args.candidate
+    report["gate_method"] = ("one_update_from_each_common_reference_state"
+                             if args.matched_parent_gate else "continuous_paired_updates")
     report["benchmark_script_sha256"] = file_sha256(__file__)
     atomic_json(output / "RESULTS.json", report)
     gpu_start = time.perf_counter()
@@ -171,6 +176,14 @@ def main():
         def remaining():
             if time.perf_counter() - gpu_start >= args.max_gpu_seconds:
                 raise TimeoutError("bounded benchmark GPU budget exhausted")
+
+        gate_parents = []
+        def cpu_copy(value):
+            if isinstance(value, torch.Tensor): return value.detach().cpu().clone()
+            if isinstance(value, dict): return {k: cpu_copy(v) for k,v in value.items()}
+            if isinstance(value, list): return [cpu_copy(v) for v in value]
+            if isinstance(value, tuple): return tuple(cpu_copy(v) for v in value)
+            return deepcopy(value)
 
         def run(mode, label, updates, *, diagnostics=False):
             remaining()
@@ -222,6 +235,21 @@ def main():
             warmups = 1 if diagnostics else args.warmup
             for step in range(warmups + updates):
                 remaining()
+                if args.matched_parent_gate and label.startswith("gate"):
+                    if label == "gate_baseline":
+                        gate_parents.append({
+                            "model": cpu_copy(model.state_dict()),
+                            "optimizer": cpu_copy(optimizer.state_dict()),
+                            "cpu_rng": torch.get_rng_state(),
+                            "cuda_rng": torch.cuda.get_rng_state_all(),
+                            "python_rng": random.getstate(), "numpy_rng": np.random.get_state()})
+                    else:
+                        parent = gate_parents[step]
+                        model.load_state_dict(parent["model"], strict=True)
+                        optimizer.load_state_dict(deepcopy(parent["optimizer"]))
+                        torch.set_rng_state(parent["cpu_rng"])
+                        torch.cuda.set_rng_state_all(parent["cuda_rng"])
+                        random.setstate(parent["python_rng"]); np.random.set_state(parent["numpy_rng"])
                 torch.cuda.synchronize()
                 started = time.perf_counter()
                 read_seconds = prepare_seconds = backward_seconds = optimizer_seconds = 0.0
@@ -358,6 +386,7 @@ def main():
         report["correctness"]=gate_results
         atomic_json(output / "RESULTS.json", report)
         del gates,ref_params,ref_state,params,state
+        gate_parents.clear()
         for repeat in range(0 if args.gate_only else 2):
             # Counterbalance order to reduce warm-cache / temperature bias.
             modes=("legacy",args.candidate) if repeat==0 else (args.candidate,"legacy")

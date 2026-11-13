@@ -23,7 +23,7 @@ def main():
     parser.add_argument("--run-output", required=True, type=Path)
     parser.add_argument("--denoiser-uncheckpointed-max-agent-slots", type=int,
                         choices=(0, 16), default=0,
-                        help="Opt-in SDD gated8 training runtime; keeps map checkpoints")
+                        help="Opt-in validated SDD/ETH gated8 runtime; keeps map checkpoints")
     args = parser.parse_args()
     source = verify_release()
     config_dir, output = args.config_dir.resolve(), args.run_output.resolve()
@@ -50,8 +50,8 @@ def main():
         rollout_training_enabled=False, paired_marginal_actual_step_projection_enabled=False,
         coupling_singleton_backward="legacy")
     if args.denoiser_uncheckpointed_max_agent_slots and (
-            args.profile != "gated8" or config["experiment"]["fold"] != "sdd_trajnet_jmm"):
-        raise ValueError("runtime measured only for SDD TrajNet-JMM gated8; keep 0 elsewhere")
+            args.profile != "gated8" or config["experiment"]["fold"] not in {"sdd_trajnet_jmm", "eth"}):
+        raise ValueError("runtime measured only for SDD TrajNet-JMM / ETH gated8; keep 0 elsewhere")
     config["training"]["denoiser_uncheckpointed_max_agent_slots"] = (
         args.denoiser_uncheckpointed_max_agent_slots)
     config["experiment"].update(source_commit=source["upstream_commit"],

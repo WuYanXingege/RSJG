@@ -69,12 +69,14 @@ python train.py --config "$NEW_CONFIG_DIR/RESOLVED.json" \
 `UPSTREAM_COMMIT` 取 `SOURCE_MANIFEST.json.upstream_commit`；
 `VAL_BANK_PATTERN` 含字面量 `{seed}`，对应 2035–2039。
 配置应按当前接受的实际 batch、累积、精度和运行时准备。
-SDD gated8 可在 `prepare.py` 命令增加
+已验收的 SDD / ETH gated8 可在 `prepare.py` 命令增加
 `--denoiser-uncheckpointed-max-agent-slots 16`：单 world 固定终点训练、物理组
 不超过 16 个槽位时保留去噪块计算图，较大组回退 checkpoint；地图 U-Net
 checkpoint 不变。默认 0 保留历史执行方式。该运行时不改变 endpoint、loss、
 参数键或有效 batch；不适用于推理 20 world 或显式指定 checkpoint 的 rollout。
 实测范围与数值验收见论文工作区 `docs/performance/20261113_gated_runtime/REPORT_ZH.md`。
+ETH 的实际训练与运行时验收见 `docs/training/20261113_eth_gated8/README.md`；
+其他ETH/UCY折尚未据此宣称同样提速，不自动启用或启动额外折训练。
 `prepare.py` 只规范化现有统一入口实际使用的 30 轮/AdamW/学习率字段，记录改动，
 不会默默把旧 250 轮实验变成新试验；它要求输入已经具有 30 轮统一 early-stop 合同。
 输出、配置、bank、权重全部保存在本目录外。

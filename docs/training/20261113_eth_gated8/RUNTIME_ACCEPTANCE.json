@@ -1,0 +1,63 @@
+{
+  "status": "ACCEPTED",
+  "fold": "eth",
+  "runtime": {
+    "denoiser_uncheckpointed_max_agent_slots": 16
+  },
+  "rounds": [
+    {
+      "repeat": 1,
+      "baseline_s_per_update": 4.291034145266167,
+      "candidate_s_per_update": 3.5079609948734287,
+      "speedup": 1.2232274393977383,
+      "baseline_peak_allocated_mib": 1790.14306640625,
+      "candidate_peak_allocated_mib": 1790.64306640625
+    },
+    {
+      "repeat": 2,
+      "baseline_s_per_update": 4.3536098011245485,
+      "candidate_s_per_update": 3.544162480480736,
+      "speedup": 1.2283888859785057,
+      "baseline_peak_allocated_mib": 1792.52392578125,
+      "candidate_peak_allocated_mib": 1790.64306640625
+    }
+  ],
+  "speedup_pooled": 1.22582141061513,
+  "gate_method": "one_update_from_each_common_reference_state",
+  "correctness": [
+    {
+      "label": "gate_repeat",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 1.808505709228279e-10,
+      "parameters_exact": false
+    },
+    {
+      "label": "gate_candidate",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 3.102864171756837e-11,
+      "parameters_exact": false
+    }
+  ],
+  "continuous_repeat_control_loss_difference": 0.010692450164720696,
+  "continuous_candidate_loss_difference": 0.002892603012627109,
+  "interpretation": "Continuous baseline itself is unstable. Adoption uses unchanged tolerances on updates from common full reference states, not a relaxed continuous-trajectory threshold.",
+  "sample": {
+    "windows": 128,
+    "mean_agents": 8.34375,
+    "max_agents": 45,
+    "fallback_scenes_over16": 22,
+    "map": [
+      6,
+      256,
+      256
+    ]
+  },
+  "gpu_wall_seconds": 479.209950532997,
+  "source_results": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_gated8_unified_v1_20261113_214832/runtime_acceptance_common_states/RESULTS.json",
+  "source_sha256": "140b73f32a495c2ce09e6a0b6299facedc69069cbbd4b22f002ff26a10d61328",
+  "formal_training_updates_during_benchmark": 0
+}
