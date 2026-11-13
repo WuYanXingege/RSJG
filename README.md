@@ -24,6 +24,15 @@ QK-normalized attention, with explicit 3+3 and 4+4 depths. The
 include fresh-run configuration preparation. It is not an accuracy-validated
 replacement for the completed six-block formal models.
 
+The [clean modified-network snapshot](network_release/ebjd_gated_bridge_v1/README.md)
+now contains a standalone model API, explicit legacy6/gated6/gated8 profiles,
+the unified training entry, a source-integrity manifest and an
+[architecture/novelty review](network_release/ebjd_gated_bridge_v1/ARCHITECTURE_REVIEW_ZH.md).
+It has no datasets, weights or historical pipelines and is generated from this
+workspace; it is not a second development worktree. Its METHOD.md describes
+the current frozen-prior conditional path without mixing in the old
+unconditional rollout/projection contract below.
+
 The independent `ebjd` model package does not import code from another RSJG
 worktree. Its original unconditional model excludes native-goal, Fixed-anchor,
 SELF_ONLY, HALF, V2 token/anchor and extra path-loss logic; the current unified

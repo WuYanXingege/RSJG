@@ -1,0 +1,240 @@
+{
+  "status": "COMPLETE_REVIEW_AND_STANDALONE_INTERFACE_VALIDATION",
+  "date_beijing": "2026-11-13",
+  "upstream_commit": "50551dfe071336e033673dc39acddc867ad59b02",
+  "release_path": "network_release/ebjd_gated_bridge_v1",
+  "release_manifest_sha256": "5acec78f994f694cee2413cdf81e4773210821798ba1a8375254c9894b0fbf10",
+  "release_regular_files": 35,
+  "managed_source_files": 34,
+  "source_bytes": 235123,
+  "tests": {
+    "passed": 19,
+    "failed": 0,
+    "existing_gated_tests": 14,
+    "release_tests": 5,
+    "release_tests_rerun_after_json_fix": true,
+    "scope": "source/AST parity, relocated import, tamper rejection, configuration roundtrip, gradients and invariants"
+  },
+  "checks": {
+    "CPU_CHECK_FINAL.json": {
+      "branch_checks": {
+        "bridge.denoiser.blocks.0.cross": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.blocks.0.ff": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.blocks.0.social": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.blocks.0.temporal": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.blocks.7.cross": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.blocks.7.ff": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.blocks.7.social": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.blocks.7.temporal": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.clean_injection": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.endpoint_condition": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.future_geometry_mlp": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.denoiser.map_injection": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.encoder.history_gru": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "bridge.encoder.map_unet": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        },
+        "coupling": {
+          "nonzero_gradient": true,
+          "parameter_updated": true
+        }
+      },
+      "candidate_permutations": true,
+      "device": "cpu",
+      "formal_optimizer_updates": 0,
+      "gpu_wall_seconds": 0,
+      "literal_endpoints": true,
+      "losses": [
+        2.0395684242248535,
+        2.030674695968628,
+        2.019867181777954,
+        2.0112838745117188
+      ],
+      "map_pixels": 32,
+      "optimizer_restore": true,
+      "package_imports": {
+        "ebjd": "ebjd/__init__.py",
+        "ebjd.config": "ebjd/config.py",
+        "ebjd.data": "ebjd/data.py",
+        "ebjd.denoiser": "ebjd/denoiser.py",
+        "ebjd.early_stopping": "ebjd/early_stopping.py",
+        "ebjd.encoders": "ebjd/encoders.py",
+        "ebjd.gated_dit": "ebjd/gated_dit.py",
+        "ebjd.layers": "ebjd/layers.py",
+        "ebjd.metrics": "ebjd/metrics.py",
+        "ebjd.model": "ebjd/model.py",
+        "ebjd.objectives": "ebjd/objectives.py",
+        "ebjd.proposals": "ebjd/proposals.py",
+        "ebjd.representation": "ebjd/representation.py",
+        "ebjd.runtime": "ebjd/runtime.py",
+        "ebjd.sampling": "ebjd/sampling.py",
+        "ebjd.unified": "ebjd/unified.py",
+        "ebjd.vendor": "ebjd/vendor/__init__.py",
+        "ebjd.vendor.unet": "ebjd/vendor/unet.py"
+      },
+      "paired_ddim_steps": 20,
+      "paired_ddim_worlds": 20,
+      "precision": "fp32",
+      "profiles": {
+        "gated6": {
+          "architecture": {
+            "block_type": "endpoint_gated_dit_v1",
+            "coarse_blocks": 3,
+            "ff_dim": 768,
+            "heads": 4,
+            "hidden_dim": 192,
+            "refinement_blocks": 3
+          },
+          "trainable_parameters": 9397789
+        },
+        "gated8": {
+          "architecture": {
+            "block_type": "endpoint_gated_dit_v1",
+            "coarse_blocks": 4,
+            "ff_dim": 768,
+            "heads": 4,
+            "hidden_dim": 192,
+            "refinement_blocks": 4
+          },
+          "trainable_parameters": 11768797
+        },
+        "legacy6": {
+          "architecture": {
+            "block_type": "legacy_fjab",
+            "coarse_blocks": 3,
+            "ff_dim": 768,
+            "heads": 4,
+            "hidden_dim": 192,
+            "refinement_blocks": 3
+          },
+          "trainable_parameters": 7587805
+        }
+      },
+      "real_data_accuracy_test": false,
+      "release_manifest_sha256": "5acec78f994f694cee2413cdf81e4773210821798ba1a8375254c9894b0fbf10",
+      "status": "PASS_INTERFACE_ONLY",
+      "strict_restore": true,
+      "synthetic": true,
+      "temporary_optimizer_updates": 4,
+      "torch": "2.8.0+cu128",
+      "upstream_commit": "50551dfe071336e033673dc39acddc867ad59b02",
+      "wall_seconds": 12.082702737068757,
+      "wrong_architecture_rejected": true
+    },
+    "REAL_SDD_INTERFACE_CHECK.json": {
+      "agents": [
+        13
+      ],
+      "bridge_loss": 2.4602644443511963,
+      "config_sha256": "0798b36ec4c3e882833562aa3a7dcc26a3e76e3723f772efdd3c3d9c74095a1c",
+      "formal_optimizer_updates": 0,
+      "gpu_wall_seconds": 0,
+      "gradients_finite": true,
+      "loss": 3.9992284774780273,
+      "map_shape": [
+        1,
+        13,
+        6,
+        256,
+        256
+      ],
+      "pair_loss": 1.5389641523361206,
+      "scale_note": "interface only uses initial configured scales; formal runner fits complete training fold before first update",
+      "scene_ids": [
+        "sdd:train:bookstore_0:0-228"
+      ],
+      "source_release_sha256": "5acec78f994f694cee2413cdf81e4773210821798ba1a8375254c9894b0fbf10",
+      "status": "PASS_REAL_SDD_INPUT_AND_STARTUP_GUARD",
+      "strict_same_fold_map_initialization": true,
+      "temporary_optimizer_updates": 0,
+      "train_bank_sha256": "db6a356d0df55edb11b8c196eacfd3a4d0c9e207ac7aeb1620a2e56d537460b9",
+      "training_started": false,
+      "wall_seconds": 11.81833118700888
+    }
+  },
+  "preparation": {
+    "config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/analyses/ebjd_network_review_20261113_195834/prepared_sdd_v2/RESOLVED.json",
+    "receipt": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/analyses/ebjd_network_review_20261113_195834/prepared_sdd_v2/PREPARATION.json",
+    "launch_guard_passed": true,
+    "training_started": false
+  },
+  "historical_evidence": [
+    {
+      "path": "docs/results/ebjd_eth_ucy_unified_fivefold_20261101/REPORT_ZH.md",
+      "sha256": "4233b465861bc0112dd7392ecd32652156ca3b993640f939729ca543b654acb1"
+    },
+    {
+      "path": "docs/results/ebjd_eth_ucy_unified_fivefold_20261101/FIVEFOLD_METRICS.csv",
+      "sha256": "b981688ff63c95c71604df0cd39b6f3e93632d35f5c4bd20d06574fb8dbc89a2"
+    },
+    {
+      "path": "docs/results/ebjd_eth_ucy_jmm_collision_20261102/REPORT_ZH.md",
+      "sha256": "7da6e3d186739e8146742449255fcb9ad9d39ed40b4d4cb9b46fb2a5c5a2212a"
+    },
+    {
+      "path": "docs/results/ebjd_eth_ucy_jmm_collision_20261102/FIVEFOLD_COLLISION_SUMMARY.csv",
+      "sha256": "da74c4b7e18700b789b369f00c11aa4afe12d11e27afdd911a68d48f7141a9bf"
+    },
+    {
+      "path": "docs/research/20261109_endpoint_gated_dit_v1/SUMMARY.json",
+      "sha256": "a056c90868c9bb8bbc6c3926aceb276d0ba7f2ae6ae4fddbb89208333b0c60b1"
+    },
+    {
+      "path": "docs/research/20261109_acceleration_bridge_v1/SUMMARY.json",
+      "sha256": "8bebe88cbbe0cf9e683117401dbadae6489095f2299aad0bca58d643012156aa"
+    }
+  ],
+  "gpu_wall_seconds": 0,
+  "formal_optimizer_updates": 0,
+  "decision": "core_method_supported; gated8_remains_research_candidate",
+  "full_accuracy_evaluation_performed": false,
+  "formal_assets_changed": false,
+  "existing_untracked_cleanup_directories_preserved": true,
+  "new_gate_fix": "JSON exponent numbers parsed with json.load, not YAML 1.1",
+  "unverified": [
+    "gated8 long-run accuracy",
+    "CUDA/BF16 speed and memory",
+    "optimal depth",
+    "exhaustive novelty"
+  ]
+}

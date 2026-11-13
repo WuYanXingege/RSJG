@@ -1,0 +1,50 @@
+schema: ebjd-clean-network-profiles-v1
+default_profile: gated8
+status: research_implementation_not_accuracy_validated
+shared:
+  hidden_dim: 192
+  attention_heads: 4
+  ff_dim: 768
+  history_social_blocks: 2
+  crop_width_m: 32.0
+  map_agent_chunk: 8
+  proposal_conditioned: true
+  bridge_prior: brownian_position
+  ctf_feedback_basis: legacy
+profiles:
+  legacy6:
+    block_type: legacy_fjab
+    coarse_blocks: 3
+    refinement_blocks: 3
+  gated6:
+    block_type: endpoint_gated_dit_v1
+    coarse_blocks: 3
+    refinement_blocks: 3
+  gated8:
+    block_type: endpoint_gated_dit_v1
+    coarse_blocks: 4
+    refinement_blocks: 4
+coupling:
+  worlds: 20
+  singleton_backward: legacy
+  hard_forward: hungarian
+  backward_surrogate: sinkhorn_straight_through
+  sinkhorn_iterations: 20
+  pair_loss_temperature: 0.1
+inference:
+  worlds: 20
+  ddim_steps: 20
+  output: Raw
+  fixed_endpoint_eta: 0.0
+effective_training_contract:
+  epochs: 30
+  main_lr: 0.0001
+  map_unet_lr: 0.00001
+  warmup_epochs: 5
+  cosine_final_fraction: 0.1
+  optimizer: AdamW
+  rollout: false
+  projection: false
+  weights: {final_v: 1.0, coarse_v: 0.25, map_bce: 0.1, geometry: 0.05, pair: 1.0}
+  checkpoint_selection: inherited_bound_fold_contract
+  early_stopping: inherited_bound_fold_contract

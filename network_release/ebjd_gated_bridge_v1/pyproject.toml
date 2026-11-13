@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ebjd-gated-bridge-research"
+version = "0.1.0"
+description = "Frozen-prior joint coupling and endpoint-conditioned gated bridge research snapshot"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.1", "numpy>=1.24", "scipy>=1.10", "PyYAML>=6.0"]
+
+[project.optional-dependencies]
+provider = ["torchvision>=0.16"]
+
+[tool.setuptools]
+packages = ["ebjd", "ebjd.vendor"]
+# The entry scripts/configs are used from this standalone directory.
+# Do not install beside another distribution exporting the same `ebjd` name.
