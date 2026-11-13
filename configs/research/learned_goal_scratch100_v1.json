@@ -1,0 +1,31 @@
+{
+  "schema": "ebjd-learned-goal-scratch-v1",
+  "goal": {
+    "components": 20,
+    "min_std": 0.05,
+    "max_std": 4.0,
+    "mixture_weights": "uniform",
+    "candidate_sampling": "one_reparameterized_draw_per_component"
+  },
+  "loss_weights": {
+    "goal_nll": 1.0,
+    "joint_pair": 1.0,
+    "coarse": 0.25,
+    "geometry": 0.05,
+    "map": 0.1
+  },
+  "external_prediction_weights_loaded": false,
+  "initialization": "all_prediction_parameters_random_including_map_unet",
+  "goal_coordinates": "residual_to_constant_velocity_endpoint_normalized_by_train_fold_goal_scale",
+  "bridge_training": "GT_endpoint_conditional_v_denoising",
+  "coupling_singleton_backward": "identity",
+  "goal_pair_gradient": "reparameterized_component_coordinates_and_ST_Hungarian_Sinkhorn",
+  "epochs": 100,
+  "early_stopping": false,
+  "scheduler": "5 epoch linear warmup then 95 epoch cosine to 0.1 base LR",
+  "main_and_unet_base_lr": 0.0001,
+  "evaluation": "20 stratified endpoint candidates and 20 DDIM steps; not GDTS TTST; same validation membership and pixel/metre mapping",
+  "selection": "best_eligible_by_H_JADE_else_best_jade; no early stop; final100 saved",
+  "validation_test_identity": "mirrored official data, not independent held-out test",
+  "semantic_maps": "existing dataset maps retained, not a claim that map asset generation used no external prior"
+}

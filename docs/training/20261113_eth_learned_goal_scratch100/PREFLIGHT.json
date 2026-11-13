@@ -1,0 +1,124 @@
+{
+  "status": "PASS",
+  "formal_optimizer_updates": 0,
+  "temporary_optimizer_updates": 2,
+  "previous_attempts": [
+    {
+      "status": "FAILED",
+      "error": "TypeError: '<=' not supported between instances of 'float' and 'str'",
+      "gpu_development_wall_seconds": 0.41455278906505555,
+      "temporary_optimizer_updates": 0
+    },
+    {
+      "status": "PASS",
+      "error": null,
+      "gpu_development_wall_seconds": 16.382014616043307,
+      "temporary_optimizer_updates": 2
+    }
+  ],
+  "records": [
+    {
+      "loss": 5.573019988834858,
+      "goal_nll": 2.566539854943728,
+      "pair_loss": 1.029615305364132,
+      "diffusion_loss": 1.9078386370364835,
+      "map_loss": 0.6893513299339339,
+      "geometry_loss": 0.001822110044031433,
+      "goal_grad_norm": 0.5455392003059387,
+      "coupling_grad_norm": 0.00015630167035851628,
+      "bridge_grad_norm": 0.7713015079498291,
+      "map_grad_norm": 0.01728014461696148,
+      "scenes": 16,
+      "agents": 166,
+      "max_scene_agents": 42,
+      "seconds": 4.904360615997575
+    },
+    {
+      "loss": 5.138357814401388,
+      "goal_nll": 2.465957369371517,
+      "pair_loss": 1.050530057400465,
+      "diffusion_loss": 1.552838975520922,
+      "map_loss": 0.6893231195695023,
+      "geometry_loss": 0.0019806055888409446,
+      "goal_grad_norm": 0.6317248940467834,
+      "coupling_grad_norm": 0.00017095277144107968,
+      "bridge_grad_norm": 0.8857189416885376,
+      "map_grad_norm": 0.017639482393860817,
+      "scenes": 16,
+      "agents": 152,
+      "max_scene_agents": 37,
+      "seconds": 3.625467824982479
+    }
+  ],
+  "parameter_count": 11858925,
+  "external_prediction_weights_loaded": [],
+  "goal_change_same_input_noise_max_m": 0.01576213166117668,
+  "evaluation_smoke": {
+    "seed": 2035,
+    "G": {
+      "minADE": 0.6428095519542694,
+      "minFDE": 0.8785481154918671,
+      "JADE": 0.808251698811849,
+      "JFDE": 1.1971159776051838,
+      "scene_weighted_minADE": 0.700445274511973,
+      "scene_weighted_minFDE": 0.999595026175181,
+      "coordination_gap_ADE": 0.10780642429987597,
+      "coordination_gap_FDE": 0.1975209514300028,
+      "agent_count": 5,
+      "scene_count": 3,
+      "sums": {
+        "agent_minADE": 3.214047759771347,
+        "agent_minFDE": 4.392740577459335,
+        "scene_JADE": 2.424755096435547,
+        "scene_JFDE": 3.5913479328155518,
+        "scene_marginal_ADE": 2.101335823535919,
+        "scene_marginal_FDE": 2.998785078525543
+      }
+    },
+    "H": {
+      "minADE": 0.6428093791007996,
+      "minFDE": 0.8785481154918671,
+      "JADE": 0.7831266323725382,
+      "JFDE": 1.0658498704433441,
+      "scene_weighted_minADE": 0.7004451155662537,
+      "scene_weighted_minFDE": 0.999595026175181,
+      "coordination_gap_ADE": 0.08268151680628455,
+      "coordination_gap_FDE": 0.06625484426816308,
+      "agent_count": 5,
+      "scene_count": 3,
+      "sums": {
+        "agent_minADE": 3.214046895503998,
+        "agent_minFDE": 4.392740577459335,
+        "scene_JADE": 2.3493798971176147,
+        "scene_JFDE": 3.1975496113300323,
+        "scene_marginal_ADE": 2.101335346698761,
+        "scene_marginal_FDE": 2.998785078525543
+      }
+    },
+    "scenes": 3,
+    "agent_occurrences": 5,
+    "seconds": 3.2018149739596993,
+    "proposal_source": "online_learned_uniform_mixture_stratified20",
+    "scene_ids": [
+      "eth:validation:biwi_eth:800-990",
+      "eth:validation:biwi_eth:830-1020",
+      "eth:validation:biwi_eth:1050-1240"
+    ]
+  },
+  "peak_allocated_mib": 1624.33837890625,
+  "evaluation_scene_indices": [
+    0,
+    3,
+    4
+  ],
+  "evaluation_scene_populations": [
+    1,
+    2,
+    2
+  ],
+  "strict_full_state_restore": true,
+  "formal_initialization": "independent seed3101 fresh process",
+  "scope": "2 complete accumulated real optimizer updates; 3 validation scenes, 20 worlds/20 steps; not a performance result",
+  "gpu_development_wall_seconds": 17.58422040496953,
+  "total_gpu_development_wall_seconds": 34.38078781007789
+}

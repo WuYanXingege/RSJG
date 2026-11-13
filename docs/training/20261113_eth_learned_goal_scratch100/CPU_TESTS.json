@@ -1,0 +1,6 @@
+{
+  "status": "PASS",
+  "tests_passed": 11,
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:tests OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 ../.conda/rsjg/bin/python -m pytest -q -p no:cacheprovider tests/test_learned_goal.py tests/test_small_denoiser_runtime.py tests/test_gated_background.py",
+  "scope": "targeted scratch density, full loss/backward, checkpoint/RNG, runtime and supervisor checks"
+}

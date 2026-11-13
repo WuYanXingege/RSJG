@@ -257,7 +257,6 @@ def validate_supported_config(config: dict) -> None:
         ("objectives", "rollout_joint_fde_weight", 0.5),
         ("objectives", "rollout_marginal_ade_weight", 1.0),
         ("objectives", "rollout_marginal_fde_weight", 0.5),
-        ("training", "optimizer", "adamw_actual_step_projection"),
         ("training", "exclude_bias_and_layernorm_from_decay", True),
         ("training", "gradient_constraint_uses_unclipped_marginal_gradients", True),
         ("training", "rollout_detach_between_steps", False),
@@ -317,6 +316,12 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(
                 "training.scene_forward_chunk currently supports only the OOM-safe value 1")
     training = config["training"]
+    if training["optimizer"] not in {"adamw_actual_step_projection", "adamw"}:
+        raise ValueError("unsupported optimizer")
+    if training["optimizer"] == "adamw" and (
+            training.get("rollout_training_enabled") is not False or
+            training.get("paired_marginal_actual_step_projection_enabled") is not False):
+        raise ValueError("plain AdamW requires explicit rollout/projection OFF")
     if training.get("coupling_singleton_backward", "legacy") not in {
         "legacy", "identity",
     }:
@@ -428,8 +433,13 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(
                 "prefetch_runtime_v1 requires exact settings "
                 f"{expected_runtime}, got {actual_runtime}")
-    if config["paths"].get("initialization_role") != "trainable_goal_unet_only":
-        raise ValueError("paths.initialization_role must be trainable_goal_unet_only")
+    initialization = config["paths"].get("initialization_role")
+    if initialization not in {"trainable_goal_unet_only", "all_random_scratch"}:
+        raise ValueError("unsupported paths.initialization_role")
+    if initialization == "all_random_scratch" and (
+            config["paths"].get("accepted_fold_matched_gdts_unet") or
+            config["paths"].get("accepted_fold_matched_gdts_unet_sha256")):
+        raise ValueError("all_random_scratch forbids pretrained U-Net paths/hashes")
     baseline = config["evaluation"].get("matched_gdts_validation")
     if not isinstance(baseline, dict):
         raise ValueError("evaluation.matched_gdts_validation must be a mapping")
