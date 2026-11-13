@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "unique_targeted_tests_passed": 25,
+  "test_modules": [
+    "test_small_denoiser_runtime.py",
+    "test_benchmark_runtime_metrics.py",
+    "test_gated_denoiser.py",
+    "test_gated_dit_block.py",
+    "test_clean_network_release.py"
+  ],
+  "release_tests_repeated_after_final_prepare_guard_fix": 5,
+  "notes": [
+    "Initial invocation from project parent caused a relative HOTEL asset lookup failure; unchanged test passed from the paper workspace.",
+    "Preparation guard corrected to the actual fold identity sdd_trajnet_jmm; no dataset identity changed."
+  ],
+  "cpu_prepared_config": {
+    "status": "PASS",
+    "runtime_field": 16,
+    "map_checkpoint": true,
+    "release_manifest_sha256": "99d6ce82c18001b76959f86befeb4711606980fee615ad11a03f2f1c5824e49b",
+    "prepared_config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_gated_runtime_20261113_202549/prepared_sdd/RESOLVED.json",
+    "prepared_config_sha256": "900d08ebf7e328044ee8084eff49050fb9684553cc623791391eb90ab62f74a0",
+    "source_commit": "b74826d4d349c5122970b8d9bd027b8ec9afe529",
+    "formal_optimizer_updates": 0,
+    "training_started": false,
+    "trainable_bridge_parameters": 11467356,
+    "note": "unified coupling parameters excluded from this factory-only count"
+  },
+  "gpu_correctness_8_updates": [
+    {
+      "label": "gate_repeat",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 4.2829003732135963e-10,
+      "parameters_exact": false
+    },
+    {
+      "label": "gate_candidate",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 4.2829003732135963e-10,
+      "parameters_exact": false
+    }
+  ],
+  "gpu_final_integrated_check_2_updates": [
+    {
+      "label": "gate_repeat",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": true,
+      "parameter_relative_l2": 0.0,
+      "parameters_exact": true
+    },
+    {
+      "label": "gate_candidate",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 2.357091132670099e-10,
+      "parameters_exact": false
+    }
+  ],
+  "formal_optimizer_updates": 0,
+  "temporary_optimizer_updates": 295,
+  "gpu_wall_seconds_all_attempts": 858.7429716949118,
+  "final_host_check": {
+    "compute_processes": [],
+    "matching_rsjg_training_or_benchmark_processes": [],
+    "checked_local": "2026-11-13T20:59:15.604486"
+  },
+  "implementation_commit": "b74826d4d349c5122970b8d9bd027b8ec9afe529"
+}

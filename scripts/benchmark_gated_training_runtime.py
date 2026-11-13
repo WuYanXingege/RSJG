@@ -117,7 +117,7 @@ def main():
     parser.add_argument("--max-gpu-seconds", type=float, default=900)
     parser.add_argument("--candidate", choices=("deferred_and_mask", "full_microbatch", "scene_encoded_batch",
                                                "small_denoiser_graph"),
-                        default="deferred_and_mask")
+                        default="small_denoiser_graph")
     parser.add_argument("--skip-profile", action="store_true")
     parser.add_argument("--gate-updates", type=int, default=8)
     parser.add_argument("--gate-only", action="store_true")

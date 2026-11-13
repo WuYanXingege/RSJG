@@ -1,18 +1,18 @@
 {
   "schema": "ebjd-clean-network-release-v1",
-  "upstream_commit": "50551dfe071336e033673dc39acddc867ad59b02",
+  "upstream_commit": "b74826d4d349c5122970b8d9bd027b8ec9afe529",
   "status": "RESEARCH_IMPLEMENTATION_NOT_ACCURACY_VALIDATED",
   "default_profile": "gated8",
   "formal_result_profile": "legacy6",
   "files": {
     "README.md": {
-      "sha256": "1c6760e3d83be6bf9199be0e0b3e4423923e1eedfb1e9bd798228e14dedd8487",
-      "bytes": 4862,
+      "sha256": "9979467d82607923e89d7a4e96f8141f812b7301164a75926a048e90a3753085",
+      "bytes": 5388,
       "transformation": "release_interface_or_documentation",
       "sources": [
         {
           "path": "network_release/ebjd_gated_bridge_v1/README.md",
-          "sha256": "1c6760e3d83be6bf9199be0e0b3e4423923e1eedfb1e9bd798228e14dedd8487"
+          "sha256": "9979467d82607923e89d7a4e96f8141f812b7301164a75926a048e90a3753085"
         }
       ]
     },
@@ -72,13 +72,13 @@
       ]
     },
     "prepare.py": {
-      "sha256": "006d84618dc9756dc9bc930df790f6c5dc3bab014079d5fda49001f7b6a1730d",
-      "bytes": 4298,
+      "sha256": "0ec3e6f8b9aa7d6250adf9ef6cc2e747633d16596fd97cf93f6fd47cc6ea8477",
+      "bytes": 4888,
       "transformation": "release_interface_or_documentation",
       "sources": [
         {
           "path": "network_release/ebjd_gated_bridge_v1/prepare.py",
-          "sha256": "006d84618dc9756dc9bc930df790f6c5dc3bab014079d5fda49001f7b6a1730d"
+          "sha256": "0ec3e6f8b9aa7d6250adf9ef6cc2e747633d16596fd97cf93f6fd47cc6ea8477"
         }
       ]
     },
@@ -171,13 +171,13 @@
       ]
     },
     "ebjd/denoiser.py": {
-      "sha256": "0adad7f9da32dcd4ca8bbb697decb1abf099a889f1afaa06faf87a72621704ae",
-      "bytes": 21686,
+      "sha256": "b95ab68aaab7605caac06426bc4e629623a16cfd23c90b92e2f3460d568205e9",
+      "bytes": 22549,
       "transformation": "byte_copy",
       "sources": [
         {
           "path": "ebjd/denoiser.py",
-          "sha256": "0adad7f9da32dcd4ca8bbb697decb1abf099a889f1afaa06faf87a72621704ae"
+          "sha256": "b95ab68aaab7605caac06426bc4e629623a16cfd23c90b92e2f3460d568205e9"
         }
       ]
     },
@@ -347,13 +347,13 @@
       ]
     },
     "ebjd/config.py": {
-      "sha256": "34a729b224c0ff6c99377f351d5891ca27b8570be77e32c72cc755d609fe3517",
-      "bytes": 25812,
+      "sha256": "4cb683726a088fdfb9663a80da0bdbf5fec12d4055c3484b6482af450f7a3f3f",
+      "bytes": 26651,
       "transformation": "remove_unused_legacy_trainer_factory; label_effective_optimizer_adamw; parse_json_as_json",
       "sources": [
         {
           "path": "ebjd/config.py",
-          "sha256": "7de1d74eedfdd449c37fff0add06bb4c8f7a437f1978a80f5094771a18fece4e"
+          "sha256": "34fc6828b467811b00507aae89affdeee4c962d99d549583899f70537d626cd6"
         }
       ]
     },
@@ -385,7 +385,7 @@
     }
   },
   "file_count": 34,
-  "total_bytes": 235123,
+  "total_bytes": 237941,
   "external_assets_included": false,
   "symlinks_included": false,
   "scope": "unified model, frozen provider API, existing training/evaluation path",

@@ -89,6 +89,7 @@ ALLOWED_KEYS = {
         "early_stopping", "ebjd_input_pipeline",
         "ebjd_input_pipeline_receipt",
         "coupling_singleton_backward",
+        "denoiser_uncheckpointed_max_agent_slots",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -115,6 +116,7 @@ OPTIONAL_KEYS = {"training": {
     "early_stopping", "ebjd_input_pipeline",
     "ebjd_input_pipeline_receipt",
     "coupling_singleton_backward",
+    "denoiser_uncheckpointed_max_agent_slots",
 }, "denoiser": {"ctf_feedback_basis", "block_type"}, "evaluation": {"unit"}}
 
 SEMANTIC_CONFIG_EXCLUSIONS = {
@@ -133,6 +135,7 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "data_loader_prefetch_factor"),
     ("training", "ebjd_input_pipeline"),
     ("training", "ebjd_input_pipeline_receipt"),
+    ("training", "denoiser_uncheckpointed_max_agent_slots"),
 }
 
 
@@ -332,6 +335,14 @@ def validate_supported_config(config: dict) -> None:
         if key in training and not isinstance(training[key], bool):
             raise ValueError(f"training.{key} must be boolean")
     input_pipeline = training.get("ebjd_input_pipeline", "legacy_cpu_rigid")
+    denoiser_slots = training.get("denoiser_uncheckpointed_max_agent_slots", 0)
+    if type(denoiser_slots) is not int or denoiser_slots not in (0, 16):
+        raise ValueError("denoiser_uncheckpointed_max_agent_slots must be 0 or 16")
+    if denoiser_slots and (
+            config["denoiser"].get("block_type") != "endpoint_gated_dit_v1"
+            or config["denoiser"]["coarse_blocks"] != 4
+            or config["denoiser"]["refinement_blocks"] != 4):
+        raise ValueError("small denoiser graph runtime is validated only for gated8")
     if input_pipeline not in {
         "legacy_cpu_rigid", "compact_uint8_gpu_rigid_v1",
     }:
@@ -487,6 +498,8 @@ def build_model(
     )
     model.denoiser.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])
+    model.denoiser.uncheckpointed_max_agent_slots = int(
+        config["training"].get("denoiser_uncheckpointed_max_agent_slots", 0))
     model.encoder.activation_checkpointing = bool(
         config["training"]["activation_checkpointing"])
     preserve_checkpoint_rng = not bool(

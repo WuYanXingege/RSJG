@@ -1,0 +1,180 @@
+{
+  "status": "ACCEPTED_EXECUTION_ONLY_SDD_GATED8",
+  "source_base_commit": "802b70a56c2a6db83814fb22391d5d80ac9384fa",
+  "implementation_commit": "b74826d4d349c5122970b8d9bd027b8ec9afe529",
+  "runtime": {
+    "training.denoiser_uncheckpointed_max_agent_slots": 16,
+    "default": 0,
+    "map_unet_checkpoint": "unchanged",
+    "applies_to": "training gated8, eta=0, worlds=1, physical B*P*N<=16",
+    "large_or_explicit_checkpoint": "original behavior"
+  },
+  "hardware": "NVIDIA GeForce RTX 5070 Ti",
+  "torch": "2.8.0+cu128",
+  "precision": "cuda_bf16_with_fp32_losses",
+  "data_loader_workers": 4,
+  "logical_batch_scenes": 4,
+  "gradient_accumulation": 4,
+  "input_mode": "legacy_cpu_rigid",
+  "initialization": "same fresh body + same-fold U-Net",
+  "scales": {
+    "bridge": 0.5366678607555561,
+    "goal": 1.9725789171375607
+  },
+  "rounds": [
+    {
+      "repeat": 1,
+      "baseline_s_per_update": 2.9945148295664694,
+      "optimized_s_per_update": 2.175259187948541,
+      "speedup": 1.3766243793644464,
+      "baseline_peak_allocated_mib": 919.16796875,
+      "optimized_peak_allocated_mib": 918.9873046875,
+      "baseline_read_collate_s": 0.008776178699918091,
+      "optimized_read_collate_s": 0.0075959422829328105,
+      "baseline_main_process_max_rss_mib": 3172.95703125,
+      "optimized_main_process_max_rss_mib": 3197.22265625
+    },
+    {
+      "repeat": 2,
+      "baseline_s_per_update": 3.0802628161764005,
+      "optimized_s_per_update": 2.1316587998881005,
+      "speedup": 1.4450074356825287,
+      "baseline_peak_allocated_mib": 921.41796875,
+      "optimized_peak_allocated_mib": 918.9873046875,
+      "baseline_read_collate_s": 0.008644113899208605,
+      "optimized_read_collate_s": 0.007721997535554692,
+      "baseline_main_process_max_rss_mib": 3197.23828125,
+      "optimized_main_process_max_rss_mib": 3197.22265625
+    }
+  ],
+  "average": {
+    "baseline_s_per_update": 3.037388822871435,
+    "optimized_s_per_update": 2.1534589939183206,
+    "speedup": 1.4104697751150403,
+    "time_reduction_percent": 29.101635664724668
+  },
+  "measured_sample": {
+    "updates_per_arm_per_round": 16,
+    "warmup_updates_per_arm": 3,
+    "unique_timed_scene_windows": 256,
+    "mean_agents": 1.546875,
+    "max_agents": 18,
+    "min_agents": 1,
+    "max_logical_padding_slots": 72,
+    "map_shape": [
+      6,
+      256,
+      256
+    ]
+  },
+  "correctness_8_updates": [
+    {
+      "label": "gate_repeat",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 4.2829003732135963e-10,
+      "parameters_exact": false
+    },
+    {
+      "label": "gate_candidate",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 4.2829003732135963e-10,
+      "parameters_exact": false
+    }
+  ],
+  "final_implementation_smoke_2_updates": [
+    {
+      "label": "gate_repeat",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": true,
+      "parameter_relative_l2": 0.0,
+      "parameters_exact": true
+    },
+    {
+      "label": "gate_candidate",
+      "max_gradient_norm_relative_difference": 0.0,
+      "max_loss_relative_difference": 0.0,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 2.357091132670099e-10,
+      "parameters_exact": false
+    }
+  ],
+  "formal_optimizer_updates": 0,
+  "temporary_optimizer_updates": 295,
+  "gpu_reserved_wall_seconds_including_failures": 858.7429716949118,
+  "results_sources": {
+    "small_denoiser_graph": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_gated_runtime_20261113_202549/small_denoiser_graph/RESULTS.json",
+      "sha256": "44d5797ad95ea278bb911aae90c4ad2b6020820b69d14c1e3af0f41653a15df9",
+      "status": "COMPLETE",
+      "gpu_wall_seconds": 295.35116980201565
+    },
+    "full_microbatch": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_gated_runtime_20261113_202549/full_microbatch/RESULTS.json",
+      "sha256": "4911946189503ecb5de4a2d201c4fed1820918723a9d080facb8dc1064e9ed2e",
+      "status": "FAILED",
+      "gpu_wall_seconds": 82.77975851600058
+    },
+    "paired": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_gated_runtime_20261113_202549/paired/RESULTS.json",
+      "sha256": "510cbbc7255278f8802e55bb96d250f0c7697cf32c4571801223cf4930193bf9",
+      "status": "COMPLETE",
+      "gpu_wall_seconds": 365.81393256795127
+    },
+    "scene_encoded_batch": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_gated_runtime_20261113_202549/scene_encoded_batch/RESULTS.json",
+      "sha256": "b0c68427398ce9ff17a6fed89367a568479eb4b1a8a1df5a3e0b3694d6cdf2f4",
+      "status": "FAILED",
+      "gpu_wall_seconds": 85.1752344199922
+    },
+    "integrated_smoke": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_gated_runtime_20261113_202549/integrated_smoke/RESULTS.json",
+      "sha256": "815d11dee81cbdc97c9343be78025b7a9155e10a022724ce32db22a15890b3df",
+      "status": "COMPLETE",
+      "gpu_wall_seconds": 29.622876388952136
+    }
+  },
+  "rejected": {
+    "deferred_and_mask": "numerically exact; no stable end-to-end benefit",
+    "full_microbatch": {
+      "label": "gate_candidate",
+      "max_gradient_norm_relative_difference": 0.001806690468262332,
+      "max_loss_relative_difference": 0.020693851901927796,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 0.0011568360313528538,
+      "parameters_exact": false
+    },
+    "scene_encoded_batch": {
+      "label": "gate_candidate",
+      "max_gradient_norm_relative_difference": 0.0019283993416993363,
+      "max_loss_relative_difference": 0.019636100502201322,
+      "optimizer_exact": false,
+      "parameter_relative_l2": 0.0007576210694447871,
+      "parameters_exact": false
+    }
+  },
+  "limitations": [
+    "short real SDD windows; no full epoch, validation, checkpoint-save or accuracy measurement",
+    "gated8 fresh body initialized with verified same-fold U-Net; not a resumed formal model",
+    "RSS is main-process historical high-water mark, not total worker memory",
+    "small-group retained graph may increase local live memory; observed peak includes large-group checkpoint fallback",
+    "temporary constant optimizer LR 1e-4 / map U-Net 1e-5; same arms, not a full scheduler run"
+  ],
+  "prepared_config_check": {
+    "status": "PASS",
+    "runtime_field": 16,
+    "map_checkpoint": true,
+    "release_manifest_sha256": "99d6ce82c18001b76959f86befeb4711606980fee615ad11a03f2f1c5824e49b",
+    "prepared_config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/ebjd_gated_runtime_20261113_202549/prepared_sdd/RESOLVED.json",
+    "prepared_config_sha256": "900d08ebf7e328044ee8084eff49050fb9684553cc623791391eb90ab62f74a0",
+    "source_commit": "b74826d4d349c5122970b8d9bd027b8ec9afe529",
+    "formal_optimizer_updates": 0,
+    "training_started": false,
+    "trainable_bridge_parameters": 11467356,
+    "note": "unified coupling parameters excluded from this factory-only count"
+  }
+}
