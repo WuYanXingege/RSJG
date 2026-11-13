@@ -165,6 +165,10 @@ class GeometryConditionedJointDenoiser(nn.Module):
         self.coarse_blocks = coarse_blocks
         self.refinement_blocks = refinement_blocks
         self.activation_checkpointing = bool(activation_checkpointing)
+        # Optional execution setting; no parameters/buffers or checkpoint keys.
+        # Short-tested for gated8, single-world fixed-goal training. Explicit
+        # caller checkpoint requests (e.g. rollout) always take precedence.
+        self.uncheckpointed_max_agent_slots = 0
         self.checkpoint_preserve_rng_state = True
         # Plain Python attributes deliberately keep the certified checkpoint
         # key space unchanged.  A decoder-energy model evaluates at the fully
@@ -319,6 +323,17 @@ class GeometryConditionedJointDenoiser(nn.Module):
                 goal_delta.unsqueeze(-2).expand(*position.shape[:-1], 2),
             ), dim=-1)
 
+    def _use_block_checkpoints(self, batch, worlds, agents, override, proposal_eta):
+        if override is not None:
+            return bool(override)
+        small_fixed_goal_training = (
+            self.training and self.proposal_conditioned
+            and self.block_type == "endpoint_gated_dit_v1"
+            and (self.coarse_blocks, self.refinement_blocks) == (4, 4)
+            and worlds == 1 and float(proposal_eta) == 0.0
+            and 0 < batch * worlds * agents <= self.uncheckpointed_max_agent_slots)
+        return self.activation_checkpointing and not small_fixed_goal_training
+
     def forward(
         self,
         latent: torch.Tensor,
@@ -336,9 +351,8 @@ class GeometryConditionedJointDenoiser(nn.Module):
             time = time.expand(batch)
         if time.shape != (batch,):
             raise ValueError("time must be scalar or [B]")
-        use_block_checkpoints = (
-            self.activation_checkpointing
-            if checkpoint_blocks is None else bool(checkpoint_blocks))
+        use_block_checkpoints = self._use_block_checkpoints(
+            batch, worlds, agents, checkpoint_blocks, proposal_eta)
         alpha, sigma = cosine_vp(time)
         alpha = alpha.to(latent.device).view(batch, 1, 1, 1, 1)
         sigma = sigma.to(latent.device).view(batch, 1, 1, 1, 1)
