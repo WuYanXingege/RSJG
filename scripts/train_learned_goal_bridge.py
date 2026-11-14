@@ -290,6 +290,7 @@ def main():
         raise ValueError('Research candidate requires an explicit --stop-after-epoch bound (1–100)')
     if args.stop_after_epoch is not None and not 1 <= args.stop_after_epoch <= config['training']['epochs']:
         raise ValueError('stop-after-epoch must be within the configured LR timeline')
+    run_end_epoch = args.stop_after_epoch or config['training']['epochs']
     head=subprocess.check_output(['git','-C',str(PAPER),'rev-parse','HEAD'],text=True).strip()
     if head!=args.source_commit: raise RuntimeError('source HEAD does not match launch contract')
     subprocess.run(['git','-C',str(PAPER),'diff','--exit-code','HEAD','--','ebjd','scripts','configs'],check=True)
@@ -336,7 +337,7 @@ def main():
     atomic_json(output/'RUN_IDENTITY.json',identity)
     if not args.resume:
         save_checkpoint(output/'last.pt',model,optimizer,0,0,generator,selection,identity,config)
-    print(f"{config['experiment']['fold']} scratch {contract['schema']} gated8 | seed={config['seed']} | epochs=100 | output={output}",flush=True)
+    print(f"{config['experiment']['fold']} scratch {contract['schema']} gated8 | seed={config['seed']} | epochs={run_end_epoch} | LR timeline=100 | output={output}",flush=True)
     started=time.perf_counter();fields=None
     for epoch in range(start_epoch,101):
         if args.stop_after_epoch is not None and epoch > args.stop_after_epoch:
@@ -384,7 +385,7 @@ def main():
             goal_nll=statistics.fmean(x['goal_nll'] for x in records),pair_loss=statistics.fmean(x['pair_loss'] for x in records),
             **{mode+'_'+k:validation[mode][k] for mode in ['G','H'] for k in ['minADE','minFDE','JADE','JFDE']},eligible=eligible,
             train_seconds=train_seconds,validation_seconds=validation['seconds'],epoch_minutes=seconds/60,
-            lr=lr,eta_hours=(time.perf_counter()-started)/(epoch-start_epoch+1)*(100-epoch)/3600)
+            lr=lr,eta_hours=(time.perf_counter()-started)/(epoch-start_epoch+1)*(run_end_epoch-epoch)/3600)
         if contract.get('goal_training_objective') == SPATIAL_OBJECTIVE:
             # Match the existing logical-update/microbatch reduction. These are
             # training diagnostics, not a pooled dataset population statistic.
@@ -395,7 +396,7 @@ def main():
             if h.tell()==0:writer.writeheader()
             writer.writerow(row)
         atomic_json(output/'STATUS.json',dict(status='TRAINING',**row,selection=selection))
-        print(f"Epoch {epoch:03d}/100 | loss={row['train_loss']:.6f} goalNLL={row['goal_nll']:.4f} | minADE={metrics['minADE']:.6f} | minFDE={metrics['minFDE']:.6f} | JADE={metrics['JADE']:.6f} | JFDE={metrics['JFDE']:.6f} | eligible={eligible} | time={seconds/60:.2f}min | ETA={row['eta_hours']:.2f}h",flush=True)
+        print(f"Epoch {epoch:03d}/{run_end_epoch:03d} | loss={row['train_loss']:.6f} goalNLL={row['goal_nll']:.4f} | minADE={metrics['minADE']:.6f} | minFDE={metrics['minFDE']:.6f} | JADE={metrics['JADE']:.6f} | JFDE={metrics['JFDE']:.6f} | eligible={eligible} | time={seconds/60:.2f}min | ETA={row['eta_hours']:.2f}h",flush=True)
     selected=output/('best_eligible.pt' if selection['best_eligible'] else 'best_jade.pt')
     payload=torch.load(selected,map_location='cpu',weights_only=False);model.load_state_dict(payload['model'],strict=True)
     selected_epoch=payload['epoch'];del payload

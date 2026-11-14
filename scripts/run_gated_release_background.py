@@ -13,6 +13,7 @@ import json
 import os
 from pathlib import Path
 import signal
+import shutil
 import subprocess
 import tempfile
 import time
@@ -62,6 +63,32 @@ def resume_command(command, training):
     return list(command)
 
 
+def finish_bounded(root, training, limit, returncode):
+    """Persist a complete bounded run, without claiming full training/evaluation."""
+    status=json.loads((training/'STATUS.json').read_text())
+    if returncode != 0 or status.get('status') != 'BOUNDED_STOP' or status.get('completed_epoch') != limit:
+        raise RuntimeError('bounded training did not reach its complete epoch checkpoint')
+    index=[json.loads(line) for line in (training/'checkpoint_index.jsonl').read_text().splitlines() if line.strip()][-1]
+    checkpoint=training/'last.pt'
+    sha=digest(checkpoint)
+    if index['epoch'] != limit or index['update'] != status['update'] or index['sha256'] != sha:
+        raise RuntimeError('bounded checkpoint/index/progress mismatch')
+    validation=json.loads((training/f'validation/epoch_{limit:03d}.json').read_text())
+    frozen=training/f'fixed_epoch{limit:03d}.pt'
+    if frozen.exists():
+        if digest(frozen) != sha:raise RuntimeError('refusing to overwrite a different frozen checkpoint')
+    else:
+        temporary=frozen.with_suffix('.tmp');shutil.copyfile(checkpoint,temporary)
+        if digest(temporary) != sha:raise RuntimeError('frozen checkpoint copy verification failed')
+        os.replace(temporary,frozen)
+    result=dict(status='BOUNDED_TRAINING_COMPLETE',completed_epochs=limit,updates=status['update'],
+        checkpoint=str(frozen),checkpoint_sha256=sha,validation=validation,
+        evaluation_scope='one inference seed2035; validation/test mirrored, not five-seed final evaluation',
+        method_accepted=False,old_model_control_trained=False,automatic_extension=False)
+    atomic_json(root/'BOUNDED_RESULT.json',result)
+    return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--root", required=True, type=Path)
@@ -98,6 +125,18 @@ def main():
             for path, expected in manifest["launch_file_hashes"].items():
                 if digest(path) != expected:
                     raise RuntimeError(f"launch identity changed: {path}")
+            bounded=manifest.get('bounded_epochs')
+            if bounded is not None:
+                if not isinstance(bounded,int) or not 1<=bounded<100:
+                    raise ValueError('bounded epochs must be an integer in [1,99]')
+                command_bound=manifest['command']
+                if '--stop-after-epoch' not in command_bound or int(command_bound[command_bound.index('--stop-after-epoch')+1])!=bounded:
+                    raise ValueError('command and manifest epoch bound disagree')
+                done=root/'BOUNDED_RESULT.json'
+                if done.exists():
+                    result=finish_bounded(root,training,bounded,0)
+                    state(result['status'],reason='already completed; not restarted')
+                    return
             final_path = training / "FINAL_EVALUATION.json"
             if final_path.exists() and json.loads(final_path.read_text()).get("status") == "COMPLETE":
                 state("COMPLETE", reason="already completed; not restarted")
@@ -129,6 +168,19 @@ def main():
                     while child.poll() is None:
                         state("TRAINING_OR_EVALUATING")
                         time.sleep(10)
+                if bounded is not None:
+                    result=finish_bounded(root,training,bounded,child.returncode)
+                    state(result['status'],completed_epochs=bounded,fixed_checkpoint=result['checkpoint'])
+                    atomic_json(root/'EXECUTION_RECEIPT.json',dict(status=result['status'],returncode=child.returncode,
+                        training_and_validation_wall_seconds=time.monotonic()-started,result=result))
+                    metrics=result['validation']['H']
+                    (root/'reports/BOUNDED_REPORT_ZH.md').write_text(
+                        f"# ETH空间终点密度有界训练\n\n新模型从零完成{bounded}轮；无旧模型训练对照。"
+                        f"学习率时间轴保留100轮，未自动扩展。\n\n固定epoch{bounded}完整状态：`{result['checkpoint']}`。\n\n"
+                        + '\n'.join(f'- {k}: {metrics[k]:.6f} m' for k in ('minADE','minFDE','JADE','JFDE'))
+                        + '\n\n一个训练seed3101、验证seed2035；validation/test成员镜像。'
+                        '这不是五推理seed均值，也不证明结构优于旧模型。\n')
+                    return
                 final = json.loads(final_path.read_text()) if final_path.exists() else {}
                 complete = child.returncode == 0 and final.get("status") == "COMPLETE"
                 status = "COMPLETE" if complete else "STOPPED_INCOMPLETE"
