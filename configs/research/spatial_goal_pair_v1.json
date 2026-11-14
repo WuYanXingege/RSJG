@@ -1,0 +1,11 @@
+{
+  "design": "one changed goal spatial readout; one epoch per arm; same complete epoch44 parent; same seed and training RNG; no long train",
+  "new_mode": "spatial_goal_queries_v1",
+  "validation_seed": 2035,
+  "primary": "H minFDE",
+  "go_criterion": "H minFDE improves >=0.01m and all other H metrics not worse; finite gradients; identical batch order and training RNG; otherwise do not adopt",
+  "scope": "one-seed short continuation screening, not scratch performance or statistical significance",
+  "max_epochs_per_arm": 1,
+  "short_gate_updates": 8,
+  "no_external_weights": true
+}
