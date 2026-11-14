@@ -1,0 +1,32 @@
+{
+  "schema": "goal-coverage-paired-v1",
+  "parent_epoch": 44,
+  "epochs_per_arm": 3,
+  "end_epoch": 47,
+  "gate_updates": 8,
+  "training_seed": 3101,
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "candidate_mode": "marginal_coverage_separated_pair_v1",
+  "coverage_weight": 1.0,
+  "coverage_temperature": 0.1,
+  "same_model_parameters": true,
+  "no_spatial_goal_head": true,
+  "scheduler_total_epochs": 100,
+  "initialization": "same complete own scratch-trained epoch44; not a fresh initialization comparison",
+  "criteria": {
+    "mean_minFDE_vs_control_max_delta_m": -0.01,
+    "other_three_means_vs_control": "nonworse",
+    "recall_05_vs_control": "nonworse",
+    "minFDE_improved_seeds_minimum": 4,
+    "mean_minFDE_vs_parent": "strictly better",
+    "other_three_means_vs_parent": "nonworse"
+  },
+  "on_failure": "stop and preserve; no new structure, seed sweep, or 100-epoch training",
+  "training_loss_comparison": "candidate includes an extra coverage term; total loss is not directly comparable"
+}

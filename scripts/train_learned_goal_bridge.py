@@ -27,6 +27,7 @@ import torch
 from ebjd.config import build_model, load_config
 from ebjd.data import augment_batch_with_points
 from ebjd.learned_goal import LearnedGoalCouplingBridge
+from ebjd.goal_coverage import LEGACY, SEPARATED, marginal_goal_coverage
 from ebjd.metrics import MetricAccumulator
 from ebjd.objectives import diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss
 from ebjd.proposals import file_sha256
@@ -63,6 +64,10 @@ def check_contract(config, contract):
     assert t['coupling_singleton_backward'] == 'identity'
     assert config['evaluation']['worlds'] == config['evaluation']['steps'] == 20
     assert contract['external_prediction_weights_loaded'] is False
+    mode = contract.get('goal_training_objective', LEGACY)
+    assert mode in (LEGACY, SEPARATED)
+    if mode == SEPARATED:
+        assert contract['coverage_weight'] == 1.0 and contract['coverage_temperature'] == 0.1
 
 
 def build_scratch(config, contract):
@@ -102,7 +107,14 @@ def objective(model, batch, contract, *, time_draw=None, noise=None, goal_noise=
         noise=goal_noise, distribution=distribution)
     nll = model.goal.nll(context, batch.future[..., -1, :], model.bridge.representation.goal_scale,
         distribution=distribution)
-    coupled, _, _ = model.coupling.assign(context, proposals,
+    mode = contract.get('goal_training_objective', LEGACY)
+    if mode not in (LEGACY, SEPARATED):
+        raise ValueError(f'unknown goal objective: {mode}')
+    separated = mode == SEPARATED
+    coverage = (marginal_goal_coverage(proposals, batch.future[..., -1, :], batch.valid,
+        model.bridge.representation.goal_scale, contract['coverage_temperature']) if separated else None)
+    pair_proposals = proposals.detach() if separated else proposals
+    coupled, _, _ = model.coupling.assign(context, pair_proposals,
         model.bridge.representation.goal_scale, straight_through=True)
     pair = joint_pair_loss(coupled, batch.future[..., -1, :], batch.valid,
         model.bridge.representation.goal_scale, temperature=0.1)
@@ -126,8 +138,13 @@ def objective(model, batch, contract, *, time_draw=None, noise=None, goal_noise=
         relative_motion_loss(final_path, batch.future, context, 6.,2.,4.8)), alpha)
     maps = map_loss(batch.future, context, 0.5)
     agent = diff + w['map']*maps + w['goal_nll']*nll
+    if separated:
+        agent = agent + contract['coverage_weight'] * coverage
     scene = w['geometry']*geometry + w['joint_pair']*pair
-    return agent, scene, dict(goal_nll=nll, pair_loss=pair, diffusion_loss=diff, map_loss=maps, geometry_loss=geometry)
+    terms = dict(goal_nll=nll, pair_loss=pair, diffusion_loss=diff, map_loss=maps, geometry_loss=geometry)
+    if separated:
+        terms['goal_coverage_loss'] = coverage
+    return agent, scene, terms
 
 
 def gradient_norm(module):
@@ -139,6 +156,8 @@ def perform_update(model, optimizer, batches, config, contract, generator, devic
     """One logical optimizer update; original scene/agent weighting preserved."""
     optimizer.zero_grad(set_to_none=True)
     stats = dict(loss=0., goal_nll=0., pair_loss=0., diffusion_loss=0., map_loss=0., geometry_loss=0.)
+    if contract.get('goal_training_objective', LEGACY) == SEPARATED:
+        stats['goal_coverage_loss'] = 0.
     scenes = agents = max_agents = 0
     for cpu in batches:
         # Geometry-only dummy points are discarded, never used as proposals.
@@ -177,11 +196,11 @@ def perform_update(model, optimizer, batches, config, contract, generator, devic
 
 
 @torch.no_grad()
-def evaluate(model, config, device, seed, *, max_scenes=None, scene_indices=None):
+def evaluate(model, config, device, seed, *, max_scenes=None, scene_indices=None, endpoint_diagnostics=False):
     model.eval(); g_acc, h_acc = MetricAccumulator(), MetricAccumulator()
     generator = torch.Generator(device=device).manual_seed(seed)
     started=time.perf_counter(); count=0; agent_count=0
-    identities=[]
+    identities=[]; endpoint_errors=[]; nll_sum=0.
     for scene_index,cpu in enumerate(loader(config,'validation',torch.Generator().manual_seed(99173))):
         if scene_indices is not None and scene_index not in scene_indices: continue
         batch=cpu.to(device)
@@ -196,12 +215,25 @@ def evaluate(model, config, device, seed, *, max_scenes=None, scene_indices=None
         g_path,target=batch.paper_coordinates(g_path,batch.future)
         h_path,_=batch.paper_coordinates(h_path,batch.future)
         g_acc.update(g_path,target,batch.valid); h_acc.update(h_path,target,batch.valid)
+        if endpoint_diagnostics:
+            errors=torch.linalg.vector_norm(g_path[..., -1, :]-target[:,None,...,-1,:],dim=-1).amin(1)
+            endpoint_errors.extend(errors[batch.valid].cpu().tolist())
+            nll_sum+=float(model.goal.nll(context,batch.future[...,-1,:],
+                model.bridge.representation.goal_scale))*int(batch.valid.sum())
         count+=len(batch.observed); agent_count+=int(batch.valid.sum())
         identities.extend(batch.scene_ids)
         if max_scenes is not None and count>=max_scenes: break
-    return dict(seed=seed,G=g_acc.as_dict(),H=h_acc.as_dict(),scenes=count,agent_occurrences=agent_count,
+    result = dict(seed=seed,G=g_acc.as_dict(),H=h_acc.as_dict(),scenes=count,agent_occurrences=agent_count,
         seconds=time.perf_counter()-started,proposal_source='online_learned_uniform_mixture_stratified20',
         scene_ids=identities)
+    if endpoint_diagnostics:
+        errors=torch.tensor(endpoint_errors,dtype=torch.float64)
+        result['endpoint_diagnostics']=dict(goal_nll=nll_sum/max(agent_count,1),
+            recall_025=float((errors<=.25).double().mean()),recall_05=float((errors<=.5).double().mean()),
+            recall_10=float((errors<=1.).double().mean()),
+            P50=float(errors.quantile(.5)),P90=float(errors.quantile(.9)),P95=float(errors.quantile(.95)),
+            agent_best_errors=endpoint_errors,unit='paper_metric_coordinates')
+    return result
 
 
 def capture_rng(generator):
