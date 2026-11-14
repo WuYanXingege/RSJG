@@ -27,6 +27,8 @@ import torch
 from ebjd.config import build_model, load_config
 from ebjd.data import augment_batch_with_points
 from ebjd.learned_goal import LearnedGoalCouplingBridge
+from ebjd.spatial_density_goal import (SpatialDensityCouplingBridge, SPATIAL_SCHEMA,
+    SPATIAL_OBJECTIVE, SPATIAL_GOAL_OPTIONS)
 from ebjd.goal_coverage import LEGACY, SEPARATED, marginal_goal_coverage
 from ebjd.metrics import MetricAccumulator
 from ebjd.objectives import diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss
@@ -54,9 +56,13 @@ def check_contract(config, contract):
     assert t['rollout_training_enabled'] is False
     assert t['paired_marginal_actual_step_projection_enabled'] is False
     assert t['ebjd_input_pipeline'] == 'legacy_cpu_rigid'
-    assert contract['schema'] == 'ebjd-learned-goal-scratch-v1'
-    assert contract['goal'] == dict(components=20, min_std=0.05, max_std=4.0,
-        mixture_weights='uniform', candidate_sampling='one_reparameterized_draw_per_component')
+    if contract['schema'] == SPATIAL_SCHEMA:
+        if contract['goal'] != SPATIAL_GOAL_OPTIONS or contract.get('goal_training_objective') != SPATIAL_OBJECTIVE:
+            raise ValueError('spatial density semantic contract mismatch')
+    else:
+        assert contract['schema'] == 'ebjd-learned-goal-scratch-v1'
+        assert contract['goal'] == dict(components=20, min_std=0.05, max_std=4.0,
+            mixture_weights='uniform', candidate_sampling='one_reparameterized_draw_per_component')
     assert contract['loss_weights'] == dict(goal_nll=1.0, joint_pair=1.0, coarse=0.25, geometry=0.05, map=0.10)
     assert config['denoiser']['block_type'] == 'endpoint_gated_dit_v1'
     assert config['denoiser']['coarse_blocks'] == config['denoiser']['refinement_blocks'] == 4
@@ -65,7 +71,9 @@ def check_contract(config, contract):
     assert config['evaluation']['worlds'] == config['evaluation']['steps'] == 20
     assert contract['external_prediction_weights_loaded'] is False
     mode = contract.get('goal_training_objective', LEGACY)
-    assert mode in (LEGACY, SEPARATED)
+    assert mode in (LEGACY, SEPARATED, SPATIAL_OBJECTIVE)
+    if mode == SPATIAL_OBJECTIVE and contract['schema'] != SPATIAL_SCHEMA:
+        raise ValueError('spatial objective requires spatial density architecture')
     if mode == SEPARATED:
         assert contract['coverage_weight'] == 1.0 and contract['coverage_temperature'] == 0.1
 
@@ -74,6 +82,8 @@ def build_scratch(config, contract):
     check_contract(config, contract)
     bridge = build_model(config, proposal_conditioned=True)
     g = contract['goal']
+    if contract['schema'] == SPATIAL_SCHEMA:
+        return SpatialDensityCouplingBridge(bridge, **g)
     return LearnedGoalCouplingBridge(bridge, components=g['components'], min_std=g['min_std'], max_std=g['max_std'])
 
 
@@ -108,7 +118,7 @@ def objective(model, batch, contract, *, time_draw=None, noise=None, goal_noise=
     nll = model.goal.nll(context, batch.future[..., -1, :], model.bridge.representation.goal_scale,
         distribution=distribution)
     mode = contract.get('goal_training_objective', LEGACY)
-    if mode not in (LEGACY, SEPARATED):
+    if mode not in (LEGACY, SEPARATED, SPATIAL_OBJECTIVE):
         raise ValueError(f'unknown goal objective: {mode}')
     separated = mode == SEPARATED
     coverage = (marginal_goal_coverage(proposals, batch.future[..., -1, :], batch.valid,
@@ -142,6 +152,9 @@ def objective(model, batch, contract, *, time_draw=None, noise=None, goal_noise=
         agent = agent + contract['coverage_weight'] * coverage
     scene = w['geometry']*geometry + w['joint_pair']*pair
     terms = dict(goal_nll=nll, pair_loss=pair, diffusion_loss=diff, map_loss=maps, geometry_loss=geometry)
+    if mode == SPATIAL_OBJECTIVE:
+        terms.update(model.goal.diagnostics(context, batch.future[..., -1, :],
+            model.bridge.representation.goal_scale, distribution=distribution))
     if separated:
         terms['goal_coverage_loss'] = coverage
     return agent, scene, terms
@@ -156,6 +169,9 @@ def perform_update(model, optimizer, batches, config, contract, generator, devic
     """One logical optimizer update; original scene/agent weighting preserved."""
     optimizer.zero_grad(set_to_none=True)
     stats = dict(loss=0., goal_nll=0., pair_loss=0., diffusion_loss=0., map_loss=0., geometry_loss=0.)
+    if contract.get('goal_training_objective') == SPATIAL_OBJECTIVE:
+        stats.update(spatial_tail_mass=0.,spatial_tail_responsibility=0.,
+            spatial_entropy_fraction=0.,spatial_outside_crop_fraction=0.)
     if contract.get('goal_training_objective', LEGACY) == SEPARATED:
         stats['goal_coverage_loss'] = 0.
     scenes = agents = max_agents = 0
@@ -167,7 +183,7 @@ def perform_update(model, optimizer, batches, config, contract, generator, devic
         total_agents = int(prepared.valid.sum()); scenes += b; agents += total_agents
         times = torch.randint(1,101,(b,), device=device).float()/100
         noise = torch.randn(b,1,n,12,2,device=device)
-        goal_noise = torch.randn(b,n,20,2,device=device)
+        goal_noise = torch.randn(b,n,20,getattr(model.goal, 'noise_dimension', 2),device=device)
         for index in range(b):
             positions = prepared.valid[index].nonzero(as_tuple=False).flatten().to(device)
             batch = prepared.compact_scenes(index,index+1).to(device)
@@ -224,7 +240,7 @@ def evaluate(model, config, device, seed, *, max_scenes=None, scene_indices=None
         identities.extend(batch.scene_ids)
         if max_scenes is not None and count>=max_scenes: break
     result = dict(seed=seed,G=g_acc.as_dict(),H=h_acc.as_dict(),scenes=count,agent_occurrences=agent_count,
-        seconds=time.perf_counter()-started,proposal_source='online_learned_uniform_mixture_stratified20',
+        seconds=time.perf_counter()-started,proposal_source=getattr(model.goal, 'proposal_source', 'online_learned_uniform_mixture_stratified20'),
         scene_ids=identities)
     if endpoint_diagnostics:
         errors=torch.tensor(endpoint_errors,dtype=torch.float64)
@@ -248,7 +264,8 @@ def restore_rng(rng,generator):
 
 
 def save_checkpoint(path,model,optimizer,epoch,update,generator,selection,identity,config):
-    payload=dict(schema='ebjd-learned-goal-scratch-v1',model=model.state_dict(),optimizer=optimizer.state_dict(),
+    schema = SPATIAL_SCHEMA if isinstance(model, SpatialDensityCouplingBridge) else 'ebjd-learned-goal-scratch-v1'
+    payload=dict(schema=schema,model=model.state_dict(),optimizer=optimizer.state_dict(),
         epoch=epoch,update_index=update,selection_state=selection,run_identity=identity,rng=capture_rng(generator),
         scheduler_state=dict(type='epoch_warmup_cosine',completed_epoch=epoch,total_epochs=config['training']['epochs'],
             warmup_epochs=config['training']['lr_warmup_epochs'],final_fraction=config['training']['lr_final_fraction'],
@@ -265,8 +282,14 @@ def main():
     parser.add_argument('--config',required=True);parser.add_argument('--contract',required=True)
     parser.add_argument('--output',required=True);parser.add_argument('--source-commit',required=True)
     parser.add_argument('--device',default='cuda');parser.add_argument('--resume',action='store_true')
+    parser.add_argument('--stop-after-epoch', type=int,
+        help='Bounded research run: save a complete epoch and stop, keeping the 100-epoch LR timeline')
     args=parser.parse_args(); config=load_config(args.config);contract=json.loads(Path(args.contract).read_text())
     check_contract(config,contract)
+    if contract['schema'] == SPATIAL_SCHEMA and args.stop_after_epoch is None:
+        raise ValueError('Research candidate requires an explicit --stop-after-epoch bound (1–100)')
+    if args.stop_after_epoch is not None and not 1 <= args.stop_after_epoch <= config['training']['epochs']:
+        raise ValueError('stop-after-epoch must be within the configured LR timeline')
     head=subprocess.check_output(['git','-C',str(PAPER),'rev-parse','HEAD'],text=True).strip()
     if head!=args.source_commit: raise RuntimeError('source HEAD does not match launch contract')
     subprocess.run(['git','-C',str(PAPER),'diff','--exit-code','HEAD','--','ebjd','scripts','configs'],check=True)
@@ -313,9 +336,14 @@ def main():
     atomic_json(output/'RUN_IDENTITY.json',identity)
     if not args.resume:
         save_checkpoint(output/'last.pt',model,optimizer,0,0,generator,selection,identity,config)
-    print(f"ETH scratch learned-goal gated8 | seed={config['seed']} | epochs=100 | output={output}",flush=True)
+    print(f"{config['experiment']['fold']} scratch {contract['schema']} gated8 | seed={config['seed']} | epochs=100 | output={output}",flush=True)
     started=time.perf_counter();fields=None
     for epoch in range(start_epoch,101):
+        if args.stop_after_epoch is not None and epoch > args.stop_after_epoch:
+            atomic_json(output/'STATUS.json',dict(status='BOUNDED_STOP',completed_epoch=epoch-1,
+                update=update,checkpoint=str(output/'last.pt'),selection=selection,
+                note='Complete epoch boundary; not final model selection/evaluation. Resume requires explicit launch.'))
+            return
         epoch_start=time.perf_counter();lr=set_epoch_lr(optimizer,epoch,config);model.train()
         records=[];pending=[]
         train_loader=loader(config,'train',generator)
@@ -357,6 +385,11 @@ def main():
             **{mode+'_'+k:validation[mode][k] for mode in ['G','H'] for k in ['minADE','minFDE','JADE','JFDE']},eligible=eligible,
             train_seconds=train_seconds,validation_seconds=validation['seconds'],epoch_minutes=seconds/60,
             lr=lr,eta_hours=(time.perf_counter()-started)/(epoch-start_epoch+1)*(100-epoch)/3600)
+        if contract.get('goal_training_objective') == SPATIAL_OBJECTIVE:
+            # Match the existing logical-update/microbatch reduction. These are
+            # training diagnostics, not a pooled dataset population statistic.
+            for key in ('spatial_tail_mass','spatial_tail_responsibility','spatial_entropy_fraction','spatial_outside_crop_fraction'):
+                row[key]=statistics.fmean(r[key] for r in records)
         with (output/'epoch_metrics.csv').open('a',newline='') as h:
             writer=csv.DictWriter(h,fieldnames=row.keys())
             if h.tell()==0:writer.writeheader()

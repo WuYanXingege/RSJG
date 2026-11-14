@@ -1,0 +1,64 @@
+{
+  "status": "IMPLEMENTED_PREFLIGHT_PASS_NOT_ACCURACY_ACCEPTED",
+  "architecture": "spatial_density_bridge_v1",
+  "formal_optimizer_updates": 0,
+  "final_temporary_updates": 8,
+  "total_temporary_updates": 24,
+  "gpu_task_wall_seconds": 134.33993703406304,
+  "final_preflight_wall_seconds": 45.7070878330851,
+  "peak_allocated_mib": 2147.78955078125,
+  "process_peak_rss_mib": 4439.8359375,
+  "parameter_count": 11836391,
+  "goal_parameter_count": 67594,
+  "external_prediction_weights_loaded": [],
+  "train_manifest_sha256": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de",
+  "validation_smoke": {
+    "scenes": 2,
+    "populations": [
+      1,
+      2
+    ],
+    "worlds": 20,
+    "ddim_steps": 20,
+    "finite": true,
+    "not_an_accuracy_result": true
+  },
+  "unit_tests": {
+    "passed": 28,
+    "command": "../.conda/rsjg/bin/python -m pytest -q tests/test_spatial_density_goal.py tests/test_learned_goal.py tests/test_goal_coverage.py tests/test_spatial_goal.py tests/test_unified_coupling.py"
+  },
+  "training_smoke": {
+    "logical_scenes_per_update": 16,
+    "max_agents_in_scene": 52,
+    "agents_per_update": [
+      166,
+      152,
+      155,
+      87,
+      115,
+      158,
+      251,
+      171
+    ],
+    "all_required_gradients_finite_nonzero": true,
+    "strict_state_restore": true
+  },
+  "scope": "ETH train data; random initialization, temporary updates only; no full validation or training effectiveness claim",
+  "asset_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_spatial_density_bridge_v1_20261114_180827",
+  "final_preflight": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_spatial_density_bridge_v1_20261114_180827/preflight_domain_separated/PREFLIGHT.json",
+  "source_sha256": {
+    "ebjd/spatial_density_goal.py": "d9ec07b6b3c8346f6e8bfd88bad6b540ebec8ab742f70a0fdb85e65fe9248123",
+    "scripts/train_learned_goal_bridge.py": "5c9e2d796bd34731cebe3bcc29deca69b7a81e1b548f92868ac2188736b96798",
+    "scripts/check_spatial_density_bridge.py": "8eeee1e9c02995fb90909808a886ff6810bc8a98eefa0117392a506ca8b3ded9",
+    "configs/research/spatial_density_bridge_v1.json": "363581ed57a1334b84676584be5c129ce2a2e8901d605cf161638e1162803d53",
+    "tests/test_spatial_density_goal.py": "715c6d4b0b4d44ea1c082c7bd88457794113a644e173230cc36f2608b7f25385"
+  },
+  "remaining_risks": [
+    "Untrained spatial density remains near uniform; accuracy not established",
+    "New IID sampler differs from old stratified GMM; future comparisons must disclose both changes",
+    "Only implementation/integrity tests, no five-seed performance claim",
+    "Shared encoder still receives multiple objectives; detached samples do not imply gradient orthogonality"
+  ],
+  "initial_prototype_disposition": "Overlapping global-Gaussian tail discarded during implementation because it could explain in-crop GT. Final code uses disjoint support and no new loss term.",
+  "post_gpu_compatibility_fix": "Checkpoint schema now chosen by model type, preserving legacy trial metadata behavior. New-model schema unchanged; complete CPU suite rerun."
+}
