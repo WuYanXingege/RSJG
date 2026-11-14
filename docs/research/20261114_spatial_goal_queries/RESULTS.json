@@ -1,0 +1,331 @@
+{
+  "status": "COMPLETE",
+  "decision": "DO_NOT_ADOPT",
+  "control": {
+    "phase": "epoch",
+    "arm": "control",
+    "epoch": 45,
+    "updates": 257,
+    "train_seconds": 989.1526506679365,
+    "seconds_per_update": 3.8488429987079242,
+    "training": {
+      "loss": 2.648834697237231,
+      "goal_nll": 1.2718762502333962,
+      "pair_loss": 0.840358544697311,
+      "diffusion_loss": 0.5355066670745955,
+      "map_loss": 0.010406364500424843,
+      "geometry_loss": 0.0010516172648574577,
+      "goal_grad_norm": 7.748947388467158,
+      "coupling_grad_norm": 0.0013051936907987273,
+      "bridge_grad_norm": 5.056488027832388,
+      "map_grad_norm": 0.8088797165030172
+    },
+    "rng_end": "b7ba9081ab6e95bfdc489111f539ed3bfa43931843a347a38f99d613a9504535",
+    "goal_parameter_update_l2": 0.19255335726169454,
+    "peak_allocated_mib": 2216.77685546875,
+    "validation": {
+      "seed": 2035,
+      "G": {
+        "minADE": 0.5131148473298238,
+        "minFDE": 0.9163404825401933,
+        "JADE": 0.5746958941044543,
+        "JFDE": 1.0159996165028908,
+        "scene_weighted_minADE": 0.5430620714079721,
+        "scene_weighted_minFDE": 0.9438773643799686,
+        "coordination_gap_ADE": 0.03163382269648218,
+        "coordination_gap_FDE": 0.07212225212292223,
+        "agent_count": 364,
+        "scene_count": 253,
+        "sums": {
+          "agent_minADE": 186.77380442805588,
+          "agent_minFDE": 333.54793564463034,
+          "scene_JADE": 145.39806120842695,
+          "scene_JFDE": 257.0479029752314,
+          "scene_marginal_ADE": 137.39470406621695,
+          "scene_marginal_FDE": 238.80097318813205
+        }
+      },
+      "H": {
+        "minADE": 0.5124744065540874,
+        "minFDE": 0.9163404825401933,
+        "JADE": 0.5731233807773929,
+        "JFDE": 1.0162853641148377,
+        "scene_weighted_minADE": 0.5425927998579066,
+        "scene_weighted_minFDE": 0.9438773643799686,
+        "coordination_gap_ADE": 0.03053058091948624,
+        "coordination_gap_FDE": 0.07240799973486911,
+        "agent_count": 364,
+        "scene_count": 253,
+        "sums": {
+          "agent_minADE": 186.5406839856878,
+          "agent_minFDE": 333.54793564463034,
+          "scene_JADE": 145.0002153366804,
+          "scene_JFDE": 257.12019712105393,
+          "scene_marginal_ADE": 137.2759783640504,
+          "scene_marginal_FDE": 238.80097318813205
+        }
+      },
+      "scenes": 253,
+      "agent_occurrences": 364,
+      "seconds": 238.74440592702013,
+      "proposal_source": "online_learned_uniform_mixture_stratified20"
+    },
+    "checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_spatial_goal_pair_v1_20261114_124805/control/last.pt",
+    "checkpoint_sha256": "f2e45a098c875ede51ab30b84f9cbe513f5119bf15e4efe80d7e249ef5a95e07",
+    "eligible": false,
+    "full_state_strict_restore": true,
+    "full_epoch_seconds": 1228.554306510021
+  },
+  "candidate": {
+    "phase": "epoch",
+    "arm": "candidate",
+    "epoch": 45,
+    "updates": 257,
+    "train_seconds": 989.9381166560343,
+    "seconds_per_update": 3.851899286599355,
+    "training": {
+      "loss": 2.6313114963392166,
+      "goal_nll": 1.262092521214014,
+      "pair_loss": 0.8370871612700681,
+      "diffusion_loss": 0.5310615675392015,
+      "map_loss": 0.010178247739542222,
+      "geometry_loss": 0.0010482010658636842,
+      "goal_grad_norm": 14.200986980928057,
+      "coupling_grad_norm": 0.0009793969753297074,
+      "bridge_grad_norm": 5.070084679451434,
+      "map_grad_norm": 0.8225741959267553
+    },
+    "rng_end": "b7ba9081ab6e95bfdc489111f539ed3bfa43931843a347a38f99d613a9504535",
+    "goal_parameter_update_l2": 0.533688353095332,
+    "peak_allocated_mib": 2233.55224609375,
+    "validation": {
+      "seed": 2035,
+      "G": {
+        "minADE": 0.5189964470995979,
+        "minFDE": 0.9284963848201717,
+        "JADE": 0.5804694921897334,
+        "JFDE": 1.0281175479086726,
+        "scene_weighted_minADE": 0.5491601246088861,
+        "scene_weighted_minFDE": 0.9576994139303567,
+        "coordination_gap_ADE": 0.03130936758084735,
+        "coordination_gap_FDE": 0.07041813397831587,
+        "agent_count": 364,
+        "scene_count": 253,
+        "sums": {
+          "agent_minADE": 188.91470674425364,
+          "agent_minFDE": 337.9726840745425,
+          "scene_JADE": 146.85878152400255,
+          "scene_JFDE": 260.1137396208942,
+          "scene_marginal_ADE": 138.93751152604818,
+          "scene_marginal_FDE": 242.29795172438025
+        }
+      },
+      "H": {
+        "minADE": 0.5174601875363266,
+        "minFDE": 0.9284963848201717,
+        "JADE": 0.574562658345982,
+        "JFDE": 1.0229691529550806,
+        "scene_weighted_minADE": 0.5482824624998296,
+        "scene_weighted_minFDE": 0.9576994139303567,
+        "coordination_gap_ADE": 0.026280195846152377,
+        "coordination_gap_FDE": 0.06526973902472388,
+        "agent_count": 364,
+        "scene_count": 253,
+        "sums": {
+          "agent_minADE": 188.35550826322287,
+          "agent_minFDE": 337.9726840745425,
+          "scene_JADE": 145.36435256153345,
+          "scene_JFDE": 258.8111956976354,
+          "scene_marginal_ADE": 138.7154630124569,
+          "scene_marginal_FDE": 242.29795172438025
+        }
+      },
+      "scenes": 253,
+      "agent_occurrences": 364,
+      "seconds": 239.5138842141023,
+      "proposal_source": "online_learned_uniform_mixture_stratified20"
+    },
+    "checkpoint": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_spatial_goal_pair_v1_20261114_124805/candidate/last.pt",
+    "checkpoint_sha256": "a84ddb6c9bdb7ce20780f1f7ce082ad73aef650685e9d329881cc3e5bc830ed1",
+    "eligible": false,
+    "full_state_strict_restore": true,
+    "full_epoch_seconds": 1230.1850772680482
+  },
+  "delta_H": {
+    "minADE": 0.00498578098223923,
+    "minFDE": 0.012155902279978426,
+    "JADE": 0.0014392775685890813,
+    "JFDE": 0.006683788840242899
+  },
+  "paired_inputs_rng": true,
+  "training_speed_ratio": 0.999206550414736,
+  "scope": "one training continuation and one inference seed; not a from-scratch comparison",
+  "old_long_training_restarted": false,
+  "gpu_cost": {
+    "status": "COMPLETE",
+    "gpu_seconds": 2524.6316655880073,
+    "failure": null
+  },
+  "parent_validation": {
+    "G": {
+      "minADE": 0.5012473415181675,
+      "minFDE": 0.8776359233645733,
+      "JADE": 0.5648409867946338,
+      "JFDE": 0.9951868658450987
+    },
+    "H": {
+      "minADE": 0.49927952416768234,
+      "minFDE": 0.8776359233645733,
+      "JADE": 0.5692056285533981,
+      "JFDE": 1.0065395185804886
+    }
+  },
+  "delta_candidate_parent": {
+    "minADE": 0.018180663368644268,
+    "minFDE": 0.050860461455598416,
+    "JADE": 0.0053570297925839006,
+    "JFDE": 0.016429634374591995
+  },
+  "cpu_tests": {
+    "status": "PASS",
+    "tests": 8,
+    "command": "PYTHONPATH=RSJG_EBJD_Paper:RSJG_EBJD_Paper/tests OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 .conda/rsjg/bin/python -m pytest -q -p no:cacheprovider RSJG_EBJD_Paper/tests/test_spatial_goal.py RSJG_EBJD_Paper/tests/test_learned_goal.py",
+    "coverage": [
+      "uniform mixture NLL formula",
+      "strict complete checkpoint and optimizer restore",
+      "scratch rejects pretrained weights",
+      "zero-initialized spatial migration exact forward and inherited gradient",
+      "optimizer moment preservation",
+      "new spatial attention gradient",
+      "agent permutation and padding",
+      "position-sensitive readout with identical token mean"
+    ]
+  },
+  "architecture": {
+    "legacy_goal_parameters": 90128,
+    "spatial_goal_parameters": 206096,
+    "added_parameters": 115968,
+    "new_trainable_parameters": [
+      {
+        "name": "spatial_queries",
+        "shape": [
+          20,
+          192
+        ]
+      },
+      {
+        "name": "spatial_history.weight",
+        "shape": [
+          192,
+          192
+        ]
+      },
+      {
+        "name": "spatial_center.weight",
+        "shape": [
+          192,
+          2
+        ]
+      },
+      {
+        "name": "spatial_key.weight",
+        "shape": [
+          192,
+          192
+        ]
+      },
+      {
+        "name": "spatial_value.weight",
+        "shape": [
+          192,
+          192
+        ]
+      },
+      {
+        "name": "spatial_norm.weight",
+        "shape": [
+          192
+        ]
+      },
+      {
+        "name": "spatial_norm.bias",
+        "shape": [
+          192
+        ]
+      },
+      {
+        "name": "spatial_output.weight",
+        "shape": [
+          4,
+          192
+        ]
+      }
+    ],
+    "loss_or_sampling_changes": false,
+    "additional_pretrained_parameters": 0
+  },
+  "finite_checkpoint_check": {
+    "control": {
+      "epoch": 45,
+      "update": 11565,
+      "scheduler": {
+        "type": "epoch_warmup_cosine",
+        "completed_epoch": 45,
+        "total_epochs": 100,
+        "warmup_epochs": 5,
+        "final_fraction": 0.1,
+        "group_lrs": [
+          6.604684692133597e-05,
+          6.604684692133597e-05,
+          6.604684692133597e-05,
+          6.604684692133597e-05
+        ]
+      },
+      "checks": {
+        "model": {
+          "checked_tensors": 460,
+          "nonfinite": []
+        },
+        "optimizer": {
+          "checked_tensors": 1350,
+          "nonfinite": []
+        }
+      },
+      "rng_present": true
+    },
+    "candidate": {
+      "epoch": 45,
+      "update": 11565,
+      "scheduler": {
+        "type": "epoch_warmup_cosine",
+        "completed_epoch": 45,
+        "total_epochs": 100,
+        "warmup_epochs": 5,
+        "final_fraction": 0.1,
+        "group_lrs": [
+          6.604684692133597e-05,
+          6.604684692133597e-05,
+          6.604684692133597e-05,
+          6.604684692133597e-05
+        ]
+      },
+      "checks": {
+        "model": {
+          "checked_tensors": 468,
+          "nonfinite": []
+        },
+        "optimizer": {
+          "checked_tensors": 1374,
+          "nonfinite": []
+        }
+      },
+      "rng_present": true
+    }
+  },
+  "control_repeat": {
+    "same_inputs_and_rng": true,
+    "max_loss_absolute_diff": 0.0,
+    "max_loss_relative_diff": 0.0,
+    "note": "first8 of independent gate and full-epoch control, baseline repeat calibration without extra GPU runs"
+  }
+}

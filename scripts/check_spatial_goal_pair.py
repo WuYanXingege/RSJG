@@ -138,6 +138,8 @@ def assert_pair(control,candidate):
 def main():
     p=argparse.ArgumentParser();p.add_argument('--root',required=True);p.add_argument('--source-commit',required=True)
     args=p.parse_args();root=Path(args.root)
+    if any((root/name).exists() for name in ['reports/SUMMARY.json','control/last.pt','candidate/last.pt']):
+        raise RuntimeError('existing completed assets: use a fresh experiment directory, never overwrite this trial')
     head=subprocess.check_output(['git','-C',str(PAPER),'rev-parse','HEAD'],text=True).strip()
     if head!=args.source_commit:raise RuntimeError('source binding mismatch')
     subprocess.run(['git','-C',str(PAPER),'diff','--exit-code','HEAD','--','ebjd','scripts','configs'],check=True)
