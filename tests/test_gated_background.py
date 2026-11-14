@@ -1,9 +1,12 @@
 import json
+from pathlib import Path
+import sys
 
 import pytest
 
-from scripts.run_gated_release_background import atomic_json, progress, resume_command
-from scripts.run_gated_release_background import finish_bounded, digest
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
+from run_gated_release_background import atomic_json, progress, resume_command
+from run_gated_release_background import finish_bounded, digest
 
 
 def test_progress_tolerates_a_partially_written_tail(tmp_path):
