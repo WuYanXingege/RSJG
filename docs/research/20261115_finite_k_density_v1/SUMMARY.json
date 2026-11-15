@@ -1,0 +1,119 @@
+{
+  "status": "PASS",
+  "formal_optimizer_updates": 0,
+  "temporary_optimizer_updates": 164,
+  "limits": {
+    "loss_relative": 0.001,
+    "gradient_norm_relative": 0.01
+  },
+  "scales": {
+    "goal": 1.0596677023682803,
+    "bridge": 0.20777413429581118,
+    "source": "train_manifest_only"
+  },
+  "scope": "implementation/runtime acceptance only; not predictive accuracy",
+  "wall_seconds": 659.0424221489811,
+  "gpu_task_wall_seconds": 659.0424221489811,
+  "gpu": "NVIDIA GeForce RTX 5070 Ti",
+  "pytorch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "baseline_repeat": {
+    "max_relative": {
+      "loss": 0.0,
+      "goal_nll": 0.0,
+      "finite_k_risk": 0.0,
+      "pair_loss": 0.0,
+      "diffusion_loss": 0.0,
+      "goal_grad_norm": 0.0,
+      "bridge_grad_norm": 0.0,
+      "map_grad_norm": 2.9998954536434404e-07,
+      "coupling_grad_norm": 1.1325171961411063e-07
+    },
+    "parameter_l2_relative": {
+      "goal.": 2.374071130352742e-10,
+      "coupling.": 3.4143856332750995e-10,
+      "bridge.": 7.150548561870637e-10
+    },
+    "input_identities_equal": true
+  },
+  "runtime_gate": {
+    "max_relative": {
+      "loss": 0.0,
+      "goal_nll": 0.0,
+      "finite_k_risk": 0.0,
+      "pair_loss": 0.0,
+      "diffusion_loss": 0.0,
+      "goal_grad_norm": 0.0,
+      "bridge_grad_norm": 0.0,
+      "map_grad_norm": 2.9998954536434404e-07,
+      "coupling_grad_norm": 1.0331389654559655e-07
+    },
+    "parameter_l2_relative": {
+      "goal.": 2.3210649797099708e-10,
+      "coupling.": 3.544396803064442e-10,
+      "bridge.": 2.998348066155316e-09
+    },
+    "input_identities_equal": true
+  },
+  "runtime_correctness_pass": true,
+  "paired_speedups": [
+    1.034523923111722,
+    1.030358660421803
+  ],
+  "selected_runtime": "denoiser_graph32",
+  "asset_directory": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_finite_k_density_gated8_v1_20261115_112539",
+  "architecture": "192/4/768 gated8 FULL/CTF/Raw",
+  "model_change": "NLL + deterministic quadrature finite-K coverage risk, plus FP32 coupling scoring",
+  "prediction_accuracy_acceptance": false,
+  "gpu_total_seconds": 1631.4143291499931,
+  "all_temporary_updates": 400,
+  "rejected_group_gate": {
+    "max_relative": {
+      "loss": 0.00786147981148607,
+      "goal_nll": 1.8499967854663422e-07,
+      "finite_k_risk": 5.525426670311724e-07,
+      "pair_loss": 0.024389064775382024,
+      "diffusion_loss": 6.510940869451303e-07,
+      "goal_grad_norm": 3.422190457795658e-05,
+      "bridge_grad_norm": 0.00039384337302492893,
+      "map_grad_norm": 2.3172753401557718e-05,
+      "coupling_grad_norm": 0.07806895578252795
+    },
+    "parameter_l2_relative": {
+      "goal.": 2.376757256677368e-07,
+      "coupling.": 6.674631639624726e-05,
+      "bridge.": 6.278328084896414e-06
+    },
+    "input_identities_equal": true
+  },
+  "deferred_speedups": [
+    1.0148323222290347,
+    1.0121706504536936
+  ],
+  "source_receipts": {
+    "INITIAL_BF16_COUPLING_RESULTS.json": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_finite_k_density_gated8_v1_20261115_112539/preflight/INITIAL_BF16_COUPLING_RESULTS.json",
+      "sha256": "86efdcad0d196f94cc48a04a49684b0449e4e6a3fc775bf266bf1ddbb02c2928"
+    },
+    "FP32_CONTINUOUS_GATE_RESULTS.json": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_finite_k_density_gated8_v1_20261115_112539/preflight/FP32_CONTINUOUS_GATE_RESULTS.json",
+      "sha256": "da1cb9b5768f289b524c667533e010ca92aec23e38e22436cff8204515795f2b"
+    },
+    "REJECTED_GROUP_COMMON_PARENT.json": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_finite_k_density_gated8_v1_20261115_112539/preflight/REJECTED_GROUP_COMMON_PARENT.json",
+      "sha256": "3a2400da7fda3e23f846ff418168fda78dfaf159b931591d701b01e59b8ead0f"
+    },
+    "DEFERRED_RUNTIME_RESULTS.json": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_finite_k_density_gated8_v1_20261115_112539/preflight/DEFERRED_RUNTIME_RESULTS.json",
+      "sha256": "b2e7762bc8049143d9d670a07ff5ed4e96174fd5609273bd6189eb690f80d22a"
+    },
+    "RESULTS.json": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_finite_k_density_gated8_v1_20261115_112539/preflight/RESULTS.json",
+      "sha256": "975a7c45776419f8c3fe4bd61f8040d92bcaaae402612a0e3b4d43f89cb44e05"
+    },
+    "QUADRATURE.json": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_finite_k_density_gated8_v1_20261115_112539/preflight/QUADRATURE.json",
+      "sha256": "ad2767217ebf9427ad7ab1581987a4b20a884beb8b084d6f86dd0720a5645e04"
+    }
+  }
+}

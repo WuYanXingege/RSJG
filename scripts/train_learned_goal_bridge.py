@@ -30,6 +30,7 @@ from ebjd.learned_goal import LearnedGoalCouplingBridge
 from ebjd.spatial_density_goal import (SpatialDensityCouplingBridge, SPATIAL_SCHEMA,
     SPATIAL_OBJECTIVE, SPATIAL_GOAL_OPTIONS)
 from ebjd.goal_coverage import LEGACY, SEPARATED, marginal_goal_coverage
+from ebjd.finite_k_risk import finite_k_endpoint_risk
 from ebjd.metrics import MetricAccumulator
 from ebjd.objectives import diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss
 from ebjd.proposals import file_sha256
@@ -76,6 +77,14 @@ def check_contract(config, contract):
         raise ValueError('spatial objective requires spatial density architecture')
     if mode == SEPARATED:
         assert contract['coverage_weight'] == 1.0 and contract['coverage_temperature'] == 0.1
+    if 'finite_k_risk' in contract:
+        assert mode == SPATIAL_OBJECTIVE
+        assert contract['coupling_score_precision'] == 'fp32'
+        assert contract['finite_k_risk'] == dict(k=20, quadrature_order=2, weight=1.0,
+            definition='midpoint_quadrature_expected_min_euclidean_distance')
+    runtime = t.get('scratch_update_runtime', 'scene_serial')
+    if runtime not in ('scene_serial', 'deferred_metrics_v1'):
+        raise ValueError('unknown scratch update runtime')
 
 
 def build_scratch(config, contract):
@@ -83,7 +92,9 @@ def build_scratch(config, contract):
     bridge = build_model(config, proposal_conditioned=True)
     g = contract['goal']
     if contract['schema'] == SPATIAL_SCHEMA:
-        return SpatialDensityCouplingBridge(bridge, **g)
+        model = SpatialDensityCouplingBridge(bridge, **g)
+        model.coupling.score_in_fp32 = contract.get('coupling_score_precision') == 'fp32'
+        return model
     return LearnedGoalCouplingBridge(bridge, components=g['components'], min_std=g['min_std'], max_std=g['max_std'])
 
 
@@ -150,6 +161,12 @@ def objective(model, batch, contract, *, time_draw=None, noise=None, goal_noise=
     agent = diff + w['map']*maps + w['goal_nll']*nll
     if separated:
         agent = agent + contract['coverage_weight'] * coverage
+    risk = contract.get('finite_k_risk')
+    if risk:
+        coverage = finite_k_endpoint_risk(model.goal, context, batch.future[..., -1, :],
+            model.bridge.representation.goal_scale, distribution,
+            k=risk['k'], order=risk['quadrature_order'])
+        agent = agent + risk['weight'] * coverage
     scene = w['geometry']*geometry + w['joint_pair']*pair
     terms = dict(goal_nll=nll, pair_loss=pair, diffusion_loss=diff, map_loss=maps, geometry_loss=geometry)
     if mode == SPATIAL_OBJECTIVE:
@@ -157,6 +174,8 @@ def objective(model, batch, contract, *, time_draw=None, noise=None, goal_noise=
             model.bridge.representation.goal_scale, distribution=distribution))
     if separated:
         terms['goal_coverage_loss'] = coverage
+    if risk:
+        terms['finite_k_risk'] = coverage
     return agent, scene, terms
 
 
@@ -174,7 +193,11 @@ def perform_update(model, optimizer, batches, config, contract, generator, devic
             spatial_entropy_fraction=0.,spatial_outside_crop_fraction=0.)
     if contract.get('goal_training_objective', LEGACY) == SEPARATED:
         stats['goal_coverage_loss'] = 0.
+    if 'finite_k_risk' in contract:
+        stats['finite_k_risk'] = 0.
     scenes = agents = max_agents = 0
+    deferred = config['training'].get('scratch_update_runtime') == 'deferred_metrics_v1'
+    pending_stats = []
     for cpu in batches:
         # Geometry-only dummy points are discarded, never used as proposals.
         dummy = cpu.observed[:, None, :, -1].clone()
@@ -196,10 +219,22 @@ def perform_update(model, optimizer, batches, config, contract, generator, devic
                 loss = (count/total_agents*agent + scene/b)/len(batches)
             if not torch.isfinite(loss): raise FloatingPointError('nonfinite training loss')
             loss.backward()
-            stats['loss'] += float(loss.detach())
+            if deferred:
+                pending_stats.append(('loss', 1., loss.detach()))
+            else:
+                stats['loss'] += float(loss.detach())
             for name, value in terms.items():
                 weight = 1/b if name in ('pair_loss','geometry_loss') else count/total_agents
-                stats[name] += float(value.detach())*weight/len(batches)
+                if deferred:
+                    pending_stats.append((name, weight/len(batches), value.detach()))
+                else:
+                    stats[name] += float(value.detach())*weight/len(batches)
+    if deferred:
+        # One scalar transfer, then the exact original Python accumulation
+        # order. No graph retention, altered gradient, or delayed loss failure.
+        values = torch.stack([row[2] for row in pending_stats]).cpu().tolist()
+        for (name, weight, _), value in zip(pending_stats, values):
+            stats[name] += value * weight
     stats.update(goal_grad_norm=gradient_norm(model.goal), coupling_grad_norm=gradient_norm(model.coupling),
         bridge_grad_norm=gradient_norm(model.bridge), map_grad_norm=gradient_norm(model.bridge.encoder.map_unet))
     if not all(math.isfinite(x) for x in stats.values()): raise FloatingPointError('nonfinite gradients/objective')
@@ -391,6 +426,8 @@ def main():
             # training diagnostics, not a pooled dataset population statistic.
             for key in ('spatial_tail_mass','spatial_tail_responsibility','spatial_entropy_fraction','spatial_outside_crop_fraction'):
                 row[key]=statistics.fmean(r[key] for r in records)
+        if 'finite_k_risk' in contract:
+            row['finite_k_risk']=statistics.fmean(r['finite_k_risk'] for r in records)
         with (output/'epoch_metrics.csv').open('a',newline='') as h:
             writer=csv.DictWriter(h,fieldnames=row.keys())
             if h.tell()==0:writer.writeheader()

@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "targeted_tests": 19,
+  "continuation_controller_tests": 6,
+  "commands": [
+    "python -m pytest -q tests/test_finite_k_risk.py tests/test_spatial_density_goal.py tests/test_small_denoiser_runtime.py",
+    "python scripts/continue_bounded_training.py --self-test"
+  ],
+  "note": "Final targeted run passed; an earlier test-only config comparison was corrected to account for its intentionally cleared weight path."
+}

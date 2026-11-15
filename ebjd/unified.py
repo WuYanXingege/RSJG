@@ -91,6 +91,7 @@ class LearnableJointCouplingHead(nn.Module):
         # tensors or the hard permutation used at inference.  Keep archived
         # training behavior as the default for controlled research comparisons.
         self.singleton_backward = singleton_backward
+        self.score_in_fp32 = False
         self.worlds = int(worlds)
         self.endpoint = nn.Sequential(
             nn.Linear(2, dim), nn.LayerNorm(dim), nn.SiLU(), nn.Linear(dim, dim))
@@ -131,7 +132,14 @@ class LearnableJointCouplingHead(nn.Module):
         self, context: EBJDContext, proposals: torch.Tensor,
         goal_scale: torch.Tensor, *, straight_through: bool,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-        scores = self(context, proposals, goal_scale)
+        if self.score_in_fp32:
+            # Hungarian is discrete: BF16 rounding of nearly tied scores can
+            # change assignments. Keep this small scoring network in FP32.
+            # An explicit runtime attribute preserves all archived defaults.
+            with torch.autocast(device_type=proposals.device.type, enabled=False):
+                scores = self(context, proposals.float(), goal_scale)
+        else:
+            scores = self(context, proposals, goal_scale)
         indices = hard_assignment_indices(scores, context.valid)
         if not straight_through:
             return gather_candidates(proposals, indices), indices, scores

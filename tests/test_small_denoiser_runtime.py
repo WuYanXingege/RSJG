@@ -22,6 +22,10 @@ def test_policy_bounds_and_explicit_override():
     assert policy(model, 1, 1, 1, None, 1)  # unfixed endpoints not affected
     assert policy(model, 1, 1, 1, True, 0)
     assert not policy(model, 1, 1, 20, False, 0)
+    model.uncheckpointed_max_agent_slots = 32
+    assert not policy(model, 1, 1, 32, None, 0)
+    assert policy(model, 1, 1, 33, None, 0)
+    assert policy(model, 1, 20, 1, None, 0)
     model.uncheckpointed_max_agent_slots = 0
     assert policy(model, 1, 1, 1, None, 0)
 
@@ -34,6 +38,7 @@ def test_config_and_state_dict_compatibility():
     assert semantic_config(config) == semantic_config(before)
     # Asset loading is not relevant to runtime/key-space wiring.
     config["paths"]["accepted_fold_matched_gdts_unet"] = None
+    before["paths"]["accepted_fold_matched_gdts_unet"] = None
     m = build_model(config, proposal_conditioned=True)
     assert m.denoiser.uncheckpointed_max_agent_slots == 16
     assert m.encoder.activation_checkpointing is True
@@ -41,7 +46,10 @@ def test_config_and_state_dict_compatibility():
     m.denoiser.uncheckpointed_max_agent_slots = 0
     m.load_state_dict(state, strict=True)
     config["training"]["denoiser_uncheckpointed_max_agent_slots"] = 32
-    with pytest.raises(ValueError, match="0 or 16"):
+    validate_supported_config(config)
+    assert semantic_config(config) == semantic_config(before)
+    config["training"]["denoiser_uncheckpointed_max_agent_slots"] = 64
+    with pytest.raises(ValueError, match="0, 16 or 32"):
         validate_supported_config(config)
 
 

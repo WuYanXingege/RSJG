@@ -1,0 +1,43 @@
+{
+  "schema": "ebjd-spatial-density-bridge-v1",
+  "goal": {
+    "components": 20,
+    "grid_size": 64,
+    "kernel_sigma_cells": 0.5,
+    "initial_tail_mass": 0.1,
+    "tail_min_scale": 0.05
+  },
+  "loss_weights": {
+    "goal_nll": 1.0,
+    "joint_pair": 1.0,
+    "coarse": 0.25,
+    "geometry": 0.05,
+    "map": 0.1
+  },
+  "external_prediction_weights_loaded": false,
+  "initialization": "all_prediction_parameters_random_including_map_unet",
+  "goal_coordinates": "disjoint crop domains: rectangle-truncated spatial Gaussian kernels inside; four square-polar exponential sectors outside; normalized-scale continuous likelihood",
+  "bridge_training": "GT_endpoint_conditional_v_denoising",
+  "coupling_singleton_backward": "identity",
+  "goal_pair_gradient": "NLL plus deterministic finite-K risk train density; detached IID samples train ST coupling via context",
+  "epochs": 100,
+  "early_stopping": false,
+  "scheduler": "5 epoch linear warmup then 95 epoch cosine to 0.1 base LR",
+  "main_and_unet_base_lr": 0.0001,
+  "evaluation": "20 IID continuous domain-separated spatial-density endpoints, original draw order; 20 DDIM steps; no TTST or GT filtering",
+  "selection": "best_eligible_by_H_JADE_else_best_jade; no early stop; final100 saved",
+  "validation_test_identity": "mirrored official data, not independent held-out test",
+  "semantic_maps": "existing dataset maps retained, not a claim that map asset generation used no external prior",
+  "goal_training_objective": "density_nll_and_detached_sample_pairing",
+  "research_status": "FINITE_K_RESEARCH_CANDIDATE_NOT_ACCURACY_ACCEPTED",
+  "default_launch": "bounded explicit stop-after-epoch; no automatic long training",
+  "previous_trials": "New train-only finite-K probability-mass risk; not the rejected sampled-coordinate GMM coverage loss",
+  "tail_support": "outside map crop only; never competes for in-crop labels; no truncation or clipping of GT",
+  "finite_k_risk": {
+    "k": 20,
+    "quadrature_order": 2,
+    "weight": 1.0,
+    "definition": "midpoint_quadrature_expected_min_euclidean_distance"
+  },
+  "coupling_score_precision": "fp32"
+}

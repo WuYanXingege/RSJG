@@ -91,6 +91,7 @@ ALLOWED_KEYS = {
         "ebjd_input_pipeline_receipt",
         "coupling_singleton_backward",
         "denoiser_uncheckpointed_max_agent_slots",
+        "scratch_update_runtime",
     },
     "evaluation": {
         "worlds", "steps", "selection_seed", "inference_seeds",
@@ -105,6 +106,7 @@ ALLOWED_KEYS = {
 # Added execution-only settings must remain optional so archived v2 configs and
 # their historical config hashes continue to validate unchanged.
 OPTIONAL_KEYS = {"training": {
+    "scratch_update_runtime",
     "scene_forward_chunk", "execution_strategy", "scene_compaction",
     "physical_group_max_scenes", "physical_group_max_agent_slots",
     "physical_group_max_padding_ratio", "rollout_block_checkpointing",
@@ -137,6 +139,7 @@ SEMANTIC_CONFIG_EXCLUSIONS = {
     ("training", "ebjd_input_pipeline"),
     ("training", "ebjd_input_pipeline_receipt"),
     ("training", "denoiser_uncheckpointed_max_agent_slots"),
+    ("training", "scratch_update_runtime"),
 }
 
 
@@ -316,6 +319,8 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(
                 "training.scene_forward_chunk currently supports only the OOM-safe value 1")
     training = config["training"]
+    if training.get("scratch_update_runtime", "scene_serial") not in {"scene_serial", "deferred_metrics_v1"}:
+        raise ValueError("unsupported scratch_update_runtime")
     if training["optimizer"] not in {"adamw_actual_step_projection", "adamw"}:
         raise ValueError("unsupported optimizer")
     if training["optimizer"] == "adamw" and (
@@ -342,8 +347,8 @@ def validate_supported_config(config: dict) -> None:
             raise ValueError(f"training.{key} must be boolean")
     input_pipeline = training.get("ebjd_input_pipeline", "legacy_cpu_rigid")
     denoiser_slots = training.get("denoiser_uncheckpointed_max_agent_slots", 0)
-    if type(denoiser_slots) is not int or denoiser_slots not in (0, 16):
-        raise ValueError("denoiser_uncheckpointed_max_agent_slots must be 0 or 16")
+    if type(denoiser_slots) is not int or denoiser_slots not in (0, 16, 32):
+        raise ValueError("denoiser_uncheckpointed_max_agent_slots must be 0, 16 or 32")
     if denoiser_slots and (
             config["denoiser"].get("block_type") != "endpoint_gated_dit_v1"
             or config["denoiser"]["coarse_blocks"] != 4
