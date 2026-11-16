@@ -1,0 +1,61 @@
+{
+  "run_id": "bcep_gpu_gate_one_pilot_20261116_194040",
+  "actual_execution_sha": "a9fa4d4ba7c8673ab23125542d54ed3c645a0653",
+  "source_identity": {
+    "bcep/__init__.py": "2a5b756cae7f25ee82315eb15073f270378acf8895433c9465f921606fc9b8c1",
+    "bcep/conditional_flow.py": "754b887e5c94ff495822a6d733d6b07ef803411a0554f871a709e9f5b6cc62b2",
+    "bcep/context_encoder.py": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+    "bcep/contracts.py": "c48977008209292b2d2130592c35d6d1616af5b28d64d1e656140e0c0185482d",
+    "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+    "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775",
+    "bcep/motion_frame.py": "9f8955d96fb0723745cff44dba5780522a53f56e8ac2cfbe19cc9b817a2e9a86",
+    "bcep/pilot_runner.py": "d6a422b01e323f4999de43e225a68f3d9a52e333136cfac268de8ee295598b4a",
+    "bcep/provider.py": "97bc520b86b7ed2c169a3dda0bd136c04cc5561b039f12a356ad3d018e85e142",
+    "bcep/supervision.py": "a15d630f33afd9f1c095ebd28c3392b190f4e37a5383efe95ff60ec644d70cf4",
+    "bcep/vendor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bcep/vendor/rational_quadratic.py": "d061afe845567dcac67653da7dc3d01b012711cfdc3fe5bef5d74691adcb15ad",
+    "scripts/evaluate_bcep_bank.py": "83b64bd6dfaa1cd46fa8b7c874bddd3f891f6eb32b1edaa87a82e4115d895d18",
+    "scripts/train_bcep.py": "60bce904374e8af4eb8b3dee5c514d95b878a3f996c8926557c4c9328d30a69b"
+  },
+  "precision": {
+    "dtype": "float32",
+    "amp": false,
+    "compile": false,
+    "tf32_matmul": false,
+    "tf32_cudnn": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "deterministic_algorithms": true,
+    "sdp": "math",
+    "mha_fastpath": false,
+    "cublas_workspace_config": ":4096:8",
+    "cpu_threads": 2,
+    "interop_threads": 1
+  },
+  "environment": {
+    "python": "3.10.21",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002,
+    "gpu": "NVIDIA GeForce RTX 5070 Ti",
+    "gpu_identity": "0, NVIDIA GeForce RTX 5070 Ti, GPU-078a9326-675c-cb94-af4a-ac46eb77c484, 570.133.07, 16303 MiB"
+  },
+  "config_sha256": "23be9343f0ef542aa5447dec267e10c9240f6decfcbb236616a36cd3b74f2754",
+  "wrappers": {
+    "bcep_one_pilot.py": "b029a0d54ae9b076fbe18550946f6f1703cbd158f3c8ede0fb6a93efdbbf3c2f",
+    "bcep_pilot_runtime.py": "7db3ff4cf78c9af564a78305a0bde8eaa700c294a9dea337b1cc66650898dd2b",
+    "bcep_gpu_gate.py": "70893ad6274d84f6a94670a228630ba8abc78d3aba05530590a9f57bf90400e4",
+    "bcep_pilot_readonly.py": "89095bd00c2191b7db6960d157ea5c2e57661c90e320c6c6afab306c17cbde8a"
+  },
+  "command": [
+    "scripts/bcep_one_pilot.py",
+    "--plan",
+    "docs/research/bcep_v1/bcep_gpu_gate_one_pilot_20261116_194040/AUTHORIZATION_AND_PILOT_PLAN.json",
+    "--config",
+    "configs/research/bcep_gpu_gate_one_pilot_20261116_194040.yaml"
+  ],
+  "epoch_cap": 10,
+  "update_cap": 37900,
+  "workflow_seconds_cap": 3600,
+  "gate_report_sha256": "1f27cad5e7012fa192d44aa36c7e2cdfa7486015fcc0ea8194cba69e34abb065"
+}

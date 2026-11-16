@@ -1,0 +1,53 @@
+{
+  "status": "FINISHED",
+  "resume": false,
+  "precision": {
+    "dtype": "float32",
+    "amp": false,
+    "compile": false,
+    "tf32_matmul": false,
+    "tf32_cudnn": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "deterministic_algorithms": true,
+    "sdp": "math",
+    "mha_fastpath": false,
+    "cublas_workspace_config": ":4096:8",
+    "cpu_threads": 2,
+    "interop_threads": 1
+  },
+  "stop_reason": "BUDGET_EXHAUSTED",
+  "completed_epoch": 6,
+  "next_or_partial_epoch": 7,
+  "phase": "train",
+  "train_cursor": 619,
+  "dev_cursor": 0,
+  "optimizer_updates": 23359,
+  "selected_epoch": 6,
+  "selection_value": 3.421933929125468,
+  "selection_metric_name": "dev_nll_final_agent_micro",
+  "stale": 0,
+  "runner_elapsed_wall_seconds": 3600.104845314054,
+  "last.pt": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/training/last.pt",
+    "sha256": "5c3253ded47dad0f7da7e4e47d3533009f35fcce5812c5fb09c4b768e24908a4"
+  },
+  "best.pt": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/training/best.pt",
+    "sha256": "cc71f02c3315bb7e9596600689740c644150b44d62f21b24df2fea6e51ec03a4"
+  },
+  "run_state": {
+    "status": "BUDGET_EXHAUSTED",
+    "checkpoint_sha256": "5c3253ded47dad0f7da7e4e47d3533009f35fcce5812c5fb09c4b768e24908a4",
+    "elapsed_wall_seconds": 3600.153336802963,
+    "epoch": 7,
+    "completed_epoch": 6,
+    "update": 23359,
+    "phase": "train",
+    "cursor": 619,
+    "budget_semantics": "workflow wall time; one scene plus save overrun"
+  },
+  "has_selected_best": true,
+  "invocation_wall_seconds": 3600.1920017879456,
+  "peak_allocated_bytes": 645735424
+}

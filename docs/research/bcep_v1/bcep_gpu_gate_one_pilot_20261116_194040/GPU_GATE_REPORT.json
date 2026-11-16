@@ -1,0 +1,763 @@
+{
+  "cpu_regression_seconds": 4.015,
+  "cpu_tests_passed": 25,
+  "status": "PASS",
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 16,
+  "checks": {
+    "context_cpu_gpu": {
+      "max_absolute": 9.5367431640625e-07,
+      "max_relative": 0.000280724314507097,
+      "exactly_equal": false,
+      "within_tolerance": true,
+      "rtol": 0.0001,
+      "atol": 1e-05
+    },
+    "composite_cpu_gpu": {
+      "max_absolute": 4.76837158203125e-07,
+      "max_relative": 1.0464719224501096e-07,
+      "exactly_equal": false,
+      "within_tolerance": true,
+      "rtol": 0.0001,
+      "atol": 1e-05
+    },
+    "world_NLL_cpu_gpu": {
+      "max_absolute": 0.0,
+      "max_relative": 0.0,
+      "exactly_equal": true,
+      "within_tolerance": true,
+      "rtol": 0.0001,
+      "atol": 1e-05
+    },
+    "world_samples_cpu_gpu": {
+      "max_absolute": 2.86102294921875e-06,
+      "max_relative": 0.008869179524481297,
+      "exactly_equal": false,
+      "within_tolerance": true,
+      "rtol": 0.0001,
+      "atol": 1e-05
+    },
+    "inverse": {
+      "max_absolute": 2.8312206268310547e-07,
+      "max_relative": 1.4156082670524484e-06,
+      "exactly_equal": false,
+      "within_tolerance": true,
+      "rtol": 0.0001,
+      "atol": 1e-05
+    },
+    "inverse_logdet": {
+      "max_absolute": 2.421438694000244e-07,
+      "max_relative": 6.1535210988949984e-06,
+      "exactly_equal": false,
+      "within_tolerance": true,
+      "rtol": 0.0001,
+      "atol": 1e-05
+    },
+    "jacobian": {
+      "max_absolute": 9.909272193908691e-07,
+      "max_relative": 1.4711494259245228e-05,
+      "exactly_equal": false,
+      "within_tolerance": true,
+      "rtol": 0.0001,
+      "atol": 1e-05
+    }
+  },
+  "limits": {
+    "cpu_gpu": {
+      "rtol": 0.0001,
+      "atol": 1e-05
+    },
+    "gpu_resume": {
+      "rtol": 1e-06,
+      "atol": 1e-07
+    }
+  },
+  "precision": {
+    "dtype": "float32",
+    "amp": false,
+    "compile": false,
+    "tf32_matmul": false,
+    "tf32_cudnn": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": true,
+    "deterministic_algorithms": true,
+    "sdp": "math",
+    "mha_fastpath": false,
+    "cublas_workspace_config": ":4096:8",
+    "cpu_threads": 2,
+    "interop_threads": 1
+  },
+  "environment": {
+    "python": "3.10.21",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "cudnn": 91002,
+    "gpu": "NVIDIA GeForce RTX 5070 Ti",
+    "gpu_identity": "0, NVIDIA GeForce RTX 5070 Ti, GPU-078a9326-675c-cb94-af4a-ac46eb77c484, 570.133.07, 16303 MiB"
+  },
+  "fixed_real_windows": [
+    {
+      "index": 19,
+      "sequence": "biwi_hotel",
+      "scene_id": "eth:train:biwi_hotel:620-810",
+      "frame_ids": [
+        620,
+        630,
+        640,
+        650,
+        660,
+        670,
+        680,
+        690,
+        700,
+        710,
+        720,
+        730,
+        740,
+        750,
+        760,
+        770,
+        780,
+        790,
+        800,
+        810
+      ],
+      "agent_ids": [
+        "28"
+      ]
+    },
+    {
+      "index": 0,
+      "sequence": "biwi_hotel",
+      "scene_id": "eth:train:biwi_hotel:0-190",
+      "frame_ids": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190
+      ],
+      "agent_ids": [
+        "5",
+        "6",
+        "8"
+      ]
+    },
+    {
+      "index": 2843,
+      "sequence": "students001",
+      "scene_id": "eth:train:students001:0-190",
+      "frame_ids": [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190
+      ],
+      "agent_ids": [
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "9",
+        "10",
+        "11",
+        "12",
+        "13",
+        "14",
+        "15",
+        "16",
+        "17",
+        "18",
+        "19",
+        "25",
+        "26",
+        "27",
+        "28",
+        "29",
+        "30",
+        "31",
+        "32",
+        "33",
+        "34",
+        "35",
+        "36",
+        "40",
+        "41",
+        "42",
+        "43",
+        "44",
+        "45",
+        "46",
+        "47",
+        "49",
+        "50",
+        "51",
+        "52",
+        "53",
+        "54",
+        "55",
+        "56",
+        "59",
+        "60",
+        "61",
+        "62",
+        "63",
+        "64",
+        "65",
+        "66",
+        "82",
+        "83",
+        "401",
+        "402"
+      ]
+    }
+  ],
+  "source_identity": {
+    "bcep/__init__.py": "2a5b756cae7f25ee82315eb15073f270378acf8895433c9465f921606fc9b8c1",
+    "bcep/conditional_flow.py": "754b887e5c94ff495822a6d733d6b07ef803411a0554f871a709e9f5b6cc62b2",
+    "bcep/context_encoder.py": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+    "bcep/contracts.py": "c48977008209292b2d2130592c35d6d1616af5b28d64d1e656140e0c0185482d",
+    "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+    "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775",
+    "bcep/motion_frame.py": "9f8955d96fb0723745cff44dba5780522a53f56e8ac2cfbe19cc9b817a2e9a86",
+    "bcep/pilot_runner.py": "d6a422b01e323f4999de43e225a68f3d9a52e333136cfac268de8ee295598b4a",
+    "bcep/provider.py": "97bc520b86b7ed2c169a3dda0bd136c04cc5561b039f12a356ad3d018e85e142",
+    "bcep/supervision.py": "a15d630f33afd9f1c095ebd28c3392b190f4e37a5383efe95ff60ec644d70cf4",
+    "bcep/vendor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bcep/vendor/rational_quadratic.py": "d061afe845567dcac67653da7dc3d01b012711cfdc3fe5bef5d74691adcb15ad",
+    "scripts/evaluate_bcep_bank.py": "83b64bd6dfaa1cd46fa8b7c874bddd3f891f6eb32b1edaa87a82e4115d895d18",
+    "scripts/train_bcep.py": "60bce904374e8af4eb8b3dee5c514d95b878a3f996c8926557c4c9328d30a69b"
+  },
+  "config_sha256": "23be9343f0ef542aa5447dec267e10c9240f6decfcbb236616a36cd3b74f2754",
+  "gradient_checks": {
+    "encoder.input.weight": {
+      "finite": true,
+      "norm": 0.23917706310749054
+    },
+    "encoder.input.bias": {
+      "finite": true,
+      "norm": 0.11118419468402863
+    },
+    "encoder.temporal.layers.0.self_attn.in_proj_weight": {
+      "finite": true,
+      "norm": 0.2974698543548584
+    },
+    "encoder.temporal.layers.0.self_attn.in_proj_bias": {
+      "finite": true,
+      "norm": 0.05369732156395912
+    },
+    "encoder.temporal.layers.0.self_attn.out_proj.weight": {
+      "finite": true,
+      "norm": 0.32601097226142883
+    },
+    "encoder.temporal.layers.0.self_attn.out_proj.bias": {
+      "finite": true,
+      "norm": 0.08853595703840256
+    },
+    "encoder.temporal.layers.0.linear1.weight": {
+      "finite": true,
+      "norm": 0.28270652890205383
+    },
+    "encoder.temporal.layers.0.linear1.bias": {
+      "finite": true,
+      "norm": 0.02593410387635231
+    },
+    "encoder.temporal.layers.0.linear2.weight": {
+      "finite": true,
+      "norm": 0.4590931832790375
+    },
+    "encoder.temporal.layers.0.linear2.bias": {
+      "finite": true,
+      "norm": 0.06612394750118256
+    },
+    "encoder.temporal.layers.0.norm1.weight": {
+      "finite": true,
+      "norm": 0.06874694675207138
+    },
+    "encoder.temporal.layers.0.norm1.bias": {
+      "finite": true,
+      "norm": 0.07000729441642761
+    },
+    "encoder.temporal.layers.0.norm2.weight": {
+      "finite": true,
+      "norm": 0.06478863209486008
+    },
+    "encoder.temporal.layers.0.norm2.bias": {
+      "finite": true,
+      "norm": 0.06762348115444183
+    },
+    "encoder.temporal.layers.1.self_attn.in_proj_weight": {
+      "finite": true,
+      "norm": 0.3449722230434418
+    },
+    "encoder.temporal.layers.1.self_attn.in_proj_bias": {
+      "finite": true,
+      "norm": 0.03705677390098572
+    },
+    "encoder.temporal.layers.1.self_attn.out_proj.weight": {
+      "finite": true,
+      "norm": 0.39520248770713806
+    },
+    "encoder.temporal.layers.1.self_attn.out_proj.bias": {
+      "finite": true,
+      "norm": 0.0637473464012146
+    },
+    "encoder.temporal.layers.1.linear1.weight": {
+      "finite": true,
+      "norm": 0.28264424204826355
+    },
+    "encoder.temporal.layers.1.linear1.bias": {
+      "finite": true,
+      "norm": 0.02532895840704441
+    },
+    "encoder.temporal.layers.1.linear2.weight": {
+      "finite": true,
+      "norm": 0.45841550827026367
+    },
+    "encoder.temporal.layers.1.linear2.bias": {
+      "finite": true,
+      "norm": 0.06714940071105957
+    },
+    "encoder.temporal.layers.1.norm1.weight": {
+      "finite": true,
+      "norm": 0.06218237429857254
+    },
+    "encoder.temporal.layers.1.norm1.bias": {
+      "finite": true,
+      "norm": 0.06837274134159088
+    },
+    "encoder.temporal.layers.1.norm2.weight": {
+      "finite": true,
+      "norm": 0.06381072849035263
+    },
+    "encoder.temporal.layers.1.norm2.bias": {
+      "finite": true,
+      "norm": 0.07205164432525635
+    },
+    "encoder.social.in_proj_weight": {
+      "finite": true,
+      "norm": 0.5332498550415039
+    },
+    "encoder.social.in_proj_bias": {
+      "finite": true,
+      "norm": 0.04811820760369301
+    },
+    "encoder.social.out_proj.weight": {
+      "finite": true,
+      "norm": 0.6472299695014954
+    },
+    "encoder.social.out_proj.bias": {
+      "finite": true,
+      "norm": 0.07911059260368347
+    },
+    "encoder.edge.0.weight": {
+      "finite": true,
+      "norm": 0.001273361500352621
+    },
+    "encoder.edge.0.bias": {
+      "finite": true,
+      "norm": 0.005866973195225
+    },
+    "encoder.edge.2.weight": {
+      "finite": true,
+      "norm": 0.014326480217278004
+    },
+    "encoder.edge.2.bias": {
+      "finite": true,
+      "norm": 0.016414286568760872
+    },
+    "encoder.edge_bias.weight": {
+      "finite": true,
+      "norm": 0.00038835013401694596
+    },
+    "encoder.edge_bias.bias": {
+      "finite": true,
+      "norm": 6.945491404231063e-10
+    },
+    "encoder.edge_value.weight": {
+      "finite": true,
+      "norm": 0.01965269446372986
+    },
+    "encoder.edge_value.bias": {
+      "finite": true,
+      "norm": 0.04811253398656845
+    },
+    "encoder.map.0.weight": {
+      "finite": true,
+      "norm": 0.008949372917413712
+    },
+    "encoder.map.0.bias": {
+      "finite": true,
+      "norm": 0.002436755457893014
+    },
+    "encoder.map.2.weight": {
+      "finite": true,
+      "norm": 0.025722486898303032
+    },
+    "encoder.map.2.bias": {
+      "finite": true,
+      "norm": 0.009987407363951206
+    },
+    "encoder.map.4.weight": {
+      "finite": true,
+      "norm": 0.034851618111133575
+    },
+    "encoder.map.4.bias": {
+      "finite": true,
+      "norm": 0.035643137991428375
+    },
+    "encoder.fuse.0.weight": {
+      "finite": true,
+      "norm": 2.7016942501068115
+    },
+    "encoder.fuse.0.bias": {
+      "finite": true,
+      "norm": 0.22270123660564423
+    },
+    "encoder.fuse.1.weight": {
+      "finite": true,
+      "norm": 0.08983400464057922
+    },
+    "encoder.fuse.1.bias": {
+      "finite": true,
+      "norm": 0.08005231618881226
+    },
+    "flow.nets.0.0.weight": {
+      "finite": true,
+      "norm": 0.21919693052768707
+    },
+    "flow.nets.0.0.bias": {
+      "finite": true,
+      "norm": 0.02587004192173481
+    },
+    "flow.nets.0.2.weight": {
+      "finite": true,
+      "norm": 0.20184072852134705
+    },
+    "flow.nets.0.2.bias": {
+      "finite": true,
+      "norm": 0.08787298202514648
+    },
+    "flow.nets.0.4.weight": {
+      "finite": true,
+      "norm": 0.521882951259613
+    },
+    "flow.nets.0.4.bias": {
+      "finite": true,
+      "norm": 0.7843009233474731
+    },
+    "flow.nets.1.0.weight": {
+      "finite": true,
+      "norm": 1.2093863487243652
+    },
+    "flow.nets.1.0.bias": {
+      "finite": true,
+      "norm": 0.1557200700044632
+    },
+    "flow.nets.1.2.weight": {
+      "finite": true,
+      "norm": 1.225741982460022
+    },
+    "flow.nets.1.2.bias": {
+      "finite": true,
+      "norm": 0.5079768896102905
+    },
+    "flow.nets.1.4.weight": {
+      "finite": true,
+      "norm": 3.487267017364502
+    },
+    "flow.nets.1.4.bias": {
+      "finite": true,
+      "norm": 4.111828804016113
+    },
+    "flow.nets.2.0.weight": {
+      "finite": true,
+      "norm": 0.24272692203521729
+    },
+    "flow.nets.2.0.bias": {
+      "finite": true,
+      "norm": 0.029237423092126846
+    },
+    "flow.nets.2.2.weight": {
+      "finite": true,
+      "norm": 0.23774106800556183
+    },
+    "flow.nets.2.2.bias": {
+      "finite": true,
+      "norm": 0.10053373873233795
+    },
+    "flow.nets.2.4.weight": {
+      "finite": true,
+      "norm": 0.5793061256408691
+    },
+    "flow.nets.2.4.bias": {
+      "finite": true,
+      "norm": 0.779636800289154
+    },
+    "flow.nets.3.0.weight": {
+      "finite": true,
+      "norm": 0.9908213019371033
+    },
+    "flow.nets.3.0.bias": {
+      "finite": true,
+      "norm": 0.12689761817455292
+    },
+    "flow.nets.3.2.weight": {
+      "finite": true,
+      "norm": 0.9137529730796814
+    },
+    "flow.nets.3.2.bias": {
+      "finite": true,
+      "norm": 0.4804002344608307
+    },
+    "flow.nets.3.4.weight": {
+      "finite": true,
+      "norm": 2.6465392112731934
+    },
+    "flow.nets.3.4.bias": {
+      "finite": true,
+      "norm": 4.2041449546813965
+    }
+  },
+  "gpu_resume": {
+    "exactly_equal": true,
+    "within_tolerance": true,
+    "floating_tensors": 290,
+    "max_absolute": 0.0,
+    "max_relative": 0.0,
+    "largest_differences": [
+      {
+        "path": "state.model.scales",
+        "max_absolute": 0.0,
+        "max_relative": 0.0,
+        "exactly_equal": true,
+        "within_tolerance": true,
+        "rtol": 1e-06,
+        "atol": 1e-07
+      },
+      {
+        "path": "state.model.encoder.missing_map",
+        "max_absolute": 0.0,
+        "max_relative": 0.0,
+        "exactly_equal": true,
+        "within_tolerance": true,
+        "rtol": 1e-06,
+        "atol": 1e-07
+      },
+      {
+        "path": "state.model.encoder.input.weight",
+        "max_absolute": 0.0,
+        "max_relative": 0.0,
+        "exactly_equal": true,
+        "within_tolerance": true,
+        "rtol": 1e-06,
+        "atol": 1e-07
+      },
+      {
+        "path": "state.model.encoder.input.bias",
+        "max_absolute": 0.0,
+        "max_relative": 0.0,
+        "exactly_equal": true,
+        "within_tolerance": true,
+        "rtol": 1e-06,
+        "atol": 1e-07
+      },
+      {
+        "path": "state.model.encoder.temporal.layers.0.self_attn.in_proj_weight",
+        "max_absolute": 0.0,
+        "max_relative": 0.0,
+        "exactly_equal": true,
+        "within_tolerance": true,
+        "rtol": 1e-06,
+        "atol": 1e-07
+      }
+    ],
+    "nonfloating_equal": true,
+    "sample_trace": [
+      [
+        0,
+        1
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        1,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        0,
+        8
+      ]
+    ]
+  },
+  "real_interface": [
+    {
+      "index": 19,
+      "agents": 1,
+      "map_shape": [
+        1,
+        6,
+        256,
+        256
+      ],
+      "status": "NONFORMAL",
+      "checks": {
+        "context": {
+          "max_absolute": 5.960464477539062e-07,
+          "max_relative": 3.418918277020566e-05,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        },
+        "world_samples": {
+          "max_absolute": 3.337860107421875e-06,
+          "max_relative": 1.023091135721188e-05,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        },
+        "world_NLL": {
+          "max_absolute": 3.0994415283203125e-06,
+          "max_relative": 1.0676586725821835e-06,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        }
+      },
+      "shared_support_exact": true
+    },
+    {
+      "index": 0,
+      "agents": 3,
+      "map_shape": [
+        3,
+        6,
+        256,
+        256
+      ],
+      "status": "NONFORMAL",
+      "checks": {
+        "context": {
+          "max_absolute": 1.0132789611816406e-06,
+          "max_relative": 3.136689338134602e-05,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        },
+        "world_samples": {
+          "max_absolute": 3.5762786865234375e-06,
+          "max_relative": 0.0003092910919804126,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        },
+        "world_NLL": {
+          "max_absolute": 4.76837158203125e-07,
+          "max_relative": 7.978020732934965e-08,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        }
+      },
+      "shared_support_exact": true
+    },
+    {
+      "index": 2843,
+      "agents": 57,
+      "map_shape": [
+        57,
+        6,
+        256,
+        256
+      ],
+      "status": "NONFORMAL",
+      "checks": {
+        "context": {
+          "max_absolute": 2.384185791015625e-06,
+          "max_relative": 0.00978066772222519,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        },
+        "world_samples": {
+          "max_absolute": 4.76837158203125e-06,
+          "max_relative": 0.0012885368196293712,
+          "exactly_equal": false,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        },
+        "world_NLL": {
+          "max_absolute": 0.0,
+          "max_relative": 0.0,
+          "exactly_equal": true,
+          "within_tolerance": true,
+          "rtol": 0.0001,
+          "atol": 1e-05
+        }
+      },
+      "shared_support_exact": true
+    }
+  ],
+  "wall_seconds": 12.283308629877865,
+  "total_preflight_seconds_including_cpu_suite": 16.298308629877866,
+  "peak_allocated_bytes": 439969280
+}

@@ -1,0 +1,83 @@
+{
+  "run_id": "bcep_gpu_gate_one_pilot_20261116_194040",
+  "training_checkpoint_records": {
+    "best.pt": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/training/best.pt",
+      "sha256": "cc71f02c3315bb7e9596600689740c644150b44d62f21b24df2fea6e51ec03a4"
+    },
+    "last.pt": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/training/last.pt",
+      "sha256": "5c3253ded47dad0f7da7e4e47d3533009f35fcce5812c5fb09c4b768e24908a4"
+    }
+  },
+  "banks": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks",
+  "code_identity": {
+    "bcep/__init__.py": "2a5b756cae7f25ee82315eb15073f270378acf8895433c9465f921606fc9b8c1",
+    "bcep/conditional_flow.py": "754b887e5c94ff495822a6d733d6b07ef803411a0554f871a709e9f5b6cc62b2",
+    "bcep/context_encoder.py": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+    "bcep/contracts.py": "c48977008209292b2d2130592c35d6d1616af5b28d64d1e656140e0c0185482d",
+    "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+    "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775",
+    "bcep/motion_frame.py": "9f8955d96fb0723745cff44dba5780522a53f56e8ac2cfbe19cc9b817a2e9a86",
+    "bcep/pilot_runner.py": "d6a422b01e323f4999de43e225a68f3d9a52e333136cfac268de8ee295598b4a",
+    "bcep/provider.py": "97bc520b86b7ed2c169a3dda0bd136c04cc5561b039f12a356ad3d018e85e142",
+    "bcep/supervision.py": "a15d630f33afd9f1c095ebd28c3392b190f4e37a5383efe95ff60ec644d70cf4",
+    "bcep/vendor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bcep/vendor/rational_quadratic.py": "d061afe845567dcac67653da7dc3d01b012711cfdc3fe5bef5d74691adcb15ad",
+    "scripts/evaluate_bcep_bank.py": "83b64bd6dfaa1cd46fa8b7c874bddd3f891f6eb32b1edaa87a82e4115d895d18",
+    "scripts/train_bcep.py": "60bce904374e8af4eb8b3dee5c514d95b878a3f996c8926557c4c9328d30a69b"
+  },
+  "baseline_sha": "46f51f46a9e37889333c955d0b4da895e4f6f0ed",
+  "bank_files": [
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/coverage20_seed2035.npz",
+      "sha256": "56fcab45f57e5789e9f6924145787e0fbca422cbdedd39a7d4f907043ac6988c",
+      "bytes": 118272
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/coverage20_seed2036.npz",
+      "sha256": "cea046994d2914542865c9fa7f3f463b7a51bf3ed0e1c7ca9248c5c1458ce754",
+      "bytes": 118256
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/coverage20_seed2037.npz",
+      "sha256": "915eb2531c1ec26e7ed1bb15c332562d063af2399b26884fc97db4ae2b03ee2f",
+      "bytes": 118251
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/coverage20_seed2038.npz",
+      "sha256": "ab0a309e726a0a59a68d019f99cc35b3997cfcc00ae8b7c5833b0a1d9c0fa3c8",
+      "bytes": 118256
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/coverage20_seed2039.npz",
+      "sha256": "f62db3a3c4368310a96e29ea255e837c32a3f8c83436a3ac8ae400ddf233ae3b",
+      "bytes": 118261
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/iid20_seed2035.npz",
+      "sha256": "e89ef303586e92d5115fa4d93a56ec7cc49db0148f2c9af262c426d1b05a8440",
+      "bytes": 117976
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/iid20_seed2036.npz",
+      "sha256": "6fc233e923c642a1c18518d24b7eace7419feabdc49f66c80f2b732a2acee912",
+      "bytes": 118008
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/iid20_seed2037.npz",
+      "sha256": "a4a96598f825ae519d54f1f29975ea16bab98fa7f80f26b1d5fe11227fae97ad",
+      "bytes": 118076
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/iid20_seed2038.npz",
+      "sha256": "e4988bb4df47511a3b5b40ce10e445bd9e17aad7910dd56a79fc7f34da44169b",
+      "bytes": 118015
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/evaluation/banks/iid20_seed2039.npz",
+      "sha256": "469e094632c4ba6d693f8ce79b9ab68953b031f879468575f1193c9cf76a1770",
+      "bytes": 118004
+    }
+  ]
+}
