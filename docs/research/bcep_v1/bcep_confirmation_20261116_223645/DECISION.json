@@ -1,0 +1,19 @@
+{
+  "engineering_complete": true,
+  "confirmation_complete": true,
+  "provider_replacement": "NOT_ESTABLISHED",
+  "full_ebjd_performance": "NOT_EVALUATED",
+  "training_seed_direction": "MIXED_OR_TIED",
+  "flow_minus_mdn_minFDE": [
+    -0.02493533051418015,
+    0.004477139494202476
+  ],
+  "selector_transfer": "IMPROVED_ALL_FOUR_MINFDE",
+  "mean_flow_minus_mdn_minFDE_m": -0.01022909550998885,
+  "mean_flow_minus_mdn_P95_m": 0.008728733790144938,
+  "kmeans_minFDE_improvement_percent": {
+    "bcep_flow": 19.913654946470317,
+    "mdn8": 19.790583825333997
+  },
+  "tradeoff": "KMeans improves mean and upper tails but worsens P50 and Recall@0.25 in all four runs; Flow versus MDN minFDE direction differs across training seeds."
+}

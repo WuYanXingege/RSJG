@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "raw_csv_rows": 120,
+  "training_repeats": 2,
+  "inference_seeds": 5,
+  "outputs_verified": 20,
+  "checkpoints_verified": 8,
+  "protected_files_verified": 146,
+  "groups": {
+    "all": [
+      998,
+      5910
+    ],
+    "N1": [
+      77,
+      77
+    ],
+    "Nge2": [
+      921,
+      5833
+    ]
+  },
+  "aggregation": "independent statistics.mean/stdev, ddof=1",
+  "recall_deltas_unit": "percentage_points",
+  "optimizer_updates": 0,
+  "inference_calls": 0
+}
