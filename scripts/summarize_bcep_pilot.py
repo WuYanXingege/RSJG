@@ -30,7 +30,7 @@ def main():
         paired=dict(summary=summary,likelihood_and_energy=likelihoods,training_seed=3101,inference_seeds=list(range(2035,2040)),member_hash=members[0],checkpoint=readonly['checkpoint'],scope='internal dev selector comparison, not outer ETH test or independent training replicates')
         (doc/'PAIRED_DEV_METRICS.json').write_text(json.dumps(paired,indent=2)+'\n')
         with (doc/'PAIRED_DEV_METRICS.csv').open('w') as f:
-            w=csv.DictWriter(f,fieldnames=list(rows[0]));w.writeheader();w.writerows(rows)
+            w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator="\n");w.writeheader();w.writerows(rows)
     screening=summary['pilot_screening']['status'] if complete else 'NOT_EVALUATED'
     training_state=training.get('stop_reason',training['status'])
     if training.get('status')=='FINISHED' and training_state=='COMPLETE':
