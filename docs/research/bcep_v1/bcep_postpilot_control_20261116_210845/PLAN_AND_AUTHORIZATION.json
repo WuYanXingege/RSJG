@@ -1,0 +1,55 @@
+{
+  "run": "bcep_postpilot_control_20261116_210845",
+  "branch": "research/bcep-postpilot-control-20261116_210845",
+  "assets": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_postpilot_control_20261116_210845",
+  "doc": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_BCEP/docs/research/bcep_v1/bcep_postpilot_control_20261116_210845",
+  "old_doc": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_BCEP/docs/research/bcep_v1/bcep_gpu_gate_one_pilot_20261116_194040",
+  "old_assets": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040",
+  "config": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_BCEP/configs/research/bcep_postpilot_control_20261116_210845.yaml",
+  "evidence_sha": "725f6a783308bfcd21e97df446005c820bc0e571",
+  "package_sha256": "6a71fa94103f62001d07f47ae225ae7316ed31ad6a92dc35bb6b93497453998c",
+  "authorization": "User actively forwarded BCEP_PostPilot_Control_Package.zip",
+  "real_runs": 1,
+  "budgets_seconds": {
+    "preflight": 600,
+    "mdn_training": 3600,
+    "readonly_total": 1800
+  },
+  "frozen_bcep_best": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040/training/best.pt",
+    "sha256": "cc71f02c3315bb7e9596600689740c644150b44d62f21b24df2fea6e51ec03a4"
+  },
+  "protected_index": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_postpilot_control_20261116_210845/identity/PROTECTED_BEFORE.json",
+  "protected_main": {
+    "head": "5d07940b4fd0565d37af4f7219277cbba1b074fe",
+    "status": "## restore/ebjd-sixlayer-provider-20261116\n?? docs/cleanup/20261022_143701/\n?? docs/cleanup/20261022_164559/\n?? docs/research/\n"
+  },
+  "mdn": {
+    "components": 8,
+    "covariance": "full_2d_cholesky",
+    "context_dim": 128,
+    "horizon": "seconds",
+    "hidden": [
+      128,
+      128
+    ],
+    "activation": "SiLU",
+    "diagonal": "softplus + 0.001",
+    "off_diagonal": "unrestricted",
+    "output": 48,
+    "initialization": "torch nn.Linear default independent random initialization; final biases are randomly initialized and break component symmetry; no GT/data-dependent mean offsets",
+    "seed": 3101,
+    "epochs": 6,
+    "max_updates": 22740,
+    "lr": 0.0001,
+    "lr_gamma": 1,
+    "lambda_aux": 0.25,
+    "patience": 3
+  },
+  "regression_tolerance": {
+    "atol": 1e-07,
+    "rtol": 1e-06
+  },
+  "scope": "Internal development control only; no provider replacement or full EBJD claim",
+  "protected_hash_count": 61
+}
