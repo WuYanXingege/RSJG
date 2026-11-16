@@ -1,0 +1,51 @@
+{
+  "schema": "mdn-control-pilot-v1",
+  "identity": {
+    "contract": "26f62b21d9c70c6575644ed6f091eae286890f51f4c9c0e92c391a2ab6675373",
+    "split": "ebe0e117ee8e1a36e72028cfb5e6b3759df7b96821b94ea8a9a478fcbf149188",
+    "source": {
+      "frozen_bcep": {
+        "bcep/__init__.py": "2a5b756cae7f25ee82315eb15073f270378acf8895433c9465f921606fc9b8c1",
+        "bcep/conditional_flow.py": "754b887e5c94ff495822a6d733d6b07ef803411a0554f871a709e9f5b6cc62b2",
+        "bcep/context_encoder.py": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+        "bcep/contracts.py": "c48977008209292b2d2130592c35d6d1616af5b28d64d1e656140e0c0185482d",
+        "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+        "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775",
+        "bcep/motion_frame.py": "9f8955d96fb0723745cff44dba5780522a53f56e8ac2cfbe19cc9b817a2e9a86",
+        "bcep/pilot_runner.py": "d6a422b01e323f4999de43e225a68f3d9a52e333136cfac268de8ee295598b4a",
+        "bcep/provider.py": "97bc520b86b7ed2c169a3dda0bd136c04cc5561b039f12a356ad3d018e85e142",
+        "bcep/supervision.py": "a15d630f33afd9f1c095ebd28c3392b190f4e37a5383efe95ff60ec644d70cf4",
+        "bcep/vendor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "bcep/vendor/rational_quadratic.py": "d061afe845567dcac67653da7dc3d01b012711cfdc3fe5bef5d74691adcb15ad",
+        "scripts/evaluate_bcep_bank.py": "83b64bd6dfaa1cd46fa8b7c874bddd3f891f6eb32b1edaa87a82e4115d895d18",
+        "scripts/train_bcep.py": "60bce904374e8af4eb8b3dee5c514d95b878a3f996c8926557c4c9328d30a69b"
+      },
+      "control": {
+        "bcep_control/__init__.py": "1471a75ff3263ecb9fd8186ed1cb5dfb158732fab393ac010de0fd9277cf9d83",
+        "bcep_control/budgets.py": "d46aaa50a24c7c628cd26daa4fba4ada3c6df413bcbaac56f972f0c71a5e59da",
+        "bcep_control/contracts.py": "d9a1257e734c457d81c1c35c8f3f76fc0777f54383a946074421c361a181eb89",
+        "bcep_control/diagnostics.py": "4e58b8365aafbf6a1212084376e09d94db0b113aae667dbfd7abd2940567f108",
+        "bcep_control/mdn.py": "64b3ba1a1130c0a2572127270d6de4a7d431e91bc547f3c8a6a4a9e446228c4c",
+        "bcep_control/pilot_runner.py": "c8cddc99ec2ac44c98b12a29f5841df5f60af5e72cfb99c4d9bfb8121c5c8cad",
+        "bcep_control/support_gap.py": "ee267aeb793b39a984025723c7cdd106cd4ef6517a1e09a74bae42fa1bfbd50b",
+        "scripts/train_mdn_control.py": "27476cd722bcc50ba4970ed8ec9187b1ac2b968932509f27765eeb1cb36729a5",
+        "scripts/bcep_postpilot_readonly.py": "04aeb4a8709a62e9c50ce03f438ce7e70908a497479c812950cf892805e2b53d"
+      }
+    },
+    "model_kind": "mdn8_full_covariance_v1",
+    "weights_origin": "random_initialization",
+    "teacher_weights": false
+  },
+  "completed_epoch": 1,
+  "selected_epoch": 1,
+  "update": 3790,
+  "selection_value": 3.2619442757393045,
+  "selection_metric_name": "dev_nll_final_agent_micro",
+  "protocol": {
+    "dt": 0.4,
+    "pred_length": 12,
+    "unit": "m"
+  },
+  "split_hash": "ebe0e117ee8e1a36e72028cfb5e6b3759df7b96821b94ea8a9a478fcbf149188",
+  "checkpoint_sha256": "b5ebef297c42b7449f1a26a5a163b00a97fa5507a64e214d1613ad31611df8b8"
+}
