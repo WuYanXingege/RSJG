@@ -1,0 +1,40 @@
+{
+  "M": 256,
+  "K": 20,
+  "unit": "m",
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "methods": [
+    "IID20",
+    "Greedy20",
+    "KMeans20",
+    "OneSwap20"
+  ],
+  "kmeans": {
+    "n_init": 5,
+    "max_iter": 100,
+    "tolerance_m": 1e-06,
+    "dtype": "float64",
+    "seed_rule": "SHA256 compact JSON [model_kind,scene_id,agent_id,inference_seed,kmeans20_v1]; first8 bytes little endian unsigned64",
+    "restart_selection": "minimum mean squared distortion, exact ties earlier"
+  },
+  "one_swap": {
+    "accepted_moves_max": 1,
+    "tolerance": 1e-12,
+    "comparison": "global minimum numerical cost; exact cost ties outgoing position then incoming ID; accept only if below old - 1e-12*(1+abs(old))"
+  },
+  "cpu_threads": 1,
+  "scoring_dtype": "float64 for every method; historical float32 metrics retained separately",
+  "probe_cycle": {
+    "2035": 2036,
+    "2036": 2037,
+    "2037": 2038,
+    "2038": 2039,
+    "2039": 2035
+  }
+}
