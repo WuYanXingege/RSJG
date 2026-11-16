@@ -1,0 +1,181 @@
+{
+  "atol": 2e-05,
+  "rtol": 2e-05,
+  "optimizer_updates": 0,
+  "device": "cuda",
+  "folds": {
+    "eth": {
+      "strict_load": true,
+      "epoch": 19,
+      "smoke": [
+        {
+          "scene": [
+            "eth:validation:biwi_eth:800-990"
+          ],
+          "agents": 1,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        },
+        {
+          "scene": [
+            "eth:validation:biwi_eth:830-1020"
+          ],
+          "agents": 2,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        }
+      ],
+      "checkpoint_sha256": "48dc2144fb20cb3e678eed7b7df793598fe8f2ac0eda7a026b4bcf1696626b97",
+      "bank_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/proposal_banks/native_validation/seed_2035/gdts_proposal_B_seed2035.npz",
+      "bank_sha256": "08096d0e0451d7d9719b00c30ee0520b16ec0ba22c8a0678a58e8f54be2ba898",
+      "replay": {
+        "seed": 2035,
+        "G": {
+          "minADE": 0.40742006870293684,
+          "minFDE": 0.5818592935140439,
+          "JADE": 0.48943726821497024,
+          "JFDE": 0.7732940811494534,
+          "scene_weighted_minADE": 0.42977876192614023,
+          "scene_weighted_minFDE": 0.6304199312125212,
+          "coordination_gap_ADE": 0.059658506288830015,
+          "coordination_gap_FDE": 0.14287414993693226,
+          "agent_count": 364,
+          "scene_count": 253,
+          "sums": {
+            "agent_minADE": 148.300905007869,
+            "agent_minFDE": 211.79678283911198,
+            "scene_JADE": 123.82762885838747,
+            "scene_JFDE": 195.64340253081173,
+            "scene_marginal_ADE": 108.73402676731348,
+            "scene_marginal_FDE": 159.49624259676784
+          }
+        },
+        "H": {
+          "minADE": 0.4070696311562762,
+          "minFDE": 0.5818592935140439,
+          "JADE": 0.4698019343402546,
+          "JFDE": 0.7303493930498072,
+          "scene_weighted_minADE": 0.4294000048587916,
+          "scene_weighted_minFDE": 0.6304199312125212,
+          "coordination_gap_ADE": 0.040401929481462984,
+          "coordination_gap_FDE": 0.09992946183728602,
+          "agent_count": 364,
+          "scene_count": 253,
+          "sums": {
+            "agent_minADE": 148.17334574088454,
+            "agent_minFDE": 211.79678283911198,
+            "scene_JADE": 118.85988938808441,
+            "scene_JFDE": 184.77839644160122,
+            "scene_marginal_ADE": 108.63820122927427,
+            "scene_marginal_FDE": 159.49624259676784
+          }
+        },
+        "elapsed_seconds": 143.3273250889033
+      },
+      "differences": {
+        "G_minADE": 0.0,
+        "G_minFDE": 0.0,
+        "G_JADE": 0.0,
+        "G_JFDE": 0.0,
+        "H_minADE": 0.0,
+        "H_minFDE": 0.0,
+        "H_JADE": 0.0,
+        "H_JFDE": 0.0
+      },
+      "replay_pass": true
+    },
+    "hotel": {
+      "strict_load": true,
+      "epoch": 21,
+      "smoke": [
+        {
+          "scene": [
+            "hotel:validation:biwi_hotel:0-190"
+          ],
+          "agents": 3,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        },
+        {
+          "scene": [
+            "hotel:validation:biwi_hotel:620-810"
+          ],
+          "agents": 1,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        }
+      ],
+      "checkpoint_sha256": "68119ee66d552c75fddf501522e896e8582dcb646e9edd58e6fdc48ea8c1b122",
+      "bank_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/proposal_banks/native_validation/seed_2035/gdts_proposal_B_seed2035.npz",
+      "bank_sha256": "a26347b342c98d68f756440961c2df852cad2c0ccf10f3488c81735e2cd84ba0"
+    },
+    "univ": {
+      "strict_load": true,
+      "epoch": 30,
+      "smoke": [
+        {
+          "scene": [
+            "univ:validation:students001:0-190"
+          ],
+          "agents": 57,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        }
+      ],
+      "checkpoint_sha256": "39b5fce2b343516b36572df97289079ae00881ab0b380319bd5c10f3474957d3",
+      "bank_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/proposal_banks/native_validation/seed_2035/gdts_proposal_B_seed2035.npz",
+      "bank_sha256": "c016ed3c632d75fdb03d955427b678abc7ce197c2e92cf7d6ad063e885791f19"
+    },
+    "zara1": {
+      "strict_load": true,
+      "epoch": 30,
+      "smoke": [
+        {
+          "scene": [
+            "zara1:validation:crowds_zara01:0-190"
+          ],
+          "agents": 7,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        },
+        {
+          "scene": [
+            "zara1:validation:crowds_zara01:1030-1220"
+          ],
+          "agents": 1,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        }
+      ],
+      "checkpoint_sha256": "062a497c7baa28bfe88cf7e559784ad7029e979ddf93f3e0f8b08baa4713214b",
+      "bank_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/proposal_banks/validation_seed2035.npz",
+      "bank_sha256": "5a8d0c5f3011d34f0747d7b9ef0490f35718daae56f9bac32895b3289b0ad1f8"
+    },
+    "zara2": {
+      "strict_load": true,
+      "epoch": 23,
+      "smoke": [
+        {
+          "scene": [
+            "zara2:validation:crowds_zara02:10-200"
+          ],
+          "agents": 2,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        },
+        {
+          "scene": [
+            "zara2:validation:crowds_zara02:220-410"
+          ],
+          "agents": 1,
+          "permutation_multiset_exact": true,
+          "endpoint_exact": true
+        }
+      ],
+      "checkpoint_sha256": "1dcdf54a2ea8081ee21480f1bc7a0499b89dff5a8ccc2c99357f9dd01243c3be",
+      "bank_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/proposal_banks/native_validation/seed_2035/gdts_proposal_B_seed2035.npz",
+      "bank_sha256": "bda51d72f620d719dd096bdf0a075ed484b752c85037b3cf6e630e0b6bdfc6ca"
+    }
+  },
+  "status": "PASS"
+}
