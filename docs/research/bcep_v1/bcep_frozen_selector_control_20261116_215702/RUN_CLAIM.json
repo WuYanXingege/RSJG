@@ -1,0 +1,69 @@
+{
+  "identity": {
+    "source_commit": "e70da8b648780e75f6d7a2d24eff2375dd030d86",
+    "files": {
+      "scripts/run_frozen_selector_control.py": "4b1eb9100c993de0dd373debcc0d4d291649e8be6be8ff610435524d13e5459a",
+      "selector_control/__init__.py": "9ef828e78e792a3e5ce6e5c58bcd997aec0b7f6e4e18424162a36bc2191ee339",
+      "selector_control/algorithms.py": "643d36066b8c53704731e623d473c0a305a5689218ef5184fb47fdf9cc8ab44b",
+      "selector_control/checks.py": "17a6d9651e76dde80256207c6bb0c2175a6faf1bd9b3d2152d97eefea4d22ac5",
+      "selector_control/core.py": "224fc57777718c32e28bf6ba7fddf430ae870127c1a4a1af7ded2f684385c047",
+      "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+      "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775"
+    },
+    "plan_sha256": "d95da4ea57fc2d710d375f9cfc6f5f3d8ec91ff928472070621e2437ff83b5d1",
+    "config_sha256": "cb9e2aa3f259bdb9eaf74b43d61f8c73899f3e460a5dbd7db282a6e46daff3e3"
+  },
+  "created_unix": 1794837873.3274043,
+  "precheck_repair_history": [
+    {
+      "identity": {
+        "source_commit": "d18de2b61240904d34e921954c933a2258fc5b7d",
+        "files": {
+          "scripts/run_frozen_selector_control.py": "ebd0e8d2d5bfff48e36e5b75dd3a22ac328203ad80d724549019a7e7bcf87360",
+          "selector_control/__init__.py": "9ef828e78e792a3e5ce6e5c58bcd997aec0b7f6e4e18424162a36bc2191ee339",
+          "selector_control/algorithms.py": "643d36066b8c53704731e623d473c0a305a5689218ef5184fb47fdf9cc8ab44b",
+          "selector_control/checks.py": "42a8af6d371dbfeb95a403336191d1c77e899309c222346ab43cccc3302c26d1",
+          "selector_control/core.py": "224fc57777718c32e28bf6ba7fddf430ae870127c1a4a1af7ded2f684385c047",
+          "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+          "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775"
+        },
+        "plan_sha256": "d95da4ea57fc2d710d375f9cfc6f5f3d8ec91ff928472070621e2437ff83b5d1",
+        "config_sha256": "cb9e2aa3f259bdb9eaf74b43d61f8c73899f3e460a5dbd7db282a6e46daff3e3"
+      },
+      "receipt": {
+        "status": "INCOMPLETE",
+        "active": false,
+        "pid": 4,
+        "previous_seconds": 0.0,
+        "invocation_started_unix": 1794837873.3274043,
+        "cpu_wall_seconds": 0.12153100315481424,
+        "cpu_budget_seconds": 3600,
+        "optimizer_updates": 0,
+        "gpu_tasks": 0,
+        "gpu_seconds": 0,
+        "models_loaded": 0,
+        "optimizers_created": 0,
+        "identity": {
+          "source_commit": "d18de2b61240904d34e921954c933a2258fc5b7d",
+          "files": {
+            "scripts/run_frozen_selector_control.py": "ebd0e8d2d5bfff48e36e5b75dd3a22ac328203ad80d724549019a7e7bcf87360",
+            "selector_control/__init__.py": "9ef828e78e792a3e5ce6e5c58bcd997aec0b7f6e4e18424162a36bc2191ee339",
+            "selector_control/algorithms.py": "643d36066b8c53704731e623d473c0a305a5689218ef5184fb47fdf9cc8ab44b",
+            "selector_control/checks.py": "42a8af6d371dbfeb95a403336191d1c77e899309c222346ab43cccc3302c26d1",
+            "selector_control/core.py": "224fc57777718c32e28bf6ba7fddf430ae870127c1a4a1af7ded2f684385c047",
+            "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+            "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775"
+          },
+          "plan_sha256": "d95da4ea57fc2d710d375f9cfc6f5f3d8ec91ff928472070621e2437ff83b5d1",
+          "config_sha256": "cb9e2aa3f259bdb9eaf74b43d61f8c73899f3e460a5dbd7db282a6e46daff3e3"
+        },
+        "phase": "PRECHECK",
+        "complete_banks": [],
+        "failure": "AssertionError('\\nArrays are not equal\\n\\nMismatched elements: 1 / 3 (33.3%)\\nMax absolute difference: 7\\nMax relative difference: 1.\\n x: array([1, 6, 0])\\n y: array([1, 6, 7])')",
+        "traceback": "Traceback (most recent call last):\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_BCEP/scripts/run_frozen_selector_control.py\", line 109, in run\n    else:tests=run_checks();emit('PRECHECK.json',tests)\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_BCEP/selector_control/checks.py\", line 22, in run_checks\n    np.testing.assert_array_equal(result.indices,expected)\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/site-packages/numpy/testing/_private/utils.py\", line 920, in assert_array_equal\n    assert_array_compare(operator.__eq__, x, y, err_msg=err_msg,\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/contextlib.py\", line 79, in inner\n    return func(*args, **kwds)\n  File \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/site-packages/numpy/testing/_private/utils.py\", line 797, in assert_array_compare\n    raise AssertionError(msg)\nAssertionError: \nArrays are not equal\n\nMismatched elements: 1 / 3 (33.3%)\nMax absolute difference: 7\nMax relative difference: 1.\n x: array([1, 6, 0])\n y: array([1, 6, 7])\n",
+        "finished_unix": 1794837873.4489324,
+        "exit_code": 1
+      }
+    }
+  ]
+}
