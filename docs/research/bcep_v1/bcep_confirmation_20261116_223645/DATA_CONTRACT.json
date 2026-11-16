@@ -1,0 +1,43 @@
+{
+  "schema": "bcep-confirmation-contract-v1",
+  "split_sha256": "1ebeafc388112ae02f18ad941031e685bb8a885d6bac484b549fc2a9222778cd",
+  "canonical_split_hash": "c515bd2b3f10ba760600c1c2a8ffede397d890cb9cb9f8dd21b02f7030eeddbc",
+  "source_manifest_sha256": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de",
+  "selection": "selection_dev final world NLL agent micro; exact ties earlier",
+  "train_weighting": "one scene/update; original total composite NLL",
+  "lambda_aux": 0.25,
+  "lr": 0.0001,
+  "lr_gamma": 1.0,
+  "FP32": true,
+  "patience": 3,
+  "max_epochs": 6,
+  "M": 256,
+  "K": 20,
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "default_allow_real_training": false,
+  "confirmation_access": "only after all four runs terminal; all outputs frozen before future reads",
+  "counts": {
+    "train": {
+      "windows": 2792,
+      "agent_occurrences": 30375
+    },
+    "selection_dev": {
+      "windows": 320,
+      "agent_occurrences": 621
+    },
+    "heldout_confirmation": {
+      "windows": 998,
+      "agent_occurrences": 5910
+    },
+    "excluded": {
+      "windows": 0,
+      "agent_occurrences": 0
+    }
+  }
+}

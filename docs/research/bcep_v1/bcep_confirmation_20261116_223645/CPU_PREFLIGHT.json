@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "purpose_guards": true,
+  "recording_alias_negative": true,
+  "overlap_negative": true,
+  "scene_agent_swap_negative": true,
+  "train_only_scales_access": true,
+  "initial_hashes": {
+    "3102": {
+      "bcep_flow": {
+        "model": "bf152e29eddcdb7e65de91cc374db7495df60905ca1166b22bb71182dc82b596",
+        "encoder": "3b2f610b051d266339e76fb9fbd9d2e80aeeb8bb82add7badd64d6a85470c122"
+      },
+      "mdn8": {
+        "model": "289a4fe6f0375e26c33b5aa8fb4c2b08f5278a689f3988eb1e633473f2686631",
+        "encoder": "3b2f610b051d266339e76fb9fbd9d2e80aeeb8bb82add7badd64d6a85470c122"
+      }
+    },
+    "3103": {
+      "bcep_flow": {
+        "model": "18dcaa94c63a2006ef147cbf6d5d7fc29a71d708f12885071659c69557d11b9b",
+        "encoder": "ff8f4255f4f1e2c372c052e68c2ed2f2de8f4db276a420500cc21b18583588a6"
+      },
+      "mdn8": {
+        "model": "c59cce8ae06f3d143036997cfe81ddae9deed0f0ac8281c98f8ad27acadf7b6e",
+        "encoder": "ff8f4255f4f1e2c372c052e68c2ed2f2de8f4db276a420500cc21b18583588a6"
+      }
+    }
+  },
+  "same_seed_encoder_equal": true,
+  "different_seed_encoder_different": true,
+  "recovery_and_truth_negative": {
+    "bcep_flow": {
+      "continuous_resume_exact": true,
+      "confirmation_truth_replacement_exact": true,
+      "updates": 8
+    },
+    "mdn8": {
+      "continuous_resume_exact": true,
+      "confirmation_truth_replacement_exact": true,
+      "updates": 8
+    }
+  },
+  "kmeans_repeat_exact": true,
+  "global_rng_unchanged": true,
+  "formal_optimizer_updates": 0
+}

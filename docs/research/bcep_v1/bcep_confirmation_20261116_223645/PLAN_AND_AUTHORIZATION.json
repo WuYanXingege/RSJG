@@ -1,0 +1,67 @@
+{
+  "run": "bcep_confirmation_20261116_223645",
+  "worktree": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_BCEP_Confirmation_20261116_223645",
+  "assets": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_confirmation_20261116_223645",
+  "docs": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_BCEP_Confirmation_20261116_223645/docs/research/bcep_v1/bcep_confirmation_20261116_223645",
+  "branch": "research/bcep-newsequence-independentseeds-20261116_223645",
+  "package_sha256": "70ae45e1ec179cf8b7a60c0e62c69c15976c5e473dc8d2d1f34e92490363f6c2",
+  "evidence_sha": "074d54b04be6a717b2c248a1fe3c2596a4fd9be8",
+  "authorization": "User explicitly forwarded BCEP_NewSequence_IndependentSeeds_Package.zip with 执行 and 上传github; four bounded new provider-only runs authorized",
+  "default_allow_real_training": false,
+  "authorized_run_matrix": [
+    {
+      "name": "bcep_flow_seed3102",
+      "model_kind": "bcep_flow",
+      "seed": 3102,
+      "max_epochs": 6,
+      "max_updates": 16752,
+      "budget_seconds": 3600
+    },
+    {
+      "name": "mdn8_seed3102",
+      "model_kind": "mdn8",
+      "seed": 3102,
+      "max_epochs": 6,
+      "max_updates": 16752,
+      "budget_seconds": 3600
+    },
+    {
+      "name": "mdn8_seed3103",
+      "model_kind": "mdn8",
+      "seed": 3103,
+      "max_epochs": 6,
+      "max_updates": 16752,
+      "budget_seconds": 3600
+    },
+    {
+      "name": "bcep_flow_seed3103",
+      "model_kind": "bcep_flow",
+      "seed": 3103,
+      "max_epochs": 6,
+      "max_updates": 16752,
+      "budget_seconds": 3600
+    }
+  ],
+  "split_lock": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_confirmation_20261116_223645/identity/SPLIT_LOCK.json",
+  "split_sha256": "1ebeafc388112ae02f18ad941031e685bb8a885d6bac484b549fc2a9222778cd",
+  "contract": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_confirmation_20261116_223645/identity/DATA_CONTRACT.json",
+  "contract_sha256": "d0eabb1a9ee31e3111bf1ae1a93fbe44f5b4b78f3436764f1e850d5175dc3eef",
+  "budgets": {
+    "cpu_preflight_seconds": 1800,
+    "gpu_preflight_seconds": 600,
+    "training_per_run_seconds": 3600,
+    "training_total_seconds": 14400,
+    "readonly_cpu_seconds": 7200
+  },
+  "selector": {
+    "n_init": 5,
+    "max_iter": 100,
+    "tolerance_m": 1e-06,
+    "dtype": "float64",
+    "seed_rule": "SHA256 compact JSON [model_kind,scene_id,agent_id,inference_seed,kmeans20_v1]; first8 bytes little endian unsigned64",
+    "restart_selection": "minimum mean squared distortion, exact ties earlier"
+  },
+  "run_command": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python -B -u scripts/run_bcep_confirmation.py --plan /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_BCEP_Confirmation_20261116_223645/docs/research/bcep_v1/bcep_confirmation_20261116_223645/PLAN_AND_AUTHORIZATION.json --execute-authorized-four-runs",
+  "no_bridge_or_coupling_training": true,
+  "no_automatic_followup": true
+}
