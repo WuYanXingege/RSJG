@@ -1,0 +1,37 @@
+工作目录：RSJG/RSJG_EBJD_BCEP
+Python：../.conda/rsjg/bin/python
+真实训练仍禁用。本轮只执行CPU测试和random-init无梯度接口；下列pilot命令未用于真实训练。
+
+1. 重现CPU定向验收（含合成optimizer更新，不使用真实数据训练）：
+../.conda/rsjg/bin/python -m pytest tests/test_bcep_core.py tests/test_bcep_prepilot.py -q
+
+2. 当前训练入口闸门（应退出并报REAL_TRAINING_DISABLED）：
+../.conda/rsjg/bin/python scripts/train_bcep.py --config configs/research/bcep_prepilot_v2.yaml
+
+3. 真实数据接口复测：必须新建未使用的资产输出目录。随机模型结果不能当性能结果。
+../.conda/rsjg/bin/python scripts/evaluate_bcep_bank.py \
+  --manifest ../RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/train/train_manifest.json \
+  --split-lock ../RSJG_EBJD_assets/bcep/eth_internal_split.json \
+  --contract docs/research/bcep_v1/prepilot_fixes_20261116/DATA_AND_EVAL_CONTRACT.json \
+  --subset interface_smoke --purpose interface_check --random-init-smoke \
+  --seeds 2035 2036 2037 2038 2039 \
+  --output ../RSJG_EBJD_assets/bcep/NEW_NONFORMAL_INTERFACE_DIRECTORY
+
+4. 未来单独授权后：冻结新的允许真实训练配置（不得更改已锁定split和选模合同）。
+以下是模板，不是本轮已运行命令；当前allow_real_training=false不能启动。
+../.conda/rsjg/bin/python scripts/train_bcep.py --config PATH_TO_SEPARATELY_AUTHORIZED_CONFIG.yaml
+恢复同一运行、同一冻结配置：
+../.conda/rsjg/bin/python scripts/train_bcep.py --config PATH_TO_SEPARATELY_AUTHORIZED_CONFIG.yaml --resume
+累计预算/更新上限耗尽不会续跑新epoch，不会自动追加实验。
+
+5. 未来训练完成后的内部开发导出模板（本轮未执行）：
+../.conda/rsjg/bin/python scripts/evaluate_bcep_bank.py \
+  --manifest ../RSJG_EBJD_clean/ebjd_clean/data/eth_jmm_official_scene_shards_20261015/train/train_manifest.json \
+  --split-lock ../RSJG_EBJD_assets/bcep/eth_internal_split.json \
+  --contract docs/research/bcep_v1/prepilot_fixes_20261116/DATA_AND_EVAL_CONTRACT.json \
+  --subset internal_dev --purpose internal_development --require-complete \
+  --checkpoint PATH_TO_AUTHORIZED_PILOT_BEST.pt \
+  --seeds 2035 2036 2037 2038 2039 \
+  --output ../RSJG_EBJD_assets/bcep/NEW_TRAINED_INTERNAL_DEV_EXPORT
+代码identity必须与训练checkpoint一致。不要用--limit或随机模型伪造完整dev结果。
+所导出320窗口是内部开发集，不是论文独立最终测试。

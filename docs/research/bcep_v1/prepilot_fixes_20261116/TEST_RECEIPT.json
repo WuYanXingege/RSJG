@@ -1,0 +1,382 @@
+{
+  "status": "PASS",
+  "test_count": 25,
+  "failures": 0,
+  "errors": 0,
+  "cpu_suite_seconds": 4.102,
+  "tests": [
+    {
+      "name": "test_flow_inverse_and_jacobian",
+      "group": "original_8",
+      "seconds": 0.063,
+      "status": "PASS"
+    },
+    {
+      "name": "test_motion_world_jacobian",
+      "group": "original_8",
+      "seconds": 0.018,
+      "status": "PASS"
+    },
+    {
+      "name": "test_selector_enumeration_submodularity_and_degeneracy",
+      "group": "original_8",
+      "seconds": 0.029,
+      "status": "PASS"
+    },
+    {
+      "name": "test_rng_future_padding_and_agent_order",
+      "group": "original_8",
+      "seconds": 0.181,
+      "status": "PASS"
+    },
+    {
+      "name": "test_synthetic_optimizer_and_strict_resume",
+      "group": "original_8",
+      "seconds": 0.968,
+      "status": "PASS"
+    },
+    {
+      "name": "test_short_horizon_padding_loss_and_no_teacher_imports",
+      "group": "original_8",
+      "seconds": 0.04,
+      "status": "PASS"
+    },
+    {
+      "name": "test_candidate_gather_multiset",
+      "group": "original_8",
+      "seconds": 0.141,
+      "status": "PASS"
+    },
+    {
+      "name": "test_endpoint_and_iid_energy_definitions",
+      "group": "original_8",
+      "seconds": 0.001,
+      "status": "PASS"
+    },
+    {
+      "name": "test_geometry_message_invariances_and_conditioned_flow",
+      "group": "prepilot_fixes",
+      "seconds": 0.099,
+      "status": "PASS"
+    },
+    {
+      "name": "test_likelihood_micro_macro_and_unchanged_objective",
+      "group": "prepilot_fixes",
+      "seconds": 0.036,
+      "status": "PASS"
+    },
+    {
+      "name": "test_real_runner_continuous_vs_interrupted_resume",
+      "group": "prepilot_fixes",
+      "seconds": 1.157,
+      "status": "PASS"
+    },
+    {
+      "name": "test_runner_exhausted_budget_and_update_cap_do_not_restart",
+      "group": "prepilot_fixes",
+      "seconds": 0.334,
+      "status": "PASS"
+    },
+    {
+      "name": "test_runner_equal_selector_keeps_earliest",
+      "group": "prepilot_fixes",
+      "seconds": 0.068,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_five_seeds_subset_counts_shared_support",
+      "group": "prepilot_fixes",
+      "seconds": 0.573,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[manifest]",
+      "group": "prepilot_fixes",
+      "seconds": 0.028,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[split]",
+      "group": "prepilot_fixes",
+      "seconds": 0.028,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[train_leak]",
+      "group": "prepilot_fixes",
+      "seconds": 0.029,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[checkpoint]",
+      "group": "prepilot_fixes",
+      "seconds": 0.044,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[random_as_dev]",
+      "group": "prepilot_fixes",
+      "seconds": 0.029,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[smoke_as_complete]",
+      "group": "prepilot_fixes",
+      "seconds": 0.03,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[limit_as_complete]",
+      "group": "prepilot_fixes",
+      "seconds": 0.035,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[missing_member]",
+      "group": "prepilot_fixes",
+      "seconds": 0.03,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[protocol]",
+      "group": "prepilot_fixes",
+      "seconds": 0.044,
+      "status": "PASS"
+    },
+    {
+      "name": "test_actual_export_rejects_bad_identity[purpose]",
+      "group": "prepilot_fixes",
+      "seconds": 0.028,
+      "status": "PASS"
+    },
+    {
+      "name": "test_real_training_cli_stays_disabled",
+      "group": "prepilot_fixes",
+      "seconds": 0.003,
+      "status": "PASS"
+    }
+  ],
+  "python": "3.10.21",
+  "torch": "2.8.0+cu128",
+  "device": "cpu",
+  "real_optimizer_updates": 0,
+  "training_or_supervisor_started": false,
+  "gpu_work_seconds": 0,
+  "synthetic_resume": {
+    "continuous_updates": 8,
+    "interrupted_updates": 3,
+    "resumed_updates": 5,
+    "completed_epochs": 2,
+    "parameter_adam_scheduler_order_rng_equal": true
+  },
+  "real_interface": {
+    "status": "NONFORMAL",
+    "random_initialization": true,
+    "windows": 2,
+    "valid_agents": 4,
+    "seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "members": [
+      {
+        "index": 0,
+        "sequence": "biwi_hotel",
+        "scene_id": "eth:train:biwi_hotel:0-190",
+        "frame_ids": [
+          0,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90,
+          100,
+          110,
+          120,
+          130,
+          140,
+          150,
+          160,
+          170,
+          180,
+          190
+        ],
+        "agent_ids": [
+          "5",
+          "6",
+          "8"
+        ]
+      },
+      {
+        "index": 3790,
+        "sequence": "uni_examples",
+        "scene_id": "eth:train:uni_examples:0-190",
+        "frame_ids": [
+          0,
+          10,
+          20,
+          30,
+          40,
+          50,
+          60,
+          70,
+          80,
+          90,
+          100,
+          110,
+          120,
+          130,
+          140,
+          150,
+          160,
+          170,
+          180,
+          190
+        ],
+        "agent_ids": [
+          "1"
+        ]
+      }
+    ],
+    "checkpoint_training_updates": 0,
+    "export_optimizer_updates": 0,
+    "grad_enabled": false,
+    "artifact_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/analyses/bcep_prepilot_fixes_20261116_190248/real_interface_verified",
+    "source_manifest_hash": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de",
+    "split_hash": "ebe0e117ee8e1a36e72028cfb5e6b3759df7b96821b94ea8a9a478fcbf149188",
+    "nonformal_reasons": [
+      "random_initialization",
+      "interface_smoke"
+    ]
+  },
+  "protection": {
+    "main_head": "5d07940b4fd0565d37af4f7219277cbba1b074fe",
+    "main_status_unchanged": true,
+    "protected_hash_checks": [
+      {
+        "fold": "eth",
+        "kind": "selected_checkpoint",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/training/best_jade.pt",
+        "expected": "48dc2144fb20cb3e678eed7b7df793598fe8f2ac0eda7a026b4bcf1696626b97",
+        "actual": "48dc2144fb20cb3e678eed7b7df793598fe8f2ac0eda7a026b4bcf1696626b97",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "eth",
+        "kind": "resolved_config",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/configs/RESOLVED_ETH_UNIFIED.json",
+        "expected": "f787704fb9655fd26776949d1cee9eec663e5adf2a041357cad3c1f0e80931e7",
+        "actual": "f787704fb9655fd26776949d1cee9eec663e5adf2a041357cad3c1f0e80931e7",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "hotel",
+        "kind": "selected_checkpoint",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/training/best_jade.pt",
+        "expected": "68119ee66d552c75fddf501522e896e8582dcb646e9edd58e6fdc48ea8c1b122",
+        "actual": "68119ee66d552c75fddf501522e896e8582dcb646e9edd58e6fdc48ea8c1b122",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "hotel",
+        "kind": "resolved_config",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/hotel_unified_coupling_bridge_v1_20261030_211601/configs/RESOLVED_HOTEL_UNIFIED.json",
+        "expected": "0411b480a57f22c437094136a7baf65f4a5d0ecd678c35da9b35cba231de20d0",
+        "actual": "0411b480a57f22c437094136a7baf65f4a5d0ecd678c35da9b35cba231de20d0",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "univ",
+        "kind": "selected_checkpoint",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/training/best_eligible.pt",
+        "expected": "39b5fce2b343516b36572df97289079ae00881ab0b380319bd5c10f3474957d3",
+        "actual": "39b5fce2b343516b36572df97289079ae00881ab0b380319bd5c10f3474957d3",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "univ",
+        "kind": "resolved_config",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/univ_unified_coupling_bridge_v1_20261031_111541/configs/RESOLVED_UNIV_UNIFIED.json",
+        "expected": "38710937e6e20b441eb22169c54d01af473ef36bce29059a3a890d98a947169a",
+        "actual": "38710937e6e20b441eb22169c54d01af473ef36bce29059a3a890d98a947169a",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "zara1",
+        "kind": "selected_checkpoint",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/training/best_eligible.pt",
+        "expected": "062a497c7baa28bfe88cf7e559784ad7029e979ddf93f3e0f8b08baa4713214b",
+        "actual": "062a497c7baa28bfe88cf7e559784ad7029e979ddf93f3e0f8b08baa4713214b",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "zara1",
+        "kind": "resolved_config",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara1_unified_coupling_bridge_v1_20261028_214026/configs/model_config.json",
+        "expected": "670afacdbac420f046417b42c7398758b1727b78ca3de779b79abc1c3559b191",
+        "actual": "670afacdbac420f046417b42c7398758b1727b78ca3de779b79abc1c3559b191",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "zara2",
+        "kind": "selected_checkpoint",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/best_eligible.pt",
+        "expected": "1dcdf54a2ea8081ee21480f1bc7a0499b89dff5a8ccc2c99357f9dd01243c3be",
+        "actual": "1dcdf54a2ea8081ee21480f1bc7a0499b89dff5a8ccc2c99357f9dd01243c3be",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      },
+      {
+        "fold": "zara2",
+        "kind": "resolved_config",
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/configs/RESOLVED_ZARA2_UNIFIED.json",
+        "expected": "d9360d514a14afa94564fbbd3aec5ea412b321993acd66f6a600ca2e56e9ae5b",
+        "actual": "d9360d514a14afa94564fbbd3aec5ea412b321993acd66f6a600ca2e56e9ae5b",
+        "match": true,
+        "operation": "byte SHA256 only; no weight deserialization"
+      }
+    ],
+    "host_process_check": "No project training/supervisor found; system watchdog/network services left untouched"
+  },
+  "source_identity": {
+    "bcep/__init__.py": "2a5b756cae7f25ee82315eb15073f270378acf8895433c9465f921606fc9b8c1",
+    "bcep/conditional_flow.py": "754b887e5c94ff495822a6d733d6b07ef803411a0554f871a709e9f5b6cc62b2",
+    "bcep/context_encoder.py": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+    "bcep/contracts.py": "c48977008209292b2d2130592c35d6d1616af5b28d64d1e656140e0c0185482d",
+    "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+    "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775",
+    "bcep/motion_frame.py": "9f8955d96fb0723745cff44dba5780522a53f56e8ac2cfbe19cc9b817a2e9a86",
+    "bcep/pilot_runner.py": "d6a422b01e323f4999de43e225a68f3d9a52e333136cfac268de8ee295598b4a",
+    "bcep/provider.py": "97bc520b86b7ed2c169a3dda0bd136c04cc5561b039f12a356ad3d018e85e142",
+    "bcep/supervision.py": "a15d630f33afd9f1c095ebd28c3392b190f4e37a5383efe95ff60ec644d70cf4",
+    "bcep/vendor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bcep/vendor/rational_quadratic.py": "d061afe845567dcac67653da7dc3d01b012711cfdc3fe5bef5d74691adcb15ad",
+    "scripts/evaluate_bcep_bank.py": "83b64bd6dfaa1cd46fa8b7c874bddd3f891f6eb32b1edaa87a82e4115d895d18",
+    "scripts/train_bcep.py": "60bce904374e8af4eb8b3dee5c514d95b878a3f996c8926557c4c9328d30a69b"
+  },
+  "config_sha256": "0fc0211f41836a7ae0527047a19752c9d0d1398975303bb4e1c99d6bc45aeb36",
+  "contract_sha256": "c99d3f9844005032cf964b59f44e67c9a0df42d6e86dd6c31b83d4135ec7ddf7",
+  "not_executed": [
+    "real-data optimizer updates",
+    "GPU numerical or speed testing",
+    "trained 320-scene internal-dev quality evaluation",
+    "full external ETH evaluation",
+    "teacher/provider weight loading",
+    "pilot/supervisor/queue launch"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "baseline": {
+    "reviewed_source_commit": "62f8cc6cbf13233293805c14440703f37c53c385",
+    "source_file": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_BCEP/bcep/context_encoder.py",
+    "local_source_sha256": "bd4e9edd2f16e5222377484b9c622cbfe51781b5108a0c882c5093dba1aab664",
+    "source_acquisition": "explicit caller-supplied source file; caller should verify commit",
+    "scope": "local CPU FP64 synthetic forward-only diagnostic; no training server, dataset, checkpoint, or optimizer access",
+    "torch_version": "2.8.0+cu128",
+    "seed": 3101,
+    "near_neighbor_offset_m": 0.5,
+    "far_neighbor_offset_m": 8.5,
+    "target_context_max_abs_diff_neighbor_translation": 0.0,
+    "all_context_max_abs_diff_neighbor_translation": 0.0,
+    "target_context_max_abs_diff_neighbor_velocity_change": 0.1864549581736638,
+    "context_max_abs_diff_common_translation": 0.0,
+    "real_optimizer_updates": 0,
+    "interpretation": "A neighbor translation with fixed motion leaves the target representation unchanged. This is a representational limitation, NOT measured forecasting accuracy."
+  },
+  "fixed": {
+    "source_sha256": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+    "neighbor_translation": 1.2604312759963539,
+    "neighbor_velocity": 0.2715692894048448,
+    "common_translation": 0.0,
+    "seed": 3101,
+    "device": "cpu",
+    "dtype": "float64"
+  },
+  "scope": "representation dependency only; no forecasting quality or training speed claim",
+  "real_optimizer_updates": 0
+}

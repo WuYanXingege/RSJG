@@ -16,13 +16,18 @@ class BCEP(nn.Module):
     def log_prob_world(self,world,observed,context,horizon):
         b,r,s=frame(observed,horizon,self.dt,self.scales[horizon-1]);local=to_local(world,b,r,s)
         return self.flow.log_prob(local,context,horizon*self.dt)-s.log().sum(-1)
-    def loss(self,observed,semantic_maps,valid,future,aux_weight=.25):
+    def loss_components(self,observed,semantic_maps,valid,future,aux_weight=.25):
         if future.shape!=(len(observed),self.pred_length,2):raise ValueError('future target shape differs')
         context=self.encoder(observed,semantic_maps,valid,self.dt)
+        count=int(valid.sum())
         horizons=sorted(set([math.ceil(self.pred_length/3),math.ceil(2*self.pred_length/3),self.pred_length]))
-        terms={h:-self.log_prob_world(future[valid,h-1],observed[valid],context[valid],h).mean() for h in horizons}
-        auxiliary=[v for h,v in terms.items() if h!=self.pred_length]
-        return terms[self.pred_length]+(aux_weight*torch.stack(auxiliary).mean() if auxiliary else 0)
+        sums={h:-self.log_prob_world(future[valid,h-1],observed[valid],context[valid],h).sum() for h in horizons}
+        auxiliary={h:{'nll_sum':v,'valid_agent_count':count} for h,v in sums.items() if h!=self.pred_length}
+        final=sums[self.pred_length]/count
+        total=final+(aux_weight*torch.stack([x['nll_sum']/count for x in auxiliary.values()]).mean() if auxiliary else 0)
+        return {'loss_total':total,'nll_final_sum':sums[self.pred_length],'valid_agent_count':count,'auxiliary':auxiliary,'world_jacobian_included':True}
+    def loss(self,observed,semantic_maps,valid,future,aux_weight=.25):
+        return self.loss_components(observed,semantic_maps,valid,future,aux_weight)['loss_total']
     @torch.no_grad()
     def sample_support(self,observed,semantic_maps,valid,scene_id,agent_ids,seed,count=256):
         if type(count) is not int or count<1:raise ValueError('positive support count required')
@@ -43,7 +48,11 @@ class BCEP(nn.Module):
     @torch.no_grad()
     def predict(self,observed,semantic_maps,valid,scene_id,agent_ids,seed=2035,k=20,support=256):
         atoms,mass=self.sample_support(observed,semantic_maps,valid,scene_id,agent_ids,seed,count=support)
-        output=torch.zeros(k,len(observed),2,device=observed.device,dtype=observed.dtype);metadata=[]
+        return self.select_support(atoms,valid,agent_ids,k)
+    @torch.no_grad()
+    def select_support(self,atoms,valid,agent_ids,k=20):
+        support,agents,_=atoms.shape
+        output=torch.zeros(k,agents,2,device=atoms.device,dtype=atoms.dtype);metadata=[]
         for i in valid.nonzero().flatten().tolist():
             decision=select_goals(atoms[:,i].cpu().numpy(),k)
             output[:,i]=atoms[torch.as_tensor(decision['indices'],device=atoms.device),i]

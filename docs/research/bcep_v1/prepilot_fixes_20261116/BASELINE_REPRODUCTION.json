@@ -1,0 +1,7 @@
+{
+  "source_commit": "62f8cc6cbf13233293805c14440703f37c53c385",
+  "composite_loss_mislabeled": "train_bcep.py one() returns model.loss; dev=np.mean(window losses), selection by this composite value",
+  "export_selection": "non-smoke indices=range(len(ds)) ignores dev_indices",
+  "export_counter": "real_optimizer_updates=0 fixed, not checkpoint updates",
+  "impact": "No real BCEP training or formal quality evaluation has occurred; prospective risk, not contaminated existing performance"
+}
