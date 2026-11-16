@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "tests": 8,
+  "seconds": 1.382,
+  "test_names": [
+    "test_flow_inverse_and_jacobian",
+    "test_motion_world_jacobian",
+    "test_selector_enumeration_submodularity_and_degeneracy",
+    "test_rng_future_padding_and_agent_order",
+    "test_synthetic_optimizer_and_strict_resume",
+    "test_short_horizon_padding_loss_and_no_teacher_imports",
+    "test_candidate_gather_multiset",
+    "test_endpoint_and_iid_energy_definitions"
+  ],
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 3,
+  "bcep_gpu_seconds": 0,
+  "training_entry_guard": "REAL_TRAINING_DISABLED verified",
+  "source_files": {
+    "bcep/__init__.py": "2a5b756cae7f25ee82315eb15073f270378acf8895433c9465f921606fc9b8c1",
+    "bcep/evaluation.py": "73d2d2c8da8588918612d82f7a34c3e147d03dca5f2dbf2435e009f65d3df775",
+    "bcep/provider.py": "ed61f378f829212651782ee80a2496ca95b5dc0625ea9411144f23f37afda7e6",
+    "bcep/conditional_flow.py": "754b887e5c94ff495822a6d733d6b07ef803411a0554f871a709e9f5b6cc62b2",
+    "bcep/coverage_selector.py": "e7edb5176b6a3c7dca6c76d46bce2a464dd0443b8f04db1ba5aa4058e34004d6",
+    "bcep/context_encoder.py": "bd4e9edd2f16e5222377484b9c622cbfe51781b5108a0c882c5093dba1aab664",
+    "bcep/motion_frame.py": "9f8955d96fb0723745cff44dba5780522a53f56e8ac2cfbe19cc9b817a2e9a86",
+    "bcep/vendor/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bcep/vendor/rational_quadratic.py": "d061afe845567dcac67653da7dc3d01b012711cfdc3fe5bef5d74691adcb15ad"
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "status": "PASS",
+  "metadata": {
+    "checkpoint_sha256": "UNTRAINED_SMOKE_NOT_FORMAL",
+    "manifest_sha256": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de",
+    "split": "interface_smoke",
+    "coordinate_unit": "m",
+    "worlds": 20,
+    "seed": 2035,
+    "provider": "bcep",
+    "support": 256,
+    "real_optimizer_updates": 0,
+    "formal": false,
+    "frame_ids": [
+      [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190
+      ],
+      [
+        0,
+        10,
+        20,
+        30,
+        40,
+        50,
+        60,
+        70,
+        80,
+        90,
+        100,
+        110,
+        120,
+        130,
+        140,
+        150,
+        160,
+        170,
+        180,
+        190
+      ]
+    ]
+  },
+  "scenes": [
+    {
+      "scene_id": "eth:train:biwi_hotel:0-190",
+      "n": 3,
+      "nll": 1.9937355518341064
+    },
+    {
+      "scene_id": "eth:train:uni_examples:0-190",
+      "n": 1,
+      "nll": 2.5932505130767822
+    }
+  ],
+  "bank_sha256": "1a7011ff42512a07713f3b07d53d3a32c7e36200f408dae1ae7ef99f9f24e614",
+  "interpretation": "untrained interface check; NLL is not model quality evidence"
+}

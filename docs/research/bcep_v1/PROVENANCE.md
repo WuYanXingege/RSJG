@@ -1,0 +1,9 @@
+# 来源与依赖
+
+RQS原语来自 bayesiains/nflows，固定提交5d22344436a4a5f4c3b93a3b99322a6bfe374c08，MIT许可证保存在bcep/vendor/LICENSE。原文件哈希见SOURCE.json。仅适配InputOutsideDomain和非原地bin searchsorted以移除nflows安装依赖；未下载学习权重。Neural Spline Flows： https://proceedings.neurips.cc/paper/2019/hash/7ac71d433f282034e088473244df8c02-Abstract.html 。
+
+覆盖选择器来自用户执行包budgeted_goal_selector_reference.py，原样复用核心与穷举自测。normalizing flow、NLL、子模贪心与运动坐标均是已有方法，不宣称单项原创。THEORY_ZH保留执行包的推导与原始参考；本次没有做穷尽新颖性检索。
+
+真实接口测试随机初始化BCEP，读取训练折轨迹和语义图及train-only尺度；不读取GDTS或旧八层checkpoint。源码扫描确认bcep不导入旧provider/八层终点头。合成测试仅保存/加载自身临时checkpoint。train_bcep和evaluate_bcep_bank仅允许自有random_initialization身份的后续checkpoint；torch.load读取位置均在这些入口和合成测试，provider无权重读取代码。
+
+旧六层回放是独立恢复任务，确实读取其GDTS-derived初始化及原模型权重，不混记为BCEP独立性实验。

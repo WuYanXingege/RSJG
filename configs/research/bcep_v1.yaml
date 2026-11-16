@@ -1,0 +1,13 @@
+allow_real_training: false
+seed: 3101
+device: cpu
+max_epochs: 10
+patience: 3
+budget_seconds: 3600
+lr: 0.0001
+lr_gamma: 1.0
+lambda_aux: 0.25
+support: 256
+candidates: 20
+split_lock: ../RSJG_EBJD_assets/bcep/eth_internal_split.json
+output: ../RSJG_EBJD_assets/bcep/pilot_not_authorized
