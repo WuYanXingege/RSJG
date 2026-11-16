@@ -69,7 +69,7 @@ def schema_header(path,key):
     return shape,str(dtype)
 
 
-def run(plan_path,resume=False):
+def run(plan_path,resume=False,precheck_fix=False):
     plan=read(plan_path);assets=Path(plan['asset_root']);docs=Path(plan['documentation_root'])
     state_path=assets/'RUN_RECEIPT.json';claim=assets/'RUN_CLAIM.json'
     config=read(plan['config']);start=time.monotonic();started=time.time();used=0.0
@@ -79,7 +79,18 @@ def run(plan_path,resume=False):
         if not resume:raise RuntimeError('run already claimed; explicit --resume required')
         old=read(state_path)
         if old['status']=='COMPLETE':raise RuntimeError('complete run cannot restart')
-        if read(claim)['identity']!=identity:raise RuntimeError('resume code/config/plan differs')
+        previous_claim=read(claim)
+        if previous_claim['identity']!=identity:
+            prior=previous_claim['identity']
+            # A failed synthetic test may be repaired before any real selection.
+            # Algorithms, config, plan and budget cannot change via this route.
+            allowed={'selector_control/checks.py','scripts/run_frozen_selector_control.py'}
+            if not (precheck_fix and old['phase']=='PRECHECK' and not list((assets/'selection').glob('*.npz'))
+                    and prior['plan_sha256']==identity['plan_sha256'] and prior['config_sha256']==identity['config_sha256']
+                    and all(s==identity['files'].get(p) for p,s in prior['files'].items() if p not in allowed)):
+                raise RuntimeError('resume code/config/plan differs')
+            history=previous_claim.get('precheck_repair_history',[])+[{'identity':prior,'receipt':old}]
+            atomic_json(claim,{'identity':identity,'created_unix':previous_claim['created_unix'],'precheck_repair_history':history})
         try:os.kill(old['pid'],0)
         except ProcessLookupError:pass
         else:raise RuntimeError('previous run PID still exists')
@@ -290,5 +301,5 @@ def run(plan_path,resume=False):
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--plan',required=True);parser.add_argument('--resume',action='store_true')
-    args=parser.parse_args();sys.exit(run(args.plan,args.resume))
+    parser=argparse.ArgumentParser();parser.add_argument('--plan',required=True);parser.add_argument('--resume',action='store_true');parser.add_argument('--precheck-fix',action='store_true')
+    args=parser.parse_args();sys.exit(run(args.plan,args.resume,args.precheck_fix))

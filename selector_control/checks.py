@@ -16,7 +16,13 @@ def run_checks():
             for incoming in range(8):
                 if incoming in ids:continue
                 trial=ids.copy();trial[pos]=incoming
-                options.append((mean_cover_distance(x,x[trial]),pos,incoming,trial))
+                # Independent full enumeration, with the same left-to-right
+                # support-axis accumulation as the vectorized matrix reduction.
+                # np.mean on a contiguous 1D array may use pairwise summation,
+                # changing last-bit ordering of mathematically tied swaps.
+                nearest=np.linalg.norm(x[:,None,:]-x[trial][None,:,:],axis=-1).min(axis=1)
+                cost=sum(float(v) for v in nearest)/len(x)
+                options.append((cost,pos,incoming,trial))
         best=min(options,key=lambda t:t[:3]);old=mean_cover_distance(x,x[ids]);eps=1e-12*(1+abs(old))
         expected=best[3] if best[0]<old-eps else ids
         np.testing.assert_array_equal(result.indices,expected)
