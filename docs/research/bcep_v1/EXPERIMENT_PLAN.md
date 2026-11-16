@@ -1,4 +1,6 @@
-# 预注册原型pilot计划（未启动）
+# 预注册原型pilot计划（历史版本）
+
+2026-11-16勘误：以下早期“GPU秒/epoch边界”描述已由 prepilot_fixes_20261116 的累计流程墙钟、场景边界检查和37900更新上限取代；不构成追加预算或自动启动授权。本次单run授权另见对应GPU gate/pilot计划，不修改历史默认开关。
 
 协议：ETH外层训练manifest内按完整原始sequence隔离，字典序最后约20%的sequence作为internal dev（当前uni_examples），其余train；同sequence不跨split，因此重叠滑窗不跨边界。当前train3790窗口、dev320窗口；尺度仅用train的36285次行人出现。原ETH validation/test不参与选择。内部dev被旧matched模型训练暴露，旧provider仅作历史工程参考，不能用于该dev公平胜负判断。
 

@@ -1,0 +1,29 @@
+{
+  "run_id": "bcep_gpu_gate_one_pilot_20261116_194040",
+  "branch": "research/bcep-gpu-gate-one-pilot-20261116_194040",
+  "base_sha": "46f51f46a9e37889333c955d0b4da895e4f6f0ed",
+  "protected_main_sha": "5d07940b4fd0565d37af4f7219277cbba1b074fe",
+  "authorization": "User actively forwarded BCEP_GPU_Gate_And_One_Pilot_Package.zip for execution",
+  "package_sha256": "fef12b7f3d4f9fe0fac871e65229c62b5991fe4a425d29c6b3876aa2b567c07e",
+  "budgets_seconds": {
+    "gpu_gate": 600,
+    "pilot_workflow": 3600,
+    "readonly_export": 1800
+  },
+  "real_runs_maximum": 1,
+  "training_seed": 3101,
+  "stop_on_gate_failure": true,
+  "second_run_allowed": false,
+  "historical_contract_sha256": "c99d3f9844005032cf964b59f44e67c9a0df42d6e86dd6c31b83d4135ec7ddf7",
+  "cpu_gpu_tolerance": {
+    "rtol": 0.0001,
+    "atol": 1e-05
+  },
+  "gpu_resume_tolerance": {
+    "rtol": 1e-06,
+    "atol": 1e-07
+  },
+  "gpu_uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+  "asset_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_gpu_gate_one_pilot_20261116_194040",
+  "documentation_root": "docs/research/bcep_v1/bcep_gpu_gate_one_pilot_20261116_194040"
+}

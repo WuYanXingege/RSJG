@@ -1,0 +1,65 @@
+{
+  "schema": "bcep-internal-contract-v2",
+  "split_hash": "ebe0e117ee8e1a36e72028cfb5e6b3759df7b96821b94ea8a9a478fcbf149188",
+  "source_manifest_hash": "8824bbad3b1b6c964bd828b1bee3ea5870e614b300b6d14090644a72818c54de",
+  "unit": "m",
+  "dt": 0.4,
+  "pred_length": 12,
+  "train_windows": 3790,
+  "dev_windows": 320,
+  "train_member_hash": "3bbcc392b2c89bc8738ed478555c4d8a1dd9004185e5ad910ba6553e3f27011c",
+  "dev_member_hash": "3f978031af7003722efd0f04ed2cc4cd9b2f8babfdd9ddcb945c40329eb8a599",
+  "selection_metric": "dev_nll_final_agent_micro",
+  "direction": "minimize",
+  "ties": "retain_earliest",
+  "historical_manifest_hashes": [],
+  "expected_bank_fields": [
+    "member_hash",
+    "checkpoint_sha256",
+    "split_hash",
+    "source_manifest_hash",
+    "code_identity",
+    "checkpoint_epoch",
+    "checkpoint_training_updates",
+    "export_optimizer_updates",
+    "seed",
+    "K",
+    "M",
+    "selector",
+    "subset",
+    "purpose",
+    "nonformal"
+  ],
+  "dev_sequence": [
+    "uni_examples"
+  ],
+  "matched_reference_dev_overlap": true,
+  "real_training_authorized": true,
+  "training_weighting": "one scene per optimizer update; unchanged composite objective",
+  "evaluation_weighting": "sum final world NLL over valid agent occurrences / valid agent occurrences",
+  "auxiliary_weight": 0.25,
+  "support_size": 256,
+  "output_candidates": 20,
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "seed_role": "five inference seeds, not five training seeds",
+  "iid_and_coverage_share_single_support_draw": true,
+  "screening": {
+    "minFDE_improvement_m": 0.01,
+    "recall_05_m_non_decreasing": true,
+    "P90_non_increasing": true,
+    "scope": "internal_dev same-checkpoint coverage20 versus IID20 only"
+  },
+  "not_independent_outer_test": true,
+  "authorization": {
+    "run_id": "bcep_gpu_gate_one_pilot_20261116_194040",
+    "receipt": "docs/research/bcep_v1/bcep_gpu_gate_one_pilot_20261116_194040/AUTHORIZATION_AND_PILOT_PLAN.json",
+    "sha256": "54bddd0cf96a723146837be0b72eda1a3da6d1804b51064197e59197bcea80bf",
+    "real_runs_maximum": 1
+  }
+}
