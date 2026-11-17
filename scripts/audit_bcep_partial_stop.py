@@ -11,7 +11,7 @@ def digest(p):
 def write(p,x):
  t=p.with_suffix('.tmp');t.write_text(json.dumps(x,indent=2));os.replace(t,p)
 def main(args):
- old=Path(args.old_assets);out=Path(args.receipts);stop=json.loads((out/'STOP_STATE.json').read_text());assert stop['status']=='TERMINATED_AFTER_COMPLETE_SEED'
+ old=Path(args.old_assets).resolve();out=Path(args.receipts).resolve();stop=json.loads((out/'STOP_STATE.json').read_text());assert stop['status']=='TERMINATED_AFTER_COMPLETE_SEED'
  proc=Path('/proc')/str(stop['process']['pid'])
  assert not proc.exists() or proc.joinpath('stat').read_text().rsplit(')',1)[1].split()[0]=='Z'
  plan=json.loads((old/'RUN_PLAN.json').read_text());frozen=json.loads((old/'reports/CHECKPOINTS_FROZEN.json').read_text());files=set(p for p in old.rglob('*') if p.is_file())
