@@ -1,0 +1,49 @@
+{
+  "schema": "bcep-sixlayer-random-downstream-v1",
+  "initialization_role": "random_all_downstream",
+  "provider_origin": "self_trained_flow",
+  "teacher_used": false,
+  "hidden_dim": 192,
+  "heads": 4,
+  "ff_dim": 768,
+  "fjab_blocks": 6,
+  "history_social_blocks": 2,
+  "crop_width_m": 32.0,
+  "map_agent_chunk": 8,
+  "scales": {
+    "goal": 1.0813041424830276,
+    "bridge": 0.21238024651423335,
+    "source": "2792_train_only_restored_RMS",
+    "provider_scales_unchanged": true
+  },
+  "precision": "fp32",
+  "proposal_eta": 0,
+  "rollout": false,
+  "projection": false,
+  "batch_scenes": 4,
+  "gradient_accumulation": 4,
+  "weight_decay": 0.0001,
+  "betas": [
+    0.9,
+    0.999
+  ],
+  "eps": 1e-08,
+  "clip_norm": 5.0,
+  "base_lr": 0.0001,
+  "warmup_epochs": 5,
+  "scheduler_horizon": 30,
+  "max_epochs": 20,
+  "budget_seconds": 7200,
+  "downstream_seed": 3201,
+  "steps": 20,
+  "worlds": 20,
+  "allow_real_training": false,
+  "source_resolved": {
+    "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/eth_unified_coupling_bridge_v1_20261030_104912/configs/RESOLVED_ETH_UNIFIED.json",
+    "exists": true,
+    "size_bytes": 7286,
+    "sha256": "f787704fb9655fd26776949d1cee9eec663e5adf2a041357cad3c1f0e80931e7"
+  },
+  "optimizer_updates_per_epoch": 175,
+  "max_updates": 3500
+}

@@ -1,0 +1,370 @@
+{
+  "status": "PASS",
+  "source_hash": "ebb0993efac365f48820a4397d5249eba5578b215b2ad4b793e2d92f914ceb7a",
+  "gradient_abs_sums": {
+    "shared_encoder": 123.28999589608276,
+    "map_unet": 0.8341842015273073,
+    "denoiser": 526.1712049529269,
+    "coupling": 0.0024745998919257772
+  },
+  "synthetic_optimizer_updates": 1,
+  "formal_updates": 0,
+  "no_future_output_close": true,
+  "single_person_identity": true,
+  "endpoint_invariants": {
+    "minFDE_G_H_abs": 0.0,
+    "endpoint_only_JFDE_matches": true,
+    "scene_gap_nonnegative": true
+  },
+  "assignment_index_audit": {
+    "original_indices": [
+      [
+        [
+          14,
+          16,
+          14
+        ],
+        [
+          18,
+          8,
+          2
+        ],
+        [
+          13,
+          4,
+          18
+        ],
+        [
+          1,
+          18,
+          17
+        ],
+        [
+          15,
+          6,
+          19
+        ],
+        [
+          16,
+          19,
+          4
+        ],
+        [
+          4,
+          5,
+          10
+        ],
+        [
+          7,
+          1,
+          15
+        ],
+        [
+          5,
+          3,
+          1
+        ],
+        [
+          12,
+          2,
+          5
+        ],
+        [
+          19,
+          11,
+          7
+        ],
+        [
+          0,
+          10,
+          8
+        ],
+        [
+          6,
+          0,
+          9
+        ],
+        [
+          10,
+          12,
+          11
+        ],
+        [
+          8,
+          14,
+          6
+        ],
+        [
+          17,
+          9,
+          13
+        ],
+        [
+          9,
+          13,
+          3
+        ],
+        [
+          3,
+          15,
+          12
+        ],
+        [
+          11,
+          7,
+          16
+        ],
+        [
+          2,
+          17,
+          0
+        ]
+      ]
+    ],
+    "reordered_indices": [
+      [
+        [
+          1,
+          19,
+          1
+        ],
+        [
+          15,
+          0,
+          9
+        ],
+        [
+          13,
+          4,
+          15
+        ],
+        [
+          7,
+          15,
+          11
+        ],
+        [
+          6,
+          17,
+          14
+        ],
+        [
+          19,
+          14,
+          4
+        ],
+        [
+          4,
+          10,
+          8
+        ],
+        [
+          12,
+          7,
+          19
+        ],
+        [
+          10,
+          5,
+          7
+        ],
+        [
+          16,
+          8,
+          10
+        ],
+        [
+          14,
+          18,
+          12
+        ],
+        [
+          3,
+          9,
+          0
+        ],
+        [
+          17,
+          3,
+          2
+        ],
+        [
+          8,
+          16,
+          18
+        ],
+        [
+          0,
+          1,
+          17
+        ],
+        [
+          11,
+          2,
+          13
+        ],
+        [
+          2,
+          13,
+          5
+        ],
+        [
+          5,
+          6,
+          16
+        ],
+        [
+          18,
+          12,
+          3
+        ],
+        [
+          9,
+          11,
+          6
+        ]
+      ]
+    ],
+    "mapped_to_original_indices": [
+      [
+        [
+          14,
+          16,
+          14
+        ],
+        [
+          18,
+          8,
+          2
+        ],
+        [
+          13,
+          4,
+          18
+        ],
+        [
+          1,
+          18,
+          17
+        ],
+        [
+          15,
+          6,
+          19
+        ],
+        [
+          16,
+          19,
+          4
+        ],
+        [
+          4,
+          5,
+          10
+        ],
+        [
+          7,
+          1,
+          16
+        ],
+        [
+          5,
+          3,
+          1
+        ],
+        [
+          12,
+          10,
+          5
+        ],
+        [
+          19,
+          11,
+          7
+        ],
+        [
+          0,
+          2,
+          8
+        ],
+        [
+          6,
+          0,
+          9
+        ],
+        [
+          10,
+          12,
+          11
+        ],
+        [
+          8,
+          14,
+          6
+        ],
+        [
+          17,
+          9,
+          13
+        ],
+        [
+          9,
+          13,
+          3
+        ],
+        [
+          3,
+          15,
+          12
+        ],
+        [
+          11,
+          7,
+          0
+        ],
+        [
+          2,
+          17,
+          15
+        ]
+      ]
+    ],
+    "candidate_input_permutation": [
+      8,
+      14,
+      9,
+      0,
+      4,
+      3,
+      15,
+      1,
+      10,
+      2,
+      5,
+      17,
+      7,
+      13,
+      19,
+      18,
+      12,
+      6,
+      11,
+      16
+    ],
+    "objective_max_abs_diff": 4.470348358154297e-08,
+    "mathematical_perturbation_bound": 2.6331974029541015e-06,
+    "exact_score_permutation_objective_abs_diff": 0.0,
+    "exact_score_permutation_assignment_equal": true
+  },
+  "score_column_equivariance_max_abs": 6.332993507385254e-08,
+  "hard_assignment_after_reorder_exact": false,
+  "near_tie_score_pairs": 20,
+  "assignment_note": "float32 attention reductions may perturb nearly tied Hungarian optima; score equivariance checked, exact candidate bijections always enforced",
+  "sampling": {
+    "endpoint_max_abs_m": 0.0,
+    "exact_candidate_gather": true,
+    "exact_noise_gather": true,
+    "per_agent_bijection": true
+  },
+  "peak_allocated_bytes": 557803008
+}

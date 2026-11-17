@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "randomized_trials": 32,
+  "negative_cases": 2,
+  "checks": [
+    "valid-agent permutation bijections",
+    "exact point-vector gather",
+    "candidate/noise same permutation",
+    "fixed literal endpoints",
+    "G/H minFDE invariant",
+    "N=1 identity",
+    "H_shuffle marginal ADE/FDE invariants",
+    "endpoint-only JFDE equals path JFDE",
+    "nonnegative per-scene coordination gap",
+    "coordinate-wise sorting is not set evidence"
+  ],
+  "real_data_used": false,
+  "server_access": false,
+  "gpu_used": false,
+  "learned_H_improvement_tested": false,
+  "note": "Synthetic NumPy invariant tests only; not a model or dataset evaluation."
+}

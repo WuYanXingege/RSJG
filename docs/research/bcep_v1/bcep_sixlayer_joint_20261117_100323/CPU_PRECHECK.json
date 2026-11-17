@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "downstream_initial_hash": "043cd152b99a11b4796b30067e0fc9087e82bdab8a6e0ff54e542b3586f780f1",
+  "optimizer_initial_state_equal": true,
+  "all_parameters_lr": 0.0001,
+  "all_banks_checked": 14,
+  "identity_negative": true,
+  "purpose_negative": true,
+  "augmentation_endpoint_alignment": true,
+  "no_future_signature": true,
+  "forbidden_pretrained_read": true,
+  "recovery": {
+    "status": "PASS",
+    "interrupt_pending_microbatches": 3,
+    "resume_model_optimizer_rng_exact": true,
+    "complete_updates_per_arm": 2,
+    "synthetic_only": true
+  },
+  "formal_updates": 0
+}
