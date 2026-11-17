@@ -1,0 +1,125 @@
+{
+  "snapshot_beijing": "2026-11-17T14:27:51+08:00",
+  "status": "INTERIM_NOT_FINAL",
+  "execution_identity": {
+    "execution_commit": "ebc5d96efb6091be0047b7d42c7d4c9a00bc8dab",
+    "source_hash": "cd98138981c03b74294f915c37d4c0ff11418dd44617d538dfcf50700e8ea7d6",
+    "config_sha256": "ef83c75fc78c75952441d1cc74d052d0eb2885e0fe7f5bd84622b5ac6183e025",
+    "split_hash": "c515bd2b3f10ba760600c1c2a8ffede397d890cb9cb9f8dd21b02f7030eeddbc",
+    "pid": 1878407,
+    "started_unix": 1794883713.5902445,
+    "allow_real_training": true,
+    "authorization": "User explicitly requested executing BCEP_FrozenProvider_SixLayer_JointPilot_Package.zip and uploading report."
+  },
+  "pipeline_state": {
+    "status": "RUNNING",
+    "stage": "TRAINING",
+    "pid": 1878407,
+    "default_allow_real_training": false,
+    "run": "flow3103_joint3201"
+  },
+  "runs": [
+    {
+      "run": "flow3102_joint3201",
+      "status": "BUDGET_EXHAUSTED",
+      "complete_epochs": 5,
+      "latest_update": 896,
+      "latest_update_elapsed_seconds": 7202.1555825311225,
+      "selected": {
+        "epoch": 5,
+        "update": 875,
+        "H_JADE": 0.42663920486811546
+      },
+      "selected_development_metrics": {
+        "G": {
+          "minADE": 0.30537751270233143,
+          "minFDE": 0.5203460677768346,
+          "JADE": 0.4352059704950079,
+          "JFDE": 0.8388760856585578
+        },
+        "H": {
+          "minADE": 0.3053873595144246,
+          "minFDE": 0.5203460677768346,
+          "JADE": 0.42663920486811546,
+          "JFDE": 0.808383755502291
+        }
+      }
+    },
+    {
+      "run": "flow3103_joint3201",
+      "status": "EPOCH_COMPLETE",
+      "complete_epochs": 4,
+      "latest_update": 754,
+      "latest_update_elapsed_seconds": 5948.334532259032,
+      "selected": {
+        "epoch": 3,
+        "update": 525,
+        "H_JADE": 0.41603697557002306
+      },
+      "selected_development_metrics": {
+        "G": {
+          "minADE": 0.30495923356229554,
+          "minFDE": 0.5144188730631042,
+          "JADE": 0.4298331721685827,
+          "JFDE": 0.8257063214899972
+        },
+        "H": {
+          "minADE": 0.3051322622467642,
+          "minFDE": 0.5144188730631042,
+          "JADE": 0.41603697557002306,
+          "JFDE": 0.7955027011223137
+        }
+      }
+    }
+  ],
+  "selection_dataset": "uni_examples",
+  "selection_windows": 320,
+  "selection_agent_occurrences": 621,
+  "selection_seed": 2035,
+  "confirmation_dataset": "crowds_zara02",
+  "confirmation_status": "NOT_COMPLETED_AT_SNAPSHOT",
+  "downstream_initialization_seed": 3201,
+  "judgment": "COMPLETE_BOUNDED_PILOT_DO_NOT_AUTHORIZE_LONG_TRAINING",
+  "sources": [
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/PIPELINE_STATE.json",
+      "sha256": "c02d243b4d571a908cb81e006d76682fdef4e56f480b094c7794796afb7e7139",
+      "bytes": 138
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/identity/EXECUTION_IDENTITY.json",
+      "sha256": "b681187ef9fbb0c4c10714698edd9402aa80c7c6774862e660b402ca35262e6c",
+      "bytes": 544
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/training/flow3102_joint3201/STATUS.json",
+      "sha256": "08283eaa58a1d516da24f840129e48b8fed7928e7f4013c1b80c73ef879fe381",
+      "bytes": 9829
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/training/flow3102_joint3201/epochs.jsonl",
+      "sha256": "f4384a3ec710c9cd728734a93e0686060a037a919d906a416acc79bc8e911667",
+      "bytes": 6456
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/training/flow3102_joint3201/train.jsonl",
+      "sha256": "17551f2f69930bbec6036717202129b37b31247cafaa7f82a5c762e94474baca",
+      "bytes": 203462
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/training/flow3103_joint3201/STATUS.json",
+      "sha256": "257fbe52f2ca5c33fc510bd33a7b3ac4506192d64ccec290db8d6b5c017100ec",
+      "bytes": 7951
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/training/flow3103_joint3201/epochs.jsonl",
+      "sha256": "73828795875464a7bc4546d729223993f72ad06cab612b8170c4b29ab5e2ba2a",
+      "bytes": 5159
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/training/flow3103_joint3201/train.jsonl",
+      "sha256": "32f8f1a55d8aa276e76724259e8c0d04a3adcdb08011a28e0ae7e956e2d8c1b5",
+      "bytes": 170789
+    }
+  ]
+}

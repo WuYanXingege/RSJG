@@ -1,0 +1,218 @@
+{
+  "historical_reference_only": true,
+  "used_for_selection_or_stopping": false,
+  "old_source": {
+    "experiment_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715",
+    "status": "COMPLETE",
+    "source_commit": "5369f589a8b4ad89735b4028e237bede53d35771",
+    "training_seed": 3101,
+    "selected_checkpoint": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/best_eligible.pt",
+      "exists": true,
+      "size_bytes": 91481901,
+      "sha256": "1dcdf54a2ea8081ee21480f1bc7a0499b89dff5a8ccc2c99357f9dd01243c3be"
+    },
+    "selected_epoch": 23,
+    "selection_identity": "best_eligible",
+    "completed_epochs": 30,
+    "optimizer_updates": 7530,
+    "resolved_config": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/configs/RESOLVED_ZARA2_UNIFIED.json",
+      "exists": true,
+      "size_bytes": 7364,
+      "sha256": "d9360d514a14afa94564fbbd3aec5ea412b321993acd66f6a600ca2e56e9ae5b"
+    },
+    "actual_contract": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/configs/RESOLVED_ZARA2_UNIFIED.json",
+      "exists": true,
+      "size_bytes": 7364,
+      "sha256": "d9360d514a14afa94564fbbd3aec5ea412b321993acd66f6a600ca2e56e9ae5b"
+    },
+    "configuration_note": "Fold adaptation plus scene-compaction/runtime engineering; unified method fields match.",
+    "method_signature": {
+      "hidden_dim": 192,
+      "heads": 4,
+      "ff_dim": 768,
+      "fjab_blocks": 6,
+      "full_raw": true,
+      "worlds": 20,
+      "ddim_steps": 20,
+      "rollout_training_enabled": false,
+      "paired_projection_enabled": false
+    },
+    "manifests": {
+      "train": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/train/train_manifest.json",
+        "exists": true,
+        "size_bytes": 165871,
+        "sha256": "0bd18ec06fda1974ec6cf84b5e19d898ae00cbb38b6bdcd7e5dfe1100c3d70d2"
+      },
+      "validation": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/validation/validation_manifest.json",
+        "exists": true,
+        "size_bytes": 44183,
+        "sha256": "de47ab89a5421dad62eb1846511d72f22e104fe1fc7771117676dcda806c581f"
+      },
+      "test": {
+        "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/formal_zara2_gt_bridge_h_20261028_100627/data_manifest/test/test_manifest.json",
+        "exists": true,
+        "size_bytes": 43800,
+        "sha256": "fa1266412965ea3fe1ffd12b1b13fb61339055f5035f0223c0a109081b50c090"
+      }
+    },
+    "validation_test_identity": "mirrored_official_package_internal_only",
+    "raw_G_H_seed_results": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/reports/PER_SEED_METRICS.csv",
+      "exists": true,
+      "size_bytes": 5603,
+      "sha256": "7b22a00ac6781a657758286400ce81b62089ffc53b4b64f6652a6fb89b4e10f5"
+    },
+    "raw_matched_gdts_results": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/assets_manifest/MATCHED_GDTS_RESULTS.json",
+      "exists": false,
+      "size_bytes": null,
+      "sha256": null
+    },
+    "formal_summary": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/reports/FINAL_RESULT_SUMMARY.json",
+      "exists": true,
+      "size_bytes": 1920,
+      "sha256": "fbd44f3bfa52f73c3f358830be91ac5335691632b9e1a9b3b66ade27e0a688ba"
+    },
+    "epoch_metrics": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/epoch_metrics.csv",
+      "exists": true,
+      "size_bytes": 8590,
+      "sha256": "a2297c25606222af1a1d5e4e5651857979ecb6e7631688ae2c2eed080bd9c4bc"
+    },
+    "checkpoint_index": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/checkpoint_index.csv",
+      "exists": true,
+      "size_bytes": 7550,
+      "sha256": "c91f6e6c85f347fc15f22bebd88cc665c9d96f459992ba9062ee8a80ccd88aa2"
+    },
+    "run_identity": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/training/RUN_IDENTITY.json",
+      "exists": true,
+      "size_bytes": 1301,
+      "sha256": "c97e57c1022dd09bfbdf5a80144809abf645c1c7819b6f78bf315836b8da7c83"
+    },
+    "gpu_budget": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/zara2_unified_coupling_bridge_v1_20261029_094715/GPU_BUDGET.json",
+      "exists": true,
+      "size_bytes": 1727,
+      "sha256": "884cc318b7cd2eee132fdd834f893fa60522cfea9d8d52d16c12136ba5075c35"
+    },
+    "matched_gdts_checkpoint_sha256": "bba3e538775e57fac45fd693ae6308c84fd92d6bf8d5451ab337005b292b2d80",
+    "matched_manifest_sha256": "de47ab89a5421dad62eb1846511d72f22e104fe1fc7771117676dcda806c581f",
+    "coordinate_unit": "m",
+    "scene_count": 998,
+    "agent_occurrence_count": 5910,
+    "candidate_set_preservation_evidence": "explicit_formal_report_plus_one_to_one_pairing"
+  },
+  "metrics": [
+    {
+      "scope": "ZARA2",
+      "method": "GDTS",
+      "metric": "minADE",
+      "mean": "0.15842072963560166",
+      "sd_ddof1": "0.0003047425829096067"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "GDTS",
+      "metric": "minFDE",
+      "mean": "0.2578471983140161",
+      "sd_ddof1": "0.0010299897648329652"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "GDTS",
+      "metric": "JADE",
+      "mean": "0.2956019675667082",
+      "sd_ddof1": "0.0012610046205370352"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "GDTS",
+      "metric": "JFDE",
+      "mean": "0.5823599543419661",
+      "sd_ddof1": "0.002314959813653372"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "G",
+      "metric": "minADE",
+      "mean": "0.15784358116794162",
+      "sd_ddof1": "0.0005316178466774189"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "G",
+      "metric": "minFDE",
+      "mean": "0.24924426169211497",
+      "sd_ddof1": "0.000676114780150806"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "G",
+      "metric": "JADE",
+      "mean": "0.28391119180702584",
+      "sd_ddof1": "0.0008743571103146293"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "G",
+      "metric": "JFDE",
+      "mean": "0.5701145360418007",
+      "sd_ddof1": "0.0026637406799489205"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "H",
+      "metric": "minADE",
+      "mean": "0.15765178702577837",
+      "sd_ddof1": "0.00047323635526625693"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "H",
+      "metric": "minFDE",
+      "mean": "0.24924426169211497",
+      "sd_ddof1": "0.000676114780150806"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "H",
+      "metric": "JADE",
+      "mean": "0.27079391262824376",
+      "sd_ddof1": "0.0009674086861251631"
+    },
+    {
+      "scope": "ZARA2",
+      "method": "H",
+      "metric": "JFDE",
+      "mean": "0.5417442675004294",
+      "sd_ddof1": "0.001152287925941176"
+    }
+  ],
+  "old_train_windows": 4016,
+  "new_train_windows": 2792,
+  "confirmation_window_key_order_equal": true,
+  "agent_identity_cross_audit_not_performed_in_this_query": true,
+  "old_training_sources": [
+    "biwi_eth.txt",
+    "biwi_hotel.txt",
+    "crowds_zara01.txt",
+    "crowds_zara03.txt",
+    "students001.txt",
+    "students003.txt",
+    "uni_examples.txt"
+  ],
+  "differences": [
+    "old 30 epochs / best_eligible epoch23 vs bounded current pilot H_JADE on separate uni_examples",
+    "old GDTS-derived learned initialization vs all-random current downstream",
+    "old train includes biwi_eth and uni_examples; current train excludes both"
+  ],
+  "table_source_sha256": "b981688ff63c95c71604df0cd39b6f3e93632d35f5c4bd20d06574fb8dbc89a2"
+}
