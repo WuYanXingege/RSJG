@@ -23,7 +23,8 @@ def check_permutation(pi,valid):
         if valid[b].sum()==1:assert torch.equal(pi[b,:,valid[b]],torch.arange(20,device=pi.device)[:,None])
 
 @torch.no_grad()
-def generate(model,observed,maps,valid,scene_ids,agent_ids,goals,seed):
+def generate(model,observed,maps,valid,scene_ids,agent_ids,goals,seed,mode="GH"):
+    assert mode in ("GH","H")
     model.eval();device=observed.device
     assert goals.shape==(len(observed),20,observed.shape[1],2)
     context=model.encode_context(observed,maps,valid)
@@ -31,13 +32,15 @@ def generate(model,observed,maps,valid,scene_ids,agent_ids,goals,seed):
     check_permutation(pi,valid);assert torch.equal(h,gather_candidates(goals,pi))
     z=keyed_noise(scene_ids,agent_ids,valid,seed).to(device);zh=gather_candidates(z,pi)
     assert torch.equal(zh,gather_candidates(z,pi))
-    g,ge,_=differentiable_sample(model.bridge,context,z,20,proposal_goals=goals,proposal_eta=0.)
+    g=None
+    if mode=="GH":g,ge,_=differentiable_sample(model.bridge,context,z,20,proposal_goals=goals,proposal_eta=0.)
     hpath,he,_=differentiable_sample(model.bridge,context,zh,20,proposal_goals=h,proposal_eta=0.)
-    assert torch.isfinite(g).all() and torch.isfinite(hpath).all()
-    endpoint_max=max(float((g[...,-1,:]-goals).abs().max()),float((hpath[...,-1,:]-h).abs().max()))
-    torch.testing.assert_close(g[...,-1,:],goals,atol=1e-6,rtol=1e-6);torch.testing.assert_close(hpath[...,-1,:],h,atol=1e-6,rtol=1e-6)
+    assert torch.isfinite(hpath).all() and (g is None or torch.isfinite(g).all())
+    endpoint_max=max(float((g[...,-1,:]-goals).abs().max()) if g is not None else 0.,float((hpath[...,-1,:]-h).abs().max()))
+    if g is not None:torch.testing.assert_close(g[...,-1,:],goals,atol=1e-6,rtol=1e-6)
+    torch.testing.assert_close(hpath[...,-1,:],h,atol=1e-6,rtol=1e-6)
     for b in range(len(valid)):
-        if valid[b].sum()==1:torch.testing.assert_close(g[b,:,valid[b]],hpath[b,:,valid[b]],rtol=1e-6,atol=1e-6)
+        if g is not None and valid[b].sum()==1:torch.testing.assert_close(g[b,:,valid[b]],hpath[b,:,valid[b]],rtol=1e-6,atol=1e-6)
     return g,hpath,pi,dict(endpoint_max_abs_m=endpoint_max,exact_candidate_gather=True,exact_noise_gather=True,per_agent_bijection=True)
 
 def shuffle_paths(paths,valid,scene_ids,seed,repetition):

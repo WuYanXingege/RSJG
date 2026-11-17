@@ -1,0 +1,299 @@
+{
+  "schema": "bcep-jmm-fivefold-lock-v1",
+  "jmm_commit": "894182b5ea7dac3c93bbe0bcc18c156c932398b7",
+  "agentformer_commit": "f4c29aa587026a4bce20c631494bf27eac09c93f",
+  "sources": [
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/dataset_splits.py",
+      "sha256": "6aa73a969f02b4eb40b013b736d1a4bd93ba334ffb86585a0a42531869d0a387"
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/data/ethucy_split.py",
+      "sha256": "e26933ffc32d786f68f1313fc214f85e202d64db6a2e738bfa30d88c3d9ea1ac"
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/data/dataloader.py",
+      "sha256": "056374a2ade11a0f63836c6a377233cf8618b1e391c13cee08d5338c351e5800"
+    },
+    {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/data/preprocessor.py",
+      "sha256": "8960386e7101cd91d3e046e7482acb9fbb8f92e13b11d6e1075fcf6bffcf76c9"
+    }
+  ],
+  "coordinate_policy": "official world-meter columns 13/15, no learned normalization; frame ids official*10 per official loader frame_scale; dt=.4",
+  "window_policy": "existing synchronized_windows: all 20 frames present, complete agents, stride one, no cross-file windows",
+  "folds": {
+    "zara2": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/folds/zara2/SPLIT_LOCK.json",
+      "sha256": "b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816",
+      "canonical_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
+      "statistics": {
+        "train": {
+          "windows": 2681,
+          "agent_occurrences": 26076,
+          "mean_agents": 9.72622155911973,
+          "max_agents": 57
+        },
+        "selection_dev": {
+          "windows": 590,
+          "agent_occurrences": 4262,
+          "mean_agents": 7.223728813559322,
+          "max_agents": 42
+        },
+        "heldout_confirmation": {
+          "windows": 998,
+          "agent_occurrences": 5910,
+          "mean_agents": 5.921843687374749,
+          "max_agents": 14
+        }
+      },
+      "official_overlap_counts": {
+        "train:selection_dev": 0,
+        "train:heldout_confirmation": 0,
+        "selection_dev:heldout_confirmation": 0
+      }
+    },
+    "zara1": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/folds/zara1/SPLIT_LOCK.json",
+      "sha256": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+      "canonical_sha256": "c021422e469f6a86e5d3c0dbcf52f8f7e5ab812eb5ecfdfcd335f9780cc7e998",
+      "statistics": {
+        "train": {
+          "windows": 2889,
+          "agent_occurrences": 28577,
+          "mean_agents": 9.89165801315334,
+          "max_agents": 57
+        },
+        "selection_dev": {
+          "windows": 671,
+          "agent_occurrences": 5184,
+          "mean_agents": 7.725782414307004,
+          "max_agents": 42
+        },
+        "heldout_confirmation": {
+          "windows": 705,
+          "agent_occurrences": 2356,
+          "mean_agents": 3.3418439716312056,
+          "max_agents": 14
+        }
+      },
+      "official_overlap_counts": {
+        "train:selection_dev": 0,
+        "train:heldout_confirmation": 0,
+        "selection_dev:heldout_confirmation": 0
+      }
+    },
+    "hotel": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/folds/hotel/SPLIT_LOCK.json",
+      "sha256": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "canonical_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+      "statistics": {
+        "train": {
+          "windows": 3118,
+          "agent_occurrences": 29676,
+          "mean_agents": 9.517639512508017,
+          "max_agents": 57
+        },
+        "selection_dev": {
+          "windows": 688,
+          "agent_occurrences": 5203,
+          "mean_agents": 7.5625,
+          "max_agents": 42
+        },
+        "heldout_confirmation": {
+          "windows": 445,
+          "agent_occurrences": 1197,
+          "mean_agents": 2.689887640449438,
+          "max_agents": 8
+        }
+      },
+      "official_overlap_counts": {
+        "train:selection_dev": 0,
+        "train:heldout_confirmation": 0,
+        "selection_dev:heldout_confirmation": 0
+      }
+    },
+    "univ": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/folds/univ/SPLIT_LOCK.json",
+      "sha256": "39f90a22926eb7a219bc9e82d403fef9ce4da956f3fd11d92ec3055f0b101bfb",
+      "canonical_sha256": "5ae70bd6361d2d185e11ab2a82f9996045926937393839b3bf1d2e1153a8d214",
+      "statistics": {
+        "train": {
+          "windows": 2719,
+          "agent_occurrences": 9874,
+          "mean_agents": 3.6314821625597644,
+          "max_agents": 14
+        },
+        "selection_dev": {
+          "windows": 622,
+          "agent_occurrences": 2800,
+          "mean_agents": 4.501607717041801,
+          "max_agents": 13
+        },
+        "heldout_confirmation": {
+          "windows": 947,
+          "agent_occurrences": 24334,
+          "mean_agents": 25.69588173178458,
+          "max_agents": 57
+        }
+      },
+      "official_overlap_counts": {
+        "train:selection_dev": 0,
+        "train:heldout_confirmation": 0,
+        "selection_dev:heldout_confirmation": 0
+      }
+    },
+    "eth": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/folds/eth/SPLIT_LOCK.json",
+      "sha256": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "canonical_sha256": "3d781fb113daaca7b08ea6dcac43a1dc522df3e0542b80abcdf603e619e2a28c",
+      "statistics": {
+        "train": {
+          "windows": 3283,
+          "agent_occurrences": 30307,
+          "mean_agents": 9.23149558330795,
+          "max_agents": 57
+        },
+        "selection_dev": {
+          "windows": 733,
+          "agent_occurrences": 5422,
+          "mean_agents": 7.39699863574352,
+          "max_agents": 42
+        },
+        "heldout_confirmation": {
+          "windows": 253,
+          "agent_occurrences": 364,
+          "mean_agents": 1.4387351778656126,
+          "max_agents": 5
+        }
+      },
+      "official_overlap_counts": {
+        "train:selection_dev": 0,
+        "train:heldout_confirmation": 0,
+        "selection_dev:heldout_confirmation": 0
+      }
+    }
+  },
+  "files": {
+    "biwi_eth_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/univ/biwi_eth_train.txt",
+      "sha256": "a3e5d7f7c741c4a4cfbd968136cef0b3945580921775c6af90424862bf1a3357"
+    },
+    "biwi_hotel_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/biwi_hotel_train.txt",
+      "sha256": "96d87e6f6afa542397a88ecccd06192a968ed555f0da936b3e50bc9fd0aaa2a3"
+    },
+    "crowds_zara01_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/crowds_zara01_train.txt",
+      "sha256": "63af0422336bcafcbcfb78538fcfb49cd043211f5fe7ac6a21e18a3c245d65a2"
+    },
+    "crowds_zara03_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/crowds_zara03_train.txt",
+      "sha256": "7e640fd562e4ad56ef27a0a8a555a43443824a0834b83e1c3bbaefad97790ede"
+    },
+    "students001_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/students001_train.txt",
+      "sha256": "2d4f442346b1c5f62a748a53c20918511faddeed4955ba73a4de95a2e04f0ae1"
+    },
+    "students003_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/students003_train.txt",
+      "sha256": "8d36ffdeae8f33e827bbaf4845cd0069e9c26af5057cf9b44ccf4424869ebfa8"
+    },
+    "uni_examples_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/uni_examples_train.txt",
+      "sha256": "5124a997ccef4fe8589e510616d9d8c2adf6b3e254e34d1b5d2741879e8cec76"
+    },
+    "biwi_eth_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/univ/biwi_eth_val.txt",
+      "sha256": "84edc9cf3ad0d649c01e05f0a535f2bd0f3def862bc7951db8e55c12b19c921b"
+    },
+    "biwi_hotel_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/biwi_hotel_val.txt",
+      "sha256": "79b941918e48aa984b42081865f9a6cffdf2e1be5cdd8eddb44004d8da0e99e8"
+    },
+    "crowds_zara01_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/crowds_zara01_val.txt",
+      "sha256": "a423dc489d48cff01595b441f441281925c4cacd909eedeb1a38b1ff5319566b"
+    },
+    "crowds_zara03_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/crowds_zara03_val.txt",
+      "sha256": "5251c0c7c1685187626e1ea242166a1691ed91f84b6aca214b9379a722ab9268"
+    },
+    "students001_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/students001_val.txt",
+      "sha256": "b2675a88c561b4090e019f7808e967421d7977afc91e7341df05dcf7afd97990"
+    },
+    "students003_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/students003_val.txt",
+      "sha256": "46183d3475c87590148ccfa84c395f36a54f8b4f45efa7df545e4671df1ef784"
+    },
+    "uni_examples_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/uni_examples_val.txt",
+      "sha256": "acc920f245ba7e309c1ddf349eb6b956342b6c95346a3182be81d6d040fbc023"
+    },
+    "crowds_zara02": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/zara2/crowds_zara02.txt",
+      "sha256": "d085bffb646ff89afe5af7964feade56834a81197ba04f567db5a02fd607d4cf"
+    },
+    "crowds_zara02_train": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/crowds_zara02_train.txt",
+      "sha256": "4f524a0ac447567e942faa21d1aafbf363d12cb1a49fcbd6590035b003b3548a"
+    },
+    "crowds_zara02_val": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/crowds_zara02_val.txt",
+      "sha256": "8eb0602829a3ae7c74b660b756aaf629e06920573af8880c36b3ee3a13d9bb39"
+    },
+    "crowds_zara01": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/zara1/crowds_zara01.txt",
+      "sha256": "7d2c9a70e33594dbaf3142ec97ade2bc07f41ea681cf0e399057c8fa1da0f5f8"
+    },
+    "biwi_hotel": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/hotel/biwi_hotel.txt",
+      "sha256": "90c4b0f7514b307b53481d8e2e23f9ba1ea9202d732634291c01267742d66746"
+    },
+    "students001": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/univ/students001.txt",
+      "sha256": "4071b40e8d23b485efc8376f697c66753df102903e2923092ab17694c0183249"
+    },
+    "students003": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/univ/students003.txt",
+      "sha256": "3a46399a7c5dc27b95e69c8cc75fa824494e69c0c317c0790a69bca5d5ee3a14"
+    },
+    "biwi_eth": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/sources/Joint_AgentFormer/datasets/eth_ucy/eth/biwi_eth.txt",
+      "sha256": "d7cdcedd6472ebaa794bc56e037542e350dfe2ee992f818ab8c417e9fc2a17ad"
+    }
+  },
+  "maps": {
+    "eth": {
+      "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/H.txt",
+      "homography_sha256": "a85a44838a451323f0b6e8e649dd4ee4db696de7d0e59f651506edaa8af77aff",
+      "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/eth/pred_mask.png",
+      "semantic_sha256": "5c3510ddb5d3763741de83dc4fbb16d037f131d259d225721e5dcefc2e66232e"
+    },
+    "hotel": {
+      "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/hotel/H.txt",
+      "homography_sha256": "b62940ea5f69c89990673f91f88724937ed41387a39d8d68ad5bbc6d5ee5c8b7",
+      "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/hotel/pred_mask.png",
+      "semantic_sha256": "dd55bde37b2c2ba8665010f229706ff77a0fa46f14760d0bb8da22832e89e2b2"
+    },
+    "zara1": {
+      "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara1/H.txt",
+      "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+      "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara1/pred_mask.png",
+      "semantic_sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d"
+    },
+    "zara2": {
+      "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara2/H.txt",
+      "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+      "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/zara2/pred_mask.png",
+      "semantic_sha256": "264314181cf178c2464acf7a7b551682ccab2fbf4c684f03cf4fbf5ceba3d59d"
+    },
+    "univ": {
+      "homography_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/H.txt",
+      "homography_sha256": "0478ba66634917da213cda0a2b5067a36f3f3e3c19160b92aeb8855ebf1c69e5",
+      "semantic_path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/GDTS/data/eth5/univ/pred_mask.png",
+      "semantic_sha256": "5ba94820f52a38cde8355c56b764fc694ff5f8c9cfffc58927cf0753e48c95ad"
+    }
+  }
+}

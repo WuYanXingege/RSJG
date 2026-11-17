@@ -1,0 +1,102 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "formal_optimizer_updates": 0,
+  "gpu_seconds": 0,
+  "thresholds": {
+    "loss_rtol": 0.0002,
+    "loss_atol": 2e-05,
+    "gradient_global_relative": 0.002,
+    "H_atol": 1e-06,
+    "H_rtol": 1e-06
+  },
+  "grouped_real_input": {
+    "loss_reference": 7.030685544013977,
+    "loss_candidate": 7.031326770782471,
+    "gradient_relative": 2.1075469912973255e-06,
+    "passed": true,
+    "agent_counts": [
+      1,
+      3
+    ],
+    "candidate_points": "synthetic interface only; not formal bank"
+  },
+  "split_access_checks": {
+    "zara2": {
+      "train": {
+        "first_scene": "jmm:biwi_eth:80-99",
+        "agents": 1
+      },
+      "selection_dev": {
+        "first_scene": "jmm:biwi_eth:1024-1043",
+        "agents": 1
+      },
+      "heldout_confirmation": {
+        "first_scene": "jmm:crowds_zara02:1-20",
+        "agents": 2
+      }
+    },
+    "zara1": {
+      "train": {
+        "first_scene": "jmm:biwi_eth:80-99",
+        "agents": 1
+      },
+      "selection_dev": {
+        "first_scene": "jmm:biwi_eth:1024-1043",
+        "agents": 1
+      },
+      "heldout_confirmation": {
+        "first_scene": "jmm:crowds_zara01:0-19",
+        "agents": 7
+      }
+    },
+    "hotel": {
+      "train": {
+        "first_scene": "jmm:biwi_eth:80-99",
+        "agents": 1
+      },
+      "selection_dev": {
+        "first_scene": "jmm:biwi_eth:1024-1043",
+        "agents": 1
+      },
+      "heldout_confirmation": {
+        "first_scene": "jmm:biwi_hotel:0-19",
+        "agents": 3
+      }
+    },
+    "univ": {
+      "train": {
+        "first_scene": "jmm:biwi_eth:80-99",
+        "agents": 1
+      },
+      "selection_dev": {
+        "first_scene": "jmm:biwi_eth:1024-1043",
+        "agents": 1
+      },
+      "heldout_confirmation": {
+        "first_scene": "jmm:students001:0-19",
+        "agents": 57
+      }
+    },
+    "eth": {
+      "train": {
+        "first_scene": "jmm:biwi_hotel:0-19",
+        "agents": 3
+      },
+      "selection_dev": {
+        "first_scene": "jmm:biwi_hotel:1495-1514",
+        "agents": 1
+      },
+      "heldout_confirmation": {
+        "first_scene": "jmm:biwi_eth:80-99",
+        "agents": 1
+      }
+    }
+  },
+  "map_storage_exact": true,
+  "cache_mutation_isolated": true,
+  "representation_reconstruction": true,
+  "H_only_max_abs": 0.0,
+  "H_only_passed": true,
+  "cpu_seconds": 21.567368295043707
+}

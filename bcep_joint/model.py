@@ -24,7 +24,8 @@ def optimizer_for(model,c):
         (no_decay if p.ndim<=1 or name.endswith('bias') or 'norm' in name.lower() else decay).append(p)
     return torch.optim.AdamW([dict(params=decay,lr=1e-4,weight_decay=c['weight_decay']),dict(params=no_decay,lr=1e-4,weight_decay=0.)],betas=tuple(c['betas']),eps=c['eps'])
 
-def set_lr(optimizer,epoch):
-    factor=epoch/5 if epoch<=5 else .1+.9*.5*(1+math.cos(math.pi*min((epoch-5)/25,1)))
+def set_lr(optimizer,epoch,horizon=30):
+    assert horizon>5
+    factor=epoch/5 if epoch<=5 else .1+.9*.5*(1+math.cos(math.pi*min((epoch-5)/(horizon-5),1)))
     for g in optimizer.param_groups:g['lr']=1e-4*factor
-    return dict(type='original_epoch_warmup_cosine',epoch=epoch,warmup_epochs=5,horizon_epochs=30,factor=factor,base_lr=1e-4)
+    return dict(type='original_epoch_warmup_cosine',epoch=epoch,warmup_epochs=5,horizon_epochs=horizon,factor=factor,base_lr=1e-4)

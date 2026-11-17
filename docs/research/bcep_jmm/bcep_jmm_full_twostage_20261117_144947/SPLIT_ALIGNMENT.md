@@ -1,0 +1,13 @@
+# JMM分片对齐
+
+本轮仅更改数据用途/边界。固定JMM提交894182b5ea7dac3c93bbe0bcc18c156c932398b7及Joint_AgentFormer提交f4c29aa587026a4bce20c631494bf27eac09c93f，采用get_ethucy_split返回的真实文件。
+
+非测试录制各自的_train文件用于训练、_val文件用于验证，整段测试录制仅用于最终评测。没有随机80/20拆分、验证测试复制或凑历史窗口数。uni_examples不再整段作为独占开发集。
+
+预处理只读取官方17列文件的frame、agent、world坐标13/15列；沿用完整20帧、stride1、所有完整有效行人及现有semantic_crops。官方帧号保存在official_frame_ids，评测frame_ids按官方loader的frame_scale=10映射；时间戳official_frame*.4。保留官方ETH规范文件的坐标，不采用GDTS目录中旧ETH不规则帧编号原表替换。地图仍来自现有H.txt/pred_mask.png，32m/256px、6通道，记录SHA；未改无地图网络。
+
+22个唯一官方分片逐窗口与固定版本preprocessor.get_valid_id方法核对，帧及行人顺序完全一致；min_past=8/min_future=12/frame_skip=1。五折各自train/val/test录制-帧-行人出现交集均为0。相同train或val分片在不同折的SHA完全一致。
+
+物理输入缓存只跨折共享相同原始分片，不共享学习权重/拟合尺度/候选bank。每折两类尺度分别只读本折train计算；Provider使用原motion-frame RMS（下限0.1），EBD使用原FP64 RMS（goal下限0.5，bridge下限0.1）。
+
+UNIV测试录制为students001+students003，实际947窗口/24334次行人出现，均值25.6959，最大57；不能为了贴历史人数标签删人或删窗口。各折完整计数见SPLIT_COUNTS.csv。该任务只对齐划分，不宣称其他输入模态或评测聚合自动与JMM全部基线完全相同。

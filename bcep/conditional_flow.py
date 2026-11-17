@@ -12,7 +12,7 @@ class ConditionalFlow(nn.Module):
             nn.init.zeros_(net[-1].weight);nn.init.zeros_(net[-1].bias)
             with torch.no_grad():net[-1].bias[2*bins:]=math.log(math.expm1(1-.001))
     def transform(self,x,context,horizon_seconds,inverse=False):
-        logdet=torch.zeros_like(x[...,0]);h=torch.full_like(x[...,:1],horizon_seconds)
+        logdet=torch.zeros_like(x[...,0]);h=(horizon_seconds.to(x).expand_as(x[...,:1]) if torch.is_tensor(horizon_seconds) else torch.full_like(x[...,:1],horizon_seconds))
         for i in (reversed(range(4)) if inverse else range(4)):
             fixed=i%2;changed=1-fixed
             params=self.nets[i](torch.cat((context,x[...,fixed:fixed+1],h),-1))

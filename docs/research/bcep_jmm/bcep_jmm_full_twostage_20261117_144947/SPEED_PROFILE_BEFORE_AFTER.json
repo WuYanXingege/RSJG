@@ -1,0 +1,36 @@
+{
+  "status": "GPU_NOT_EXECUTED_RESOURCE_BUSY",
+  "gpu_seconds": 0,
+  "formal_optimizer_updates": 0,
+  "blocking_pid": 1878407,
+  "baseline_s_per_update": null,
+  "candidate_s_per_update": null,
+  "speedup": null,
+  "full_validation_seconds": null,
+  "peak_allocated_bytes": null,
+  "peak_reserved_bytes": null,
+  "static_changes": [
+    "single-channel lossless semantic crop storage",
+    "256MiB bounded immutable input cache",
+    "device-reduced finite checks",
+    "H-only validation"
+  ],
+  "optional_candidates": {
+    "batched_provider_horizons": "CPU checked; GPU pending; OFF",
+    "grouped_joint_logical_batch": "CPU checked; GPU pending; OFF"
+  },
+  "CPU_loss_and_gradient": {
+    "loss_reference": 7.030685544013977,
+    "loss_candidate": 7.031326770782471,
+    "gradient_relative": 2.1075469912973255e-06,
+    "passed": true,
+    "agent_counts": [
+      1,
+      3
+    ],
+    "candidate_points": "synthetic interface only; not formal bank"
+  },
+  "H_only_CPU_max_abs": 0.0,
+  "compact_cache_bytes": 46108206,
+  "note": "H-only reduces validation sampling passes, not a measured training throughput claim"
+}
