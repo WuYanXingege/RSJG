@@ -45,14 +45,14 @@ def evaluate(plan,split,c,frozen,device='cuda'):
         for out in outputs:
             assert digest(out['path'])==out['sha256'];run=next(x for x in plan['runs'] if x['name']==out['run']);seed=out['seed'];bank=CandidateBank(run['banks'][f'heldout_confirmation_{seed}']['path'],split,'heldout_confirmation',run['provider']['sha256'],seed)
             acc={group:{mode:MetricAccumulator() for mode in ['G','H']+[f'H_shuffle_{j}' for j in range(5)]} for group in ['all','N1','Nge2']}
-            maxfde=maxshuffle=0.;gap_min=float('inf')
+            maxfde=maxshuffle=0.;endpoint_g=endpoint_h=0.
             with np.load(out['path'],allow_pickle=False) as z:
                 assert json.loads(str(z['metadata_json']))['members']==members
                 G=z['G'];H=z['H'];P=z['permutation'];V=z['valid']
                 for j,member in enumerate(members):
                     n=len(member['agent_ids']);g=torch.from_numpy(G[j:j+1,:,:n]);h=torch.from_numpy(H[j:j+1,:,:n]);pi=torch.from_numpy(P[j:j+1,:,:n]);v=torch.from_numpy(V[j:j+1,:n]);target=truth[j][None]
                     goals=bank.goals[j:j+1,:,:n];hg=gather_candidates(goals,pi)
-                    check=metric_invariants(g,h,goals,hg,target,v);maxfde=max(maxfde,check['minFDE_G_H_abs'])
+                    check=metric_invariants(g,h,goals,hg,target,v);maxfde=max(maxfde,check['minFDE_G_H_abs']);endpoint_g+=check['endpoint_only_G_JFDE'];endpoint_h+=check['endpoint_only_H_JFDE']
                     modes={'G':g,'H':h}
                     for rep in range(5):
                         sh=shuffle_paths(h,v,[member['scene_id']],seed,rep)
@@ -65,7 +65,7 @@ def evaluate(plan,split,c,frozen,device='cuda'):
             for group,modes in acc.items():
                 for name,a in modes.items():
                     if a.scene_count:rows.append(dict(run=out['run'],provider_seed=run['provider_seed'],downstream_seed=3201,inference_seed=seed,group=group,method=name,**{k:v for k,v in a.as_dict().items() if k!='sums'}))
-            invariants.append(dict(run=out['run'],seed=seed,GH_minFDE_max_scene_abs_m=maxfde,shuffle_marginal_max_abs_m=maxshuffle,endpoint_only_JFDE_matches=True,nonnegative_scene_gap=True,exact_full_trajectory_multiset=True))
+            invariants.append(dict(run=out['run'],seed=seed,GH_minFDE_max_scene_abs_m=maxfde,shuffle_marginal_max_abs_m=maxshuffle,endpoint_only_G_JFDE=endpoint_g/len(members),endpoint_only_H_JFDE=endpoint_h/len(members),endpoint_only_JFDE_matches=True,nonnegative_scene_gap=True,exact_full_trajectory_multiset=True))
         for d in [root/'reports',docs]:
             with (d/'PER_RUN_PER_SEED.csv').open('w',newline='') as f:
                 w=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');w.writeheader();w.writerows(rows)

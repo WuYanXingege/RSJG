@@ -57,6 +57,7 @@ def metric_invariants(g,h,goals,hgoals,truth,valid):
     err=torch.linalg.vector_norm(goals.float()-truth[:,None,:,-1,:].float(),dim=-1)
     ferr=torch.linalg.vector_norm(hgoals.float()-truth[:,None,:,-1,:].float(),dim=-1)
     torch.testing.assert_close(err.min(1).values[valid],ferr.min(1).values[valid],atol=1e-6,rtol=1e-6)
+    endpoint_values=[]
     for path,goal,m in [(g,goals,gm),(h,hgoals,hm)]:
         s=hard_metric_statistics(path,truth,valid)
         e=torch.linalg.vector_norm(goal.float()-truth[:,None,:,-1,:].float(),dim=-1)
@@ -64,4 +65,5 @@ def metric_invariants(g,h,goals,hgoals,truth,valid):
         torch.testing.assert_close(joint,s.scene_jfde,atol=1e-6,rtol=1e-6)
         torch.testing.assert_close(e.min(1).values[valid],s.agent_minfde[valid],atol=1e-6,rtol=1e-6)
         assert ((joint-s.scene_marginal_fde)>=-1e-6).all()
-    return dict(minFDE_G_H_abs=abs(gm.minFDE-hm.minFDE),endpoint_only_JFDE_matches=True,scene_gap_nonnegative=True)
+        endpoint_values.append(float(joint.double().mean()))
+    return dict(endpoint_only_G_JFDE=endpoint_values[0],endpoint_only_H_JFDE=endpoint_values[1],minFDE_G_H_abs=abs(gm.minFDE-hm.minFDE),endpoint_only_JFDE_matches=True,scene_gap_nonnegative=True)
