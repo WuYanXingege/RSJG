@@ -1,0 +1,170 @@
+{
+  "status": "PARTIAL_BY_USER_PRIORITY_CHANGE",
+  "reason": "formal JMM fivefold task has priority",
+  "actual_exit": {
+    "status": "TERMINATED_AFTER_COMPLETE_SEED",
+    "process": {
+      "pid": 1878407,
+      "cmdline": [
+        "../.conda/rsjg/bin/python",
+        "-B",
+        "-u",
+        "scripts/run_bcep_joint.py",
+        "--plan",
+        "../RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/RUN_PLAN.json",
+        "--execute-authorized-two-runs"
+      ],
+      "cwd": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_BCEP_Joint_20261117_100323",
+      "start_ticks": "112752159"
+    },
+    "initial_progress": {
+      "run": "flow3103_joint3201",
+      "seed": 2036,
+      "window": 201,
+      "total": 998,
+      "completed_banks": 6,
+      "phase": "NO_FUTURE_TRAJECTORY_EXPORT"
+    },
+    "target": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3103_joint3201_2036.npz",
+    "started_unix": 1794903842.1963031,
+    "hot_source_changes": false,
+    "signals": [
+      "SIGSTOP after final seed filename exists",
+      "SIGTERM exact verified coordinator",
+      "SIGCONT to deliver pending termination"
+    ],
+    "boundary_observed_unix": 1794904563.8759046,
+    "completed_target": {
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3103_joint3201_2036.npz",
+      "bytes": 20383081,
+      "sha256": "04d16a41a54784746232dc156b3b7a89c696d757205a0a1d0c7f72f83b9ba441"
+    },
+    "ended_unix": 1794904564.1552312,
+    "remaining_seeds_not_requested": true
+  },
+  "results": [
+    {
+      "run": "flow3102_joint3201",
+      "seed": 2035,
+      "status": "COMPLETE_PERSISTED_TRAJECTORIES",
+      "complete_members": 998,
+      "agent_occurrences": 5910,
+      "K": 20,
+      "T": 12,
+      "unit": "m",
+      "checkpoint_sha256": "9a7d3f4e55dc01a667964bbbbb9d49979e674f5dae72d6824f4b0b26829690ba",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3102_joint3201_2035.npz",
+      "bytes": 20376119,
+      "sha256": "fa42b0397081bfef4fa05f9ba235a262f3690728aac9abb3fa3ca7a06aab111f"
+    },
+    {
+      "run": "flow3102_joint3201",
+      "seed": 2036,
+      "status": "COMPLETE_PERSISTED_TRAJECTORIES",
+      "complete_members": 998,
+      "agent_occurrences": 5910,
+      "K": 20,
+      "T": 12,
+      "unit": "m",
+      "checkpoint_sha256": "9a7d3f4e55dc01a667964bbbbb9d49979e674f5dae72d6824f4b0b26829690ba",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3102_joint3201_2036.npz",
+      "bytes": 20376774,
+      "sha256": "6cf7eb5535f2f702347baaf1bebe60b829605ac486ba03c3899e753d552961f2"
+    },
+    {
+      "run": "flow3102_joint3201",
+      "seed": 2037,
+      "status": "COMPLETE_PERSISTED_TRAJECTORIES",
+      "complete_members": 998,
+      "agent_occurrences": 5910,
+      "K": 20,
+      "T": 12,
+      "unit": "m",
+      "checkpoint_sha256": "9a7d3f4e55dc01a667964bbbbb9d49979e674f5dae72d6824f4b0b26829690ba",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3102_joint3201_2037.npz",
+      "bytes": 20376009,
+      "sha256": "3df78a2e139eadae37e800b74fca6a3709ef2887b1cf77810445190972f221d6"
+    },
+    {
+      "run": "flow3102_joint3201",
+      "seed": 2038,
+      "status": "COMPLETE_PERSISTED_TRAJECTORIES",
+      "complete_members": 998,
+      "agent_occurrences": 5910,
+      "K": 20,
+      "T": 12,
+      "unit": "m",
+      "checkpoint_sha256": "9a7d3f4e55dc01a667964bbbbb9d49979e674f5dae72d6824f4b0b26829690ba",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3102_joint3201_2038.npz",
+      "bytes": 20375839,
+      "sha256": "847767389dcd6a240cca8a8a3428eff7bba8ea1f63e3b75761bd573b136708b0"
+    },
+    {
+      "run": "flow3102_joint3201",
+      "seed": 2039,
+      "status": "COMPLETE_PERSISTED_TRAJECTORIES",
+      "complete_members": 998,
+      "agent_occurrences": 5910,
+      "K": 20,
+      "T": 12,
+      "unit": "m",
+      "checkpoint_sha256": "9a7d3f4e55dc01a667964bbbbb9d49979e674f5dae72d6824f4b0b26829690ba",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3102_joint3201_2039.npz",
+      "bytes": 20375704,
+      "sha256": "5a6794101cd57f90fb6d6d8e113184b3f922b84efb6c996903db5073ef3aa49e"
+    },
+    {
+      "run": "flow3103_joint3201",
+      "seed": 2035,
+      "status": "COMPLETE_PERSISTED_TRAJECTORIES",
+      "complete_members": 998,
+      "agent_occurrences": 5910,
+      "K": 20,
+      "T": 12,
+      "unit": "m",
+      "checkpoint_sha256": "4e013f74b0977f361036dd7d090763269265603e867549055c0270911629e221",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3103_joint3201_2035.npz",
+      "bytes": 20382603,
+      "sha256": "7bceaa0693b8599854aeb33677a7d1ff1d0fb5e941e875794b10b455e6d86725"
+    },
+    {
+      "run": "flow3103_joint3201",
+      "seed": 2036,
+      "status": "COMPLETE_PERSISTED_TRAJECTORIES",
+      "complete_members": 998,
+      "agent_occurrences": 5910,
+      "K": 20,
+      "T": 12,
+      "unit": "m",
+      "checkpoint_sha256": "4e013f74b0977f361036dd7d090763269265603e867549055c0270911629e221",
+      "path": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_sixlayer_joint_20261117_100323/evaluation/flow3103_joint3201_2036.npz",
+      "bytes": 20383081,
+      "sha256": "04d16a41a54784746232dc156b3b7a89c696d757205a0a1d0c7f72f83b9ba441"
+    },
+    {
+      "run": "flow3103_joint3201",
+      "seed": 2037,
+      "status": "NOT_PERSISTED_CANCELLED",
+      "complete_members": 0
+    },
+    {
+      "run": "flow3103_joint3201",
+      "seed": 2038,
+      "status": "NOT_PERSISTED_CANCELLED",
+      "complete_members": 0
+    },
+    {
+      "run": "flow3103_joint3201",
+      "seed": 2039,
+      "status": "NOT_PERSISTED_CANCELLED",
+      "complete_members": 0
+    }
+  ],
+  "complete_bank_count": 7,
+  "cpu_scoring": "DEFERRED to avoid competing with formal GPU acceptance CPU/IO",
+  "no_balanced_two_run_five_seed_claim": true,
+  "original_training_status_not_rewritten": true,
+  "unpersisted_in_memory_work_not_claimed": true,
+  "optimizer_updates_added": 0,
+  "created_unix": 1794904639.674936
+}
