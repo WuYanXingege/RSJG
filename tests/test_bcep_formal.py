@@ -40,6 +40,8 @@ def test_provider_complete_state_resume(tmp_path):
  cfg=dict(device='cpu',max_epochs=100,min_completed_epochs=20,max_updates=300,seed=3102,lr=1e-4,lr_gamma=1.,lambda_aux=.25,patience=15,session_seconds=None,batched_horizons=True)
  ident={'split':canonical_hash(split)}
  a=run_provider(items,split,cfg,ident,tmp_path/'a',stop_after_updates=4)
+ import json
+ first=json.loads((tmp_path/'a'/'FIRST_UPDATE.json').read_text());assert first['update']==1 and first['formal_training'] and first['gradient_and_parameter_checks']=='PASS'
  run_provider(items,split,cfg,ident,tmp_path/'b',stop_after_updates=2)
  b=run_provider(items,split,cfg,ident,tmp_path/'b',resume=True,stop_after_updates=2)
  for k in ['model','optimizer','scheduler','rng','epoch','completed_epoch','update','train_cursor','dev_cursor','order','best','stale']:equal(a[k],b[k])

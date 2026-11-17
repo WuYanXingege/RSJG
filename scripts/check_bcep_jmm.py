@@ -39,6 +39,9 @@ def main(args):
  except Exception as e:
   result.update(status='BLOCKED_RESOURCE',reason=str(e),gpu_seconds=0);write(receipt,result);return
  configure();write(receipt,result)
+ def progress(stage,**extra):
+  write(root/'receipts/GPU_PREFLIGHT_PROGRESS.json',dict(stage=stage,elapsed_seconds=time.monotonic()-started,**extra));print('GPU_GATE',stage,extra,flush=True)
+ progress('CORRECTNESS')
  try:
   fold=p['fold_order'][0];row=p['folds'][fold];split=read(row['split']['path']);c=read(row['joint_config']);data=FormalData(split)
   ids=sorted(split['train_indices'],key=lambda i:len(split['members'][i]['agent_ids']));sample_ids=[ids[0],ids[len(ids)//2],ids[-1]]
@@ -68,9 +71,11 @@ def main(args):
   del m,a,bb,ga,gb,obs,maps,future,valid;torch.cuda.empty_cache()
   # Representative wall timing, 1 cold+1 warmup then two paired passes per stage.
   timings=[]
+  progress('TIMING')
   for stage in ['provider','joint']:
    for rep in range(2):
     for mode in ['baseline','candidate']:
+     progress('TIMING',model_stage=stage,repeat=rep,mode=mode)
      seed_all(3102 if stage=='provider' else 3201);gen=torch.Generator().manual_seed(3201)
      m=(BCEP() if stage=='provider' else build(c)).cuda();opt=(torch.optim.Adam(m.parameters(),lr=1e-4) if stage=='provider' else optimizer_for(m,c))
      if stage=='provider':m.scales.copy_(torch.tensor(split['scales'],device='cuda'));m.scales_fitted.fill_(True)
@@ -105,12 +110,14 @@ def main(args):
   # are timing results, not selected model quality, and never enter a selector.
   validation=[]
   for mode in ['provider','GH','H']:
+   progress('COMPLETE_VALIDATION_TIMING',mode=mode)
    seed_all(3102 if mode=='provider' else 3201)
    m=(BCEP() if mode=='provider' else build(c)).cuda().eval()
    if mode=='provider':m.scales.copy_(torch.tensor(split['scales'],device='cuda'));m.scales_fitted.fill_(True)
    torch.cuda.synchronize();start=time.monotonic();agents=0
    with torch.no_grad():
-    for i in split['selection_dev_indices']:
+    for val_index,i in enumerate(split['selection_dev_indices']):
+     if val_index%100==0:progress('COMPLETE_VALIDATION_TIMING',mode=mode,completed_windows=val_index,total_windows=len(split['selection_dev_indices']))
      batch=data.batch([i],'selection_dev').to('cuda');agents+=int(batch.valid.sum())
      if mode=='provider':
       m.loss_components(batch.observed[0],batch.semantic_maps[0],batch.valid[0],batch.future[0])

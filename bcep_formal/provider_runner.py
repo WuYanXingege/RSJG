@@ -113,6 +113,8 @@ def run_provider(dataset,split,cfg,identity,output,resume=False,stop_after_updat
             model.train();index=state['order'][state['train_cursor']]
             c=one(index,True);acc=LikelihoodAccumulator(state['train_accumulator']);acc.update(c)
             state['train_accumulator']=acc.state;state['train_cursor']+=1;state['update']+=1
+            if state['update']==1:
+                atomic_json(dict(epoch=state['epoch'],update=1,scene_index=index,loss_total=float(c['loss_total'].detach()),loss_finite=True,gradient_and_parameter_checks='PASS',optimizer='Adam',lr=optimizer.param_groups[0]['lr'],identity=identity,formal_training=True),output/'FIRST_UPDATE.json')
             if on_update:on_update(index,state['update'])
             if state['update']%100==0:atomic_json(dict(epoch=state['epoch'],update=state['update'],cursor=state['train_cursor'],elapsed_seconds=elapsed()),output/'PROGRESS.json')
             if state['train_cursor']==len(state['order']):state['phase']='validation'
