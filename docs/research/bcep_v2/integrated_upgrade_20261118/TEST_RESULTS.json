@@ -1,0 +1,100 @@
+{
+  "scope": "CPU contract checks",
+  "date": "2026-11-18",
+  "python": "3.10.21",
+  "torch": "2.8.0+cu128",
+  "cuda_visible_devices": "",
+  "tests": {
+    "test_feature_centers_missing_and_outside": "PASS",
+    "test_head_set_equivariance_bounds_gradient_and_padding": "PASS",
+    "test_augmentation_and_refreshed_features": "PASS",
+    "test_micro_weighting_and_physical_units": "PASS",
+    "test_expected_pair_messages_and_ties": "PASS",
+    "test_assignment_and_metric_invariants": "PASS",
+    "test_bank_to_bridge": "PASS",
+    "test_synthetic_resume_eight_steps": "PASS",
+    "test_stage_objectives_on_synthetic_logical_group": "PASS",
+    "test_forward_without_future_or_candidate_indices": "PASS"
+  },
+  "first_attempt_correction": "The agent-permutation assertion originally indexed the world axis. Reran the affected test after fixing the assertion.",
+  "synthetic_updates": {
+    "continuous": 4,
+    "interrupted_and_resumed": 4,
+    "additional_epoch_logging_resume_recheck": 4,
+    "total": 12
+  },
+  "resume_exact": [
+    "model",
+    "optimizer",
+    "scheduler",
+    "order",
+    "cursor",
+    "rng",
+    "stale",
+    "epoch",
+    "completed_epoch",
+    "update"
+  ],
+  "real_interfaces": {
+    "fold": "zara2",
+    "purpose": "train_observed_only",
+    "rows": [
+      {
+        "agents": 1,
+        "K": 20,
+        "crop_pixels": 256,
+        "map_cnn_calls": 1,
+        "zero_head_exact": true,
+        "hard_gather_exact": true
+      },
+      {
+        "agents": 2,
+        "K": 20,
+        "crop_pixels": 256,
+        "map_cnn_calls": 1,
+        "zero_head_exact": true,
+        "hard_gather_exact": true
+      }
+    ],
+    "optimizer_updates": 0,
+    "density_parameters": 626144,
+    "head_parameters": 50050,
+    "joint_parameters": 7596022,
+    "joint_added_parameters": 8217,
+    "joint_added_keys": [
+      "coupling.compatibility.0.bias",
+      "coupling.compatibility.0.weight",
+      "coupling.compatibility.2.bias",
+      "coupling.compatibility.2.weight",
+      "coupling.project.bias",
+      "coupling.project.weight"
+    ],
+    "provider_added_keys": [
+      "head.missing",
+      "head.embedding.0.weight",
+      "head.embedding.0.bias",
+      "head.embedding.2.weight",
+      "head.embedding.2.bias",
+      "head.readout.0.weight",
+      "head.readout.0.bias",
+      "head.readout.2.weight",
+      "head.readout.2.bias"
+    ],
+    "source_checkpoint_sha256": {
+      "provider": "5ff58d5e30eb77b007082ce29bf4960fa3148f1aea6392246842fef5f7a4c7ce",
+      "joint": "866d6c6d5fc1368c628ce8901e66268f2d48426d0b46d9a650450397f920a1fb"
+    },
+    "split_sha256": "b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816"
+  },
+  "config_default_gate": "REFUSED_EXECUTION",
+  "fold_contracts_verified": [
+    "zara2",
+    "zara1",
+    "hotel",
+    "univ",
+    "eth"
+  ],
+  "real_data_optimizer_updates": 0,
+  "real_gpu_seconds": 0,
+  "validation_or_test_metrics_v2": null
+}
