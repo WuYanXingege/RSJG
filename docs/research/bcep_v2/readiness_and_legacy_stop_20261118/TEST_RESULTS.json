@@ -1,0 +1,388 @@
+{
+  "scope": "TEST_ONLY synthetic engineering acceptance",
+  "date": "2026-11-18",
+  "code_commit": "51cdc5e84c3601b75482efeebea374f7ffa260f9",
+  "base_commit": "a84d7367474d1fc621be029aa1dc8e69fa0e3ba8",
+  "runtime_config_file_sha256": "0d4034a54443a40f4b046a8e88a423c64f2b7d3ad4e7f14f2b7de0d0be535985",
+  "training_enabled": false,
+  "real_optimizer_updates": 0,
+  "limits": {
+    "cpu_seconds": 1200,
+    "gpu_seconds": 1200,
+    "synthetic_optimizer_steps": 64,
+    "gpu_optimizer_steps": 32,
+    "separate_gpu_smoke_forward_backward_attempts": 16
+  },
+  "cpu": {
+    "status": "PASS",
+    "seconds": 41.59,
+    "optimizer_steps": 16,
+    "cases": {
+      "test_feature_centers_missing_and_outside": "PASS",
+      "test_head_set_equivariance_bounds_gradient_and_padding": "PASS",
+      "test_augmentation_and_refreshed_features": "PASS",
+      "test_micro_weighting_and_physical_units": "PASS",
+      "test_expected_pair_messages_and_ties": "PASS",
+      "test_assignment_and_metric_invariants": "PASS",
+      "test_bank_to_bridge": "PASS",
+      "test_synthetic_resume_eight_steps": "PASS",
+      "test_stage_objectives_on_synthetic_logical_group": "PASS",
+      "test_forward_without_future_or_candidate_indices": "PASS",
+      "test_export_cli_signal_and_strict_resume": "PASS",
+      "test_pause_at_last_window_and_between_banks": "PASS",
+      "test_five_seed_validation_reuses_only_current_frozen_encoding": "PASS",
+      "test_live_nonzero_feedback_permutations_and_both_soft_gradients": "PASS",
+      "test_v2_bilinear_values_and_both_gradients": "PASS",
+      "test_divisible_map_pool_windows_and_gradient": "PASS"
+    },
+    "permutation_unique_gap": {
+      "initial_min_assignment_gap": 0.0000015795230865478516,
+      "refined_min_assignment_gap": 0.00000813603401184082
+    },
+    "attempts": [
+      {
+        "command": "instrumented CPU pytest; counter import failed before collection",
+        "status": "HARNESS_ERROR",
+        "seconds": 1.66,
+        "optimizer_steps": 0
+      },
+      {
+        "command": "existing and new suite, 15 cases",
+        "status": "PASS",
+        "seconds": 12.75,
+        "optimizer_steps": 8
+      },
+      {
+        "command": "after pooling fix, 15 non-optimizer cases",
+        "status": "PASS",
+        "seconds": 12.88,
+        "optimizer_steps": 0
+      },
+      {
+        "command": "final CPU suite, 16 cases with XML receipt",
+        "status": "PASS",
+        "seconds": 12.67,
+        "optimizer_steps": 8
+      },
+      {
+        "command": "read-only workflow inspect, ZARA1",
+        "status": "PASS",
+        "seconds": 1.63,
+        "optimizer_steps": 0
+      }
+    ]
+  },
+  "gpu": {
+    "status": "PASS",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "driver": "570.133.07",
+    "device": "NVIDIA GeForce RTX 5070 Ti",
+    "device_total_MiB": 16303,
+    "python": "3.10.21",
+    "strict_determinism": true,
+    "precision": "FP32",
+    "tf32": false,
+    "cublas_workspace": ":4096:8",
+    "sdp": "math",
+    "cudnn_autotune": false,
+    "optimizer_steps_started": 24,
+    "optimizer_steps_completed": 24,
+    "smoke_attempts": 13,
+    "smoke_completed": 10,
+    "budget_ledger_seconds": 28.924685523146763,
+    "process_wall_seconds": 33.099999999999994,
+    "max_valid_agents_from_frozen_members": {
+      "zara2": 57,
+      "zara1": 57,
+      "hotel": 57,
+      "univ": 57,
+      "eth": 57
+    },
+    "attempts": [
+      {
+        "checks": [
+          "density",
+          "head",
+          "joint",
+          "shapes"
+        ],
+        "status": "FAIL",
+        "passed": [
+          "density",
+          "head",
+          "density_B1_N57",
+          "head_B1_N57"
+        ],
+        "failed": [
+          "joint",
+          "joint_B1_N1",
+          "joint_B4_N8",
+          "joint_B1_N57"
+        ],
+        "failure_reason": "CUDA adaptive_avg_pool2d_backward unavailable in strict deterministic mode",
+        "process_seconds": 9.61
+      },
+      {
+        "checks": [
+          "joint",
+          "shapes"
+        ],
+        "status": "PASS",
+        "passed": [
+          "joint",
+          "joint_B1_N1",
+          "joint_B4_N8",
+          "joint_B1_N57"
+        ],
+        "failed": [],
+        "failure_reason": null,
+        "process_seconds": 23.49
+      }
+    ],
+    "final_checks": {
+      "density": {
+        "status": "PASS",
+        "seconds": 3.039822170045227,
+        "peak_allocated_bytes": 119908864,
+        "peak_reserved_bytes": 136314880,
+        "final": {
+          "epoch": 2,
+          "update": 4,
+          "cursor": 4,
+          "completed_epoch": 1
+        },
+        "logical_scenes": 4,
+        "tail_scenes": 2,
+        "partial_cursor": 8,
+        "validation_windows_total": 2,
+        "head_calls": 0,
+        "ddim_denoiser_calls": 0,
+        "exact": true,
+        "state_fields": "all; both selected state files and logical TOP5 verified"
+      },
+      "head": {
+        "status": "PASS",
+        "seconds": 0.8173306570388377,
+        "peak_allocated_bytes": 95899648,
+        "peak_reserved_bytes": 119537664,
+        "final": {
+          "epoch": 2,
+          "update": 4,
+          "cursor": 4,
+          "completed_epoch": 1
+        },
+        "logical_scenes": 4,
+        "tail_scenes": 2,
+        "partial_cursor": 8,
+        "validation_windows_total": 2,
+        "head_calls": 10,
+        "ddim_denoiser_calls": 0,
+        "exact": true,
+        "state_fields": "all; both selected state files and logical TOP5 verified"
+      },
+      "joint": {
+        "status": "PASS",
+        "seconds": 16.17909109010361,
+        "peak_allocated_bytes": 1500161024,
+        "peak_reserved_bytes": 3068133376,
+        "final": {
+          "epoch": 2,
+          "update": 4,
+          "cursor": 16,
+          "completed_epoch": 1
+        },
+        "logical_scenes": 16,
+        "tail_scenes": 8,
+        "partial_cursor": 32,
+        "validation_windows_total": 2,
+        "head_calls": 0,
+        "ddim_denoiser_calls": 40,
+        "exact": true,
+        "state_fields": "all; both selected state files and logical TOP5 verified"
+      },
+      "density_B1_N57": {
+        "status": "PASS",
+        "seconds": 0.21595115889795125,
+        "peak_allocated_bytes": 682315776,
+        "peak_reserved_bytes": 895483904,
+        "B": 1,
+        "N": 57,
+        "measurements": [
+          {
+            "warmup": true,
+            "seconds": 0.08009708602912724,
+            "peak_allocated_bytes": 679807488,
+            "peak_reserved_bytes": 893386752,
+            "loss": 2.3136112689971924,
+            "edges": null
+          },
+          {
+            "warmup": false,
+            "seconds": 0.07200800185091794,
+            "peak_allocated_bytes": 682315776,
+            "peak_reserved_bytes": 895483904,
+            "loss": 2.3136112689971924,
+            "edges": null
+          }
+        ]
+      },
+      "head_B1_N57": {
+        "status": "PASS",
+        "seconds": 0.6766634390223771,
+        "peak_allocated_bytes": 489738752,
+        "peak_reserved_bytes": 675282944,
+        "B": 1,
+        "N": 57,
+        "measurements": [
+          {
+            "warmup": true,
+            "seconds": 0.3057928190100938,
+            "peak_allocated_bytes": 489537536,
+            "peak_reserved_bytes": 675282944,
+            "loss": 0.8930256962776184,
+            "edges": null
+          },
+          {
+            "warmup": false,
+            "seconds": 0.3201573039405048,
+            "peak_allocated_bytes": 489738752,
+            "peak_reserved_bytes": 675282944,
+            "loss": 0.8933034539222717,
+            "edges": null
+          }
+        ]
+      },
+      "joint_B1_N1": {
+        "status": "PASS",
+        "seconds": 0.4582277631852776,
+        "peak_allocated_bytes": 298936320,
+        "peak_reserved_bytes": 350224384,
+        "B": 1,
+        "N": 1,
+        "measurements": [
+          {
+            "warmup": true,
+            "seconds": 0.18365876586176455,
+            "peak_allocated_bytes": 267487232,
+            "peak_reserved_bytes": 320864256,
+            "loss": 0.3845863342285156,
+            "edges": 0
+          },
+          {
+            "warmup": false,
+            "seconds": 0.16417506407015026,
+            "peak_allocated_bytes": 298936320,
+            "peak_reserved_bytes": 350224384,
+            "loss": 0.3390881419181824,
+            "edges": 0
+          }
+        ]
+      },
+      "joint_B4_N8": {
+        "status": "PASS",
+        "seconds": 1.5971843679435551,
+        "peak_allocated_bytes": 1819722752,
+        "peak_reserved_bytes": 3332374528,
+        "B": 4,
+        "N": 8,
+        "measurements": [
+          {
+            "warmup": true,
+            "seconds": 0.723649641033262,
+            "peak_allocated_bytes": 1789141504,
+            "peak_reserved_bytes": 3303014400,
+            "loss": 0.706073522567749,
+            "edges": 224
+          },
+          {
+            "warmup": false,
+            "seconds": 0.734416546067223,
+            "peak_allocated_bytes": 1819722752,
+            "peak_reserved_bytes": 3332374528,
+            "loss": 0.6934508085250854,
+            "edges": 224
+          }
+        ]
+      },
+      "joint_B1_N57": {
+        "status": "PASS",
+        "seconds": 2.605104794027284,
+        "peak_allocated_bytes": 2497896448,
+        "peak_reserved_bytes": 4680843264,
+        "B": 1,
+        "N": 57,
+        "measurements": [
+          {
+            "warmup": true,
+            "seconds": 1.2034705020487309,
+            "peak_allocated_bytes": 2467461632,
+            "peak_reserved_bytes": 4647288832,
+            "loss": 1.0967471599578857,
+            "edges": 456
+          },
+          {
+            "warmup": false,
+            "seconds": 1.2461759008001536,
+            "peak_allocated_bytes": 2497896448,
+            "peak_reserved_bytes": 4680843264,
+            "loss": 0.6863616704940796,
+            "edges": 456
+          }
+        ]
+      }
+    },
+    "DDIM_steps_in_joint_validation": 20,
+    "math_comparison": "torch.equal for all saved tensors including optimizer, buffers and RNG. Array equality for NumPy RNG. Compared full last and selected epoch states plus logical TOP5. Each physical serialization checksum independently verified."
+  },
+  "bank": {
+    "exit_code": 75,
+    "complete_marker_in_partial": false,
+    "subsequent_bank_started": false,
+    "subsequent_shell_stage_started": false,
+    "candidate_bytes_and_order_on_resume": "identical",
+    "tampered_row": "rejected",
+    "uncommitted_mismatch": "rejected"
+  },
+  "head_validation": {
+    "windows": 2,
+    "agents": 3,
+    "seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "encoder_calls_reference": 10,
+    "encoder_calls_new": 2,
+    "head_calls": 10,
+    "bank_reads": 10,
+    "per_seed_numerators_counts_equal": true
+  },
+  "old_pipeline": {
+    "final_state": {
+      "status": "PAUSED_RESUMABLE",
+      "stage": "JOINT",
+      "fold": "zara1",
+      "reason": "joint saved complete resumable state"
+    },
+    "last_completed_epoch": 16,
+    "last_complete_update": 2896,
+    "epoch": 17,
+    "last_log_update": 2926,
+    "persisted_update": 2926,
+    "unpersisted_updates": 0,
+    "sha256": "7864ab7be319f7873b84fbf7f3de8e569e28e4b95bd3d89bf8e2af4771f68d1d",
+    "canceled_folds": [
+      "hotel",
+      "univ",
+      "eth"
+    ],
+    "reason": "priority_changed_by_user"
+  },
+  "final_workload_matches": 0,
+  "final_gpu_compute_processes": false,
+  "next_training_queued": false,
+  "synthetic_optimizer_steps_total": 40
+}
