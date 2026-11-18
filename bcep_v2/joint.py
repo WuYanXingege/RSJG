@@ -12,6 +12,7 @@ from ebjd.unified import (
     permutation_matrix,
 )
 from bcep_joint.model import build as build_legacy
+from .runtime import bilinear_zeros, pool_map
 
 
 def neighbors(observed, valid):
@@ -25,7 +26,10 @@ def neighbors(observed, valid):
         & ~torch.eye(valid.shape[1], device=valid.device, dtype=torch.bool)
     )
     distance = distance.masked_fill(~legal, torch.inf)
-    boundary = distance.kthvalue(min(8, valid.shape[1]), dim=-1, keepdim=True).values
+    # Only the distance at the boundary matters, including every tied agent.
+    # CUDA kthvalue also returns an index and is unavailable in strict deterministic mode.
+    k = min(8, valid.shape[1])
+    boundary = distance.sort(dim=-1).values[..., k - 1 : k]
     return (legal & (distance <= boundary)).nonzero().unbind(1)
 
 
@@ -103,6 +107,8 @@ class FeedbackCoupling(LearnableJointCouplingHead):
 
 def build_joint(config, legacy_state=None):
     model = build_legacy(config)
+    model.bridge.denoiser.map_sampler = bilinear_zeros
+    model.bridge.encoder.map_pool = pool_map
     if legacy_state is not None:
         model.load_state_dict(legacy_state, strict=True)
     original = model.coupling
@@ -132,7 +138,7 @@ def pair_loss(coupled, truth, valid):
     )
 
 
-def clean_path_loss(path, future, valid, signal_squared):
+def clean_path_terms(path, future, valid, signal_squared):
     if signal_squared.numel() != len(valid) or not valid.any(1).all():
         raise ValueError("one signal weight required per nonempty scene")
     delta = torch.where(
@@ -141,4 +147,9 @@ def clean_path_loss(path, future, valid, signal_squared):
     error = delta.norm(dim=-1)
     penalty = F.smooth_l1_loss(error, torch.zeros_like(error), reduction="none", beta=0.5)
     per_scene = penalty.sum((1, 2)) / (valid.sum(1) * error.shape[-1])
-    return (signal_squared.float().reshape_as(per_scene) * per_scene).mean()
+    weighted = signal_squared.float().reshape_as(per_scene) * per_scene
+    return weighted.mean(), per_scene.detach().sum(), weighted.detach().sum()
+
+
+def clean_path_loss(path, future, valid, signal_squared):
+    return clean_path_terms(path, future, valid, signal_squared)[0]

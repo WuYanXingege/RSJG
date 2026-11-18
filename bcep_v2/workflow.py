@@ -11,7 +11,7 @@ from bcep_joint.common import local_seed, read, write, seed_all
 from bcep_formal.data import FormalData
 from bcep_formal.control import install
 from .provider import GEOMETRY, Provider
-from .bank import Bank, bank_identity, export
+from .bank import Bank, ExportPaused, bank_identity, check_export_pause, export
 from .joint import build_joint
 from .stages import density_callbacks, head_callbacks, joint_callbacks
 from .state import run_stage
@@ -152,6 +152,10 @@ def recipe(cfg, stage):
 
 def execute(args, cfg, split, root, geometry, ident):
     stage, device = args.stage, torch.device(args.device)
+    if device.type == "cuda":
+        from .runtime import configure_cuda
+
+        configure_cuda()
     for path, value in [(root / "GEOMETRY.json", geometry), (root / "CONFIG.json", cfg)]:
         if path.exists():
             require(read(path) == value, "existing v2 output has a different contract")
@@ -188,11 +192,12 @@ def execute(args, cfg, split, root, geometry, ident):
     head = None
 
     def cache(purpose, seed, *, view=None, create=False, refined=False):
+        parent = root / ("refined_banks" if refined else "base_cache")
+        folder = parent / f"{purpose}_{seed}"
+        check_export_pause(folder)
         identity = bank_identity(
             split, purpose, seed, geometry, ident["sources"], base, head if refined else None, view=view
         )
-        parent = root / ("refined_banks" if refined else "base_cache")
-        folder = parent / f"{purpose}_{seed}"
         if create:
 
             def predict(i):
@@ -210,7 +215,10 @@ def execute(args, cfg, split, root, geometry, ident):
                 )
 
             export(folder, identity, split, predict)
-        return Bank(folder, identity, split)
+        check_export_pause(folder)
+        bank = Bank(folder, identity, split, interruptible=True)
+        check_export_pause(folder)
+        return bank
 
     base_train = [
         cache(
@@ -254,6 +262,22 @@ def execute(args, cfg, split, root, geometry, ident):
     return evaluate(split, model, frozen, test, root / "evaluation", device)
 
 
+PAUSED_RESUMABLE_EXIT_CODE = 75
+
+
+def run_command(operation, root, stage):
+    """Translate a resumable export interruption to the process exit status."""
+    try:
+        result = operation()
+    except ExportPaused as exc:
+        result = dict(status="PAUSED_RESUMABLE", stage=stage, bank=exc.folder.name, next_index=exc.next_index)
+        write(root / "EXPORT_PAUSED.json", result)
+        print(json.dumps(result), flush=True)
+        return PAUSED_RESUMABLE_EXIT_CODE
+    print(json.dumps(result), flush=True)
+    return 0 if result.get("status") != "SESSION_BUDGET_PAUSED" else PAUSED_RESUMABLE_EXIT_CODE
+
+
 def main(argv=None):
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument(
@@ -286,8 +310,12 @@ def main(argv=None):
     with (root / ".lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
         install()
-        print(json.dumps(execute(args, cfg, split, root, geometry, identity)))
+        return run_command(lambda: execute(args, cfg, split, root, geometry, identity), root, args.stage)
+
+
+def cli():
+    raise SystemExit(main())
 
 
 if __name__ == "__main__":
-    main()
+    cli()

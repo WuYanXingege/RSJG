@@ -4,11 +4,22 @@ import numpy as np
 import torch
 from bcep.contracts import canonical_hash, digest
 from bcep_joint.common import write, read
+from bcep_formal.control import pause_requested
 
 
-def bank_identity(
-    split, purpose, seed, geometry, sources, base, head=None, *, view=None, test_only=False
-):
+class ExportPaused(Exception):
+    def __init__(self, folder, next_index=None):
+        self.folder = folder
+        self.next_index = next_index
+        super().__init__("candidate export paused at a window boundary")
+
+
+def check_export_pause(folder, next_index=None):
+    if pause_requested():
+        raise ExportPaused(folder, next_index)
+
+
+def bank_identity(split, purpose, seed, geometry, sources, base, head=None, *, view=None, test_only=False):
     if (
         head is not None
         and not test_only
@@ -35,6 +46,7 @@ def bank_identity(
         fold=split["fold"],
         split=canonical_hash(split),
         member_hash=canonical_hash(members),
+        row_format="member-identity-sha256-v2",
         geometry=canonical_hash(geometry),
         scales=split["scales"],
         sources=sources,
@@ -62,25 +74,34 @@ def bank_identity(
 
 
 def export(folder, identity, split, predict):
+    check_export_pause(folder)
     folder.mkdir(parents=True, exist_ok=True)
     header = folder / "IDENTITY.json"
     if header.exists() and read(header) != identity:
         raise ValueError("cache identity mismatch")
     if (folder / "COMPLETE.json").exists():
-        Bank(folder, identity, split)
+        Bank(folder, identity, split, interruptible=True)
+        check_export_pause(folder)
         return
     if not header.exists() and any(folder.iterdir()):
         raise ValueError("refusing to adopt unidentified cache files")
-    write(header, identity)
+    if not header.exists():
+        write(header, identity)
     ids = split[identity["purpose"] + "_indices"]
+    identity_hash = canonical_hash(identity)
+    if identity["split"] != canonical_hash(split) or identity["member_hash"] != canonical_hash(
+        [split["members"][idx] for idx in ids]
+    ):
+        raise ValueError("split or ordered members differ from export identity")
     rows = []
     for idx in ids:
+        check_export_pause(folder, idx)
         member = split["members"][idx]
         path = folder / f"{idx}.npy"
         receipt = path.with_suffix(".json")
         if receipt.exists():
             row = read(receipt)
-            if row["member"] != member or row["sha256"] != digest(path):
+            if row != dict(index=idx, member=member, identity_hash=identity_hash, sha256=digest(path)):
                 raise ValueError("incomplete or changed cache row")
         else:
             with torch.no_grad():
@@ -91,29 +112,48 @@ def export(folder, identity, split, predict):
                 or not np.isfinite(goals).all()
             ):
                 raise ValueError("invalid candidate output")
-            temporary = path.with_suffix(".tmp.npy")
-            np.save(temporary, goals, allow_pickle=False)
-            temporary.replace(path)
-            row = dict(index=idx, member=member, sha256=digest(path))
+            if path.exists():
+                # A crash between the two renames can leave data without a receipt.
+                # Recompute with the original identity before committing that row.
+                orphan = np.load(path, allow_pickle=False)
+                if orphan.dtype != goals.dtype or not np.array_equal(orphan, goals):
+                    raise ValueError("uncommitted candidate disagrees with replay")
+            else:
+                temporary = path.with_suffix(".tmp.npy")
+                np.save(temporary, goals, allow_pickle=False)
+                temporary.replace(path)
+            row = dict(index=idx, member=member, identity_hash=identity_hash, sha256=digest(path))
             write(receipt, row)
         rows.append(row)
-    write(folder / "COMPLETE.json", dict(identity_hash=canonical_hash(identity), rows=rows))
+    check_export_pause(folder)
+    write(folder / "COMPLETE.json", dict(identity_hash=identity_hash, rows=rows))
 
 
 class Bank:
-    def __init__(self, folder, identity, split):
+    def __init__(self, folder, identity, split, *, interruptible=False):
         self.folder = folder
         header = read(folder / "IDENTITY.json")
         done = read(folder / "COMPLETE.json")
         if header != identity or done["identity_hash"] != canonical_hash(identity):
             raise ValueError("candidate provenance mismatch")
         ids = split[identity["purpose"] + "_indices"]
+        if identity["split"] != canonical_hash(split) or identity["member_hash"] != canonical_hash(
+            [split["members"][i] for i in ids]
+        ):
+            raise ValueError("split or member identity mismatch")
         if [row["index"] for row in done["rows"]] != ids:
             raise ValueError("window order mismatch")
         self.rows = {}
         for row in done["rows"]:
             idx = row["index"]
-            if row["member"] != split["members"][idx] or digest(folder / f"{idx}.npy") != row["sha256"]:
+            if interruptible:
+                check_export_pause(folder, idx)
+            if (
+                row != read(folder / f"{idx}.json")
+                or row["identity_hash"] != done["identity_hash"]
+                or row["member"] != split["members"][idx]
+                or digest(folder / f"{idx}.npy") != row["sha256"]
+            ):
                 raise ValueError("member or candidate digest mismatch")
             self.rows[idx] = row
         self.hash = canonical_hash(done)

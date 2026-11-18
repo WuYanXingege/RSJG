@@ -12,6 +12,19 @@ from bcep_joint.model import set_lr
 from bcep_joint.common import write, save
 
 
+RAW_METRICS = {
+    "nll_final_sum": ("valid_agent_count", "train_nll_final_agent_micro"),
+    "h4_nll_sum": ("valid_agent_count", "train_h4_nll_agent_micro"),
+    "h8_nll_sum": ("valid_agent_count", "train_h8_nll_agent_micro"),
+    "head_fde_sum": ("valid_agent_count", "train_head_minFDE_agent_micro"),
+    "head_move_sum": ("valid_agent_count", "train_head_movement_agent_micro"),
+    "head_loss_sum": ("valid_agent_count", "train_head_loss_agent_micro"),
+    "clean_path_raw_sum": ("valid_scene_count", "train_clean_path_scene_macro"),
+    "clean_path_signal_sum": ("valid_scene_count", "train_clean_path_alpha2_scene_macro"),
+}
+COUNTS = {count for count, _ in RAW_METRICS.values()}
+
+
 def optimizer(model, lr, decay=0.0001):
     groups = [[], []]
     for name, param in model.named_parameters():
@@ -43,7 +56,7 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
     view_rng = torch.Generator().manual_seed(recipe["seed"] + 1)
     device = next(model.parameters()).device
     state = dict(
-        schema="bcep-ebjd-integrated-state-v2",
+        schema="bcep-ebjd-integrated-state-v3",
         identity=identity,
         recipe=recipe,
         trainable=[n for n, p in model.named_parameters() if p.requires_grad],
@@ -54,6 +67,8 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
         order=None,
         history=[],
         epoch_sums={},
+        epoch_raw_sums={},
+        epoch_counts={},
         epoch_steps=0,
         stop_reason=None,
         max_updates=math.ceil(len(train_ids) / recipe["logical_scenes"]) * recipe["max_epochs"],
@@ -64,6 +79,9 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
             if prior[key] != state[key]:
                 raise ValueError("resume mismatch: " + key)
         state = prior
+        for key in ("epoch_sums", "epoch_steps", "epoch_raw_sums", "epoch_counts"):
+            if key not in state:
+                raise ValueError("missing partial epoch statistics: " + key)
         if state["status"] == "COMPLETE" or until_update <= state["update"]:
             return state
         model.load_state_dict(state["model"], strict=True)
@@ -138,7 +156,16 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
         state["last_update_metrics"] = {key: float(value) for key, value in diagnostics.items()}
         state["epoch_steps"] += 1
         for key, value in state["last_update_metrics"].items():
-            state["epoch_sums"][key] = state["epoch_sums"].get(key, 0.0) + value
+            if key in COUNTS:
+                if not value.is_integer() or value <= 0:
+                    raise ValueError("invalid observation count: " + key)
+                totals = state["epoch_counts"]
+                value = int(value)
+            elif key in RAW_METRICS:
+                totals = state["epoch_raw_sums"]
+            else:
+                totals = state["epoch_sums"]
+            totals[key] = totals.get(key, 0) + value
         if state["cursor"] != len(train_ids):
             continue
         model.eval()
@@ -155,6 +182,12 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
                 update=state["update"],
                 validation=value,
                 metrics=getattr(validate, "metrics", {}),
+                train_raw_sums=state["epoch_raw_sums"],
+                train_counts=state["epoch_counts"],
+                **{
+                    RAW_METRICS[k][1]: v / state["epoch_counts"][RAW_METRICS[k][0]]
+                    for k, v in state["epoch_raw_sums"].items()
+                },
                 train_mean_per_update={
                     key: value / state["epoch_steps"] for key, value in state["epoch_sums"].items()
                 },
@@ -170,11 +203,11 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
             order=None,
             stale=stale,
             epoch_sums={},
+            epoch_raw_sums={},
+            epoch_counts={},
             epoch_steps=0,
         )
-        done = epoch >= recipe["max_epochs"] or (
-            epoch >= recipe["minimum"] and stale >= recipe["patience"]
-        )
+        done = epoch >= recipe["max_epochs"] or (epoch >= recipe["minimum"] and stale >= recipe["patience"])
         state["stop_reason"] = (
             ("max_epochs" if epoch >= recipe["max_epochs"] else "early_stop") if done else None
         )

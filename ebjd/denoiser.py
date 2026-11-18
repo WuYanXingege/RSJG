@@ -129,6 +129,8 @@ class GeometryConditionedJointDenoiser(nn.Module):
     and the alpha-squared gate.  It deliberately remains inside this class so
     the certified FULL checkpoint key space is unchanged.
     """
+    map_sampler = staticmethod(F.grid_sample)
+
     def __init__(
         self,
         representation: nn.Module,
@@ -249,7 +251,7 @@ class GeometryConditionedJointDenoiser(nn.Module):
             relative = trajectory.float() - context.map_center.float()[:, None, :, None, :]
             grid = relative / (context.crop_width_m / 2)
             grid_bn = grid.permute(0, 2, 1, 3, 4).reshape(batch * agents, worlds * times, 1, 2)
-            sampled = F.grid_sample(
+            sampled = self.map_sampler(
                 context.map_features.float().reshape(
                     batch * agents, 32, *context.map_features.shape[-2:]),
                 grid_bn, mode="bilinear", padding_mode="zeros", align_corners=True)

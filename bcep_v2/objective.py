@@ -1,7 +1,7 @@
 import torch
 from ebjd.objectives import diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss
 from ebjd.representation import cosine_vp
-from .joint import clean_path_loss, pair_loss
+from .joint import clean_path_terms, pair_loss
 
 
 def bridge_and_pair_loss(
@@ -50,7 +50,16 @@ def bridge_and_pair_loss(
     loss_geo = gated_geometry_mean(per_scene_geo, alpha)
     loss_map = map_loss(batch.future, context, 0.5)
     agent_part = loss_diff + options["map"] * loss_map
-    auxiliary = clean_path_loss(final_path, batch.future, batch.valid, alpha.square())
+    auxiliary, raw_sum, signal_sum = clean_path_terms(final_path, batch.future, batch.valid, alpha.square())
+    model.last_loss_components = dict(
+        clean_path_raw_sum=raw_sum,
+        clean_path_signal_sum=signal_sum,
+        clean_path_term=0.05 * auxiliary.detach(),
+        diffusion_term=loss_diff.detach(),
+        geometry_term=options["geometry"] * loss_geo.detach(),
+        map_term=options["map"] * loss_map.detach(),
+        pair_term=pair_weight * pair.detach(),
+    )
     scene_part = 0.05 * auxiliary + options["geometry"] * loss_geo + pair_weight * pair
     bridge = 0.05 * auxiliary + agent_part + options["geometry"] * loss_geo
     return bridge + pair_weight * pair, bridge, pair, agent_part, scene_part

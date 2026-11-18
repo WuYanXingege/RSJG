@@ -75,6 +75,8 @@ class MotionSceneContextEncoder(nn.Module):
     checkpoint layout.  The paper-facing class name therefore changes without
     changing any state-dict key.
     """
+    map_pool = staticmethod(F.adaptive_avg_pool2d)
+
     def __init__(
         self,
         goal_scale: float = 1.0,
@@ -183,7 +185,7 @@ class MotionSceneContextEncoder(nn.Module):
             features.append(f32_part)
             logits_parts.append(logits_part)
         f32, logits = torch.cat(features), torch.cat(logits_parts)
-        pooled = F.adaptive_avg_pool2d(f32, (8, 8))
+        pooled = self.map_pool(f32, (8, 8))
         pooled = pooled.flatten(2).transpose(1, 2).reshape(batch, agents, 64, 32)
         axis = torch.linspace(-1, 1, 8, device=observed.device)
         yy, xx = torch.meshgrid(axis, axis, indexing="ij")

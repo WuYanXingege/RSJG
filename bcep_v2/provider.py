@@ -114,12 +114,16 @@ class CandidateHead(nn.Module):
         return (safe + world_shift.to(safe)).transpose(0, 1), world_shift
 
 
-def head_sums(goals, shift, truth, valid):
+def head_loss_components(goals, shift, truth, valid):
     if truth.shape != (len(valid), 2) or goals.shape != (20, len(valid), 2):
         raise ValueError("endpoint layout mismatch")
     distance = (goals[:, valid].float() - truth[valid].detach()[None]).norm(dim=-1).amin(0)
     movement = shift[valid].square().sum(-1).mean(1)
-    return (distance + 0.1 * movement).sum(), distance.sum()
+    return (distance + 0.1 * movement).sum(), distance.sum(), movement.detach().sum()
+
+
+def head_sums(goals, shift, truth, valid):
+    return head_loss_components(goals, shift, truth, valid)[:2]
 
 
 class Provider(nn.Module):

@@ -255,7 +255,13 @@ def test_synthetic_resume_eight_steps(tmp_path):
             y = torch.rand(len(ids), 1) + view / 2
             loss = (model(x) - y).square().mean()
             loss.backward()
-            return dict(loss=loss.detach())
+            return dict(
+                loss=loss.detach(),
+                valid_agent_count=len(ids),
+                nll_final_sum=sum(ids),
+                h4_nll_sum=sum(ids) * 2,
+                h8_nll_sum=sum(ids) * 3,
+            )
 
         return run_stage(
             tmp_path / folder,
@@ -272,6 +278,7 @@ def test_synthetic_resume_eight_steps(tmp_path):
     a = run("continuous", 4)
     paused = run("resumed", 2)
     assert paused["update"] == 2 and paused["cursor"] == 4
+    assert paused["epoch_counts"] == {"valid_agent_count": 4}
     assert run("resumed", 2, True)["update"] == 2
     b = run("resumed", 4, True)
     assert len(traces["continuous"]) + len(traces["resumed"]) == 8
@@ -287,11 +294,23 @@ def test_synthetic_resume_eight_steps(tmp_path):
         "stale",
         "completed_epoch",
         "update",
+        "epoch_sums",
+        "epoch_raw_sums",
+        "epoch_counts",
+        "epoch_steps",
     ):
         equal(a[key], b[key])
-    assert read(tmp_path / "resumed" / "TOP5.json")[0]["sha256"] == digest(
-        tmp_path / "resumed" / "best.pt"
-    )
+    assert b["history"][0]["train_nll_final_agent_micro"] == 3
+    assert b["history"][0]["train_h4_nll_agent_micro"] == 6
+    assert b["history"][0]["train_h8_nll_agent_micro"] == 9
+    assert b["epoch_counts"] == {"valid_agent_count": 2}
+    path = tmp_path / "resumed" / "last.pt"
+    obsolete = torch.load(path, weights_only=False)
+    obsolete["schema"] = "bcep-ebjd-integrated-state-v2"
+    torch.save(obsolete, path)
+    with pytest.raises(ValueError, match="schema"):
+        run("resumed", 4, True)
+    assert read(tmp_path / "resumed" / "TOP5.json")[0]["sha256"] == digest(tmp_path / "resumed" / "best.pt")
 
 
 def test_stage_objectives_on_synthetic_logical_group():
@@ -339,7 +358,12 @@ def test_stage_objectives_on_synthetic_logical_group():
     torch.testing.assert_close(p.base.flow.nets[0][-1].weight.grad, grad_ref, atol=1e-5, rtol=1e-5)
     p.base.zero_grad(set_to_none=True)
     backward, val = head_callbacks(p, data, "cpu", dict(layout=GEOMETRY), [b, b], [b] * 5)
-    assert math.isfinite(backward([0, 1], rng, rng)["loss"])
+    head_metrics = backward([0, 1], rng, rng)
+    assert head_metrics["valid_agent_count"] == 3
+    assert head_metrics["head_loss_sum"] == pytest.approx(
+        head_metrics["head_fde_sum"] + 0.1 * head_metrics["head_move_sum"]
+    )
+    assert head_metrics["loss"] == pytest.approx(head_metrics["head_loss_sum"] / 3)
     assert all(param.grad is None for param in p.base.parameters())
     with torch.no_grad():
         assert math.isfinite(val()) and len(val.metrics) == 5
@@ -349,6 +373,17 @@ def test_stage_objectives_on_synthetic_logical_group():
     metrics = backward([0, 1], rng, rng)
     assert all(math.isfinite(v) for v in metrics.values())
     assert metrics["pair_weight"] == 1 and metrics["effective_edges"] == 2
+    assert metrics["valid_scene_count"] == 2
+    assert metrics["loss"] == pytest.approx(
+        sum(
+            metrics[k]
+            for k in ("diffusion_term", "map_term", "geometry_term", "pair_term", "clean_path_term")
+        ),
+        abs=1e-6,
+    )
+    assert metrics["clean_path_term"] == pytest.approx(
+        0.05 * metrics["clean_path_signal_sum"] / 2 / c["gradient_accumulation"], abs=1e-7
+    )
 
 
 def test_forward_without_future_or_candidate_indices():
