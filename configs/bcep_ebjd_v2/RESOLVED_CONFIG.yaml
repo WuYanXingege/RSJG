@@ -1,0 +1,366 @@
+schema: bcep-ebjd-v2-resolved-v1
+allow_real_training: false
+fold_order:
+- zara2
+- zara1
+- hotel
+- univ
+- eth
+provider:
+  density:
+    flow_layers: 4
+    temporal_layers: 2
+    context_dim: 128
+    dropout: 0.0
+    final_horizon: 12
+    auxiliary_horizons:
+    - 4
+    - 8
+    auxiliary_weight: 0.25
+    logical_batch_scenes: 4
+    objective_weighting: valid_agent_mean_per_logical_batch
+    optimizer: AdamW
+    lr: 0.0001
+    weight_decay: 0.0001
+    no_decay_bias_and_normalization: true
+    grad_clip_norm: 1.0
+    scheduler:
+      type: ReduceLROnPlateau
+      mode: min
+      monitor: dev_nll_final_agent_micro
+      factor: 0.5
+      patience: 3
+      min_lr: 1.0e-06
+    max_epochs: 100
+    min_completed_epochs: 20
+    early_stop_patience: 15
+    selection_metric: dev_nll_final_agent_micro
+  base_candidates:
+    support_count: 256
+    candidate_count: 20
+    selector: existing_verified_kmeans20
+    candidate_coordinate_unit: m
+    preserve_existing_selector_settings: true
+    train_views_per_window: 2
+    observed_only: true
+  candidate_head:
+    enabled: true
+    base_frozen_during_head_training: true
+    input_dim: 259
+    embedding_widths:
+    - 128
+    - 64
+    set_aggregation: mean
+    readout_widths:
+    - 64
+    - 2
+    activation: SiLU
+    final_projection_zero_init: true
+    candidate_index_embedding: false
+    correction_radius_m: 0.5
+    residual_bound: rho_u_div_1_plus_l2_norm_u
+    objective: hard_best_of_20_euclidean_world_m
+    displacement_penalty: squared_world_displacement_div_2rho
+    displacement_weight: 0.1
+    logical_batch_scenes: 4
+    optimizer: AdamW
+    lr: 0.0005
+    weight_decay: 0.0001
+    grad_clip_norm: 1.0
+    scheduler:
+      type: ReduceLROnPlateau
+      mode: min
+      monitor: dev_minfde20_agent_micro
+      factor: 0.5
+      patience: 2
+      min_lr: 1.0e-06
+    max_epochs: 20
+    min_completed_epochs: 5
+    early_stop_patience: 5
+    selection_metric: dev_minfde20_agent_micro
+    validation_seeds:
+    - 2035
+    - 2036
+    - 2037
+    - 2038
+    - 2039
+    extra_candidate_losses: false
+  spatial_query:
+    enabled_when_maps_present: true
+    use_original_map_cnn: true
+    crop_width_m_at_anchor: 32.0
+    crop_pixels_at_anchor: 256
+    crop_center: last_observed_world_position
+    crop_world_axes: x_columns_y_rows
+    original_crop_align_corners_at_anchor: true
+    feature_stride_at_anchor: 8
+    feature_center_offset_at_anchor: 0
+    feature_grid_align_corners: false
+    query_geometry_source: verified_versioned_sidecar
+    missing_geometry_with_maps: error
+    out_of_bounds: learned_missing_vector_plus_valid_flag
+    clamp_out_of_bounds_to_valid_edge: false
+    reapply_eth_hotel_axis_swap: false
+    derive_feature_centers_from_cnn: true
+  augmentation:
+    geometry: reuse_verified_existing_rotation_reflection
+    transform_observed_future_maps_and_candidates_together: true
+    recompute_context_and_fmap_after_augmentation: true
+    rotate_cached_cnn_feature_as_equivalent: false
+    cache_canonical_base_candidates: true
+    validation_random_augmentation: false
+coupling:
+  retain_original_world_query_scorer: true
+  enabled: true
+  rounds: 1
+  hidden_dim: 64
+  final_projection_zero_init: true
+  neighbor_mode: observed_knn_tie_inclusive
+  neighbor_k_nominal: 8
+  edge_chunk_size: 128
+  sinkhorn_iterations: 20
+  assignment_temperature: 1.0
+  final_forward: exact_hard_candidate_gather
+  backward: coordinate_level_straight_through
+  singleton_hard_and_soft_identity: true
+  preserve_candidate_multiset: true
+  gather_existing_keyed_noise_with_final_assignment: true
+  pair_temperature_m: 0.1
+  pair_unit_scale_m: 1.0
+  pair_weight: 1.0
+  pair_objective: scene_mean_normalized_logsumexp_over_world_agent_mean_distance
+  extra_hard_pair_training_loss: false
+bridge:
+  layers: 6
+  proposal_eta: 0.0
+  retain_existing_diffusion_and_geometry_losses: true
+  clean_path_aux:
+    enabled: true
+    weight: 0.05
+    radial_smooth_l1_beta_m: 0.5
+    unit_scale_m: 1.0
+    time_indices: interior_future_frames
+    noise_weight: signal_coefficient_squared
+    aggregation: scene_macro
+    extra_denoiser_forwards: 0
+    extra_ddim_rollouts: 0
+    label: gt_endpoint_conditioned_clean_path_reconstruction
+  full_candidate_rollout: false
+  gt_endpoint_warp: false
+joint:
+  schema: bcep-sixlayer-random-downstream-v1
+  initialization_role: random_all_downstream
+  provider_origin: self_trained_flow
+  teacher_used: false
+  hidden_dim: 192
+  heads: 4
+  ff_dim: 768
+  fjab_blocks: 6
+  history_social_blocks: 2
+  crop_width_m: 32.0
+  map_agent_chunk: 8
+  precision: fp32
+  proposal_eta: 0
+  rollout: false
+  projection: false
+  batch_scenes: 4
+  gradient_accumulation: 4
+  weight_decay: 0.0001
+  betas:
+  - 0.9
+  - 0.999
+  eps: 1.0e-08
+  clip_norm: 5.0
+  base_lr: 0.0001
+  warmup_epochs: 5
+  scheduler_horizon: 100
+  max_epochs: 100
+  downstream_seed: 3201
+  steps: 20
+  worlds: 20
+  allow_real_training: false
+  min_completed_epochs: 30
+  patience: 15
+  session_seconds: null
+  grouped_training: true
+  group_max_slots: 32
+  selection_mode: H
+  tail_flush: 'original: final partial accumulation divides by4, not by pending microbatch
+    count'
+provider_seed: 3102
+head_seed: 3102
+split_lock_sha256: 42d401485898801d660c6671b1752537a2f2f9442ee6c337eca713d460dd4d60
+folds:
+  zara2:
+    split_sha256: b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816
+    density_scales:
+    - - 0.1
+      - 0.1
+    - - 0.1167926822686829
+      - 0.1131439419913499
+    - - 0.1925281181152086
+      - 0.1851504981940634
+    - - 0.2789589958847953
+      - 0.26515058641914185
+    - - 0.3746068478361266
+      - 0.3511641131746505
+    - - 0.47831445611646234
+      - 0.44178702180459883
+    - - 0.5890890288260601
+      - 0.5359648236482065
+    - - 0.7062966900605555
+      - 0.6329485936701376
+    - - 0.8294112773758426
+      - 0.7322734892550055
+    - - 0.9577307049649649
+      - 0.8337675155853457
+    - - 1.09094613877049
+      - 0.9375769840073793
+    - - 1.2289929062847416
+      - 1.0437331814079722
+    bridge_scales:
+      goal: 1.1100797195740808
+      bridge: 0.2196198967167483
+    train_windows: 2681
+    density_updates_per_epoch: 671
+    head_updates_per_epoch: 671
+    joint_updates_per_epoch: 168
+  zara1:
+    split_sha256: 5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0
+    density_scales:
+    - - 0.1
+      - 0.1
+    - - 0.1140954776508584
+      - 0.1111851415528198
+    - - 0.18822587952933667
+      - 0.18229305754562003
+    - - 0.27282844591533306
+      - 0.26148823864576726
+    - - 0.3664572748658921
+      - 0.34671702966641216
+    - - 0.4679707985096867
+      - 0.4365250497995289
+    - - 0.5764040916032078
+      - 0.5298350567137438
+    - - 0.6911018675988422
+      - 0.6258834325851128
+    - - 0.8115498840637401
+      - 0.72419579643837
+    - - 0.9371269066346171
+      - 0.8245573818581835
+    - - 1.0675408711354777
+      - 0.9269758598525344
+    - - 1.2026995676339498
+      - 1.0315321290935038
+    bridge_scales:
+      goal: 1.0909986599430304
+      bridge: 0.21579519308621176
+    train_windows: 2889
+    density_updates_per_epoch: 723
+    head_updates_per_epoch: 723
+    joint_updates_per_epoch: 181
+  hotel:
+    split_sha256: a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7
+    density_scales:
+    - - 0.1
+      - 0.1
+    - - 0.11359222019146985
+      - 0.1114309581065566
+    - - 0.1875850580693943
+      - 0.1830749352854758
+    - - 0.2719513145883185
+      - 0.2627456883063182
+    - - 0.36533638592391476
+      - 0.34849947316260704
+    - - 0.4666129626374458
+      - 0.4389218149147963
+    - - 0.5748140720698786
+      - 0.5329942323888676
+    - - 0.6893057621158278
+      - 0.629959399722297
+    - - 0.8095518165782455
+      - 0.729292494212252
+    - - 0.9349330007487386
+      - 0.8308190582753212
+    - - 1.0651797697152345
+      - 0.9345496985191313
+    - - 1.2002144768413978
+      - 1.0405431087153794
+    bridge_scales:
+      goal: 1.0928049245037752
+      bridge: 0.2148629119480513
+    train_windows: 3118
+    density_updates_per_epoch: 780
+    head_updates_per_epoch: 780
+    joint_updates_per_epoch: 195
+  univ:
+    split_sha256: 39f90a22926eb7a219bc9e82d403fef9ce4da956f3fd11d92ec3055f0b101bfb
+    density_scales:
+    - - 0.1
+      - 0.1
+    - - 0.1
+      - 0.10110479013528054
+    - - 0.16376126378830166
+      - 0.16509811278998898
+    - - 0.23842233327332332
+      - 0.2373984706153229
+    - - 0.3220720983273898
+      - 0.31566866955390527
+    - - 0.4141836594263225
+      - 0.3986688813328431
+    - - 0.5138118031343871
+      - 0.4854148585014953
+    - - 0.6206259131896678
+      - 0.5750153762251918
+    - - 0.7343557484363695
+      - 0.6671794327743661
+    - - 0.8542320287624929
+      - 0.7614874426629711
+    - - 0.9795167632969454
+      - 0.8576632862925962
+    - - 1.1097649378546508
+      - 0.9561117799859112
+    bridge_scales:
+      goal: 1.0094832880833526
+      bridge: 0.20233839544552107
+    train_windows: 2719
+    density_updates_per_epoch: 680
+    head_updates_per_epoch: 680
+    joint_updates_per_epoch: 170
+  eth:
+    split_sha256: 1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8
+    density_scales:
+    - - 0.1
+      - 0.1
+    - - 0.11007530674929164
+      - 0.11009674389721101
+    - - 0.1817465927626103
+      - 0.1809413071664667
+    - - 0.2634220085765083
+      - 0.25985388379872065
+    - - 0.3537734730268178
+      - 0.34484666325492247
+    - - 0.45176871014045505
+      - 0.434475155082282
+    - - 0.5565898814016422
+      - 0.5276432553350463
+    - - 0.6675257795249964
+      - 0.6236258473336519
+    - - 0.7840975319220721
+      - 0.7219418838431603
+    - - 0.9057966098405581
+      - 0.8223526959801368
+    - - 1.0324162019186014
+      - 0.9248417961492834
+    - - 1.163794104657683
+      - 1.0294136454547735
+    bridge_scales:
+      goal: 1.068684535163788
+      bridge: 0.20929955351220086
+    train_windows: 3283
+    density_updates_per_epoch: 821
+    head_updates_per_epoch: 821
+    joint_updates_per_epoch: 206
+geometry_source:
+  scripts/prepare_bcep_jmm.py: 8bb1d1c88da0c1c90b86460d4973103481b2ec703e7f2fe9dc4a855302ce99fd
+  ebjd/export_ethucy.py: 17fa120ba0169dcd09b22db70ab9d50ab5e770dc62f11cae881f334172b82a77
