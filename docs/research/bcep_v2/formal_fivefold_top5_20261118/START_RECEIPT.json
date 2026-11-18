@@ -1,0 +1,260 @@
+{
+  "status": "RUNNING",
+  "protocol_version": "2026-11-18 两大阶段整理版",
+  "experiment": "bcep_ebjd_v2_formal_top5_20261118",
+  "source_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "training_code_digest": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+  "task_archive_sha256": "4796f285789e30a678d433764bb4f9052508d8d8cd31486e88809d11eebd57a5",
+  "readiness_snapshot": "d371c8903bd48470f8c140191873b91f1e04110f",
+  "base_config_sha256": "0d4034a54443a40f4b046a8e88a423c64f2b7d3ad4e7f14f2b7de0d0be535985",
+  "authorized_config_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+  "config_identity": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+  "input_plan_sha256": "eb341bdaf47e00b09cd79b17ff42207c707a7c443bd148c74363508453a4e178",
+  "splits": {
+    "zara2": {
+      "counts": {
+        "train": 2681,
+        "selection_dev": 590,
+        "heldout_confirmation": 998
+      },
+      "split": "b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816",
+      "members": "06782aeb9ebbad7e2926788d6c3c4b42fd541a45264de3107e34091ef7fb9e48",
+      "caps": {
+        "density": 67100,
+        "head": 13420,
+        "joint": 16800
+      }
+    },
+    "zara1": {
+      "counts": {
+        "train": 2889,
+        "selection_dev": 671,
+        "heldout_confirmation": 705
+      },
+      "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+      "members": "6d54c6451548e5059b517b48c0ff4323194d07d8c4683e0a83c12417c26f2bf7",
+      "caps": {
+        "density": 72300,
+        "head": 14460,
+        "joint": 18100
+      }
+    },
+    "hotel": {
+      "counts": {
+        "train": 3118,
+        "selection_dev": 688,
+        "heldout_confirmation": 445
+      },
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members": "0e0643271d0dd4e09f7727dc84dda38e6b66c88d3d637b356289c64495336d3e",
+      "caps": {
+        "density": 78000,
+        "head": 15600,
+        "joint": 19500
+      }
+    },
+    "univ": {
+      "counts": {
+        "train": 2719,
+        "selection_dev": 622,
+        "heldout_confirmation": 947
+      },
+      "split": "39f90a22926eb7a219bc9e82d403fef9ce4da956f3fd11d92ec3055f0b101bfb",
+      "members": "512f50554e51742edb9bc769eb0143121db708ccd5f271704e3b66e8a8bfb518",
+      "caps": {
+        "density": 68000,
+        "head": 13600,
+        "joint": 17000
+      }
+    },
+    "eth": {
+      "counts": {
+        "train": 3283,
+        "selection_dev": 733,
+        "heldout_confirmation": 253
+      },
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members": "142cb50dfa6d7fe08009947b27ae46d9d8abf3e5686d7987de48de20cefca91c",
+      "caps": {
+        "density": 82100,
+        "head": 16420,
+        "joint": 20600
+      }
+    }
+  },
+  "data_lock_sha256": "42d401485898801d660c6671b1752537a2f2f9442ee6c337eca713d460dd4d60",
+  "control_tests": {
+    "passed_cases": 5,
+    "fixture_optimizer_updates": 0
+  },
+  "runtime": {
+    "precision": "FP32",
+    "deterministic": true,
+    "sdp": "math",
+    "TF32": false,
+    "cublas": ":4096:8",
+    "omp": "1"
+  },
+  "torch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "gpu_model": "NVIDIA GeForce RTX 5070 Ti",
+  "disk_precheck": {
+    "free_bytes": 93863530496,
+    "estimated_bytes": 65312906304,
+    "free_inodes": 32374403
+  },
+  "controller_pid": 1922379,
+  "session_id": 1922379,
+  "child_pid": 1922386,
+  "fold": "zara2",
+  "macro_stage": "Stage 1 / BCEP Provider learning",
+  "substep": "density",
+  "first_update": {
+    "first": {
+      "fold": "zara2",
+      "stage": "density",
+      "epoch": 1,
+      "update": 1,
+      "cursor": 4,
+      "unix": 1794982259.2650368,
+      "pid": 1922386,
+      "grad_norm": 1.212891697883606,
+      "metrics": {
+        "loss": 3.7062342166900635,
+        "valid_agent_count": 63.0,
+        "nll_final_sum": 211.5004506111145,
+        "h4_nll_sum": 27.87517261505127,
+        "h8_nll_sum": 148.06314992904663
+      }
+    },
+    "state_sha256": "f615ea5adf35e152383a07867627374fb777e5467230227ad0d1edaa679e69fa",
+    "cursor": 4,
+    "rng": [
+      "cpu",
+      "cuda",
+      "numpy",
+      "order",
+      "python",
+      "view"
+    ],
+    "source_sha256": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+    "optimizer_state_entries": 72,
+    "step_range": [
+      1
+    ],
+    "timestamp_cn": "2026-11-18T14:10:59.265037+08:00",
+    "verified_unix": 1794982325.581643
+  },
+  "progress_snapshot": {
+    "fold": "zara2",
+    "stage": "density",
+    "epoch": 4,
+    "update": 2170,
+    "cursor": 628,
+    "unix": 1794982741.7661726,
+    "pid": 1922386,
+    "grad_norm": 154.72206115722656,
+    "metrics": {
+      "loss": 2.4006922096014023,
+      "valid_agent_count": 31.0,
+      "nll_final_sum": 71.64984893798828,
+      "h4_nll_sum": -17.862942457199097,
+      "h8_nll_sum": 40.03581166267395
+    }
+  },
+  "progress_time_beijing": "2026-11-18 14:19:01",
+  "head_updates": 0,
+  "joint_updates": 0,
+  "test_status": "PENDING_ALL_FOLDS_FROZEN",
+  "fold_order": [
+    "zara2",
+    "zara1",
+    "hotel",
+    "univ",
+    "eth"
+  ],
+  "max_total_updates": 533000,
+  "completed_density_epochs": [
+    {
+      "epoch": 1,
+      "update": 671,
+      "validation": 2.355964432602922,
+      "metrics": {
+        "h4_nll_agent_micro": -0.6325646857038343,
+        "h8_nll_agent_micro": 1.2241102314398133,
+        "h12_nll_agent_micro": 2.355964432602922
+      },
+      "train_raw_sums": {
+        "nll_final_sum": 67830.98102998734,
+        "h4_nll_sum": -7591.853593468666,
+        "h8_nll_sum": 39774.93797963858
+      },
+      "train_counts": {
+        "valid_agent_count": 26076
+      },
+      "train_nll_final_agent_micro": 2.6012801438099147,
+      "train_h4_nll_agent_micro": -0.29114333461683795,
+      "train_h8_nll_agent_micro": 1.525346601458758,
+      "train_mean_per_update": {
+        "loss": 2.7551481824766584
+      },
+      "file": "epoch_001.pt",
+      "train_seconds": 140.35610519419424,
+      "validation_seconds": 11.073231308953837
+    },
+    {
+      "epoch": 2,
+      "update": 1342,
+      "validation": 2.4533493626305107,
+      "metrics": {
+        "h4_nll_agent_micro": -0.4800735478499639,
+        "h8_nll_agent_micro": 1.3422305522698967,
+        "h12_nll_agent_micro": 2.4533493626305107
+      },
+      "train_raw_sums": {
+        "nll_final_sum": 62141.08765539527,
+        "h4_nll_sum": -14708.604676127434,
+        "h8_nll_sum": 33359.98673444986
+      },
+      "train_counts": {
+        "valid_agent_count": 26076
+      },
+      "train_nll_final_agent_micro": 2.383075918675996,
+      "train_h4_nll_agent_micro": -0.5640667539548794,
+      "train_h8_nll_agent_micro": 1.2793368129486833,
+      "train_mean_per_update": {
+        "loss": 2.4376857185894463
+      },
+      "file": "epoch_002.pt",
+      "train_seconds": 137.53226236603223,
+      "validation_seconds": 11.097422944149002
+    },
+    {
+      "epoch": 3,
+      "update": 2013,
+      "validation": 2.3783480730528344,
+      "metrics": {
+        "h4_nll_agent_micro": -0.5443768275281959,
+        "h8_nll_agent_micro": 1.2799002209329537,
+        "h12_nll_agent_micro": 2.3783480730528344
+      },
+      "train_raw_sums": {
+        "nll_final_sum": 60243.562923938036,
+        "h4_nll_sum": -16121.774187326431,
+        "h8_nll_sum": 31689.341929018497
+      },
+      "train_counts": {
+        "valid_agent_count": 26076
+      },
+      "train_nll_final_agent_micro": 2.310306907652172,
+      "train_h4_nll_agent_micro": -0.618261013473172,
+      "train_h8_nll_agent_micro": 1.2152685200574664,
+      "train_mean_per_update": {
+        "loss": 2.336479664366221
+      },
+      "file": "epoch_003.pt",
+      "train_seconds": 139.02171162399463,
+      "validation_seconds": 11.309486120939255
+    }
+  ]
+}
