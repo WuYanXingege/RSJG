@@ -118,7 +118,10 @@ def selected(folder, stage, identity, model):
     )
     if stage == "head":
         receipt["base"] = identity["base"]
-    write(folder / "FROZEN.json", receipt)
+    if (folder / "FROZEN.json").exists():
+        require(read(folder / "FROZEN.json") == receipt, "frozen selection changed")
+    else:
+        write(folder / "FROZEN.json", receipt)
     return receipt
 
 
@@ -180,6 +183,7 @@ def execute(args, cfg, split, root, geometry, ident):
             *callbacks,
             args.until_update,
             resume=args.resume,
+            record_progress=(root.parent / "FORMAL_RUN.json").is_file(),
         )
         if state["status"] == "COMPLETE":
             selected(root / name, name, identity, model)
@@ -306,6 +310,20 @@ def main(argv=None):
         return
     if cfg["allow_real_training"] is not True:
         raise SystemExit("v2 execution disabled by configuration")
+    if (root.parent / "FORMAL_RUN.json").exists():
+        import os
+        from .formal_manifest import validate_worker_lease
+        validate_worker_lease(root.parent, os.environ.get("BCEP_FORMAL_LOCK_FD"))
+        registered = read(root.parent / "FORMAL_RUN.json")
+        require(identity == registered["folds"][args.fold]["identity"]
+                and digest(args.config) == registered["config_sha256"]
+                and Path(args.plan).resolve() == Path(registered["input_plan"])
+                and args.device == "cuda", "formal worker identity differs")
+        if args.stage in METRIC:
+            require(args.until_update == registered["folds"][args.fold]["caps"][args.stage],
+                    "formal worker requires its registered absolute update cap")
+        if args.stage == "evaluate":
+            raise ValueError("formal test requires the global freeze and the read-only matrix entry")
     root.mkdir(parents=True, exist_ok=True)
     with (root / ".lock").open("a") as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)

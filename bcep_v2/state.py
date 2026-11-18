@@ -3,6 +3,8 @@
 import math
 import os
 import random
+import shutil
+import time
 from pathlib import Path
 import numpy as np
 import torch
@@ -35,7 +37,8 @@ def optimizer(model, lr, decay=0.0001):
     )
 
 
-def run_stage(folder, identity, recipe, model, train_ids, backward, validate, until_update, *, resume):
+def run_stage(folder, identity, recipe, model, train_ids, backward, validate, until_update, *, resume,
+              record_progress=False):
     folder = Path(folder)
     folder.mkdir(parents=True, exist_ok=True)
     last = folder / "last.pt"
@@ -135,8 +138,12 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
             save(state, last)
         return state
 
+    started = time.monotonic()
+    prior_train_seconds = state.get("partial_train_seconds", 0.0)
     while True:
         if pause_requested() or state["update"] >= until_update:
+            if record_progress:
+                state["partial_train_seconds"] = prior_train_seconds + time.monotonic() - started
             return persist("SESSION_BUDGET_PAUSED")
         if state["order"] is None:
             state["order"] = [
@@ -148,7 +155,7 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
         model.train()
         opt.zero_grad(set_to_none=True)
         diagnostics = backward(group, order_rng, view_rng)
-        torch.nn.utils.clip_grad_norm_(model.parameters(), recipe["clip"], error_if_nonfinite=True)
+        grad_norm = torch.nn.utils.clip_grad_norm_(model.parameters(), recipe["clip"], error_if_nonfinite=True)
         opt.step()
         finite_tensors(model.parameters(), "post-update parameters")
         state["cursor"] += len(group)
@@ -166,9 +173,19 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
             else:
                 totals = state["epoch_sums"]
             totals[key] = totals.get(key, 0) + value
+        if record_progress and (state["update"] == 1 or state["update"] % 10 == 0):
+            progress = dict(fold=identity["fold"], stage=identity["stage"], epoch=state["epoch"],
+                            update=state["update"], cursor=state["cursor"], unix=time.time(),
+                            pid=os.getpid(), grad_norm=float(grad_norm), metrics=state["last_update_metrics"])
+            if state["update"] == 1 and state["cursor"] < len(train_ids):
+                state["partial_train_seconds"] = prior_train_seconds + time.monotonic() - started
+                persist("UPDATE_COMPLETE")
+                write(folder / "FIRST_UPDATE.json", progress)
+            write(folder / "PROGRESS.json", progress)
         if state["cursor"] != len(train_ids):
             continue
         model.eval()
+        validation_start = time.monotonic()
         with torch.no_grad():
             value = float(validate())
         if not math.isfinite(value):
@@ -194,6 +211,10 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
                 file=f"epoch_{epoch:03d}.pt",
             )
         )
+        if record_progress:
+            state["history"][-1].update(train_seconds=prior_train_seconds + validation_start - started,
+                                         validation_seconds=time.monotonic() - validation_start)
+            state["partial_train_seconds"] = 0.0
         best = min(state["history"], key=lambda row: row["validation"])
         stale = epoch - best["epoch"]
         state.update(
@@ -212,5 +233,14 @@ def run_stage(folder, identity, recipe, model, train_ids, backward, validate, un
             ("max_epochs" if epoch >= recipe["max_epochs"] else "early_stop") if done else None
         )
         persist("COMPLETE" if done else "EPOCH_COMPLETE", True)
+        if record_progress:
+            print(f"{identity['fold']} {identity['stage']} epoch={epoch} update={state['update']} "
+                  f"dev={value:.7g} best_epoch={best['epoch']} stale={stale}", flush=True)
+        started = time.monotonic()
+        prior_train_seconds = 0.0
         if done:
             return state
+        if record_progress and shutil.disk_usage(folder).free < 2 * last.stat().st_size:
+            write(folder / "PAUSE_REASON.json", dict(reason="insufficient space for the next atomic snapshots",
+                                                     epoch=epoch, update=state["update"]))
+            return dict(state, status="SESSION_BUDGET_PAUSED")
