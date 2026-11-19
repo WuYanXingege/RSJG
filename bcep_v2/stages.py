@@ -166,6 +166,9 @@ def joint_callbacks(model, data, device, config, training, validation):
                 for key, value in model.last_pair_metrics.items():
                     w = (b - a) / len(ids) if key != "effective_edges" else 1
                     metrics[key] = metrics.get(key, 0.0) + float(value) * w
+                    if getattr(model, "pair_objective", "final_coordinate") == "shared_world_bounded" and key != "effective_edges":
+                        raw_key = key + "_scene_sum"
+                        metrics[raw_key] = metrics.get(raw_key, 0.0) + float(value) * (b - a)
                 c = model.last_loss_components
                 for key in ("clean_path_raw_sum", "clean_path_signal_sum"):
                     metrics[key] = metrics.get(key, 0.0) + float(c[key])

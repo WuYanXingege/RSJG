@@ -15,10 +15,14 @@ def bridge_and_pair_loss(
 ):
     """One shared context and one combined objective graph."""
     context = model.encode_context(batch.observed, batch.semantic_maps, batch.valid)
-    coupled, _, _ = model.coupling.assign(
-        context, proposals, model.bridge.representation.goal_scale, straight_through=True
+    shared_world = getattr(model, "pair_objective", "final_coordinate") == "shared_world_bounded"
+    result = model.coupling.assign(
+        context, proposals, model.bridge.representation.goal_scale, straight_through=True,
+        return_initial=shared_world,
     )
-    pair, metrics = pair_loss(coupled, batch.future[..., -1, :], batch.valid)
+    coupled = result[0]
+    pair, metrics = pair_loss(coupled, batch.future[..., -1, :], batch.valid,
+                              initial=result[3] if shared_world else None)
     model.last_pair_metrics = dict(metrics, effective_edges=model.coupling.last_edge_count)
     endpoint = batch.future[..., -1, :].detach()
     clean = model.bridge.representation.encode_target_conditioned(

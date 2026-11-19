@@ -25,6 +25,12 @@ RAW_METRICS = {
     "clean_path_signal_sum": ("valid_scene_count", "train_clean_path_alpha2_scene_macro"),
 }
 COUNTS = {count for count, _ in RAW_METRICS.values()}
+# Optional shared-world diagnostics retain exact scene numerators across partial epochs.
+for _name in ("pair_softmin_m", "pair_exact_hard_jfde_m", "world_weight_entropy",
+              "assignment_temperature", "pair_temperature_m", "pair_weight",
+              "pair_initial_hard_jfde_m", "pair_feedback_gain_m", "pair_a_mean",
+              "pair_a_positive_fraction", "pair_q_a", "pair_winner_switch_fraction"):
+    RAW_METRICS[_name + "_scene_sum"] = ("valid_scene_count", "train_" + _name + "_scene_macro")
 
 
 def optimizer(model, lr, decay=0.0001):

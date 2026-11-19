@@ -81,7 +81,7 @@ class FeedbackCoupling(LearnableJointCouplingHead):
             output = output.index_add(0, b * agents + i, msg)
         return (output / degree.clamp_min(1)[:, None, None]).reshape(batch, agents, worlds, worlds)
 
-    def assign(self, context, proposals, goal_scale, *, straight_through):
+    def assign(self, context, proposals, goal_scale, *, straight_through, return_initial=False):
         valid = context.valid
         if not valid.any(1).all():
             raise ValueError("empty scene")
@@ -95,18 +95,28 @@ class FeedbackCoupling(LearnableJointCouplingHead):
             scores = super().forward(context, safe, goal_scale)
         finally:
             handle.remove()
-        _, initial, _ = assignment(scores, valid, straight_through)
+        initial_indices, initial, initial_soft = assignment(scores, valid, straight_through)
         scores = scores + self.messages(features[0], context.observed, safe, valid, initial)
         indices, _, soft = assignment(scores, valid, straight_through)
         hard = gather_candidates(proposals, indices)
         if straight_through:
             surrogate = torch.einsum("bnkj,bnjd->bknd", soft.float(), safe.transpose(1, 2).float())
             hard = hard + (surrogate - surrogate.detach()).to(hard)
+        if return_initial:
+            first = gather_candidates(proposals, initial_indices)
+            if straight_through:
+                mixture = torch.einsum("bnkj,bnjd->bknd", initial_soft.float(), safe.transpose(1, 2).float())
+                first = first + (mixture - mixture.detach()).to(first)
+            return hard, indices, scores, first, initial_indices
         return hard, indices, scores
 
 
 def build_joint(config, legacy_state=None):
+    objective = config.get("pair_objective", "final_coordinate")
+    if objective not in ("final_coordinate", "shared_world_bounded"):
+        raise ValueError("unknown pair_objective")
     model = build_legacy(config)
+    model.pair_objective = objective
     model.bridge.denoiser.map_sampler = bilinear_zeros
     model.bridge.encoder.map_pool = pool_map
     if legacy_state is not None:
@@ -120,12 +130,40 @@ def build_joint(config, legacy_state=None):
     return model
 
 
-def pair_loss(coupled, truth, valid):
+def shared_world_terms(initial_error, final_error, tau=0.1):
+    """One shared world axis; detached analytic maximizer (envelope gradient)."""
+    a = ((initial_error.detach() - final_error.detach()) / (2 * tau)).clamp(0.0, 0.5)
+    cost = final_error + a * (initial_error - final_error) - tau * a.square()
+    return cost, a
+
+
+def endpoint_world_error(goals, truth, valid):
+    if not valid.any(1).all():
+        raise ValueError("empty scene")
+    difference = torch.where(valid[:, None, :, None], goals.float() - truth.detach()[:, None].float(), 0.0)
+    return difference.norm(dim=-1).sum(-1) / valid.sum(1)[:, None]
+
+
+def pair_loss(coupled, truth, valid, *, initial=None):
     if not valid.any(1).all():
         raise ValueError("empty scene")
     difference = torch.where(valid[:, None, :, None], coupled.float() - truth[:, None].float(), 0.0)
     world_error = difference.norm(dim=-1).sum(-1) / valid.sum(1)[:, None]
-    logits = -world_error / 0.1
+    extra = {}
+    cost = world_error
+    if initial is not None:
+        initial_error = endpoint_world_error(initial, truth, valid)
+        cost, a = shared_world_terms(initial_error, world_error)
+        q = (-cost.detach() / 0.1).softmax(1)
+        extra = dict(
+            pair_initial_hard_jfde_m=initial_error.detach().amin(1).mean(),
+            pair_feedback_gain_m=(initial_error.detach().amin(1) - world_error.detach().amin(1)).mean(),
+            pair_a_mean=a.mean(),
+            pair_a_positive_fraction=(a > 0).float().mean(),
+            pair_q_a=(q * a).sum(1).mean(),
+            pair_winner_switch_fraction=(initial_error.detach().argmin(1) != world_error.detach().argmin(1)).float().mean(),
+        )
+    logits = -cost / 0.1
     loss = (-0.1 * (logits.logsumexp(1) - math.log(coupled.shape[1]))).mean()
     log_weights = logits.detach().log_softmax(1)
     return loss, dict(
@@ -135,6 +173,7 @@ def pair_loss(coupled, truth, valid):
         assignment_temperature=1.0,
         pair_temperature_m=0.1,
         pair_weight=1.0,
+        **extra,
     )
 
 
