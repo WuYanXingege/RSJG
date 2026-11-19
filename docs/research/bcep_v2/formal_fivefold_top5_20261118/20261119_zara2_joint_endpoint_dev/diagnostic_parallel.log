@@ -1,0 +1,20 @@
+epoch 26: 100/590
+epoch 26: 200/590
+epoch 26: 300/590
+epoch 26: 400/590
+epoch 26: 500/590
+Traceback (most recent call last):
+  File "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/multiprocessing/pool.py", line 856, in next
+    item = self._items.popleft()
+IndexError: pop from an empty deque
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/analyses/zara2_v2_joint_endpoint_dev_20261119/diagnose_parallel.py", line 131, in <module>
+    for wr,ar,sr,ir in pool.imap_unordered(evaluate_window,enumerate(ids),chunksize=1):
+  File "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/multiprocessing/pool.py", line 861, in next
+    self._cond.wait(timeout)
+  File "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/lib/python3.10/threading.py", line 320, in wait
+    waiter.acquire()
+KeyboardInterrupt

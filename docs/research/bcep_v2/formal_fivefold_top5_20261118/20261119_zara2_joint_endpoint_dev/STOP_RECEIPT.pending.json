@@ -1,0 +1,253 @@
+{
+  "run": {
+    "experiment": "bcep_ebjd_v2_formal_top5_20261118",
+    "version": "2026-11-18 \u4e24\u5927\u9636\u6bb5\u6574\u7406\u7248",
+    "commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+    "workspace": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_BCEP_integrated_v2_20261118",
+    "input_plan": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/RUN_PLAN.json",
+    "input_plan_sha256": "eb341bdaf47e00b09cd79b17ff42207c707a7c443bd148c74363508453a4e178",
+    "base_config_sha256": "0d4034a54443a40f4b046a8e88a423c64f2b7d3ad4e7f14f2b7de0d0be535985",
+    "config_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+    "config_identity": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+    "output_root": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_ebjd_v2_integrated",
+    "report_checkout": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_BCEP_v2_formal_reports_20261118",
+    "folds": {
+      "zara2": {
+        "identity": {
+          "schema": "bcep-ebjd-v2-resolved-v1",
+          "fold": "zara2",
+          "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+          "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+          "split": "b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816",
+          "members": "06782aeb9ebbad7e2926788d6c3c4b42fd541a45264de3107e34091ef7fb9e48",
+          "geometry": "bb98d172ba101734d522f08752cbbf052eef0fcc1038dfec89dbb301d71945b1"
+        },
+        "caps": {
+          "density": 67100,
+          "head": 13420,
+          "joint": 16800
+        },
+        "windows": {
+          "train": 2681,
+          "selection_dev": 590,
+          "heldout_confirmation": 998
+        }
+      },
+      "zara1": {
+        "identity": {
+          "schema": "bcep-ebjd-v2-resolved-v1",
+          "fold": "zara1",
+          "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+          "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+          "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+          "members": "6d54c6451548e5059b517b48c0ff4323194d07d8c4683e0a83c12417c26f2bf7",
+          "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330"
+        },
+        "caps": {
+          "density": 72300,
+          "head": 14460,
+          "joint": 18100
+        },
+        "windows": {
+          "train": 2889,
+          "selection_dev": 671,
+          "heldout_confirmation": 705
+        }
+      },
+      "hotel": {
+        "identity": {
+          "schema": "bcep-ebjd-v2-resolved-v1",
+          "fold": "hotel",
+          "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+          "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+          "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+          "members": "0e0643271d0dd4e09f7727dc84dda38e6b66c88d3d637b356289c64495336d3e",
+          "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4"
+        },
+        "caps": {
+          "density": 78000,
+          "head": 15600,
+          "joint": 19500
+        },
+        "windows": {
+          "train": 3118,
+          "selection_dev": 688,
+          "heldout_confirmation": 445
+        }
+      },
+      "univ": {
+        "identity": {
+          "schema": "bcep-ebjd-v2-resolved-v1",
+          "fold": "univ",
+          "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+          "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+          "split": "39f90a22926eb7a219bc9e82d403fef9ce4da956f3fd11d92ec3055f0b101bfb",
+          "members": "512f50554e51742edb9bc769eb0143121db708ccd5f271704e3b66e8a8bfb518",
+          "geometry": "612d219a504b606b4724506d1e292c3e53bb9e5ad9aead1a4486c99bad1d28fc"
+        },
+        "caps": {
+          "density": 68000,
+          "head": 13600,
+          "joint": 17000
+        },
+        "windows": {
+          "train": 2719,
+          "selection_dev": 622,
+          "heldout_confirmation": 947
+        }
+      },
+      "eth": {
+        "identity": {
+          "schema": "bcep-ebjd-v2-resolved-v1",
+          "fold": "eth",
+          "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+          "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+          "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+          "members": "142cb50dfa6d7fe08009947b27ae46d9d8abf3e5686d7987de48de20cefca91c",
+          "geometry": "f16b8df240ea4dd56e1c06cf53c918da2b6df16c1bde16ca8d91bc03e00694a2"
+        },
+        "caps": {
+          "density": 82100,
+          "head": 16420,
+          "joint": 20600
+        },
+        "windows": {
+          "train": 3283,
+          "selection_dev": 733,
+          "heldout_confirmation": 253
+        }
+      }
+    },
+    "order": [
+      "zara2",
+      "zara1",
+      "hotel",
+      "univ",
+      "eth"
+    ],
+    "matrix": {
+      "folds": [
+        "zara2",
+        "zara1",
+        "hotel",
+        "univ",
+        "eth"
+      ],
+      "seeds": [
+        2035,
+        2036,
+        2037,
+        2038,
+        2039
+      ],
+      "K": 20,
+      "steps": 20,
+      "M": 256,
+      "joint_H_ranks": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "joint_G_ranks": [
+        1
+      ],
+      "head_ranks": [
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "joint_H_groups": 125,
+      "joint_G_groups": 25,
+      "provider_endpoint_groups": 125,
+      "official": "OFFICIAL_DEV_SELECTED_RANK1",
+      "dev_order": [
+        "dev_value",
+        "epoch"
+      ],
+      "posthoc_joint": [
+        "mean_H_JADE",
+        "dev_rank",
+        "epoch"
+      ],
+      "posthoc_head": [
+        "mean_agent_micro_minFDE",
+        "dev_rank",
+        "epoch"
+      ]
+    },
+    "max_total_updates": 533000,
+    "training_seeds": [
+      3102,
+      3102,
+      3201
+    ],
+    "gpu": "NVIDIA GeForce RTX 5070 Ti, GPU-078a9326-675c-cb94-af4a-ac46eb77c484, 570.133.07, 16303, 15046",
+    "torch": "2.8.0+cu128",
+    "cuda": "12.8",
+    "python": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+    "runtime": {
+      "precision": "FP32",
+      "deterministic": true,
+      "sdp": "math",
+      "TF32": false,
+      "cublas": ":4096:8",
+      "omp": "1"
+    },
+    "retention": "all complete epochs plus distinct dev Top5, rank1/best and last",
+    "disk_precheck": {
+      "free_bytes": 93863530496,
+      "estimated_bytes": 65312906304,
+      "free_inodes": 32374403
+    },
+    "created_unix": 1794982234.5285313
+  },
+  "before": {
+    "status": "RUNNING",
+    "experiment": "bcep_ebjd_v2_formal_top5_20261118",
+    "commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+    "fold": "zara1",
+    "macro_stage": "Stage 1 / BCEP Provider learning",
+    "substep": "head",
+    "controller_pid": 1922379,
+    "child_pid": 1947217,
+    "started_unix": 1794982255.9131687,
+    "updated_unix": 1795055068.8828127,
+    "log": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_ebjd_v2_integrated/logs/zara1/head.log",
+    "command": [
+      "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python",
+      "-u",
+      "-m",
+      "bcep_v2.workflow",
+      "head",
+      "--config",
+      "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_ebjd_v2_integrated/AUTHORIZED.yaml",
+      "--plan",
+      "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/RUN_PLAN.json",
+      "--fold",
+      "zara1",
+      "--execute",
+      "--device",
+      "cuda",
+      "--until-update",
+      "14460"
+    ]
+  },
+  "requested_training_updates": 0,
+  "automatic_resume": false,
+  "signal_sent_by_diagnostic": 1,
+  "controller": {
+    "pid": 1922379,
+    "cmdline": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python -u -m bcep_v2.formal_run run --root /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_ebjd_v2_integrated "
+  },
+  "child": {
+    "pid": 1947217,
+    "cmdline": "/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python -u -m bcep_v2.workflow head --config /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_ebjd_v2_integrated/AUTHORIZED.yaml --plan /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/RUN_PLAN.json --fold zara1 --execute --device cuda --until-update 14460 "
+  },
+  "status_cli_before": "{\n  \"status\": \"RUNNING\",\n  \"experiment\": \"bcep_ebjd_v2_formal_top5_20261118\",\n  \"commit\": \"468c5eddde48bdeec47c4bb3c39418352be16bb9\",\n  \"fold\": \"zara1\",\n  \"macro_stage\": \"Stage 1 / BCEP Provider learning\",\n  \"substep\": \"head\",\n  \"controller_pid\": 1922379,\n  \"child_pid\": 1947217,\n  \"started_unix\": 1794982255.9131687,\n  \"updated_unix\": 1795055068.8828127,\n  \"log\": \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_ebjd_v2_integrated/logs/zara1/head.log\",\n  \"command\": [\n    \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python\",\n    \"-u\",\n    \"-m\",\n    \"bcep_v2.workflow\",\n    \"head\",\n    \"--config\",\n    \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_ebjd_v2_integrated/AUTHORIZED.yaml\",\n    \"--plan\",\n    \"/media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_EBJD_assets/experiments/bcep_jmm_full_twostage_20261117_144947/RUN_PLAN.json\",\n    \"--fold\",\n    \"zara1\",\n    \"--execute\",\n    \"--device\",\n    \"cuda\",\n    \"--until-update\",\n    \"14460\"\n  ],\n  \"progress\": {\n    \"fold\": \"zara1\",\n    \"stage\": \"head\",\n    \"epoch\": 10,\n    \"update\": 7090,\n    \"cursor\": 2332,\n    \"unix\": 1795056943.0008745,\n    \"pid\": 1947217,\n    \"grad_norm\": 0.16615605354309082,\n    \"metrics\": {\n      \"loss\": 0.25217908062040806,\n      \"valid_agent_count\": 12.0,\n      \"head_fde_sum\": 3.0127809196710587,\n      \"head_move_sum\": 0.1336782372673042,\n      \"head_loss_sum\": 3.026148796081543\n    }\n  }\n}\n",
+  "signal_intent_unix": 1795056944.4480827,
+  "signal_sent_unix": 1795056944.4484935
+}
