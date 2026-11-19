@@ -80,7 +80,7 @@ def summarize(run,up,oldrows,reference,out):
         rr=[r for r in paired if name=='all' or r['n_agents']>=9];assert len(rr)==(590 if name=='all' else 127)
         for metric in ['I_JFDE','H_JFDE','H_JADE','feedback_gain']:
             values=[r['delta_'+metric] for r in rr]
-            summaries.append(dict(group=name,metric=metric,windows=len(rr),old_mean_m=statistics.mean(r['old_'+metric] for r in rr),new_mean_m=statistics.mean(r['new_'+metric] for r in rr),delta_mean_m=statistics.mean(values),delta_mean_cm=100*statistics.mean(values),delta_median_m=statistics.median(values),delta_negative_windows=sum(x<0 for x in values),delta_positive_windows=sum(x>0 for x in values),delta_zero_windows=sum(x==0 for x in values),abs_delta_le_1e6_windows=sum(abs(x)<=1e-6 for x in values)))
+            summaries.append(dict(group=name,metric=metric,windows=len(rr),old_mean_m=statistics.mean(r['old_'+metric] for r in rr),new_mean_m=statistics.mean(r['new_'+metric] for r in rr),delta_mean_m=statistics.mean(values),delta_mean_cm=100*statistics.mean(values),delta_median_m=statistics.median(values),delta_negative_windows=sum(x<0 for x in values),delta_positive_windows=sum(x>0 for x in values),delta_zero_windows=sum(x==0 for x in values),abs_delta_le_1e_minus6_windows=sum(abs(x)<=1e-6 for x in values)))
     ref=frozen['decision']['epoch5_reference'];new=[rankgroups['all']['JADE'],rankgroups['all']['JFDE'],rankgroups['N_ge_9']['JFDE']]
     checks=[new[0]<=ref[0],new[1]<ref[1],new[2]<ref[2]]
     decision=dict(status='本折通过' if all(checks) else '本折未通过，保留旧 coordinate 基线',rank1_epoch=rank,old_epoch5=ref,new_rank1=new,new_minus_old=[n-o for n,o in zip(new,ref)],passes=checks,all_pass=all(checks),selector='dev H-JADE; exact ties earlier epoch',real_optimizer_updates=status['optimizer_updates'],completed_epochs=status['completed_epoch'],stop_reason=status['stop_reason'],no_test=True,no_followup_queue=True)
@@ -115,7 +115,7 @@ def summarize(run,up,oldrows,reference,out):
 
 | 分组 | 指标 | 窗数 | 平均差 cm | 中位差 cm | Δ<0 | Δ>0 | Δ=0 | 近零 |
 |---|---|---:|---:|---:|---:|---:|---:|---:|''')
-    for r in summaries:report.append(f"| {r['group']} | {r['metric']} | {r['windows']} | {r['delta_mean_cm']:+.5f} | {r['delta_median_m']*100:+.5f} | {r['delta_negative_windows']} | {r['delta_positive_windows']} | {r['delta_zero_windows']} | {r['abs_delta_le_1e6_windows']} |")
+    for r in summaries:report.append(f"| {r['group']} | {r['metric']} | {r['windows']} | {r['delta_mean_cm']:+.5f} | {r['delta_median_m']*100:+.5f} | {r['delta_negative_windows']} | {r['delta_positive_windows']} | {r['delta_zero_windows']} | {r['abs_delta_le_1e_minus6_windows']} |")
     report.append(f'''
 逐窗结果：[RANK1_VS_OLD5_WINDOWS.csv](RANK1_VS_OLD5_WINDOWS.csv)；逐轮分组：[EPOCH_GROUPS.csv](EPOCH_GROUPS.csv)；训练目标与系数日志：[EPOCH_TRAIN.csv](EPOCH_TRAIN.csv)。固定候选下逐窗 minFDE/窗口 oracle 新旧差均小于 1e-6 m，每轮全体 agent-micro minFDE 核对为 0.3520422351797007 m、窗口等权 oracle 为 0.33942601943420153 m（容差 1e-6）。
 
