@@ -76,10 +76,17 @@ def main():
             subprocess.run(['git','diff','--cached','--quiet'],cwd=SOURCE,check=True)
             subprocess.run(['git','add',*[str(p.relative_to(SOURCE)) for p in files]],cwd=SOURCE,check=True)
             subprocess.run(['git','diff','--cached','--check'],cwd=SOURCE,check=True)
-            subprocess.run(['git','commit','-m','Publish completed ZARA2 shared-world Stage 2 controlled trial'],cwd=SOURCE,check=True)
+            if subprocess.run(['git','diff','--cached','--quiet'],cwd=SOURCE).returncode:
+                subprocess.run(['git','commit','-m','Publish completed ZARA2 shared-world Stage 2 controlled trial'],cwd=SOURCE,check=True)
             commit=git('rev-parse','HEAD')
-            subprocess.run(['git','push',REMOTE,BRANCH],cwd=SOURCE,check=True)
-            remote=git('ls-remote',REMOTE,'refs/heads/'+BRANCH).split()[0];assert remote==commit
+            for attempt in range(3):
+                try:
+                    subprocess.run(['git','push',REMOTE,BRANCH],cwd=SOURCE,check=True)
+                    remote=git('ls-remote',REMOTE,'refs/heads/'+BRANCH).split()[0];assert remote==commit
+                    break
+                except subprocess.CalledProcessError:
+                    if attempt==2:raise
+                    time.sleep(5*(attempt+1))
             base='https://github.com/WuYanXingege/RSJG/blob/'+commit+'/'+str(out.relative_to(SOURCE))+'/'
             write(run/'DELIVERY.json',dict(remote_sha=commit,report=base+'REPORT_ZH.md',csv=base+'EPOCH_GROUPS.csv',paired_csv=base+'RANK1_VS_OLD5_WINDOWS.csv',decision=read(out/'DECISION.json'),unix=time.time()))
             write(statuspath,dict(status='PUBLISHED',remote_sha=commit,unix=time.time()))
