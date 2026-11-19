@@ -74,7 +74,7 @@ lines.append(f'''
 |---:|---|---:|---:|---:|---:|---:|''')
 for r in rows:lines.append(f"| {r['epoch']} | {r['group']} | {r['scene_count']} | {r['JADE']:.6f} | {r['I_JFDE']:.6f} | {r['JFDE']:.6f} | {r['feedback_gain']:+.6f} |")
 lines.append(f'''
-两轮全体逐人 minFDE 均为 0.3520422351797007 m，窗口等权 oracle 为 0.33942601943420153 m；逐窗候选与轨迹末帧的边缘误差在 1e-6 m 内一致。全体 590 窗，N≥9 组 127 窗。当前只完成 {completed} 轮，因此 Top5 清单含 {len(top)} 个不同完整轮次，全部保留；满五轮后保留至少五个最佳不同轮次，同时保留所有完整 epoch、best、last。
+已完成各轮全体逐人 minFDE 均为 0.3520422351797007 m，窗口等权 oracle 为 0.33942601943420153 m；逐窗候选与轨迹末帧的边缘误差在 1e-6 m 内一致。全体 590 窗，N≥9 组 127 窗。当前只完成 {completed} 轮，因此 Top5 清单含 {len(top)} 个不同完整轮次，全部保留；满五轮后保留至少五个最佳不同轮次，同时保留所有完整 epoch、best、last。
 
 ## 身份与运行核验
 

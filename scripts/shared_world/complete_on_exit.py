@@ -1,7 +1,7 @@
 """Wait for this run's process-exit event, then finalize and publish once.
 No periodic process polling; no other fold/seed. Explicitly paused runs stay paused.
 """
-import argparse,fcntl,hashlib,json,os,select,subprocess,sys,time
+import argparse,ctypes,fcntl,hashlib,json,os,platform,select,subprocess,sys,time
 from pathlib import Path
 SOURCE=Path(__file__).resolve().parents[2]
 EXPERIMENT='zara2_sharedworld_stage2_onerun_20261119'
@@ -18,6 +18,18 @@ def sha(p):
         for b in iter(lambda:f.read(1048576),b''):h.update(b)
     return h.hexdigest()
 
+def open_pidfd(pid):
+    if hasattr(os,'pidfd_open'):return os.pidfd_open(pid)
+    # The training environment's Python/glibc lack wrappers; Linux still has
+    # pidfd_open. Number verified in the host's asm/unistd_64.h.
+    if platform.machine()!='x86_64':raise RuntimeError('unsupported pidfd fallback architecture')
+    libc=ctypes.CDLL(None,use_errno=True)
+    libc.syscall.restype=ctypes.c_long
+    fd=libc.syscall(ctypes.c_long(434),ctypes.c_int(pid),ctypes.c_uint(0))
+    if fd<0:
+        err=ctypes.get_errno();raise OSError(err,os.strerror(err))
+    return fd
+
 def wait_for_exit(pid,workspace):
     p=Path('/proc')/str(pid)
     if not p.exists():return
@@ -25,7 +37,8 @@ def wait_for_exit(pid,workspace):
     if b'scripts/shared_world/one_run.py' not in tokens or b'train' not in tokens or str(workspace).encode() not in tokens:
         raise RuntimeError('PID no longer identifies the bound training command')
     if Path(os.readlink(p/'cwd')).resolve()!=SOURCE:raise RuntimeError('training cwd mismatch')
-    fd=os.pidfd_open(pid)
+    try:fd=open_pidfd(pid)
+    except ProcessLookupError:return
     try:
         poll=select.poll();poll.register(fd,select.POLLIN);poll.poll()
     finally:os.close(fd)
