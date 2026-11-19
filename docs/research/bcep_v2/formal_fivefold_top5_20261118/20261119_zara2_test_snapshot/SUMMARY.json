@@ -1,7 +1,6 @@
 {
   "as_of_beijing": "2026-11-19T10:16:30+08:00",
   "fold": "zara2",
-  "method": "H",
   "unit": "m",
   "K": 20,
   "inference_seeds": [
@@ -11,9 +10,8 @@
     2038,
     2039
   ],
-  "uncertainty": "sample SD across five inference seeds (ddof=1), one dev-selected joint checkpoint per version",
+  "uncertainty": "Sample SD across inference seeds 2035–2039 (ddof=1). Each row uses fixed weights. Legacy G and H share the same selected EBJD checkpoint.",
   "test": {
-    "split": "heldout_confirmation",
     "scene_count": 998,
     "valid_agent_occurrences": 5910,
     "v1": {
@@ -71,6 +69,121 @@
       "JFDE": {
         "v2_minus_v1_mean_m": -0.01595125240494242,
         "reduction_percent": 2.3925684726705816,
+        "improved": 5,
+        "tied": 0,
+        "worse": 0
+      }
+    },
+    "bcep_split": "heldout_confirmation",
+    "legacy_gdts_provider": {
+      "evaluated_split": "validation_test_mirror",
+      "reported_seed_count": 5,
+      "downstream_training_seed": 3101,
+      "downstream_completed_epochs": 30,
+      "downstream_optimizer_updates": 7530,
+      "downstream_selection": "best_eligible",
+      "downstream_selected_joint_epoch": 23,
+      "downstream_checkpoint_sha256": "1dcdf54a2ea8081ee21480f1bc7a0499b89dff5a8ccc2c99357f9dd01243c3be",
+      "matched_gdts_checkpoint_sha256": "bba3e538775e57fac45fd693ae6308c84fd92d6bf8d5451ab337005b292b2d80",
+      "G_and_H_per_agent_candidate_sets_preserved": true,
+      "metrics": {
+        "GDTS": {
+          "minADE": {
+            "mean_m": 0.15842072963560166,
+            "sample_sd_m": 0.0003047425829096067
+          },
+          "minFDE": {
+            "mean_m": 0.2578471983140161,
+            "sample_sd_m": 0.0010299897648329652
+          },
+          "JADE": {
+            "mean_m": 0.2956019675667082,
+            "sample_sd_m": 0.0012610046205370352
+          },
+          "JFDE": {
+            "mean_m": 0.5823599543419661,
+            "sample_sd_m": 0.002314959813653372
+          }
+        },
+        "G": {
+          "minADE": {
+            "mean_m": 0.15784358116794162,
+            "sample_sd_m": 0.0005316178466774189
+          },
+          "minFDE": {
+            "mean_m": 0.24924426169211497,
+            "sample_sd_m": 0.000676114780150806
+          },
+          "JADE": {
+            "mean_m": 0.28391119180702584,
+            "sample_sd_m": 0.0008743571103146293
+          },
+          "JFDE": {
+            "mean_m": 0.5701145360418007,
+            "sample_sd_m": 0.0026637406799489205
+          }
+        },
+        "H": {
+          "minADE": {
+            "mean_m": 0.15765178702577837,
+            "sample_sd_m": 0.00047323635526625693
+          },
+          "minFDE": {
+            "mean_m": 0.24924426169211497,
+            "sample_sd_m": 0.000676114780150806
+          },
+          "JADE": {
+            "mean_m": 0.27079391262824376,
+            "sample_sd_m": 0.0009674086861251631
+          },
+          "JFDE": {
+            "mean_m": 0.5417442675004294,
+            "sample_sd_m": 0.001152287925941176
+          }
+        }
+      }
+    },
+    "paired_v2_H_minus_legacy_H": {
+      "minFDE": {
+        "mean_delta_m": -0.009921472790049134,
+        "relative_reduction_percent": 3.9806223512198144,
+        "improved": 5,
+        "tied": 0,
+        "worse": 0
+      },
+      "JFDE": {
+        "mean_delta_m": 0.10900441312257021,
+        "relative_reduction_percent": -20.121009055713508,
+        "improved": 0,
+        "tied": 0,
+        "worse": 5
+      }
+    },
+    "paired_legacy_H_minus_G": {
+      "minADE": {
+        "mean_delta_m": -0.00019179414216327073,
+        "relative_reduction_percent": 0.12150899057415998,
+        "improved": 5,
+        "tied": 0,
+        "worse": 0
+      },
+      "minFDE": {
+        "mean_delta_m": 0.0,
+        "relative_reduction_percent": -0.0,
+        "improved": 0,
+        "tied": 5,
+        "worse": 0
+      },
+      "JADE": {
+        "mean_delta_m": -0.013117279178782082,
+        "relative_reduction_percent": 4.620205034994846,
+        "improved": 5,
+        "tied": 0,
+        "worse": 0
+      },
+      "JFDE": {
+        "mean_delta_m": -0.028370268541371414,
+        "relative_reduction_percent": 4.97624016716727,
         "improved": 5,
         "tied": 0,
         "worse": 0
@@ -214,7 +327,6 @@
     "test_members_sha256": "dabcc817db115805ea270208db34886bfc32e94a27be680ed2573cf049a3e7ee",
     "split_file_sha256": "b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816",
     "split_canonical_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
-    "checkpoint_selected_using_test": false,
     "v2_early_test_viewed_before_global_freeze": true,
     "v2_cpu_endpoint_bank_hashes": {
       "2035": "c223239177dff0f1e09cc645b155575d102bbc39347cd33544f88714d72a69ac",
@@ -235,6 +347,35 @@
       "v2_selected_joint_training_history": "97a1fd38f8db5659c6a8b6753b47c0915ed66c7cd0e9eeb14df4c62bbfcb7bb2",
       "zara1_density_training_receipt": "ef3e2a1542a32deeae06cfc6a162a24191cb6d4de60b6e0c2b3139698f7318ce"
     },
-    "public_per_seed_csv_sha256": "3b63ecd2fd4cd9f3a568f6beda3776547a4c6cadcc17d6ed990da7c4fb5a1f98"
-  }
+    "public_per_seed_csv_sha256": "4fa7df31326290b4a0c0567095828456ad50a5cabdc4fa538bf222f060393c85",
+    "bcep_checkpoint_selected_using_test": false,
+    "legacy_gdts_provider": {
+      "training_source_commit": "5369f589a8b4ad89735b4028e237bede53d35771",
+      "published_fivefold_commit": "3b5228e036eb94d5f89b5461c557130370edf913",
+      "published_per_seed_csv_sha256": "549a26f2d99032f5ffe89c71b49a31ddce242d7fe3b7a8a314b55cf18d5bc8a1",
+      "fold_run_per_seed_csv_sha256": "7b22a00ac6781a657758286400ce81b62089ffc53b4b64f6652a6fb89b4e10f5",
+      "fold_run_summary_sha256": "fbd44f3bfa52f73c3f358830be91ac5335691632b9e1a9b3b66ade27e0a688ba",
+      "validation_manifest_sha256": "de47ab89a5421dad62eb1846511d72f22e104fe1fc7771117676dcda806c581f",
+      "test_manifest_sha256": "fa1266412965ea3fe1ffd12b1b13fb61339055f5035f0223c0a109081b50c090",
+      "selection_protocol": "Legacy validation and test have mirrored members; BCEP v1 and v2 select on disjoint official dev.",
+      "test_window_comparison": {
+        "key": [
+          "source_sequence",
+          "raw_frame_ids"
+        ],
+        "windows": 998,
+        "agent_occurrences": 5910,
+        "same_ordered_agent_ids_in_all_998_windows": true,
+        "legacy_validation_equals_legacy_test_members": true,
+        "legacy_test_equals_bcep_test_members": true,
+        "sha256_sorted_sequence_frames_sorted_agent_ids": "8703d468d3e0910b71ae76e3024e8bdfd9b7ff05ee5cd485049e50e5379598fa"
+      }
+    }
+  },
+  "primary_method": "H",
+  "reference_methods": [
+    "G",
+    "GDTS"
+  ],
+  "historical_comparison_added_at_beijing": "2026-11-19T10:26:45+08:00"
 }
