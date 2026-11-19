@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "numeric_tolerance_m": 1e-10,
+  "central_difference_tolerance_m": 1e-08,
+  "statistics_abstention_threshold_m": 1e-06,
+  "maximum_errors": {
+    "old_true_abs_error": 4.440892098500626e-16,
+    "old_coord_abs_error": 0.0,
+    "lookup_vs_coordinate_true_abs_error": 4.440892098500626e-16,
+    "cost_fd_abs_error": 3.359821310056077e-10,
+    "cost_P_autograd_abs_error": 9.992007221626409e-16
+  },
+  "anchor_count": 96,
+  "swaps": 3840,
+  "concavity_max_signed_violation_m": 2.995552271843658e-18,
+  "concavity_max_positive_violation_m": 2.995552271843658e-18,
+  "concavity_violations": 0,
+  "cost_gradient_P_checks": 3840,
+  "cost_central_difference_checks": 3840,
+  "legacy_reproduction": [
+    {
+      "epoch": 3,
+      "disagreements": 387,
+      "denominator": 1083,
+      "harm_adopted": 344,
+      "benefit_rejected": 43,
+      "matched_archive": true
+    },
+    {
+      "epoch": 5,
+      "disagreements": 393,
+      "denominator": 1067,
+      "harm_adopted": 365,
+      "benefit_rejected": 28,
+      "matched_archive": true
+    },
+    {
+      "epoch": 26,
+      "disagreements": 431,
+      "denominator": 1093,
+      "harm_adopted": 391,
+      "benefit_rejected": 40,
+      "matched_archive": true
+    }
+  ],
+  "optimizer_updates": 0,
+  "DDIM_calls": 0,
+  "model_forward_calls": 0,
+  "test_data_records_read": 0
+}
