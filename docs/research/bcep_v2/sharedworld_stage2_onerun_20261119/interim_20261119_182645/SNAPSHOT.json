@@ -1,0 +1,70 @@
+{
+  "status": "RUNNING_INTERIM_NOT_FINAL",
+  "snapshot_unix": 1795084005.4054713,
+  "snapshot_timezone": "Asia/Shanghai",
+  "progress": {
+    "epoch": 3,
+    "update": 380,
+    "cursor": 704,
+    "unix": 1795083962.7502115,
+    "grad_norm": 6.803852081298828,
+    "metrics": {
+      "loss": 1.9143015965819359,
+      "pair_softmin_m": 0.9193126522004604,
+      "pair_softmin_m_scene_sum": 14.709002435207367,
+      "pair_exact_hard_jfde_m": 0.6005645710974932,
+      "pair_exact_hard_jfde_m_scene_sum": 9.60903313755989,
+      "world_weight_entropy": 1.2481763176620007,
+      "world_weight_entropy_scene_sum": 19.97082108259201,
+      "assignment_temperature": 1.0,
+      "assignment_temperature_scene_sum": 16.0,
+      "pair_temperature_m": 0.1,
+      "pair_temperature_m_scene_sum": 1.6,
+      "pair_weight": 1.0,
+      "pair_weight_scene_sum": 16.0,
+      "pair_initial_hard_jfde_m": 0.5908930022269487,
+      "pair_initial_hard_jfde_m_scene_sum": 9.45428803563118,
+      "pair_feedback_gain_m": -0.009671567007899284,
+      "pair_feedback_gain_m_scene_sum": -0.15474507212638855,
+      "pair_a_mean": 0.17966139037162066,
+      "pair_a_mean_scene_sum": 2.8745822459459305,
+      "pair_a_positive_fraction": 0.3875000011175871,
+      "pair_a_positive_fraction_scene_sum": 6.200000017881393,
+      "pair_q_a": 0.16067817620933056,
+      "pair_q_a_scene_sum": 2.570850819349289,
+      "pair_winner_switch_fraction": 0.6875,
+      "pair_winner_switch_fraction_scene_sum": 11.0,
+      "effective_edges": 600.0,
+      "clean_path_raw_sum": 0.2016567629761994,
+      "clean_path_signal_sum": 0.06580040033441037,
+      "valid_scene_count": 16.0,
+      "clean_path_term": 0.00020562625536513224,
+      "diffusion_term": 0.9929629278139791,
+      "geometry_term": 0.00013107821519042773,
+      "pair_term": 0.9193126522004604,
+      "map_term": 0.0016893024684564357
+    }
+  },
+  "last_saved_update": 336,
+  "completed_epochs": 2,
+  "current_rank1_epoch": 2,
+  "rank1_values": [
+    0.42381284975651967,
+    0.778969283023123,
+    1.2209655511097646
+  ],
+  "old_epoch5": [
+    0.4097670185111337,
+    0.7841791655426308,
+    1.296843430188697
+  ],
+  "passes_at_snapshot": [
+    false,
+    true,
+    true
+  ],
+  "training_continues": true,
+  "stop_signal_sent": false,
+  "not_native_early_stop": true,
+  "real_update_cap": 16800
+}
