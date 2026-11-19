@@ -95,10 +95,15 @@ class FeedbackCoupling(LearnableJointCouplingHead):
             scores = super().forward(context, safe, goal_scale)
         finally:
             handle.remove()
-        _, initial, _ = assignment(scores, valid, straight_through)
+        initial_indices, initial, _ = assignment(scores, valid, straight_through)
         scores = scores + self.messages(features[0], context.observed, safe, valid, initial)
         indices, _, soft = assignment(scores, valid, straight_through)
         hard = gather_candidates(proposals, indices)
+        if getattr(self, "capture_assignments", False):
+            self.last_initial_indices = initial_indices.detach()
+            self.last_final_indices = indices.detach()
+        if straight_through and getattr(self, "cost_proxy", False):
+            self.final_soft = soft
         if straight_through:
             surrogate = torch.einsum("bnkj,bnjd->bknd", soft.float(), safe.transpose(1, 2).float())
             hard = hard + (surrogate - surrogate.detach()).to(hard)
@@ -117,14 +122,23 @@ def build_joint(config, legacy_state=None):
         getattr(model.coupling, name).load_state_dict(module.state_dict(), strict=True)
     with torch.no_grad():
         model.coupling.world_queries.copy_(original.world_queries)
+    model.pair_backward_proxy = config.get("pair_backward_proxy", "coordinate")
+    if model.pair_backward_proxy not in ("coordinate", "candidate_cost"):
+        raise ValueError("unknown pair backward proxy")
+    model.coupling.cost_proxy = model.pair_backward_proxy == "candidate_cost"
     return model
 
 
-def pair_loss(coupled, truth, valid):
+def pair_loss(coupled, truth, valid, *, goals=None, soft=None):
     if not valid.any(1).all():
         raise ValueError("empty scene")
     difference = torch.where(valid[:, None, :, None], coupled.float() - truth[:, None].float(), 0.0)
     world_error = difference.norm(dim=-1).sum(-1) / valid.sum(1)[:, None]
+    if soft is not None:
+        delta = torch.where(valid[:, None, :, None], goals.detach().float() - truth.detach()[:, None].float(), 0.0)
+        costs = delta.norm(dim=-1).transpose(1, 2)
+        relaxed_error = torch.einsum("bnka,bna->bk", soft.float(), costs) / valid.sum(1)[:, None]
+        world_error = world_error.detach() + (relaxed_error - relaxed_error.detach())
     logits = -world_error / 0.1
     loss = (-0.1 * (logits.logsumexp(1) - math.log(coupled.shape[1]))).mean()
     log_weights = logits.detach().log_softmax(1)

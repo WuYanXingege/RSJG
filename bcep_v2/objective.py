@@ -18,7 +18,10 @@ def bridge_and_pair_loss(
     coupled, _, _ = model.coupling.assign(
         context, proposals, model.bridge.representation.goal_scale, straight_through=True
     )
-    pair, metrics = pair_loss(coupled, batch.future[..., -1, :], batch.valid)
+    options_pair = {}
+    if getattr(model, "pair_backward_proxy", "coordinate") == "candidate_cost":
+        options_pair = dict(goals=proposals, soft=model.coupling.final_soft)
+    pair, metrics = pair_loss(coupled, batch.future[..., -1, :], batch.valid, **options_pair)
     model.last_pair_metrics = dict(metrics, effective_edges=model.coupling.last_edge_count)
     endpoint = batch.future[..., -1, :].detach()
     clean = model.bridge.representation.encode_target_conditioned(
