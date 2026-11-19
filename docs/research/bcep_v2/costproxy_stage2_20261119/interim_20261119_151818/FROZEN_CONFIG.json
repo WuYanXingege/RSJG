@@ -1,0 +1,110 @@
+{
+  "identity": {
+    "stage": "joint",
+    "fold": "zara2",
+    "experiment": "zara2_costproxy_stage2_20261119",
+    "base_source": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+    "pair_backward_proxy": "candidate_cost",
+    "implementation": "db5ae540d93b22ff89421dccb6df6aed2b2490f233d3f860415f9ec2e8c9e608",
+    "config": "a858db7b38890caf7eaa87470123b705f2e6afcf1e9f4eeb4bbbb2e69e442105",
+    "train_bank": "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+    "dev_bank": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560",
+    "split": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb"
+  },
+  "config": {
+    "schema": "bcep-sixlayer-random-downstream-v1",
+    "initialization_role": "random_all_downstream",
+    "provider_origin": "self_trained_flow",
+    "teacher_used": false,
+    "hidden_dim": 192,
+    "heads": 4,
+    "ff_dim": 768,
+    "fjab_blocks": 6,
+    "history_social_blocks": 2,
+    "crop_width_m": 32.0,
+    "map_agent_chunk": 8,
+    "precision": "fp32",
+    "proposal_eta": 0,
+    "rollout": false,
+    "projection": false,
+    "batch_scenes": 4,
+    "gradient_accumulation": 4,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "clip_norm": 5.0,
+    "base_lr": 0.0001,
+    "warmup_epochs": 5,
+    "scheduler_horizon": 100,
+    "max_epochs": 100,
+    "downstream_seed": 3201,
+    "steps": 20,
+    "worlds": 20,
+    "allow_real_training": false,
+    "min_completed_epochs": 30,
+    "patience": 15,
+    "session_seconds": null,
+    "grouped_training": true,
+    "group_max_slots": 32,
+    "selection_mode": "H",
+    "tail_flush": "original: final partial accumulation divides by4, not by pending microbatch count",
+    "scales": {
+      "goal": 1.1100797195740808,
+      "bridge": 0.2196198967167483
+    },
+    "pair_backward_proxy": "candidate_cost"
+  },
+  "recipe": {
+    "seed": 3201,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "clip": 5.0,
+    "logical_scenes": 16,
+    "max_epochs": 100,
+    "minimum": 30,
+    "patience": 15,
+    "scheduler_horizon": 100
+  },
+  "implementation_files": {
+    "bcep_v2/__init__.py": "ff29b3c9346ad3675a00673f0f931a0035f496499380f9651408d859d1a842bb",
+    "bcep_v2/bank.py": "8bea61a220f86816315c5f3d5467f0295d2861002ab66d6e7fc57758098c0fda",
+    "bcep_v2/check_interfaces.py": "c0a2c91fef85eec4ea4cdd6f96a4fdfe461525017af848f0c75759213a133182",
+    "bcep_v2/check_readiness.py": "c683263de3efbb2cddd59551931f1ea8c875ec34d0e74622fe5372fabe21a3a6",
+    "bcep_v2/cost_acceptance.py": "2e090399c62b09044a227c062817f219ec07145110b360d3b45ceaf94e37ae7e",
+    "bcep_v2/cost_trial.py": "072362ed56c47f992033d0632d16de8a9fa72906ea72162b467c7313b673d27d",
+    "bcep_v2/evaluation.py": "1455d5946e09eebc5b7c7da4f90c546d4919841eae09a47f29aae897f2e80adc",
+    "bcep_v2/formal_manifest.py": "e7f96335cf47583c868cc30ae6af4d457600b6de8622af91731eab2cd0a061d9",
+    "bcep_v2/formal_reports.py": "60185ea6dec52f71835267a96f578d06265dead268da79fd691f98d6ef56ca64",
+    "bcep_v2/formal_run.py": "8a6d80f5b4885f97595bd711c659c23344fa11a8e8c9aa01f1bb8c28e67ab65b",
+    "bcep_v2/frozen_test.py": "aee1f371ab9e6810323c8bf13bfa8c56dfc091a91890bdcda662af82178ccb6b",
+    "bcep_v2/joint.py": "8d1f406c51bd9166815e6119a4258f62854c58f29e797ab6f2545db34f6461c1",
+    "bcep_v2/objective.py": "31a2d57a77cbbc0432254eb2c7babaaa3f01d7ac6a96af3aa8bbf7a82b650816",
+    "bcep_v2/provider.py": "83cd1091376082f6304bcdb0fd73b7b72d4b8c2f520da9f2713e832beb8b6edc",
+    "bcep_v2/runtime.py": "31ce15e90573fcc636185c9d437217b2e6b27590d36dd12be1671ecec773b875",
+    "bcep_v2/stages.py": "4013bf96c5459bda7da858919929f4dd813c6404f8c262a2165b720e65dcb087",
+    "bcep_v2/state.py": "2615795a8f215b7f52b4bcc641fa0fc59c5508c201790139a60c30dccaef7112",
+    "bcep_v2/workflow.py": "6ef59620c6d05955d3bd73da36c4f513a14ca2948b0f08b4c88419d56538096e"
+  },
+  "absolute_update_cap": 16800,
+  "retention": "all completed epochs plus dev H-JADE Top5 (ties earlier), best and last",
+  "selection": "dev_H_JADE",
+  "authorization": "only ZARA2 joint, one seed 3201; no test; no other folds",
+  "decision": {
+    "reference_rank1": [
+      0.4084707879413993,
+      0.8016974424154072,
+      1.3188941478729248
+    ],
+    "reference_epoch5": [
+      0.4097670185111337,
+      0.7841791655426308,
+      1.296843430188697
+    ],
+    "JADE_context_tolerance_m": 0.0012962305697344,
+    "require_both_JFDE_improve": true,
+    "require_exceed_epoch5_tradeoff": true
+  }
+}
