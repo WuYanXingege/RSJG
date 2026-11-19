@@ -46,7 +46,7 @@ lines=[f'''# ZARA2 shared_world_bounded 训练中期状态（{stamp}，Asia/Shan
 
 **训练仍在运行，本报告不是最终验收结论。** 已完整完成 {completed} 轮，当前进入第 {progress['epoch']} 轮。最新周期日志记录真实 update **{progress['update']}**（该时刻已执行，运行继续增长）；最后完整可恢复 checkpoint 为 update **{saved}**。本次快照不暂停、不重启、不更改早停或损失。
 
-当前按 dev H-JADE 的 rank1 是 **epoch {rank}**。三项中有 {sum(checks)}/3 项达到旧 epoch 5 的预先门槛；尚未达到三项同时通过。最终必须训练到原生早停或 100 轮上限，再以最终 H-JADE rank1 判定，不能用中期某个 JFDE 较低的权重替换主结果。
+当前按 dev H-JADE 的 rank1 是 **epoch {rank}**。三项中有 {sum(checks)}/3 项达到旧 epoch 5 的预先门槛；{'当前三项均达线，但不提前停止。' if all(checks) else '尚未达到三项同时通过。'}最终必须训练到原生早停或 100 轮上限，再以最终 H-JADE rank1 判定，不能用中期某个 JFDE 较低的权重替换主结果。
 
 | 开发集指标（m） | 旧 epoch 5 门槛 | 当前 rank1 | 新−旧（m） | 新−旧（cm） | 当前达线 |
 |---|---:|---:|---:|---:|---|''']
@@ -59,8 +59,14 @@ lines.append('''
 | 分组 | 初配误差新−旧 cm | 反馈收益新−旧 cm | 最终 H 误差新−旧 cm |
 |---|---:|---:|---:|''')
 for r in parts:lines.append(f"| {r['group']} | {100*r['delta_I_m']:+.5f} | {100*r['delta_feedback_gain_m']:+.5f} | {100*r['delta_H_m']:+.5f} |")
+for r in parts:
+ label='全体窗口' if r['group']=='all' else 'N≥9 窗口'
+ initial='改善' if r['delta_I_m']<0 else '退步'
+ feedback='增加' if r['delta_feedback_gain_m']>0 else '减少'
+ final='降低' if r['delta_H_m']<0 else '升高'
+ lines.append(f"\n{label}：初配误差{initial} {abs(r['delta_I_m'])*100:.5f} cm，反馈收益{feedback} {abs(r['delta_feedback_gain_m'])*100:.5f} cm，最终 H-JFDE {final} {abs(r['delta_H_m'])*100:.5f} cm。这是当前权重的观测分解，不是最终训练结论。")
 lines.append(f'''
-当前两组的初配 I 都比旧 epoch 5 差，较强的邻居反馈抵消了这部分退步并降低最终 H-JFDE。因此目前不能把终点收益归因为“直接初配监督已改善初配”。完整轨迹 H-JADE 仍比旧 epoch 5 高 {(values[0]-reference[0])*100:.5f} cm，整体门槛尚未通过。早期两个权重不足以判断最终训练趋势。
+完整轨迹 H-JADE 新减旧为 {(values[0]-reference[0])*100:+.5f} cm。当前 {completed} 个完整轮次不足以替代原生早停后的最终判定。
 
 ## 已完成轮次
 

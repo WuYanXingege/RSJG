@@ -1,0 +1,70 @@
+{
+  "status": "RUNNING_INTERIM_NOT_FINAL",
+  "snapshot_unix": 1795087906.5635872,
+  "snapshot_timezone": "Asia/Shanghai",
+  "progress": {
+    "epoch": 6,
+    "update": 940,
+    "cursor": 1600,
+    "unix": 1795087898.3959093,
+    "grad_norm": 5.720273494720459,
+    "metrics": {
+      "loss": 2.0193630531430244,
+      "pair_softmin_m": 1.2675660103559494,
+      "pair_softmin_m_scene_sum": 20.28105616569519,
+      "pair_exact_hard_jfde_m": 0.9481527078896761,
+      "pair_exact_hard_jfde_m_scene_sum": 15.170443326234818,
+      "world_weight_entropy": 1.0886434502899647,
+      "world_weight_entropy_scene_sum": 17.418295204639435,
+      "assignment_temperature": 1.0,
+      "assignment_temperature_scene_sum": 16.0,
+      "pair_temperature_m": 0.1,
+      "pair_temperature_m_scene_sum": 1.6,
+      "pair_weight": 1.0,
+      "pair_weight_scene_sum": 16.0,
+      "pair_initial_hard_jfde_m": 0.952522587031126,
+      "pair_initial_hard_jfde_m_scene_sum": 15.240361392498016,
+      "pair_feedback_gain_m": 0.004369890317320824,
+      "pair_feedback_gain_m_scene_sum": 0.06991824507713318,
+      "pair_a_mean": 0.16793880658224225,
+      "pair_a_mean_scene_sum": 2.687020905315876,
+      "pair_a_positive_fraction": 0.371875012293458,
+      "pair_a_positive_fraction_scene_sum": 5.950000196695328,
+      "pair_q_a": 0.24079061043448746,
+      "pair_q_a_scene_sum": 3.8526497669517994,
+      "pair_winner_switch_fraction": 0.6250000037252903,
+      "pair_winner_switch_fraction_scene_sum": 10.000000059604645,
+      "effective_edges": 1320.0,
+      "clean_path_raw_sum": 0.1637750455411151,
+      "clean_path_signal_sum": 0.0420908146770671,
+      "valid_scene_count": 16.0,
+      "clean_path_term": 0.00013153380177755025,
+      "diffusion_term": 0.7507577116601628,
+      "geometry_term": 8.902805689103843e-05,
+      "pair_term": 1.2675660103559494,
+      "map_term": 0.0008187485456765701
+    }
+  },
+  "last_saved_update": 840,
+  "completed_epochs": 5,
+  "current_rank1_epoch": 4,
+  "rank1_values": [
+    0.41813778893674836,
+    0.7854999693773561,
+    1.2644782451194103
+  ],
+  "old_epoch5": [
+    0.4097670185111337,
+    0.7841791655426308,
+    1.296843430188697
+  ],
+  "passes_at_snapshot": [
+    false,
+    false,
+    true
+  ],
+  "training_continues": true,
+  "stop_signal_sent": false,
+  "not_native_early_stop": true,
+  "real_update_cap": 16800
+}
