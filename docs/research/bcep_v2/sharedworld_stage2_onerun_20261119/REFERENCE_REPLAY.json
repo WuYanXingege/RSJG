@@ -1,0 +1,60 @@
+{
+  "identity": {
+    "checkpoint_sha256": "9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317",
+    "split_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
+    "candidate_seed": 2035,
+    "steps": 20,
+    "K": 20
+  },
+  "csv_sha256": "6e980d81da92308563129706cf4b88029806ac24da66d3e66d3520a7c4108491",
+  "groups": {
+    "all": {
+      "minADE": 0.2282074058511662,
+      "minFDE": 0.3520422351797007,
+      "JADE": 0.40976701871318333,
+      "JFDE": 0.7841791655426308,
+      "scene_weighted_minADE": 0.22791441607652074,
+      "scene_weighted_minFDE": 0.33942601943420153,
+      "coordination_gap_ADE": 0.18185260263666259,
+      "coordination_gap_FDE": 0.44475314610842925,
+      "agent_count": 4262,
+      "scene_count": 590,
+      "sums": {
+        "agent_minADE": 972.6199637376703,
+        "agent_minFDE": 1500.4040063358843,
+        "scene_JADE": 241.76254104077816,
+        "scene_JFDE": 462.6657076701522,
+        "scene_marginal_ADE": 134.46950548514724,
+        "scene_marginal_FDE": 200.2613514661789
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.23904280277811613,
+      "minFDE": 0.38215856724521,
+      "JADE": 0.6171195687740807,
+      "JFDE": 1.2968434379326077,
+      "scene_weighted_minADE": 0.2561313617299861,
+      "scene_weighted_minFDE": 0.420352599282903,
+      "coordination_gap_ADE": 0.3609882070440946,
+      "coordination_gap_FDE": 0.8764908386497048,
+      "agent_count": 2549,
+      "scene_count": 127,
+      "sums": {
+        "agent_minADE": 609.320104281418,
+        "agent_minFDE": 974.1221879080404,
+        "scene_JADE": 78.37418523430824,
+        "scene_JFDE": 164.69911661744118,
+        "scene_marginal_ADE": 32.52868293970823,
+        "scene_marginal_FDE": 53.38478010892868
+      }
+    }
+  },
+  "seconds": 269.7498606669251,
+  "archive_differences_m": [
+    2.0204965478498593e-10,
+    0.0,
+    7.743910623858596e-09
+  ],
+  "real_optimizer_updates": 0,
+  "only_missing_field": "per-window old H-JADE; endpoint metrics collected from the same required forward"
+}
