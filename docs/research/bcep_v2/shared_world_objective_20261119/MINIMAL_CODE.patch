@@ -1,0 +1,147 @@
+diff --git a/bcep_v2/joint.py b/bcep_v2/joint.py
+index 5d1d747..c90376d 100644
+--- a/bcep_v2/joint.py
++++ b/bcep_v2/joint.py
+@@ -81,7 +81,7 @@ class FeedbackCoupling(LearnableJointCouplingHead):
+             output = output.index_add(0, b * agents + i, msg)
+         return (output / degree.clamp_min(1)[:, None, None]).reshape(batch, agents, worlds, worlds)
+ 
+-    def assign(self, context, proposals, goal_scale, *, straight_through):
++    def assign(self, context, proposals, goal_scale, *, straight_through, return_initial=False):
+         valid = context.valid
+         if not valid.any(1).all():
+             raise ValueError("empty scene")
+@@ -95,18 +95,28 @@ class FeedbackCoupling(LearnableJointCouplingHead):
+             scores = super().forward(context, safe, goal_scale)
+         finally:
+             handle.remove()
+-        _, initial, _ = assignment(scores, valid, straight_through)
++        initial_indices, initial, initial_soft = assignment(scores, valid, straight_through)
+         scores = scores + self.messages(features[0], context.observed, safe, valid, initial)
+         indices, _, soft = assignment(scores, valid, straight_through)
+         hard = gather_candidates(proposals, indices)
+         if straight_through:
+             surrogate = torch.einsum("bnkj,bnjd->bknd", soft.float(), safe.transpose(1, 2).float())
+             hard = hard + (surrogate - surrogate.detach()).to(hard)
++        if return_initial:
++            first = gather_candidates(proposals, initial_indices)
++            if straight_through:
++                mixture = torch.einsum("bnkj,bnjd->bknd", initial_soft.float(), safe.transpose(1, 2).float())
++                first = first + (mixture - mixture.detach()).to(first)
++            return hard, indices, scores, first, initial_indices
+         return hard, indices, scores
+ 
+ 
+ def build_joint(config, legacy_state=None):
++    objective = config.get("pair_objective", "final_coordinate")
++    if objective not in ("final_coordinate", "shared_world_bounded"):
++        raise ValueError("unknown pair_objective")
+     model = build_legacy(config)
++    model.pair_objective = objective
+     model.bridge.denoiser.map_sampler = bilinear_zeros
+     model.bridge.encoder.map_pool = pool_map
+     if legacy_state is not None:
+@@ -120,12 +130,40 @@ def build_joint(config, legacy_state=None):
+     return model
+ 
+ 
+-def pair_loss(coupled, truth, valid):
++def shared_world_terms(initial_error, final_error, tau=0.1):
++    """One shared world axis; detached analytic maximizer (envelope gradient)."""
++    a = ((initial_error.detach() - final_error.detach()) / (2 * tau)).clamp(0.0, 0.5)
++    cost = final_error + a * (initial_error - final_error) - tau * a.square()
++    return cost, a
++
++
++def endpoint_world_error(goals, truth, valid):
++    if not valid.any(1).all():
++        raise ValueError("empty scene")
++    difference = torch.where(valid[:, None, :, None], goals.float() - truth.detach()[:, None].float(), 0.0)
++    return difference.norm(dim=-1).sum(-1) / valid.sum(1)[:, None]
++
++
++def pair_loss(coupled, truth, valid, *, initial=None):
+     if not valid.any(1).all():
+         raise ValueError("empty scene")
+     difference = torch.where(valid[:, None, :, None], coupled.float() - truth[:, None].float(), 0.0)
+     world_error = difference.norm(dim=-1).sum(-1) / valid.sum(1)[:, None]
+-    logits = -world_error / 0.1
++    extra = {}
++    cost = world_error
++    if initial is not None:
++        initial_error = endpoint_world_error(initial, truth, valid)
++        cost, a = shared_world_terms(initial_error, world_error)
++        q = (-cost.detach() / 0.1).softmax(1)
++        extra = dict(
++            pair_initial_hard_jfde_m=initial_error.detach().amin(1).mean(),
++            pair_feedback_gain_m=(initial_error.detach().amin(1) - world_error.detach().amin(1)).mean(),
++            pair_a_mean=a.mean(),
++            pair_a_positive_fraction=(a > 0).float().mean(),
++            pair_q_a=(q * a).sum(1).mean(),
++            pair_winner_switch_fraction=(initial_error.detach().argmin(1) != world_error.detach().argmin(1)).float().mean(),
++        )
++    logits = -cost / 0.1
+     loss = (-0.1 * (logits.logsumexp(1) - math.log(coupled.shape[1]))).mean()
+     log_weights = logits.detach().log_softmax(1)
+     return loss, dict(
+@@ -135,6 +173,7 @@ def pair_loss(coupled, truth, valid):
+         assignment_temperature=1.0,
+         pair_temperature_m=0.1,
+         pair_weight=1.0,
++        **extra,
+     )
+ 
+ 
+diff --git a/bcep_v2/objective.py b/bcep_v2/objective.py
+index 890fcba..c870e3b 100644
+--- a/bcep_v2/objective.py
++++ b/bcep_v2/objective.py
+@@ -15,10 +15,14 @@ def bridge_and_pair_loss(
+ ):
+     """One shared context and one combined objective graph."""
+     context = model.encode_context(batch.observed, batch.semantic_maps, batch.valid)
+-    coupled, _, _ = model.coupling.assign(
+-        context, proposals, model.bridge.representation.goal_scale, straight_through=True
++    shared_world = getattr(model, "pair_objective", "final_coordinate") == "shared_world_bounded"
++    result = model.coupling.assign(
++        context, proposals, model.bridge.representation.goal_scale, straight_through=True,
++        return_initial=shared_world,
+     )
+-    pair, metrics = pair_loss(coupled, batch.future[..., -1, :], batch.valid)
++    coupled = result[0]
++    pair, metrics = pair_loss(coupled, batch.future[..., -1, :], batch.valid,
++                              initial=result[3] if shared_world else None)
+     model.last_pair_metrics = dict(metrics, effective_edges=model.coupling.last_edge_count)
+     endpoint = batch.future[..., -1, :].detach()
+     clean = model.bridge.representation.encode_target_conditioned(
+diff --git a/bcep_v2/stages.py b/bcep_v2/stages.py
+index 1c369e5..6756314 100644
+--- a/bcep_v2/stages.py
++++ b/bcep_v2/stages.py
+@@ -166,6 +166,9 @@ def joint_callbacks(model, data, device, config, training, validation):
+                 for key, value in model.last_pair_metrics.items():
+                     w = (b - a) / len(ids) if key != "effective_edges" else 1
+                     metrics[key] = metrics.get(key, 0.0) + float(value) * w
++                    if getattr(model, "pair_objective", "final_coordinate") == "shared_world_bounded" and key != "effective_edges":
++                        raw_key = key + "_scene_sum"
++                        metrics[raw_key] = metrics.get(raw_key, 0.0) + float(value) * (b - a)
+                 c = model.last_loss_components
+                 for key in ("clean_path_raw_sum", "clean_path_signal_sum"):
+                     metrics[key] = metrics.get(key, 0.0) + float(c[key])
+diff --git a/bcep_v2/state.py b/bcep_v2/state.py
+index 3587e01..626e728 100644
+--- a/bcep_v2/state.py
++++ b/bcep_v2/state.py
+@@ -25,6 +25,12 @@ RAW_METRICS = {
+     "clean_path_signal_sum": ("valid_scene_count", "train_clean_path_alpha2_scene_macro"),
+ }
+ COUNTS = {count for count, _ in RAW_METRICS.values()}
++# Optional shared-world diagnostics retain exact scene numerators across partial epochs.
++for _name in ("pair_softmin_m", "pair_exact_hard_jfde_m", "world_weight_entropy",
++              "assignment_temperature", "pair_temperature_m", "pair_weight",
++              "pair_initial_hard_jfde_m", "pair_feedback_gain_m", "pair_a_mean",
++              "pair_a_positive_fraction", "pair_q_a", "pair_winner_switch_fraction"):
++    RAW_METRICS[_name + "_scene_sum"] = ("valid_scene_count", "train_" + _name + "_scene_macro")
+ 
+ 
+ def optimizer(model, lr, decay=0.0001):

@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "unique_tests_passed": 15,
+  "legacy_tests": 10,
+  "new_tests": 5,
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 32,
+  "synthetic_new_objective_updates": 24,
+  "synthetic_legacy_updates": 8,
+  "initial_run": {
+    "passed": 13,
+    "failed": 2
+  },
+  "targeted_rechecks": {
+    "candidate_equivariance": "PASS; non-degenerate world-query fixture",
+    "grouping": "PASS; same physical forwards, direct scalar and parameter-gradient baseline"
+  },
+  "full_DDIM_inference_equal": true,
+  "zero_feedback_loss_exact": true,
+  "zero_feedback_gradient_atol": 1e-06,
+  "zero_feedback_gradient_rtol": 1e-05,
+  "finite_difference_atol": 3e-06,
+  "provider_candidate_gradient_none": true,
+  "resume_continuous_equal": true,
+  "top5_epochs": [
+    2,
+    3,
+    5,
+    6,
+    4
+  ],
+  "no_extra_parameters": true
+}

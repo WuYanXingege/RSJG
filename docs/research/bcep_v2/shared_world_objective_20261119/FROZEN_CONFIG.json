@@ -1,0 +1,113 @@
+{
+  "experiment": "zara2_shared_world_audit_20261119",
+  "RUN_ONE_ZARA2": false,
+  "real_update_cap": 0,
+  "base_source": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "code_commit": "f17571c6836287408514736855e156fd5b825828",
+  "diagnostic_reference": "7ea3a2d1a5a5d654d9e23ba4ed38f94610fc6736",
+  "config": {
+    "schema": "bcep-sixlayer-random-downstream-v1",
+    "initialization_role": "random_all_downstream",
+    "provider_origin": "self_trained_flow",
+    "teacher_used": false,
+    "hidden_dim": 192,
+    "heads": 4,
+    "ff_dim": 768,
+    "fjab_blocks": 6,
+    "history_social_blocks": 2,
+    "crop_width_m": 32.0,
+    "map_agent_chunk": 8,
+    "precision": "fp32",
+    "proposal_eta": 0,
+    "rollout": false,
+    "projection": false,
+    "batch_scenes": 4,
+    "gradient_accumulation": 4,
+    "weight_decay": 0.0001,
+    "betas": [
+      0.9,
+      0.999
+    ],
+    "eps": 1e-08,
+    "clip_norm": 5.0,
+    "base_lr": 0.0001,
+    "warmup_epochs": 5,
+    "scheduler_horizon": 100,
+    "max_epochs": 100,
+    "downstream_seed": 3201,
+    "steps": 20,
+    "worlds": 20,
+    "allow_real_training": false,
+    "min_completed_epochs": 30,
+    "patience": 15,
+    "session_seconds": null,
+    "grouped_training": true,
+    "group_max_slots": 32,
+    "selection_mode": "H",
+    "tail_flush": "original: final partial accumulation divides by4, not by pending microbatch count",
+    "scales": {
+      "goal": 1.1100797195740808,
+      "bridge": 0.2196198967167483
+    },
+    "pair_objective": "shared_world_bounded"
+  },
+  "config_sha256": "e152e829d3d87de58635048acf992ab2738a8acc53c394fe4437ae1c93526ae8",
+  "implementation_sha256": "91ed10242b586999f0d1c96bfbf92fbd875e20e48fcd07052c735ec6a19dc165",
+  "implementation_files": {
+    "bcep_v2/__init__.py": "ff29b3c9346ad3675a00673f0f931a0035f496499380f9651408d859d1a842bb",
+    "bcep_v2/bank.py": "8bea61a220f86816315c5f3d5467f0295d2861002ab66d6e7fc57758098c0fda",
+    "bcep_v2/check_interfaces.py": "c0a2c91fef85eec4ea4cdd6f96a4fdfe461525017af848f0c75759213a133182",
+    "bcep_v2/check_readiness.py": "c683263de3efbb2cddd59551931f1ea8c875ec34d0e74622fe5372fabe21a3a6",
+    "bcep_v2/evaluation.py": "1455d5946e09eebc5b7c7da4f90c546d4919841eae09a47f29aae897f2e80adc",
+    "bcep_v2/formal_manifest.py": "e7f96335cf47583c868cc30ae6af4d457600b6de8622af91731eab2cd0a061d9",
+    "bcep_v2/formal_reports.py": "60185ea6dec52f71835267a96f578d06265dead268da79fd691f98d6ef56ca64",
+    "bcep_v2/formal_run.py": "8a6d80f5b4885f97595bd711c659c23344fa11a8e8c9aa01f1bb8c28e67ab65b",
+    "bcep_v2/frozen_test.py": "aee1f371ab9e6810323c8bf13bfa8c56dfc091a91890bdcda662af82178ccb6b",
+    "bcep_v2/joint.py": "62ad2bfcf05a8c9c4032d1cc92d738a050ac84e2a535d7b2a01ed8c388bc5b3c",
+    "bcep_v2/objective.py": "03e389cb592fd944271878e4fefbdf4e25987bfdb8328d3bbe2ae2227f9d7073",
+    "bcep_v2/provider.py": "83cd1091376082f6304bcdb0fd73b7b72d4b8c2f520da9f2713e832beb8b6edc",
+    "bcep_v2/runtime.py": "31ce15e90573fcc636185c9d437217b2e6b27590d36dd12be1671ecec773b875",
+    "bcep_v2/stages.py": "bd49e3169b5adcf427a4605d05a68552c8cfd7fa5b1151fddd44eda9be84753e",
+    "bcep_v2/state.py": "3607b2baf4dbdef81b52aeeab27df2161f9105fff0af38876580e48c5a9a7409",
+    "bcep_v2/workflow.py": "6ef59620c6d05955d3bd73da36c4f513a14ca2948b0f08b4c88419d56538096e"
+  },
+  "original_recipe": {
+    "seed": 3201,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "clip": 5.0,
+    "logical_scenes": 16,
+    "max_epochs": 100,
+    "minimum": 30,
+    "patience": 15,
+    "scheduler_horizon": 100
+  },
+  "bank_sha256": {
+    "train": "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+    "selection_dev": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+  },
+  "split_sha256": "b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816",
+  "tau_m": 0.1,
+  "a_cap": 0.5,
+  "pair_weight": 1.0,
+  "epochs": [
+    3,
+    5
+  ],
+  "train_gradient_sample_rule": "first train index with 2<=N<=4 and first with N>=9; both epochs; no augmentation or step",
+  "retention": "all complete epochs plus dev H-JADE best five distinct epochs, tie earlier; best/last; full resumable state",
+  "future_only_decision": {
+    "selector": "dev_H_JADE",
+    "rank1_reference": [
+      0.4084707879413993,
+      0.8016974424154072,
+      1.3188941478729248
+    ],
+    "epoch5_reference": [
+      0.4097670185111337,
+      0.7841791655426308,
+      1.296843430188697
+    ],
+    "pass_rule": "new rank1 H-JADE <= old epoch5 and both H-JFDE(all),H-JFDE(N>=9) < old epoch5; no test; no automatic other folds"
+  }
+}

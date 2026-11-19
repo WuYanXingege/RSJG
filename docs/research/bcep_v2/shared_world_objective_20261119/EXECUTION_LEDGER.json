@@ -1,0 +1,31 @@
+{
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 32,
+  "dev_forward_calls_total": 1180,
+  "unique_epoch_window_pairs": 1180,
+  "successful_gradient_observations": 4,
+  "additional_aborted_train_forward": 1,
+  "attempts": [
+    {
+      "kind": "sandbox",
+      "real_forward_calls": 0,
+      "outcome": "CUDA unavailable before model data forward"
+    },
+    {
+      "kind": "GPU_initial",
+      "dev_forward_calls": 590,
+      "gradient_forward_calls": 1,
+      "outcome": "all epoch3 assignments equal archive; cuDNN eval-mode backward rejected"
+    },
+    {
+      "kind": "GPU_completion",
+      "dev_forward_calls": 590,
+      "reused_epoch3_archive_windows": 590,
+      "gradient_forward_calls": 4,
+      "outcome": "PASS"
+    }
+  ],
+  "real_DDIM_calls": 0,
+  "test_windows_read": 0,
+  "auto_resume": false
+}
