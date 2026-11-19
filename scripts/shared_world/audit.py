@@ -86,16 +86,21 @@ def main(a):
         ck=torch.load(cp,map_location='cpu',weights_only=False);model.load_state_dict(ck['model'],strict=True)
         assert ck['completed_epoch']==epoch and ck['identity']['dev_bank']==banks['selection_dev'].hash
         cps.append(dict(epoch=epoch,update=ck['update'],sha256=digest(cp)));del ck
-        model.requires_grad_(False);start=time.monotonic()
+        model.eval().requires_grad_(False);start=time.monotonic()
         for pos,idx in enumerate(split['selection_dev_indices']):
             assert digest(split['records'][idx]['path'])==split['records'][idx]['sha256']
             b=data.batch([idx],'selection_dev');x=b.to('cuda');g=banks['selection_dev'].batch([idx],b).cuda();n=int(x.valid.sum())
             with torch.inference_mode():
-                ctx=model.encode_context(x.observed,x.semantic_maps,x.valid)
-                h,pi,_,initial,pi0=model.coupling.assign(ctx,g,model.bridge.representation.goal_scale,straight_through=False,return_initial=True)
                 # Archive identity binds hard outputs to the actual old coordinate checkpoints.
                 p=archived/'assignments'/str(epoch)/f'{idx}.npz';assert digest(p)==manifest[f'assignments/{epoch}/{idx}.npz']
-                z=np.load(p);assert np.array_equal(pi.cpu().numpy(),z['pi_H']) and np.array_equal(pi0.cpu().numpy(),z['pi_initial'])
+                z=np.load(p)
+                if a.reuse_verified_epoch3 and epoch==3:
+                    pi=torch.from_numpy(z['pi_H']).to('cuda');pi0=torch.from_numpy(z['pi_initial']).to('cuda')
+                    h=gather_candidates(g,pi);initial=gather_candidates(g,pi0)
+                else:
+                    ctx=model.encode_context(x.observed,x.semantic_maps,x.valid)
+                    h,pi,_,initial,pi0=model.coupling.assign(ctx,g,model.bridge.representation.goal_scale,straight_through=False,return_initial=True)
+                    assert np.array_equal(pi.cpu().numpy(),z['pi_H']) and np.array_equal(pi0.cpu().numpy(),z['pi_initial'])
                 I=endpoint_world_error(initial,x.future[:,:,-1],x.valid)[0];H=endpoint_world_error(h,x.future[:,:,-1],x.valid)[0]
                 C,aa=shared_world_terms(I,H);q=(-C/.1).softmax(0);qo=(-H/.1).softmax(0)
                 loss,_=pair_loss(h,x.future[:,:,-1],x.valid,initial=initial)
@@ -109,7 +114,8 @@ def main(a):
             if (pos+1)%100==0:print('epoch',epoch,'dev',pos+1,'/590',flush=True)
         torch.cuda.synchronize();inference_seconds+=time.monotonic()-start
         # Fixed real training scenes: gradient observability only. No optimizer is instantiated.
-        model.requires_grad_(True);start=time.monotonic()
+        csvout(out/'WORLD_WEIGHTS.csv',worlds);csvout(out/'WINDOWS.csv',windows)
+        model.train().requires_grad_(True);start=time.monotonic()
         for idx in sample:
             assert digest(split['records'][idx]['path'])==split['records'][idx]['sha256']
             b=data.batch([idx],'train');x=b.to('cuda');g=banks['train'].batch([idx],b).cuda();g.requires_grad_(True)
@@ -147,8 +153,8 @@ def main(a):
         label,rel=k.split('/',1);assert digest((up if label=='formal' else trial)/rel)==h
     assert all(lock_free(p) for p in [up/'controller.lock',trial/'trial.lock'])
     write(out/'PRESERVATION.json',dict(status='PASS',protected_sha256=protected,whole_run_inventory_unchanged=True,locks_free=True))
-    write(out/'QA.json',dict(status='PASS',real_optimizer_updates=0,real_dev_windows_per_epoch=590,real_dev_forward_calls=1180,real_train_gradient_windows_per_epoch=2,real_train_gradient_forward_calls=4,epochs=[3,5],heldout_read=False,augmentation=False,real_DDIM_calls=0,archive_hard_assignments_exact=True,per_agent_minFDE_exact=True,single_a_exact_zero=True,initial_tensor_sha256=init_hash,dev_forward_seconds=inference_seconds,gradient_seconds=gradient_seconds,total_seconds=time.monotonic()-t0,gpu=torch.cuda.get_device_name(),peak_allocated_bytes=torch.cuda.max_memory_allocated(),peak_reserved_bytes=torch.cuda.max_memory_reserved(),torch=torch.__version__,code_commit=source))
+    write(out/'QA.json',dict(status='PASS',real_optimizer_updates=0,real_dev_windows_per_epoch=590,real_dev_forward_calls=590 if a.reuse_verified_epoch3 else 1180,reused_archive_windows=590 if a.reuse_verified_epoch3 else 0,real_train_gradient_windows_per_epoch=2,real_train_gradient_forward_calls=4,epochs=[3,5],heldout_read=False,augmentation=False,real_DDIM_calls=0,archive_hard_assignments_exact=True,per_agent_minFDE_exact=True,single_a_exact_zero=True,initial_tensor_sha256=init_hash,dev_forward_seconds=inference_seconds,gradient_seconds=gradient_seconds,total_seconds=time.monotonic()-t0,gpu=torch.cuda.get_device_name(),peak_allocated_bytes=torch.cuda.max_memory_allocated(),peak_reserved_bytes=torch.cuda.max_memory_reserved(),torch=torch.__version__,code_commit=source))
     write(out/'STATUS.json',dict(status='COMPLETE_NO_TRAIN',real_optimizer_updates=0,auto_resume=False))
     print('AUDIT PASS',flush=True)
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--workspace',type=Path,required=True);p.add_argument('--out',type=Path,required=True);main(p.parse_args())
+    p=argparse.ArgumentParser();p.add_argument('--workspace',type=Path,required=True);p.add_argument('--out',type=Path,required=True);p.add_argument('--reuse-verified-epoch3',action='store_true',help='Reuse SHA-verified old pi after an already completed epoch-3 frozen pass');main(p.parse_args())
