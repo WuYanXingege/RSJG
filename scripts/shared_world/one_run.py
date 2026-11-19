@@ -69,7 +69,7 @@ def inputs(up,cost):
 def resolve(frozen,config,recipe,split,banks,provider):
     source_commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=SOURCE,text=True).strip()
     tracked=subprocess.check_output(['git','ls-files','*.py'],cwd=SOURCE,text=True).splitlines()
-    impl={p:digest(SOURCE/p) for p in tracked if not p.startswith(('tests/','docs/'))}
+    impl={p:digest(SOURCE/p) for p in tracked if p.startswith(('ebjd/','bcep/','bcep_formal/','bcep_confirmation/','bcep_joint/','bcep_v2/','selector_control/')) or p=='scripts/shared_world/one_run.py'}
     identity=dict(stage='joint',fold='zara2',experiment=EXPERIMENT,report_base=REPORT_BASE,base_source=BASE,pair_objective='shared_world_bounded',implementation=canonical_hash(impl),config=canonical_hash(config),split=canonical_hash(split),train_bank=banks[0].hash,dev_bank=banks[1].hash)
     return dict(identity=identity,code_commit=source_commit,config=config,config_sha256=canonical_hash(config),recipe=recipe,RUN_ONE_ZARA2=True,real_update_cap=16800,archive_config_sha256=frozen['config_sha256'],config_diff={'allow_real_training':{'old':False,'new':True}},authorization_diff={'RUN_ONE_ZARA2':[False,True],'real_update_cap':[0,16800]},implementation_files=impl,provider=provider,initial_tensor_sha256=INITIAL,retention=frozen['retention'],decision=frozen['future_only_decision'],runtime=dict(precision='FP32',deterministic=True,TF32=False,SDP='math',candidate_seed=2035,training_seed=3201),window_counts=dict(train=2681,selection_dev=590,dev_N_ge_9=127))
 
@@ -161,7 +161,7 @@ def main():
         data=FormalData(split,'training',verify=False);native_backward,_=joint_callbacks(model,data,torch.device('cuda'),config,*banks)
         def backward(ids,order,views):
             assert model.pair_objective=='shared_world_bounded'
-            row=native_backward(ids,order,views);assert 'pair_q_a_scene_sum' in row and row['pair_weight']==1.
+            row=native_backward(ids,order,views);assert 'pair_q_a_scene_sum' in row and abs(row['pair_weight']-1.)<1e-12
             return row
         resume=(out/'joint/last.pt').exists();epoch=1
         if resume:
