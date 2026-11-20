@@ -1,0 +1,123 @@
+{
+  "snapshot_started": "2026-11-20T11:45:54.581076+08:00",
+  "snapshot_captured": "2026-11-20T11:45:54.583689+08:00",
+  "latest_logged_update_time": "2026-11-20T11:45:51.914698+08:00",
+  "runtime_source_commit": "2e96b6f35554ceceb5a04fc08b6259dac75e486b",
+  "native_status": "RUNNING",
+  "supervisor_status": "TRAINING",
+  "completed_epochs": 0,
+  "latest_recorded_optimizer_update": 161,
+  "current_epoch": 1,
+  "logged_real_steps": 161,
+  "analysis_optimizer_updates": 0,
+  "native_status_update_field": 0,
+  "native_progress_update": 160,
+  "startup_to_first_post_hook_seconds": 9.50436520576477,
+  "post_hook_interval_seconds": {
+    "n": 160,
+    "mean": 5.864799876511097,
+    "median": 5.838812589645386,
+    "p10": 4.318409180641174,
+    "p90": 7.612955045700073,
+    "p95": 7.833673119544983,
+    "minimum": 1.7797601222991943,
+    "maximum": 8.929851531982422,
+    "population_stdev": 1.264801862348337
+  },
+  "full16_post_hook_interval_seconds": {
+    "n": 160,
+    "mean": 5.864799876511097,
+    "median": 5.838812589645386,
+    "p10": 4.318409180641174,
+    "p90": 7.612955045700073,
+    "p95": 7.833673119544983,
+    "minimum": 1.7797601222991943,
+    "maximum": 8.929851531982422,
+    "population_stdev": 1.264801862348337
+  },
+  "full16_scenes_per_second": 2.7281408295074203,
+  "first20_mean_seconds": 5.85852963924408,
+  "recent20_mean_seconds": 5.838736414909363,
+  "recent20_vs_first20_percent": -0.337853105703001,
+  "workload_pearson_r": {
+    "agents": 0.9706748012239623,
+    "max_agents": 0.6275581287690783,
+    "physical_groups": 0.8268232900031537,
+    "padded_agent_slots": 0.9517729171066895,
+    "attention_pair_slots": 0.9261323355991896
+  },
+  "projected_training_seconds_per_epoch": 985.2863792538643,
+  "prior_readiness_dev_seconds": 287.27953990292735,
+  "projected_train_plus_dev_seconds": 1272.5659191567916,
+  "projected_total_hours_30_epochs": 10.604715992973263,
+  "projected_total_hours_100_epochs": 35.34905330991087,
+  "estimated_train_slowdown_vs_old_epoch2_onward_median_percent": 16.57500820779154,
+  "old_coordinate_timing": {
+    "epochs": 41,
+    "first_epoch_train_seconds": 1093.7386707719415,
+    "epoch2_onward_train": {
+      "n": 40,
+      "mean": 863.918045525701,
+      "median": 845.1952047025552,
+      "p10": 835.5088740011677,
+      "p90": 916.9762087847106,
+      "p95": 918.5593332775403,
+      "minimum": 831.6145586830098,
+      "maximum": 922.3382194570731,
+      "population_stdev": 34.00152355573811
+    },
+    "epoch2_onward_validation": {
+      "n": 40,
+      "mean": 267.8482359379821,
+      "median": 268.31967745756265,
+      "p10": 261.29981334232724,
+      "p90": 275.2172769961879,
+      "p95": 275.3619585040375,
+      "minimum": 259.8165349608753,
+      "maximum": 277.0259343709331,
+      "population_stdev": 4.935715080518922
+    }
+  },
+  "resources": {
+    "samples": 186,
+    "gpu_mib": {
+      "n": 186,
+      "mean": 5607.967741935484,
+      "median": 5672.0,
+      "p10": 5672.0,
+      "p90": 5680.0,
+      "p95": 5680.0,
+      "minimum": 3424.0,
+      "maximum": 5680.0,
+      "population_stdev": 369.821838873537
+    },
+    "rss_peak_mib": 3509.25,
+    "interval_seconds": 5,
+    "allocator_peak": false,
+    "utilization_average_available": false
+  },
+  "hardware_query": "NVIDIA GeForce RTX 5070 Ti, 16303, 570.133.07",
+  "module_real_updates": {
+    "coupling.csee.": {
+      "nonzero_gradient_steps": 160,
+      "nonzero_parameter_update_steps": 160
+    },
+    "coupling.hcra.": {
+      "nonzero_gradient_steps": 161,
+      "nonzero_parameter_update_steps": 161
+    },
+    "bridge.denoiser.grg_ctf.": {
+      "nonzero_gradient_steps": 161,
+      "nonzero_parameter_update_steps": 161
+    }
+  },
+  "implementation_unchanged": true,
+  "limitations": [
+    "Epoch-1 partial post-hook intervals are wall time, not optimizer-kernel timings.",
+    "Inter-epoch intervals excluded; startup and first step excluded from steady intervals.",
+    "Projected cycle uses a prior zero-update v3 readiness validation, not this run validation.",
+    "No profiler: no isolated CSEE/HCRA/GRG, Hungarian, data-loading or telemetry timing.",
+    "No contemporaneous v2 speed control; workload correlations do not establish causality.",
+    "Five-second process GPU memory samples can miss peaks; no allocator peak or average utilization."
+  ]
+}
