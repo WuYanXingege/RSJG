@@ -1,0 +1,30 @@
+{
+  "status": "RUNNING_NOT_FINAL",
+  "snapshot_time": "2026-11-20T11:34:37.770605+08:00",
+  "runtime_source_commit": "2e96b6f35554ceceb5a04fc08b6259dac75e486b",
+  "frozen_sha256": "294054c2cf7605caafe016507bb601e2d85518b70555369ca3690b74138e9e43",
+  "initial_model_sha256": "82704dc650fcd8f0dfa01dee7f7ad2365d78d65b8aa9f17e15ae7378eaf1ff09",
+  "first_saved_update_verified": 1,
+  "latest_recorded_real_update": 45,
+  "completed_epochs": 0,
+  "checkpoint_model_optimizer_scheduler_rng_verified": true,
+  "implementation_unchanged": true,
+  "modules": {
+    "coupling.csee.": {
+      "nonzero_gradient_steps": 44,
+      "nonzero_parameter_update_steps": 44
+    },
+    "coupling.hcra.": {
+      "nonzero_gradient_steps": 45,
+      "nonzero_parameter_update_steps": 45
+    },
+    "bridge.denoiser.grg_ctf.": {
+      "nonzero_gradient_steps": 45,
+      "nonzero_parameter_update_steps": 45
+    }
+  },
+  "protected_asset_count": 277,
+  "resource_measurement": "5-second sampled per-process GPU memory; not allocator peak",
+  "report_tests_passed": 4,
+  "no_other_queues": true
+}
