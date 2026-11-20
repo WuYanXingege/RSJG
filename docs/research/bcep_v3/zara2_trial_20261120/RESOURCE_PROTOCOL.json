@@ -1,0 +1,18 @@
+{
+  "source": "external nvidia-smi per-process used_memory",
+  "sample_interval_seconds": 5,
+  "allocator_peak_available": false,
+  "meaning": "driver/context/reserved process GPU memory sampled every 5 seconds; peak can be missed",
+  "phase_boundary_approximate": true,
+  "training_and_validation_time_source": "unmodified native run_stage timers",
+  "attempts": [
+    {
+      "attempt": 1,
+      "pid": 1978816,
+      "exit_code": 0,
+      "started_unix": 1795145404.0423522,
+      "finished_unix": 1795182538.7394145,
+      "status": "COMPLETE"
+    }
+  ]
+}
