@@ -1,0 +1,38 @@
+=== CPU ===
+.............................                                            [100%]
+=============================== warnings summary ===============================
+tests/test_bcep_v3_perf.py::test_deferred_fields_float_order_finite_and_no_graph_retention
+  <ISOLATED_WORKTREE>/bcep_v3/perf/stages.py:30: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+  Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:835.)
+    v = value if count else float(value)*multiplier/divisor
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+29 passed, 1 warning in 70.31s (0:01:10)
+
+
+=== SECONDARY ===
+....                                                                     [100%]
+4 passed in 0.20s
+
+
+=== PERSTEP ===
+.                                                                        [100%]
+1 passed in 67.51s (0:01:07)
+
+
+=== EDGES ===
+...                                                                      [100%]
+3 passed in 7.74s
+
+
+=== JOURNAL ===
+.                                                                        [100%]
+1 passed in 0.30s
+
+
+=== FORWARD ===
+CPU raw outputs, assignments, gradients and RNG bitwise equal; zero optimizer steps.
+
+
+=== MECHANISMS ===
+P4 geometry and P5 CPU noise audits complete; no optimizer steps or CUDA context.

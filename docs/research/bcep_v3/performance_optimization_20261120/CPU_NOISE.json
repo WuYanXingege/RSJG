@@ -1,0 +1,39 @@
+{
+  "status": "READ_ONLY_CPU_MEASURED",
+  "windows": 590,
+  "agents": 4262,
+  "K": 20,
+  "seed": 2035,
+  "canonical_split_file_sha256": "b31703d83fce7aadc735897efaa5c3970c04f477c70afb05879a05669657a816",
+  "native_seconds": [
+    1.9950820801313967,
+    1.9059751168824732,
+    1.9055608659982681
+  ],
+  "cached_clone_seconds": [
+    0.004228394012898207,
+    0.004109278088435531,
+    0.006045958958566189
+  ],
+  "repetitions": 3,
+  "exploratory": true,
+  "bytes_equal": true,
+  "global_cpu_rng_unchanged": true,
+  "tensor_cache_bytes": 8183040,
+  "concatenated_noise_sha256": "8bda231e91f7ff4b3711b84e0e67c083386272ac33c97abc2e6803526031d8f5",
+  "raw_member_ids_exported": false,
+  "optimizer_updates": 0,
+  "cache_key_fields": [
+    "algorithm",
+    "torch_version",
+    "scene_id",
+    "ordered_agent_ids",
+    "world_0_to_19",
+    "seed",
+    "valid_mask_and_order",
+    "frame_ids",
+    "coordinate_identity"
+  ],
+  "production_cache_enabled": false,
+  "note": "Read-only dev identity metadata and CPU random draws only; no model, trajectories, labels, or test/heldout reads. Three CPU timings are exploratory, not a GPU or full-validation speedup."
+}

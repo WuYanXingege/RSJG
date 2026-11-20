@@ -1,0 +1,128 @@
+{
+  "status": "CPU_READY_GPU_PROFILE_PENDING",
+  "speedup_percent": null,
+  "speedup_confidence_interval": null,
+  "measured_gpu_benchmark": false,
+  "gpu_profiler_attached": false,
+  "formal_controller_at_initial_check": 1978816,
+  "initial_check_latest_progress_update": 290,
+  "gpu_busy_at_initial_check": true,
+  "normal_fully_populated_gradient_telemetry": {
+    "new_parameter_tensors": 34,
+    "original_host_scalar_boundaries": 136,
+    "candidate_host_transfers": 2,
+    "parameter_clone_float32_bytes": 1372136,
+    "statistic_reduction_dtype": "float64",
+    "warning": "Static normal-path boundary count, not measured latency or a speedup prediction."
+  },
+  "diagnostic_tensor_scalar_reads_per_physical_group": 11,
+  "candidate_logical_update_host_transfers": 1,
+  "unchanged_fail_fast": [
+    "native gradient clipping error_if_nonfinite",
+    "native finite_tensors post-step batch check",
+    "v3 asynchronous input assertions"
+  ],
+  "cpu_collation_counts_tolist_is_cuda_sync": false,
+  "profile_hypotheses": [
+    {
+      "location": "ebjd/denoiser.py:GeometryConditionedJointDenoiser.forward:L282–L394",
+      "scope": "six FJAB checkpoint recomputation; training only"
+    },
+    {
+      "location": "ebjd/encoders.py:MotionSceneContextEncoder.forward:L139–L216",
+      "scope": "map U-Net checkpoint recomputation; context encoded once for validation"
+    },
+    {
+      "location": "ebjd/unified.py:hard_assignment_indices:L41–L60",
+      "scope": "scores GPU-to-CPU, CPU Hungarian twice, per-agent result copies; unchanged"
+    },
+    {
+      "location": "bcep_v3/coupling.py:RelationalAssignment.relations:L24–L50",
+      "scope": "edge-chunk candidate pair geometry and dense incidence/matmul; unchanged"
+    },
+    {
+      "location": "bcep_v3/coupling.py:RelationalAssignment.forward:L52–L70",
+      "scope": "dense world social attention and relation values; unchanged"
+    },
+    {
+      "location": "bcep_v3/gate.py:GeometryReliabilityGate.forward:L12–L38",
+      "scope": "actual path pair distances and bounded CTF gate; unchanged"
+    },
+    {
+      "location": "bcep_v2/objective.py:bridge_and_pair_loss:L7–L65",
+      "scope": "training pairing K20 but conditional bridge uses P=1 target-conditioned world"
+    },
+    {
+      "location": "bcep_joint/inference.py:generate:L26–L44",
+      "scope": "validation K20, DDIM20; one shared context; no change"
+    }
+  ],
+  "changes": [
+    {
+      "priority": "P0",
+      "original": "bcep_v3/formal_telemetry.py:ModuleTelemetry.capture_backward:L12–L20",
+      "candidate": "bcep_v3/perf/telemetry.py:BatchedModuleTelemetry.capture_backward:L38–L56",
+      "original_work": "逐张量 finite 布尔读回与 FP64 平方和 float 读回",
+      "change": "每模块设备端归约，三个模块的 finite/平方和一次读回；仍在 clip/step 前拒绝 NaN/Inf",
+      "numerical_boundary": "不接入损失图；统计跨张量求和顺序可变化，模型/梯度不得变化",
+      "required_evidence": "逐step状态、非有限负例、缺失梯度、参数对象身份"
+    },
+    {
+      "priority": "P0",
+      "original": "bcep_v3/formal_telemetry.py:ModuleTelemetry.step_done:L21–L31",
+      "candidate": "bcep_v3/perf/telemetry.py:BatchedModuleTelemetry.step_done:L59–L79",
+      "original_work": "逐张量参数差 FP64 范数与最大值读回；rows 无界增长；每步 JSONL",
+      "change": "每模块归约后一次读回；保留每步字段/编号/写盘；内存仅留64行",
+      "numerical_boundary": "统计允许独立舍入容差；参数克隆与实际step对应不变；没有 fsync 断电保证",
+      "required_evidence": "正常恢复、重放编号、完整日志、70行内存界限及半行拒绝"
+    },
+    {
+      "priority": "P1",
+      "original": "bcep_v2/stages.py:joint_callbacks.backward:L134–L177",
+      "candidate": "bcep_v3/perf/stages.py:joint_callbacks.backward:L77–L110",
+      "original_work": "每物理组读取 loss、pair metrics 和 loss components 到 Python",
+      "change": "detach 后保留标量，逻辑更新末集中读回，按原次序在 Python 进行同样乘除/累加",
+      "numerical_boundary": "损失构造、agent/scene 权重、backward顺序、RNG和optimizer完全不变；非有限诊断在step前拒绝",
+      "required_evidence": "完整16窗+3窗尾批，逐step前后SHA，恢复和RNG，所有日志字段"
+    },
+    {
+      "priority": "P2",
+      "original": "bcep_v2/stages.py:joint_callbacks.backward:L134–L177",
+      "candidate": "bcep_v3/perf/stages.py:compact_checked:L53–L66",
+      "original_work": "physical.to(cuda) 后再 physical.valid.cpu() 与CPU掩码比较",
+      "change": "先验证CPU压紧后掩码相同，再搬运同一 SceneBatch；保留非前缀mask拒绝",
+      "numerical_boundary": "没有数值运算或成员重排；counts.tolist本来就在CPU，不记作CUDA同步",
+      "required_evidence": "坏padding在.to前拒绝、混合人数、顺序和完整状态精确相等"
+    },
+    {
+      "priority": "P3",
+      "original": "ebjd/encoders.py:MotionSceneContextEncoder.forward:L139–L216",
+      "candidate": "bcep_v3/perf/options.py:checkpoint_arm:L6–L14",
+      "original_work": "训练时按map_agent_chunk对U-Net activation checkpoint重算",
+      "change": "仅独立性能臂显式切换encoder/denoiser原有开关，并finally恢复",
+      "numerical_boundary": "CPU小图2人样本输出/梯度精确；GPU全分辨率57人显存和数值均未验收；默认仍开checkpoint",
+      "required_evidence": "独立map/bridge/both臂，输出/梯度/RNG与未来allocator peak"
+    },
+    {
+      "priority": "P4",
+      "original": "bcep_v3/geometry.py:reference_paths:L5–L11",
+      "candidate": "scripts/perf_audit/mechanisms.py:simplified:L27–L30",
+      "original_work": "CV baseline + 比例×端点残差",
+      "change": "仅诊断脚本实现代数化简；生产geometry、incidence和attention均未改",
+      "numerical_boundary": "FP32非逐位等价；57人发生argmin时间跳变，拒绝默认替换",
+      "required_evidence": "12维逐项差、CPA、世界分数、两次Hungarian、梯度与近并列负对照"
+    },
+    {
+      "priority": "P5",
+      "original": "bcep_joint/inference.py:keyed_noise:L8–L17",
+      "candidate": "scripts/perf_audit/mechanisms.py:noise_audit:L92–L125",
+      "original_work": "590窗4262人×20次CPU Generator初始化",
+      "change": "只读CPU缓存可行性实验；键包含scene/agent/world/seed/有效顺序/帧坐标身份；不接入generate",
+      "numerical_boundary": "缓存副本逐字节相同，CPU RNG不变；小成本不等于整网显著加速",
+      "required_evidence": "590窗三次原生/缓存对照、字节hash、缓存8MB成本"
+    }
+  ],
+  "geometry_status": "NON_BITWISE_OPTIONAL",
+  "noise_cpu_only": true,
+  "no_claimed_causal_attribution_from_population_correlations": true
+}

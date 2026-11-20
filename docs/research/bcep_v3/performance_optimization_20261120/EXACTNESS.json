@@ -1,0 +1,372 @@
+{
+  "status": "PASS_CPU_GPU_PENDING",
+  "tests": [
+    {
+      "run": "CPU",
+      "passed": 29,
+      "xml_sha256": "d75acfe3e98a0de7832d2236721702330a7a322fa87cf77a736de93d65ad5bb6"
+    },
+    {
+      "run": "SECONDARY",
+      "passed": 4,
+      "xml_sha256": "152edcf3a4512317dfed98bab8d41bde2f0cc24c8532d292e551b6a74a423f75"
+    },
+    {
+      "run": "PERSTEP",
+      "passed": 1,
+      "xml_sha256": "4a4db1be2c5dbc7275b693d3e4f8cba32a709a645805c875a03a5aacf7c8e6e7"
+    },
+    {
+      "run": "EDGES",
+      "passed": 3,
+      "xml_sha256": "82813ce9842853ccba6374ea10b646cb1b996cd20b8b90418cd7957aa0c56d3b"
+    },
+    {
+      "run": "JOURNAL",
+      "passed": 1,
+      "xml_sha256": "c82fd47adb2c58c05562cc0a86f8178e0eb6087f0aa0c6d637162a39ba69adec"
+    }
+  ],
+  "unique_test_cases": 36,
+  "executed_test_cases": 38,
+  "synthetic_cpu_optimizer_updates": 78,
+  "synthetic_gpu_optimizer_updates": 0,
+  "real_data_optimizer_updates": 0,
+  "baseline_fixed_commit": "03158af4a56e75e1cc169b7e8e096048b54ba0bc",
+  "formal_source_commit": "2e96b6f35554ceceb5a04fc08b6259dac75e486b",
+  "synthetic_pixels": 32,
+  "cpu_receipts": [
+    {
+      "full_step_shapes": [
+        {
+          "counts": [
+            1
+          ],
+          "model_grads_optimizer_rng_bitwise": true,
+          "statistics_max_abs": 0.0
+        },
+        {
+          "counts": [
+            2
+          ],
+          "model_grads_optimizer_rng_bitwise": true,
+          "statistics_max_abs": 0.0
+        },
+        {
+          "counts": [
+            9
+          ],
+          "model_grads_optimizer_rng_bitwise": true,
+          "statistics_max_abs": 0.0
+        },
+        {
+          "counts": [
+            57
+          ],
+          "model_grads_optimizer_rng_bitwise": true,
+          "statistics_max_abs": 0.0
+        },
+        {
+          "counts": [
+            1,
+            2,
+            9
+          ],
+          "model_grads_optimizer_rng_bitwise": true,
+          "statistics_max_abs": 0.0
+        }
+      ],
+      "native_full16_tail_recovery": {
+        "completed_epochs": 2,
+        "updates_per_arm": 4,
+        "partial_cursor": 16,
+        "tail_windows": 3,
+        "whole_state_bitwise": true,
+        "statistics_max_abs": 4.336808689942018e-19,
+        "compared_fields": [
+          "model",
+          "optimizer",
+          "scheduler",
+          "rng",
+          "history",
+          "cursor",
+          "order",
+          "stale",
+          "trainable",
+          "update"
+        ]
+      },
+      "checkpoint_arms": {
+        "cpu_two_agent_output_grad_rng_bitwise": true,
+        "gpu_and_57_agent_full_resolution": "UNTESTED",
+        "default_enabled_unchanged": true
+      },
+      "synthetic_cpu_optimizer_updates": 56,
+      "real_optimizer_updates": 0,
+      "cuda_initialized": false,
+      "cuda_rng_exactness": "UNTESTED_GPU_PROFILE_PENDING",
+      "formal_data_and_bank_calls_denied": true
+    },
+    {
+      "synthetic_cpu_optimizer_updates": 0,
+      "real_optimizer_updates": 0,
+      "cuda_initialized": false,
+      "cuda_rng_exactness": "UNTESTED_GPU_PROFILE_PENDING",
+      "formal_data_and_bank_calls_denied": true
+    },
+    {
+      "native_full16_tail_recovery": {
+        "completed_epochs": 2,
+        "updates_per_arm": 4,
+        "partial_cursor": 16,
+        "tail_windows": 3,
+        "whole_state_bitwise": true,
+        "statistics_max_abs": 4.336808689942018e-19,
+        "each_update_pre_post_state_sha256_equal": true,
+        "pre_post_receipts": [
+          {
+            "phase": "before",
+            "update": 1,
+            "sha256": "77ef769bf2587abe03e5ec3e109526349b89d31448effd42b2647fa6a6bf0410"
+          },
+          {
+            "phase": "after",
+            "update": 1,
+            "sha256": "7e860ae32d7bd1577e1cd7db6b21c38be6ea4dc542a81322e39f3192b0b5dc09"
+          },
+          {
+            "phase": "before",
+            "update": 2,
+            "sha256": "50f4121b1427d034121fd9a20f2ca0fb3b0d8d107a2dbc25f7fff0e101c019aa"
+          },
+          {
+            "phase": "after",
+            "update": 2,
+            "sha256": "6da0e9eeb44a288afe45099ea736821f287451d5f7d57c680d660b83c4070b4d"
+          },
+          {
+            "phase": "before",
+            "update": 3,
+            "sha256": "eb0c3a882708dd873e5c980de9370934bbf3d4cc8430777b6046d8fb15d772b5"
+          },
+          {
+            "phase": "after",
+            "update": 3,
+            "sha256": "abcf69e9bd063628c1a8d3987e2fd0b5bee657783c2dd6835e1e4b30dd0ea80a"
+          },
+          {
+            "phase": "before",
+            "update": 4,
+            "sha256": "8a3fa3caac376ebc83b193561bb6184edf3380a5ae6f95456e9c4b2f0a2db68c"
+          },
+          {
+            "phase": "after",
+            "update": 4,
+            "sha256": "6c8e26cbc4f93f75bec39bb0212f1b3700cc8f89c2efc98077ccba290fbdc57a"
+          }
+        ],
+        "compared_fields": [
+          "model",
+          "optimizer",
+          "scheduler",
+          "rng",
+          "history",
+          "cursor",
+          "order",
+          "stale",
+          "trainable",
+          "update"
+        ]
+      },
+      "synthetic_cpu_optimizer_updates": 16,
+      "real_optimizer_updates": 0,
+      "cuda_initialized": false,
+      "cuda_rng_exactness": "UNTESTED_GPU_PROFILE_PENDING",
+      "formal_data_and_bank_calls_denied": true
+    },
+    {
+      "nontrivial_layouts": [
+        {
+          "layout": "colocated",
+          "old_new_same_input_state_bitwise": true,
+          "statistics_max_abs": 0.0,
+          "note": "Old/new on identical reordered input; does not claim a unique permutation for tied Hungarian optima."
+        },
+        {
+          "layout": "candidate_permuted",
+          "old_new_same_input_state_bitwise": true,
+          "statistics_max_abs": 0.0,
+          "note": "Old/new on identical reordered input; does not claim a unique permutation for tied Hungarian optima."
+        },
+        {
+          "layout": "people_permuted",
+          "old_new_same_input_state_bitwise": true,
+          "statistics_max_abs": 0.0,
+          "note": "Old/new on identical reordered input; does not claim a unique permutation for tied Hungarian optima."
+        }
+      ],
+      "synthetic_cpu_optimizer_updates": 6,
+      "real_optimizer_updates": 0,
+      "cuda_initialized": false,
+      "cuda_rng_exactness": "UNTESTED_GPU_PROFILE_PENDING",
+      "formal_data_and_bank_calls_denied": true
+    },
+    {
+      "journal_replay": {
+        "physical_events_retained": 4,
+        "effective_last_update": 2,
+        "repeated_update_uses_checkpoint_counter": true,
+        "statistics_equal": true,
+        "manual_parameter_perturbations_not_optimizer_steps": 4
+      },
+      "synthetic_cpu_optimizer_updates": 0,
+      "real_optimizer_updates": 0,
+      "cuda_initialized": false,
+      "cuda_rng_exactness": "UNTESTED_GPU_PROFILE_PENDING",
+      "formal_data_and_bank_calls_denied": true
+    }
+  ],
+  "raw_forward": {
+    "status": "PASS_CPU",
+    "rows": [
+      {
+        "n_agents": 1,
+        "arm": "baseline",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 1,
+        "arm": "p012",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 2,
+        "arm": "baseline",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 2,
+        "arm": "p012",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 2,
+        "arm": "map_off",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 2,
+        "arm": "bridge_off",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 2,
+        "arm": "both_off",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 9,
+        "arm": "baseline",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 9,
+        "arm": "p012",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 57,
+        "arm": "baseline",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      },
+      {
+        "n_agents": 57,
+        "arm": "p012",
+        "all_captured_tensors_bitwise_equal": true,
+        "output_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "gradient_max_relative": 0.0,
+        "initial_and_final_hungarian_equal": true,
+        "checkpoint_flags_restored": true
+      }
+    ],
+    "optimizer_updates": 0,
+    "pixels": 32,
+    "captured": [
+      "hard_goals",
+      "initial_pi",
+      "final_pi",
+      "world_scores",
+      "bridge_final",
+      "bridge_coarse",
+      "coarse_path",
+      "coarse_goal",
+      "loss_metrics",
+      "all_parameter_gradients",
+      "CPU_RNG",
+      "order_RNG",
+      "view_RNG"
+    ],
+    "GPU_full_resolution": "PENDING"
+  },
+  "telemetry_statistic_tolerance": {
+    "relative": 1e-12,
+    "absolute": 1e-15,
+    "max_observed_absolute": 4.336808689942018e-19
+  },
+  "model_state_tolerance": 0,
+  "optimizer_state_tolerance": 0,
+  "CUDA_RNG_equivalence": "PENDING",
+  "GPU_max57_full256_map_capacity": "PENDING",
+  "research_geometry_equivalence": "NON_BITWISE_OPTIONAL"
+}

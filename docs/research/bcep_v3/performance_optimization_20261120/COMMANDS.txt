@@ -1,0 +1,11 @@
+# 从隔离的 perf 分支工作区执行；每次复查选择新的输出子目录。
+# CPU 单测：隐藏全部 GPU；只使用合成数据，包含原生恢复/Top5/early-stop测试。
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 MKL_NUM_THREADS=1 BCEP_PERF_OUTPUT=../RSJG_perf_outputs/bcep_v3_speed_audit_20261120/cpu_recheck_manual nice -n 19 ../.conda/rsjg/bin/python -m pytest -q tests/test_bcep_v3_perf.py tests/test_bcep_v3.py tests/test_bcep_v3_formal.py tests/test_v3_perf_admission.py -o addopts=''
+
+# 当前不执行。只有正式控制器已停止且GPU无其他计算进程时才可能通过入口检查。
+# 2次预热、每形状5次测量、256像素地图；包括57人及混合16窗。
+# 附加 checkpoint 开关和关闭 telemetry 仅是性能臂，不是推荐默认。
+RUN_SYNTHETIC_PERF=true OMP_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8 ../.conda/rsjg/bin/python scripts/perf_audit/benchmark.py --mode throughput --warmup 2 --repetitions 5 --include-checkpoint-arms --telemetry-off-control --output ../RSJG_perf_outputs/bcep_v3_speed_audit_20261120/gpu_throughput_manual
+
+# 单独高成本profile；不能把profile时长当成吞吐。仍需GPU空闲，仍不会排队等待。
+RUN_SYNTHETIC_PERF=true OMP_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8 ../.conda/rsjg/bin/python scripts/perf_audit/benchmark.py --mode profile --shape 1x57 --shape mixed16 --warmup 2 --repetitions 5 --output ../RSJG_perf_outputs/bcep_v3_speed_audit_20261120/gpu_profile_manual
