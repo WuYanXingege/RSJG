@@ -53,9 +53,9 @@ class FeedbackCoupling(LearnableJointCouplingHead):
         nn.init.zeros_(self.compatibility[-1].weight)
         nn.init.zeros_(self.compatibility[-1].bias)
 
-    def messages(self, features, observed, proposals, valid, initial):
+    def messages(self, features, observed, proposals, valid, initial, *, edge_indices=None):
         batch, agents, worlds, _ = features.shape
-        scene, receiver, sender = neighbors(observed, valid)
+        scene, receiver, sender = neighbors(observed, valid) if edge_indices is None else edge_indices
         output = features.new_zeros(batch * agents, worlds, worlds, dtype=torch.float32)
         self.last_edge_count = scene.numel()
         compact = self.project(features).float()
@@ -87,16 +87,9 @@ class FeedbackCoupling(LearnableJointCouplingHead):
             raise ValueError("empty scene")
         proposals = proposals.detach()
         safe = torch.where(valid[:, None, :, None], proposals, 0.0)
-        features = []
-        handle = self.candidate_norm.register_forward_hook(
-            lambda mod, args, value: features.append(value)
-        )
-        try:
-            scores = super().forward(context, safe, goal_scale)
-        finally:
-            handle.remove()
+        scores, features = super().forward_features(context, safe, goal_scale)
         _, initial, _ = assignment(scores, valid, straight_through)
-        scores = scores + self.messages(features[0], context.observed, safe, valid, initial)
+        scores = scores + self.messages(features, context.observed, safe, valid, initial)
         indices, _, soft = assignment(scores, valid, straight_through)
         hard = gather_candidates(proposals, indices)
         if straight_through:

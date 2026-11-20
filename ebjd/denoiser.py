@@ -364,8 +364,15 @@ class GeometryConditionedJointDenoiser(nn.Module):
         future = future.permute(0, 1, 2, 5, 3, 4).contiguous()
         physical_feedback, future = self._align_ctf_feedback(
             physical_feedback, future)
-        hidden = hidden + gate * physical_feedback
-        combined = observed + gate.view(batch, 1, 1, 1, 1, 1) * future
+        if hasattr(self, "grg_ctf"):
+            agent_gate, pair_gate = self.grg_ctf(
+                context, trajectory, goal, time, alpha.square(),
+                self.representation.goal_scale)
+            hidden = hidden + agent_gate[..., None, None] * physical_feedback
+            combined = observed + pair_gate[:, :, None, None] * future
+        else:
+            hidden = hidden + gate * physical_feedback
+            combined = observed + gate.view(batch, 1, 1, 1, 1, 1) * future
         for block in self.blocks[3:]:
             if use_block_checkpoints and self.training and torch.is_grad_enabled():
                 with record_function("ebjd.denoiser_block_checkpoint"):

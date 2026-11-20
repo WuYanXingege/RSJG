@@ -1,0 +1,127 @@
+{
+  "status": "PASS",
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "torch": "2.8.0+cu128",
+  "cuda": "12.8",
+  "precision": "FP32",
+  "deterministic": true,
+  "SDPA": "math",
+  "rows": [
+    {
+      "variant": "v2_compatible",
+      "counts": [
+        1
+      ],
+      "map_pixels": 256,
+      "full_step_seconds": [
+        0.9383058408275247,
+        0.16591900400817394
+      ],
+      "peak_allocated_bytes": [
+        267487232,
+        328289280
+      ],
+      "timed_updates": 2,
+      "includes_cpu_augmentation": true,
+      "group_max_slots": 32,
+      "gradient_accumulation": 1
+    },
+    {
+      "variant": "v2_compatible",
+      "counts": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "map_pixels": 256,
+      "full_step_seconds": [
+        0.7815695339813828,
+        0.7389037208631635
+      ],
+      "peak_allocated_bytes": [
+        1788632576,
+        1849503232
+      ],
+      "timed_updates": 2,
+      "includes_cpu_augmentation": true,
+      "group_max_slots": 32,
+      "gradient_accumulation": 1
+    },
+    {
+      "variant": "v2_compatible",
+      "counts": [
+        57
+      ],
+      "map_pixels": 256,
+      "full_step_seconds": [
+        1.2394514370243996,
+        1.193088220898062
+      ],
+      "peak_allocated_bytes": [
+        2468454912,
+        2529501696
+      ],
+      "timed_updates": 2,
+      "includes_cpu_augmentation": true,
+      "group_max_slots": 32,
+      "gradient_accumulation": 1
+    },
+    {
+      "variant": "v3",
+      "counts": [
+        1
+      ],
+      "map_pixels": 256,
+      "full_step_seconds": [
+        0.7872746230568737
+      ],
+      "peak_allocated_bytes": [
+        270241280
+      ],
+      "timed_updates": 1,
+      "includes_cpu_augmentation": true,
+      "group_max_slots": 32,
+      "gradient_accumulation": 1
+    },
+    {
+      "variant": "v3",
+      "counts": [
+        8,
+        8,
+        8,
+        8
+      ],
+      "map_pixels": 256,
+      "full_step_seconds": [
+        0.8081012160982937
+      ],
+      "peak_allocated_bytes": [
+        1791391232
+      ],
+      "timed_updates": 1,
+      "includes_cpu_augmentation": true,
+      "group_max_slots": 32,
+      "gradient_accumulation": 1
+    },
+    {
+      "variant": "v3",
+      "counts": [
+        57
+      ],
+      "map_pixels": 256,
+      "full_step_seconds": [
+        1.2715069411788136
+      ],
+      "peak_allocated_bytes": [
+        2684886016
+      ],
+      "timed_updates": 1,
+      "includes_cpu_augmentation": true,
+      "group_max_slots": 32,
+      "gradient_accumulation": 1
+    }
+  ],
+  "baseline_reused": true,
+  "limitations": "one or two full synthetic updates per shape (see timed_updates); noisy estimates; unequal repeat counts when baseline reused; no real-data throughput guarantee; N57 exceeds physical group threshold as original single-scene rule"
+}

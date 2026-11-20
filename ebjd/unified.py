@@ -96,6 +96,12 @@ class LearnableJointCouplingHead(nn.Module):
     def forward(
         self, context: EBJDContext, proposals: torch.Tensor, goal_scale: torch.Tensor,
     ) -> torch.Tensor:
+        return self.forward_features(context, proposals, goal_scale)[0]
+
+    def forward_features(
+        self, context: EBJDContext, proposals: torch.Tensor, goal_scale: torch.Tensor,
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Explicit old scorer output and candidate_norm tokens; no extra forward."""
         if proposals.ndim != 4 or proposals.shape[1] != self.worlds:
             raise ValueError("proposals must be [B,20,N,2]")
         batch, worlds, agents, _ = proposals.shape
@@ -116,7 +122,7 @@ class LearnableJointCouplingHead(nn.Module):
         person = context.social_h[:, :, None, None].expand(
             -1, -1, worlds, worlds, -1)
         scores = self.score(torch.cat((world, cand, person), dim=-1)).squeeze(-1)
-        return scores.masked_fill(~context.valid[:, :, None, None], 0.0)
+        return scores.masked_fill(~context.valid[:, :, None, None], 0.0), candidate
 
     def assign(
         self, context: EBJDContext, proposals: torch.Tensor,

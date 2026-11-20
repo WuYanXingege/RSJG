@@ -1,0 +1,228 @@
+{
+  "status": "PASS_ENGINEERING_ONLY",
+  "timestamp": "2026-11-20T10:56:40.992204+08:00",
+  "cpu_tests": 30,
+  "cpu_failures": 0,
+  "synthetic_gpu_optimizer_updates": 31,
+  "gpu_update_cap": 32,
+  "real_data_optimizer_updates": 0,
+  "update_accounting": {
+    "initial_implementation_checks": 20,
+    "final_CPA_restart_recheck": 8,
+    "final_v3_benchmark": 3,
+    "postcheck": 0
+  },
+  "native_checkpoint_migration": true,
+  "initial_K20_N1_N2_N9_N57_G_H_DDIM20_exact": true,
+  "retention_original_writer": true,
+  "original_topfive_tie_earlier_test_passed": true,
+  "continuous4_vs_2plus2_exact": true,
+  "actual_grouped_backward": true,
+  "negative_controls": [
+    "unknown variant/loss",
+    "missing old key",
+    "unverified evidence sidecar",
+    "NaN candidate",
+    "wrong units",
+    "frame mismatch",
+    "real training authorization",
+    "non-synthetic adapter",
+    "exact Hungarian score ties"
+  ],
+  "known_boundary": "inherited Hungarian tie / near-tie selection need not be permutation stable; isolated unique-optimum token equivariance passes",
+  "GPU_ledger": [
+    {
+      "ordinal": 1,
+      "section": "restart_continuous",
+      "time_unix": 1795142821.208267,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 2,
+      "section": "restart_continuous",
+      "time_unix": 1795142822.9756908,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 3,
+      "section": "restart_continuous",
+      "time_unix": 1795142825.387405,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 4,
+      "section": "restart_continuous",
+      "time_unix": 1795142828.0221012,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 5,
+      "section": "restart_resumed",
+      "time_unix": 1795142831.6946912,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 6,
+      "section": "restart_resumed",
+      "time_unix": 1795142833.410793,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 7,
+      "section": "restart_resumed_resume",
+      "time_unix": 1795142836.9288445,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 8,
+      "section": "restart_resumed_resume",
+      "time_unix": 1795142839.7208755,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 9,
+      "section": "benchmark_v2_compatible_1",
+      "time_unix": 1795142877.2941895,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 10,
+      "section": "benchmark_v2_compatible_1",
+      "time_unix": 1795142877.502883,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 11,
+      "section": "benchmark_v3_1",
+      "time_unix": 1795142877.9363534,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 12,
+      "section": "benchmark_v3_1",
+      "time_unix": 1795142878.1260595,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 13,
+      "section": "benchmark_v2_compatible_8x8x8x8",
+      "time_unix": 1795142879.1538165,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 14,
+      "section": "benchmark_v2_compatible_8x8x8x8",
+      "time_unix": 1795142879.9049118,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 15,
+      "section": "benchmark_v3_8x8x8x8",
+      "time_unix": 1795142880.9547153,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 16,
+      "section": "benchmark_v3_8x8x8x8",
+      "time_unix": 1795142881.7296493,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 17,
+      "section": "benchmark_v2_compatible_57",
+      "time_unix": 1795142883.2593477,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 18,
+      "section": "benchmark_v2_compatible_57",
+      "time_unix": 1795142884.4639852,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 19,
+      "section": "benchmark_v3_57",
+      "time_unix": 1795142886.011566,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 20,
+      "section": "benchmark_v3_57",
+      "time_unix": 1795142887.3148358,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 21,
+      "section": "restart_continuous",
+      "time_unix": 1795142978.112018,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 22,
+      "section": "restart_continuous",
+      "time_unix": 1795142979.8466122,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 23,
+      "section": "restart_continuous",
+      "time_unix": 1795142982.260301,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 24,
+      "section": "restart_continuous",
+      "time_unix": 1795142984.8430734,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 25,
+      "section": "restart_resumed",
+      "time_unix": 1795142988.4488244,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 26,
+      "section": "restart_resumed",
+      "time_unix": 1795142990.1155248,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 27,
+      "section": "restart_resumed_resume",
+      "time_unix": 1795142993.6958063,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 28,
+      "section": "restart_resumed_resume",
+      "time_unix": 1795142996.1748006,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 29,
+      "section": "benchmark_v3_1",
+      "time_unix": 1795143091.892282,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 30,
+      "section": "benchmark_v3_8x8x8x8",
+      "time_unix": 1795143092.9972918,
+      "synthetic_only": true
+    },
+    {
+      "ordinal": 31,
+      "section": "benchmark_v3_57",
+      "time_unix": 1795143094.5809734,
+      "synthetic_only": true
+    }
+  ],
+  "commands": [
+    "OMP_NUM_THREADS=1 python -m pytest -q tests/test_bcep_v3.py tests/test_bcep_integrated_v2.py tests/test_bcep_v2_formal_controller.py tests/test_ctf_decoder_energy.py -o addopts=",
+    "python scripts/v3/audit.py --section migration",
+    "python scripts/v3/audit.py --section restart",
+    "python scripts/v3/audit.py --section benchmark",
+    "python scripts/v3/postcheck.py"
+  ]
+}

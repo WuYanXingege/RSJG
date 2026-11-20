@@ -1,0 +1,158 @@
+{
+  "base": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "branch": "research/bcep-ebjd-v3-architecture-20261120",
+  "initial_worktree_heads": [
+    {
+      "worktree": "RSJG_JDV2_clean",
+      "head": "092ed91f1f4117f50aa835ec8e47cd2c9ce74a98",
+      "ref": "refs/heads/research/joint-dependency-v2-clean"
+    },
+    {
+      "worktree": "RSJG_BCEP_Confirmation_20261116_223645",
+      "head": "ea7ac13220957841f2d5bfa93464dc96537b2fb3",
+      "ref": "refs/heads/research/bcep-newsequence-independentseeds-20261116_223645"
+    },
+    {
+      "worktree": "RSJG_BCEP_JMM_20261117_144947",
+      "head": "bba1a349b8865963a0080a03b39b38e96d4918ad",
+      "ref": "refs/heads/train/bcep-jmm-fivefold-20261117_144947"
+    },
+    {
+      "worktree": "RSJG_BCEP_Joint_20261117_100323",
+      "head": "ebc5d96efb6091be0047b7d42c7d4c9a00bc8dab",
+      "ref": "refs/heads/research/bcep-frozen-provider-sixlayer-20261117_100323"
+    },
+    {
+      "worktree": "RSJG_BCEP_costproxy_trial_20261119",
+      "head": "b162ca3c73bdd180ace2bd677350b8a8878e23c5",
+      "ref": "refs/heads/experiment/zara2-costproxy-stage2-20261119"
+    },
+    {
+      "worktree": "RSJG_BCEP_integrated_v2_20261118",
+      "head": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+      "ref": "refs/heads/run/bcep-ebjd-v2-formal-top5-20261118"
+    },
+    {
+      "worktree": "RSJG_BCEP_pause_diagnosis_20261119",
+      "head": "7ea3a2d1a5a5d654d9e23ba4ed38f94610fc6736",
+      "ref": "refs/heads/report/zara2-train-dev-frozen-20261119"
+    },
+    {
+      "worktree": "RSJG_BCEP_sameswap_reports_20261119",
+      "head": "41ddd13f15e65c0d061901087529edfd8c5c21e1",
+      "ref": "refs/heads/report/zara2-sameswap-proxy-check-20261119"
+    },
+    {
+      "worktree": "RSJG_BCEP_shared_world_20261119",
+      "head": "7cea557556386d9fbc6e905e02cf3b24640a8d03",
+      "ref": "refs/heads/experiment/zara2-shared-world-objective-20261119"
+    },
+    {
+      "worktree": "RSJG_BCEP_sharedworld_trial_20261119",
+      "head": "76d80b508ad79f52965c15109b58d2d835473fd7",
+      "ref": "refs/heads/experiment/zara2-sharedworld-stage2-onerun-20261119"
+    },
+    {
+      "worktree": "RSJG_BCEP_v2_formal_reports_20261118",
+      "head": "4c9eede551bebdd7634ab81b7b4bd790165c6bb0",
+      "ref": "refs/heads/report/bcep-ebjd-v2-formal-top5-20261118"
+    },
+    {
+      "worktree": "RSJG_BCEP_v3_architecture_20261120",
+      "head": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+      "ref": "refs/heads/research/bcep-ebjd-v3-architecture-20261120"
+    },
+    {
+      "worktree": "RSJG_EBJD_BCEP",
+      "head": "074d54b04be6a717b2c248a1fe3c2596a4fd9be8",
+      "ref": "refs/heads/research/bcep-frozen-selector-control-20261116_215702"
+    },
+    {
+      "worktree": "RSJG_EBJD_Paper",
+      "head": "5d07940b4fd0565d37af4f7219277cbba1b074fe",
+      "ref": "refs/heads/restore/ebjd-sixlayer-provider-20261116"
+    },
+    {
+      "worktree": "RSJG_EBJD_clean",
+      "head": "a69c3190fb364b3d8fa2bfdef3b03c21c4a2e1eb",
+      "ref": "refs/heads/research/ebjd-clean-v1"
+    }
+  ],
+  "source_files": {
+    "bcep_v2/joint.py": {
+      "anchor_sha256": "30a80d3056af46983a1b542002d09c99525e04b54e144d5b67e4b5534341a5d7",
+      "current_sha256": "f9dbfb6439d4ea0d396bd76447af8d2bf4cd659eba7306d0a1027596edee606d",
+      "changed": true
+    },
+    "bcep_v2/provider.py": {
+      "anchor_sha256": "83cd1091376082f6304bcdb0fd73b7b72d4b8c2f520da9f2713e832beb8b6edc",
+      "current_sha256": "83cd1091376082f6304bcdb0fd73b7b72d4b8c2f520da9f2713e832beb8b6edc",
+      "changed": false
+    },
+    "bcep_v2/objective.py": {
+      "anchor_sha256": "38384b3bfd357c84e3102a988065cdd530500b5af83fbaefe8ffd3f34bbbb945",
+      "current_sha256": "38384b3bfd357c84e3102a988065cdd530500b5af83fbaefe8ffd3f34bbbb945",
+      "changed": false
+    },
+    "ebjd/unified.py": {
+      "anchor_sha256": "92c127689ba25dccc140ab21f9afdb6b2aa3cbfbed49e54f488e57a5d35c145d",
+      "current_sha256": "7648a5d433a903f19819aa84af8a3f584a1cf09e09a65f5eded43a2d531fbf8f",
+      "changed": true
+    },
+    "ebjd/denoiser.py": {
+      "anchor_sha256": "1fbf8923b857db2c3ca99fa127f51b10c7dba3dfffb641b181007f080a80e482",
+      "current_sha256": "2f58c50b27c6cb0a6b0a6a57d5090061b46f8192af97b9339363ce9b8a86f1a6",
+      "changed": true
+    },
+    "ebjd/representation.py": {
+      "anchor_sha256": "b2094e597dfe1babcae3ca8b20b1e2ea667f41b4d7512840a5d7cf384494c890",
+      "current_sha256": "b2094e597dfe1babcae3ca8b20b1e2ea667f41b4d7512840a5d7cf384494c890",
+      "changed": false
+    },
+    "bcep_v2/stages.py": {
+      "anchor_sha256": "4013bf96c5459bda7da858919929f4dd813c6404f8c262a2165b720e65dcb087",
+      "current_sha256": "4013bf96c5459bda7da858919929f4dd813c6404f8c262a2165b720e65dcb087",
+      "changed": false
+    },
+    "bcep_v2/state.py": {
+      "anchor_sha256": "2615795a8f215b7f52b4bcc641fa0fc59c5508c201790139a60c30dccaef7112",
+      "current_sha256": "2615795a8f215b7f52b4bcc641fa0fc59c5508c201790139a60c30dccaef7112",
+      "changed": false
+    },
+    "bcep_joint/inference.py": {
+      "anchor_sha256": "d3f77df8e55908e197280a10dd9c97492f4e7f90d67d4ba6c920ab1a9117d230",
+      "current_sha256": "d3f77df8e55908e197280a10dd9c97492f4e7f90d67d4ba6c920ab1a9117d230",
+      "changed": false
+    },
+    "bcep/context_encoder.py": {
+      "anchor_sha256": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+      "current_sha256": "f7d68126b385ee1d038d2c62ed9b154f8e936fa4090b481e03651802cb7db564",
+      "changed": false
+    },
+    "bcep/conditional_flow.py": {
+      "anchor_sha256": "6794a23c71782ea7ad9621a82410e651de84bf1ec68208430dc709fc76008785",
+      "current_sha256": "6794a23c71782ea7ad9621a82410e651de84bf1ec68208430dc709fc76008785",
+      "changed": false
+    }
+  },
+  "implementation_files": {
+    "bcep_v3/__init__.py": "f281c06ccbb80aaac32910af92f1b0565be5e4204653e2557ac6834bc934f287",
+    "bcep_v3/contracts.py": "ed3a2766d5a1d8e16379fe5e558d28d52058216bf7a5a944e35f6d9b077bd9a0",
+    "bcep_v3/coupling.py": "4263a7b744b7b2ec197d56025d3f9b670a7a62f18e6744906d0e262326064108",
+    "bcep_v3/evidence.py": "7137494abe1095d6b76d0e24bb55b4059b891fcaa8e4e97fcbe018ae787653fc",
+    "bcep_v3/fixtures.py": "6054641805e0171f238c6be2b8790c43f11f65713c4dd0fbd7f24186fd71beac",
+    "bcep_v3/gate.py": "0253b39358323540367aadcd43ac912e4e324103666982821385d231165465f6",
+    "bcep_v3/geometry.py": "d05a1fcf24bf555b461825570811064f3e94bed18011815925392e1f80f59ec8",
+    "bcep_v3/model.py": "acf0b54bce06e62943ed3475a636cdffaa5b98c50255b4166f7f251124cbbab1",
+    "bcep_v3/stage2.py": "9b22bdf084a82ca612342b2819170df59a946fde4a44da8b80840074feec2e8c",
+    "scripts/v3/audit.py": "f70c6cc1352aa19e027ccdb1b83c81a55d30d2a6d6da6257227f15bdb2a00a50",
+    "scripts/v3/postcheck.py": "9208a69620ecc602d820298ebe107442038d432d7c142c3d49aa7c223c23d7e1",
+    "scripts/v3/report.py": "bcbaa4a71c5b92cc74d371980d08602e48006f0eaf0952185693139b878b2f36"
+  },
+  "negative_result": "76d80b508ad79f52965c15109b58d2d835473fd7",
+  "package_sha256": "6d85f000c40e7ab590b10777a617c77567aa367e478461b5d72a65e9abc6eddb",
+  "objective": "anchor effective final_coordinate; no pair_objective selector existed in anchor objective.py",
+  "ctf_basis": "legacy",
+  "provider_source": "self-trained BCEP density epoch19 + candidate head epoch9",
+  "external_network_or_weights_imported": false
+}

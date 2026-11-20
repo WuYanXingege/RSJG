@@ -1,0 +1,76 @@
+{
+  "schema": "bcep-v3-feature-evidence-v1",
+  "enabled_optional_support_statistics": false,
+  "reason": "No losslessly verified M256 support-pool replay was performed in this audit. Existing K20 alone is insufficient evidence of cluster mass or flow density.",
+  "current_exact_inputs": [
+    "observed world XY in metres",
+    "frozen K20 world endpoints",
+    "observed CV baseline",
+    "old candidate_norm tokens",
+    "old social_h from observed history/social encoder; map is retained in frozen candidate generation and bridge memory/CTF, not injected into social_h"
+  ],
+  "derived_features": [
+    "candidate minus last observed / goal_scale",
+    "candidate minus baseline endpoint / goal_scale",
+    "mean pairwise candidate distance / goal_scale",
+    "RMS pairwise candidate distance / goal_scale"
+  ],
+  "missing_values": [
+    0,
+    0,
+    0
+  ],
+  "presence_mask": [
+    false,
+    false,
+    false
+  ],
+  "optional_nonempty_input_policy": "reject before attention",
+  "future_sidecar_required_identity": [
+    "provider checkpoint SHA256",
+    "candidate-head checkpoint SHA256",
+    "bank SHA256",
+    "split SHA256 and train/dev purpose",
+    "scene_id",
+    "ordered agent_ids",
+    "ordered frame_ids and timestamps",
+    "candidate K20 SHA256 and permutation",
+    "M256 support SHA256",
+    "seed",
+    "KMeans n_init/max_iter/tolerance",
+    "world metre frame mapping",
+    "augmentation rigid transform and canonical candidate identity"
+  ],
+  "rotation_reflection_policy": "reuse v2 transform for observed/maps/candidates; recompute all derived CSEE/prototype features after augmentation",
+  "prohibited_semantics": [
+    "cluster occupancy is calibrated probability",
+    "flow log density is selection probability of a refined cluster centre",
+    "absent evidence means confidence=1"
+  ],
+  "provider_spatial_provenance": {
+    "method": "original encoder.map[-1] pre-hook reads actual pooled input",
+    "channels": 128,
+    "feature_shape": [
+      32,
+      32
+    ],
+    "crop_shape": [
+      6,
+      256,
+      256
+    ],
+    "crop_width_m": 32,
+    "pixel_mapping": "(world - last_observed + 16) * 255/32",
+    "feature_mapping": "pixel/8; normalized 2*(feature+.5)/32-1",
+    "align_corners": false,
+    "stride": 8,
+    "offset": 0,
+    "reuse_requirement": "same frozen Provider checkpoint and maps; recompute after augmentation",
+    "used_by_new_modules": "No additional Provider spatial sampler; reuse existing downstream context tokens only"
+  },
+  "missing_fields": [
+    "cluster_occupancy_uncalibrated",
+    "cluster_dispersion",
+    "conditional_flow_log_density_not_selection_probability"
+  ]
+}
