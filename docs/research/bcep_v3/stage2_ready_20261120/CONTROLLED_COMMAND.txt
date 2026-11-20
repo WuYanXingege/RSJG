@@ -1,0 +1,1 @@
+RUN_ONE_ZARA2_V3=true OMP_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8 ../.conda/rsjg/bin/python -m bcep_v3.formal train --frozen-sha 294054c2cf7605caafe016507bb601e2d85518b70555369ca3690b74138e9e43

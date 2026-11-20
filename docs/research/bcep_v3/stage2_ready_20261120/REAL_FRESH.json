@@ -1,0 +1,97 @@
+{
+  "status": "PASS",
+  "initial_hash": "82704dc650fcd8f0dfa01dee7f7ad2365d78d65b8aa9f17e15ae7378eaf1ff09",
+  "equivalence": [
+    {
+      "index": 0,
+      "n_agents": 1,
+      "G_max_abs": 0.0,
+      "H_max_abs": 0.0,
+      "pi_equal": true,
+      "keyed_noise_equal": true
+    },
+    {
+      "index": 3,
+      "n_agents": 2,
+      "G_max_abs": 0.0,
+      "H_max_abs": 0.0,
+      "pi_equal": true,
+      "keyed_noise_equal": true
+    },
+    {
+      "index": 955,
+      "n_agents": 9,
+      "G_max_abs": 0.0,
+      "H_max_abs": 0.0,
+      "pi_equal": true,
+      "keyed_noise_equal": true
+    },
+    {
+      "index": 1658,
+      "n_agents": 57,
+      "G_max_abs": 0.0,
+      "H_max_abs": 0.0,
+      "pi_equal": true,
+      "keyed_noise_equal": true
+    }
+  ],
+  "backward": [
+    {
+      "phase": "fresh_zero_residual",
+      "indices": [
+        0,
+        3,
+        955,
+        1658,
+        1,
+        2,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "gradient": {
+        "coupling.csee.": {
+          "gradient_l2": 0.0,
+          "present_tensors": 12
+        },
+        "coupling.hcra.": {
+          "gradient_l2": 0.007703164100218616,
+          "present_tensors": 18
+        },
+        "bridge.denoiser.grg_ctf.": {
+          "gradient_l2": 0.0010482280804111565,
+          "present_tensors": 4
+        }
+      },
+      "parameter_delta": 0,
+      "peak_bytes": 2795718144,
+      "seconds": 4.376095252111554
+    }
+  ],
+  "metrics": {
+    "loss": 3.8266445100307465,
+    "pair_softmin_m": 0.7928365394473076,
+    "pair_exact_hard_jfde_m": 0.5302208662033081,
+    "world_weight_entropy": 0.7590266615152359,
+    "assignment_temperature": 1.0,
+    "pair_temperature_m": 0.1,
+    "pair_weight": 1.0,
+    "effective_edges": 586.0,
+    "clean_path_raw_sum": 1.0272743990644813,
+    "clean_path_signal_sum": 0.30124627286568284,
+    "valid_scene_count": 16,
+    "clean_path_term": 0.0009413946208951529,
+    "diffusion_term": 2.96194865392602,
+    "geometry_term": 0.00012668114055713886,
+    "pair_term": 0.7928365394473076,
+    "map_term": 0.07079118206773115
+  },
+  "real_optimizer_updates": 0
+}
