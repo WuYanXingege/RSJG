@@ -1,0 +1,101 @@
+{
+  "status": "RUNNING_INTERIM_NOT_FINAL",
+  "captured_at": "2026-11-20T18:42:22.442313+08:00",
+  "snapshot_started": "2026-11-20T18:42:22.311599+08:00",
+  "runtime_source_commit": "2e96b6f35554ceceb5a04fc08b6259dac75e486b",
+  "frozen_sha256": "294054c2cf7605caafe016507bb601e2d85518b70555369ca3690b74138e9e43",
+  "native_status": {
+    "status": "RUNNING",
+    "pid": 1978816,
+    "optimizer_updates": 0,
+    "resume": false
+  },
+  "supervisor": {
+    "status": "TRAINING",
+    "pid": 1978816,
+    "supervisor_pid": 1978814,
+    "attempt": 1,
+    "unix": 1795145404.0427654
+  },
+  "latest_native_progress": {
+    "fold": "zara2",
+    "stage": "joint",
+    "epoch": 21,
+    "update": 3500,
+    "cursor": 2240,
+    "unix": 1795171330.736391,
+    "pid": 1978816,
+    "grad_norm": 4.496178150177002,
+    "metrics": {
+      "loss": 1.5593061670660973,
+      "pair_softmin_m": 0.9560476504266262,
+      "pair_exact_hard_jfde_m": 0.7011628970503807,
+      "world_weight_entropy": 0.9283556621521711,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000002,
+      "pair_weight": 1.0,
+      "effective_edges": 1064.0,
+      "clean_path_raw_sum": 0.23811140446923673,
+      "clean_path_signal_sum": 0.03658956328581553,
+      "valid_scene_count": 16.0,
+      "clean_path_term": 0.0001143423916687425,
+      "diffusion_term": 0.6023827054262074,
+      "geometry_term": 5.6252156809932785e-05,
+      "pair_term": 0.9560476504266262,
+      "map_term": 0.0007052113226688328
+    }
+  },
+  "completed_epochs": 20,
+  "recorded_real_optimizer_updates": 3502,
+  "last_recorded_step_unix": 1795171340.6384854,
+  "last_saved_update": 3360,
+  "last_saved_completed_epoch": 20,
+  "rank1_epoch": 12,
+  "stale_completed_epochs": 8,
+  "old_epoch5": [
+    0.4097670185111337,
+    0.7841791655426308,
+    1.296843430188697
+  ],
+  "new_rank1": [
+    0.4124557339160119,
+    0.8049277728581328,
+    1.310360577632123
+  ],
+  "new_minus_old_m": [
+    0.0026887154048782502,
+    0.020748607315501988,
+    0.013517147443425914
+  ],
+  "passes": [
+    false,
+    false,
+    false
+  ],
+  "all_pass": false,
+  "selector": "all 590 selection_dev windows H-JADE; exact ties earlier epoch",
+  "fixed_source_unchanged": true,
+  "old_run_statuses": {
+    "formal": "PAUSED_RESUMABLE",
+    "candidate_cost": "SESSION_BUDGET_PAUSED",
+    "sharedworld": "COMPLETE"
+  },
+  "report_additional_real_optimizer_updates": 0,
+  "report_additional_inference": 0,
+  "all_completed_epoch_files_present": true,
+  "top5_hashes_match": true,
+  "last_and_rank1_recovery_fields_verified": true,
+  "last_and_best_alias_hashes_match": true,
+  "minFDE_all_completed_epochs_equal_old5_within_m": 1e-06,
+  "initial_model_sha256": "82704dc650fcd8f0dfa01dee7f7ad2365d78d65b8aa9f17e15ae7378eaf1ff09",
+  "bank_sha256": {
+    "train": "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+    "selection_dev": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+  },
+  "split_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
+  "recent5_mean_train_seconds": 950.7014134542551,
+  "recent5_mean_dev_seconds": 297.9014803257771,
+  "conditional_stop_epoch_if_no_new_best": 30,
+  "conditional_remaining_hours": 3.245127746097801,
+  "performance_audit_patches_applied": false
+}
