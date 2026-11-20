@@ -14,6 +14,14 @@ def reference():
     return list(csv.DictReader(io.StringIO(blob.decode())))
 
 
+def test_reference_archive_schema_and_frozen_bank_identity():
+    frozen=json.loads((ROOT/'docs/research/bcep_v3/stage2_ready_20261120/FROZEN_CONFIG.json').read_text())
+    blob,meta=trial.reference_inputs(frozen)
+    assert hashlib.sha256(blob).hexdigest()==meta['csv_sha256']
+    bad=copy.deepcopy(frozen);bad['bank_sha256']['train']='changed'
+    with pytest.raises(AssertionError):trial.reference_inputs(bad)
+
+
 def test_same_window_pairing_and_equal_counts():
     old=reference();new=[dict(r,G_JFDE=0.) for r in old]
     rows=trial.paired_rows(new,old);summary=trial.summaries(rows)

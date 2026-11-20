@@ -29,6 +29,19 @@ def jsonlines(path):
     return result
 
 
+def reference_inputs(frozen):
+    blob=gitblob(REFERENCE_COMMIT,REFERENCE_DIR+'OLD5_REFERENCE_WINDOWS.csv')
+    meta=json.loads(gitblob(REFERENCE_COMMIT,REFERENCE_DIR+'REFERENCE_REPLAY.json'))
+    old_frozen=json.loads(gitblob(REFERENCE_COMMIT,REFERENCE_DIR+'FROZEN_CONFIG.json'))
+    assert hashlib.sha256(blob).hexdigest()==meta['csv_sha256']
+    assert meta['identity']['split_sha256']==frozen['split_sha256']==old_frozen['identity']['split']
+    banks={'train':old_frozen['identity']['train_bank'],'selection_dev':old_frozen['identity']['dev_bank']}
+    assert banks==frozen['bank_sha256']
+    assert meta['identity']['checkpoint_sha256']=='9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317'
+    assert meta['identity']['candidate_seed']==2035 and meta['identity']['steps']==meta['identity']['K']==20
+    return blob,meta
+
+
 def paired_rows(new,old):
     new={int(r['index']):r for r in new};old={int(r['index']):r for r in old}
     if set(new)!=set(old) or len(new)!=590:raise ValueError('paired dev populations differ')
@@ -113,13 +126,7 @@ def main():
     assert digest(RUN/'joint/best.pt')==next(r['sha256'] for r in all_checkpoints if r['epoch']==rank['epoch'])
     assert digest(RUN/'joint/last.pt')==all_checkpoints[-1]['sha256']
     for r in top:assert r['sha256']==next(a['sha256'] for a in all_checkpoints if a['epoch']==r['epoch'])
-    old_blob=gitblob(REFERENCE_COMMIT,REFERENCE_DIR+'OLD5_REFERENCE_WINDOWS.csv')
-    old_meta=json.loads(gitblob(REFERENCE_COMMIT,REFERENCE_DIR+'REFERENCE_REPLAY.json'))
-    old_frozen=json.loads(gitblob(REFERENCE_COMMIT,REFERENCE_DIR+'FROZEN_CONFIG.json'))
-    assert hashlib.sha256(old_blob).hexdigest()==old_meta['csv_sha256']
-    assert old_meta['identity']['split_sha256']==frozen['split_sha256']
-    assert old_frozen['bank_sha256']==frozen['bank_sha256']
-    assert old_meta['identity']['checkpoint_sha256']=='9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317'
+    old_blob,old_meta=reference_inputs(frozen)
     old=list(csv.DictReader(io.StringIO(old_blob.decode())))
     new=csv_rows(RUN/'dev'/f"epoch_{rank['epoch']:03d}_windows.csv");paired=paired_rows(new,old);paired_summary=summaries(paired)
     assert len([r for r in paired if r['n_agents']>=9])==127 and len([r for r in paired if r['n_agents']>1])==501
@@ -196,10 +203,10 @@ def main():
 1. 是否同时通过全部门槛：**{all(passes)}**；每项差值见首页。
 2. 初配和终配如何变化：下列均为同窗口新减旧，误差负值表示改善，反馈收益正值表示帮助增加。
 {chr(10).join(attribution)}
-3. HCRA反馈是否正向：只能直接判断“旧反馈+HCRA增量”的合成反馈。多人组I−H均值为 **{stat['multi','feedback_gain']['new_mean_m']*100:+.6f} cm**，正值说明最终配对平均优于初配，负值说明平均抵消。该数值不能隔离HCRA本身的因果贡献。
+3. HCRA反馈是否正向：只能直接判断“旧反馈+HCRA增量”的合成反馈。多人组I−H均值为 **{stat['multi','feedback_gain']['new_mean_m']*100:+.6f} cm**，因此合成反馈在多人组为 **{'正向' if stat['multi','feedback_gain']['new_mean_m']>0 else '负向' if stat['multi','feedback_gain']['new_mean_m']<0 else '零净变化'}**。正值说明最终配对平均优于初配，负值说明平均抵消。该数值不能隔离HCRA本身的因果贡献。
 4. CSEE是否得到真实参数更新：**{csee_changed}**；实际step梯度/增量和rank1相对初态变化见下表，零初始化输出权重的非零变化排除了仅凭其他权重衰减推断学习。梯度小不作为失败条件。
-5. GRG-CTF启用后的组合模型完整路径JADE是否改善：全体新−旧 **{stat['all','H_JADE']['mean_delta_m']*100:+.6f} cm**，N≥9 **{stat['N_ge_9','H_JADE']['mean_delta_m']*100:+.6f} cm**；负值为改善。这是完整v3的结果，不能单独归因于GRG-CTF。
-6. 可直接证明的是组合模型指标、配对分解、三模块实际梯度/参数更新、候选边缘保持和工程恢复；CSEE、HCRA、GRG-CTF各自独立效果、协同贡献、跨seed稳健性与跨折泛化均未被本轮证明。没有追加消融或测试集评测。
+5. GRG-CTF启用后的组合模型完整路径JADE是否改善：**{'改善' if stat['all','H_JADE']['mean_delta_m']<0 else '退步' if stat['all','H_JADE']['mean_delta_m']>0 else '相等'}**。全体新−旧 **{stat['all','H_JADE']['mean_delta_m']*100:+.6f} cm**，N≥9 **{stat['N_ge_9','H_JADE']['mean_delta_m']*100:+.6f} cm**；负值为改善。这是完整v3的结果，不能单独归因于GRG-CTF。
+6. 可直接证明的是组合模型指标、配对分解、三模块实际梯度/参数更新、候选边缘保持和完整恢复状态的保存；CSEE、HCRA、GRG-CTF各自独立效果、协同贡献、跨seed稳健性与跨折泛化均未被本轮证明。没有追加消融或测试集评测。
 
 ## 同窗口配对分布
 

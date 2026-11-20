@@ -17,3 +17,5 @@ RUN_ONE_ZARA2_V3=true OMP_NUM_THREADS=1 CUBLAS_WORKSPACE_CONFIG=:4096:8 ../.cond
 ```
 
 [预注册判定](PREREGISTERED_DECISION.json)；最终结果只有原生完成后才生成。
+
+结果分析脚本的5项只读测试通过，覆盖旧归档与当前冻结配置的split/bank/权重身份、同窗口配对、反馈差值分解、资源采样口径及未完成时拒绝生成最终结论。旧归档采用`identity.train_bank/dev_bank`字段，本次采用`bank_sha256`字段，分析脚本显式映射并验证哈希相等。
