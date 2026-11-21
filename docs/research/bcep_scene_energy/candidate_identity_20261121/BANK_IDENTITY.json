@@ -1,0 +1,47 @@
+{
+  "bank_hashes": [
+    "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+    "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+  ],
+  "provider": [
+    {
+      "stage": "density",
+      "epoch": 19,
+      "sha256": "9fc32ec8cb05075c269c79c7d6069fcf8b010fc66e6ad2280124b973ca340923",
+      "file": "epoch_019.pt"
+    },
+    {
+      "stage": "head",
+      "epoch": 9,
+      "sha256": "7fdaaac8cfa2d50471e4b6ff5428880ddf20c5f74298afbe0c5e4033380745b2",
+      "file": "epoch_009.pt"
+    }
+  ],
+  "counts": {
+    "train": {
+      "windows": 2681,
+      "agents": 26076,
+      "max_agents": 57,
+      "N_ge_9": 797
+    },
+    "selection_dev": {
+      "windows": 590,
+      "agents": 4262,
+      "max_agents": 42,
+      "N_ge_9": 127
+    }
+  },
+  "schema": "member-identity-sha256-v2",
+  "candidate_field": "no separate per-candidate ID array",
+  "immutable_occurrence_key": [
+    "bank hash",
+    "row member/digest",
+    "agent ID",
+    "original KMeans slot"
+  ],
+  "duplicates_total": 0,
+  "duplicate_windows": 0,
+  "optimizer_guard": {
+    "optimizer_step_calls": 0
+  }
+}

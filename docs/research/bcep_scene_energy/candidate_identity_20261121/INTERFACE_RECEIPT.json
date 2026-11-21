@@ -1,0 +1,97 @@
+{
+  "passed": true,
+  "optimizer_guard": {
+    "optimizer_step_calls": 0
+  },
+  "real_updates": 0,
+  "synthetic_updates": 0,
+  "native_grouped_callback_gradient_norms": {
+    "coupling.energy.phi.": 0.10536005774048482,
+    "coupling.energy.rho.": 0.01386405331695108,
+    "bridge.encoder.": 0.11674027227579158
+  },
+  "callback_valid_scene_count": 2,
+  "zero_update_native_state_status": "SESSION_BUDGET_PAUSED",
+  "zero_update_state_keys": [
+    "model",
+    "optimizer",
+    "scheduler",
+    "rng",
+    "cursor",
+    "order",
+    "history",
+    "completed_epoch",
+    "update",
+    "trainable",
+    "identity",
+    "recipe"
+  ],
+  "strict_model_optimizer_state_reload": true,
+  "scheduler_steps_executed": 0,
+  "completed_epochs": 0,
+  "new_top5_created": false,
+  "native_H_JADE_selection_controller_unchanged": true,
+  "top5_completed_epoch_behavior_not_reexecuted_due_to_zero_update_prohibition": true,
+  "native_inference_checks": {
+    "endpoint_max_abs_m": 0.0,
+    "exact_candidate_gather": true,
+    "exact_noise_gather": true,
+    "per_agent_bijection": true
+  },
+  "coupling_calls_during_20step_DDIM": 1,
+  "keyed_noise_exact": true,
+  "official_probe_purpose": "selection_dev forward only; no gradients, no model selection, no test data",
+  "official_counts": {
+    "train": {
+      "windows": 2681,
+      "agents": 26076,
+      "max_agents": 57,
+      "N_ge_9": 797
+    },
+    "selection_dev": {
+      "windows": 590,
+      "agents": 4262,
+      "max_agents": 42,
+      "N_ge_9": 127
+    }
+  },
+  "provider": [
+    {
+      "stage": "density",
+      "epoch": 19,
+      "sha256": "9fc32ec8cb05075c269c79c7d6069fcf8b010fc66e6ad2280124b973ca340923",
+      "file": "epoch_019.pt"
+    },
+    {
+      "stage": "head",
+      "epoch": 9,
+      "sha256": "7fdaaac8cfa2d50471e4b6ff5428880ddf20c5f74298afbe0c5e4033380745b2",
+      "file": "epoch_009.pt"
+    }
+  ],
+  "bank_sha256": [
+    "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+    "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+  ],
+  "historical_compatibility": [
+    {
+      "label": "v2_e5",
+      "sha256": "9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317",
+      "strict_load": true,
+      "used_as_ssec_initialization": false
+    },
+    {
+      "label": "v2_e26",
+      "sha256": "aac597735d1ac457357e9c1e5ddc74658ba073765055bd904e8d8dc9161d463a",
+      "strict_load": true,
+      "used_as_ssec_initialization": false
+    },
+    {
+      "label": "v3_e12",
+      "sha256": "ae2ff4c81d0df7e1e42515a598208d2a2a7d6042513052bcb1fabd13bcf2be76",
+      "strict_load": true,
+      "used_as_ssec_initialization": false
+    }
+  ],
+  "model_states_unchanged": true
+}

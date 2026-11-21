@@ -8,6 +8,7 @@ from bcep_v3.evidence import validate_inputs,CandidateSetEvidence
 from .energy import SceneEnergy,ConditionalReplacementScorer
 from .matching import solve
 from .verification import EnergyVerifier
+from .identity import canonical_order
 
 
 class CoordinatedAssignment(nn.Module):
@@ -61,17 +62,19 @@ class SceneEnergyCoupling(LearnableJointCouplingHead):
         self.csee=CandidateSetEvidence() if csee else None
         self.last_edge_count=0;self.last_diagnostics=[]
 
-    def assign(self,context,proposals,goal_scale,*,straight_through,return_details=False,incumbent=None,visit_orders=None):
+    def assign(self,context,proposals,goal_scale,*,straight_through,return_details=False,incumbent=None,visit_orders=None,candidate_ids=None):
         validate_inputs(context,proposals)
         if context.valid.shape[1]>57:raise ValueError('validated capacity is at most 57 people')
-        goals=proposals.detach();safe=torch.where(context.valid[:,None,:,None],goals,0.)
+        input_goals=proposals.detach()
+        identity=canonical_order(input_goals,context.valid,candidate_ids)
+        goals=identity.gather(input_goals);safe=torch.where(context.valid[:,None,:,None],goals,0.)
         s0,u=self.forward_features(context,safe,goal_scale)
         pi0,initial,soft0=assignment(s0,context.valid,straight_through)
         if incumbent is not None:
             if incumbent.shape!=pi0.shape or not torch.equal(incumbent.sort(1).values,pi0.sort(1).values):raise ValueError('invalid incumbent')
             for b in range(len(context.valid)):
                 if int(context.valid[b].sum())==1 and not torch.equal(incumbent[b],pi0[b]):raise ValueError('single-person identity required')
-            pi0=incumbent
+            pi0=identity.to_canonical_indices(incumbent)
             hard=permutation_matrix(pi0,20)
             initial=hard+(soft0-soft0.detach()) if straight_through else hard
         if self.csee is not None:u=self.csee(u,context,safe,goal_scale)
@@ -96,6 +99,8 @@ class SceneEnergyCoupling(LearnableJointCouplingHead):
         self.last_edge_count=sum(2*len(s.edges) for s in states)
         # Retain detached scalars only; do not pin a completed autograd graph.
         self.last_diagnostics=[dict(scene=d['scene'],valid_people=d['valid_people'],edges=d['edges'],trace=d['trace']) for d in details]
-        result=(hard,pi,scores)
-        if return_details:return (*result,dict(initial_pi=pi0,initial_scores=s0,final_soft=soft,scenes=details))
+        result=(hard,identity.to_input_indices(pi),identity.columns_to_input(scores))
+        if return_details:return (*result,dict(initial_pi=identity.to_input_indices(pi0),
+            initial_scores=identity.columns_to_input(s0),final_soft=identity.columns_to_input(soft),scenes=details,
+            candidate_identity=identity,canonical_initial_pi=pi0,canonical_initial_scores=s0,canonical_final_pi=pi))
         return result

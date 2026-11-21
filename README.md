@@ -1,3 +1,5 @@
+> 2026-11-21 SSEC 候选身份修复：原57人101个重编号变化已降为0，32项CPU测试及完整GPU回归通过；[本轮报告](docs/research/bcep_scene_energy/candidate_identity_20261121/README.md)。当前冻结成员顺序下工程门槛通过，训练仍禁用；行人重排/访问顺序依赖仍明确保留。
+
 > 2026-11-21 SSEC：已实现可训练公共场景能量网络；[工程验收报告](docs/research/bcep_scene_energy/acceptance_20261121/README.md) 为 **BLOCKED**（默认首配重编号敏感）。19项内核测试、GPU/接口验收完成，真实与合成 optimizer 更新均为0，不启动训练。
 
 > 2026-11-21：已完成 [联合评分可辨识性与软硬分配冻结审查](docs/research/bcep_v3/joint_score_identifiability_20261121/README.md)。真实/合成 optimizer 更新均为 0；附三模型诊断、公共场景能量设计和 10 项 CPU 测试。结论支持下一版工程实现，不代表训练效果已获验证。

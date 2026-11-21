@@ -1,0 +1,50 @@
+{
+  "base": "54ef175c3cb2601c60ec178402831cee406eec6e",
+  "status": "READY_ENGINEERING_TRAINING_DISABLED",
+  "gates": {
+    "CPU_RECEIPT.json": true,
+    "GPU_RECEIPT.json": true,
+    "MECHANISM_RECEIPT.json": true,
+    "INTERFACE_RECEIPT.json": true,
+    "DDIM_RECEIPT.json": true,
+    "GPU_receipt_matches_final_network_source": true,
+    "certified_monotone_updates": true,
+    "native_Hungarian_exact_on_neural_proposals": true,
+    "new_uniqueness_median_faster_in_each_measured_class": true,
+    "carried_incumbent_candidate_world_relabel": true,
+    "default_entry_candidate_relabel_stable": true,
+    "historical_assets_unchanged": true,
+    "native_source_unchanged": true,
+    "old_queue_states_unchanged": true,
+    "IDENTITY_INTERFACE_RECEIPT.json": true,
+    "NOISE_CONTRACT_RECEIPT.json": true,
+    "BASE_REPRODUCTION.json": true,
+    "full_objective_relabel_gradient_exact": true,
+    "old_tests_not_deleted_or_changed": true
+  },
+  "inherited_gate_evidence": {
+    "CPU_RECEIPT.json": "new run",
+    "GPU_RECEIPT.json": "new same-state before/after plus unchanged full prior suite: v2/v3/SSEC/CSEE, all N and dense N57",
+    "MECHANISM_RECEIPT.json": "new run",
+    "INTERFACE_RECEIPT.json": "new run",
+    "DDIM_RECEIPT.json": "new END_TO_END_DDIM.csv: six N + duplicate + native augmentation",
+    "new_uniqueness_median_faster_in_each_measured_class": "retained fixed-base timing; matching.py byte-for-byte unchanged; exact kernel tests rerun; no new uniqueness speedup claimed"
+  },
+  "original_gate_names_preserved": true,
+  "CPU_tests": 32,
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 0,
+  "training_authorized": false,
+  "formal_training_execution_enabled": false,
+  "original_101_changed_slots_remaining": 0,
+  "unresolved_engineering_blockers": [],
+  "admission_scope": "fixed ZARA2 bank/membership order and original native protocol; identity/noise transport required for reordered inputs; no new train launch",
+  "limitations": [
+    "physical visitation order dependence remains",
+    "default S0 can remain sensitive to PERSON-array reordering even with the same physical visit order; no unconditional person-equivariance claim",
+    "coincident endpoints alone cannot recover original noise occurrence IDs; unlabelled coincidences fail closed",
+    "proposal-ST bias, near-uniform Sinkhorn and hardware-dependent near ties remain",
+    "no training/convergence/JADE/JFDE improvement was measured",
+    "formal training command remains disabled; separate explicit authorization required"
+  ]
+}

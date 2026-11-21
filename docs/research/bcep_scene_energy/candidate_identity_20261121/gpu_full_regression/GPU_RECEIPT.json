@@ -1,0 +1,41 @@
+{
+  "passed": true,
+  "device": "NVIDIA GeForce RTX 5070 Ti",
+  "total_device_memory": 16617701376,
+  "torch": "2.8.0+cu128",
+  "input_maps": [
+    6,
+    256,
+    256
+  ],
+  "FP32": true,
+  "autocast": false,
+  "TF32": false,
+  "warmup_per_case": 1,
+  "repetitions": 3,
+  "same_session_same_inputs": true,
+  "model_state_sha256": {
+    "v2": "b487a2289d4adb6cf7e2725494cb7dbd7e2032a8e8c4a00e1f203ea29e176924",
+    "v3": "82704dc650fcd8f0dfa01dee7f7ad2365d78d65b8aa9f17e15ae7378eaf1ff09",
+    "energy_only": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+    "energy_csee": "0060ed1d16bdcec7e0d5c541c41245c9a4926261e378fba3c3c8258f40feab44"
+  },
+  "states_unchanged": true,
+  "optimizer_guard": {
+    "optimizer_step_calls": 0
+  },
+  "real_updates": 0,
+  "synthetic_updates": 0,
+  "benchmark_weights": "fresh seed3201 structural comparison; no trained-weight warm start",
+  "network_source_sha256": {
+    "bcep_scene_energy/__init__.py": "85068f55eda3d080b350d946f606512f7da9361e2d166e9dea19f8a32618aab3",
+    "bcep_scene_energy/interface.py": "38f0b7aaf78bd6d1ac1440e4cc58083d994222bb2c2e36c76d37cc7828b6acee",
+    "bcep_scene_energy/energy.py": "df087b053225c934eec42c1395265cc2bb6c4d377a90ce9207cbc12dda3c7a10",
+    "bcep_scene_energy/verification.py": "6fd575af80e8ea063bd10729fd44b339e782f9d6d506842eaad8b626ab097e4e",
+    "bcep_scene_energy/model.py": "dcc2b1e7e3774763141916fc7095b5dc9c67cf968088f905e58ea35bab411c48",
+    "bcep_scene_energy/matching.py": "47161a04860b30a789227e644b2c084b4e5b90e09bc6ab38ef340e53abb8f1a8",
+    "bcep_scene_energy/identity.py": "0c34f3b0cbb32b530e8a42ac9bd3fd916ef69575c5828fd6ae9d3c767d5f0d08",
+    "bcep_scene_energy/inference.py": "a6025ad682edb6cfeb29d364ccba14b7731d1dd57e9c00d1bb86b0daebd596e6",
+    "bcep_scene_energy/coupling.py": "366c7b69252616b71b5d8a2135fd64f8400afb5ce5336eee3754a5244737556f"
+  }
+}
