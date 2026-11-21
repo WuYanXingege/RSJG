@@ -1,0 +1,33 @@
+{
+  "recorded_at": "2026-11-21T11:06:03.233034+08:00",
+  "base_commit": "0243b781fd7d983b6d3f6ab9b04e4e29158f57d7",
+  "checkpoint_epoch": 12,
+  "model_selection": false,
+  "optimizer_step_allowed": false,
+  "backward_allowed": false,
+  "branch_model_reconstruction": false,
+  "cohort": "only ZARA2 selection_dev 590 windows",
+  "native_replay_reference_accepted_by_user": true,
+  "near_tie_score_sum_threshold": 1e-06,
+  "strict_tie_definition": "best minus second distinct complete assignment equals exactly zero in float64 sum of captured FP32 entries",
+  "singletons": "native identity bypass; not counted as solver ties",
+  "people_bins": [
+    "1",
+    "2-4",
+    "5-8",
+    "9-12",
+    "13-20",
+    "21+"
+  ],
+  "reference_proximity_bins_m": [
+    0.2,
+    0.5,
+    1.0
+  ],
+  "JFDE_equal_definition": "strict equality; also report absolute delta <= 1e-6 m",
+  "model_evaluation_unchanged": "eval with native requires_grad flags, no_grad, FP32 deterministic original runtime",
+  "GRG_check": "same trained parameters, context, C endpoints, keyed noise and 20 steps; set residual modulation to zero only",
+  "C_gate": "all 590 exact native replay permutations and per-window archived endpoint JFDE before comparative analysis",
+  "analysis_script_sha256": "3859fcbf7033bbac66ed6f0e19517aa157cb7526f5b8db7e6726774167604968",
+  "matching_script_sha256": "42917f3abe5e52e31a84fee93e1c3419bd51c98b20dd2c4f05aae4ecfe8b6d46"
+}

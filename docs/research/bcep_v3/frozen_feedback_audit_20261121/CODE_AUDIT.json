@@ -1,0 +1,47 @@
+{
+  "base_commit": "0243b781fd7d983b6d3f6ab9b04e4e29158f57d7",
+  "native_files_changed": false,
+  "native_file_sha256": {
+    "bcep_v3/coupling.py": "4263a7b744b7b2ec197d56025d3f9b670a7a62f18e6744906d0e262326064108",
+    "bcep_v3/formal_validation.py": "05b0749085ce26c560aa62b10044d33f86b177e7c7651f70ad7ef7e9e08fbef3",
+    "bcep_v3/gate.py": "0253b39358323540367aadcd43ac912e4e324103666982821385d231165465f6",
+    "bcep_v2/joint.py": "f9dbfb6439d4ea0d396bd76447af8d2bf4cd659eba7306d0a1027596edee606d",
+    "ebjd/unified.py": "7648a5d433a903f19819aa84af8a3f584a1cf09e09a65f5eded43a2d531fbf8f",
+    "bcep_joint/inference.py": "d3f77df8e55908e197280a10dd9c97492f4e7f90d67d4ba6c920ab1a9117d230"
+  },
+  "exact_capture": {
+    "S0": "native forward_features output",
+    "old_feedback": "native messages output",
+    "B": "native old_final before HCRA addition",
+    "HCRA_delta": "native return_details.score_delta",
+    "C": "native final scores"
+  },
+  "original_native_replay": "generate -> HCRACoupling.assign -> original two assignments -> original 20-step bridge",
+  "independent_counterfactual_solves": "assignment(S0), assignment(old_final), assignment(final_scores); each unchanged original Hungarian",
+  "both_feedback_terms_conditioned_on": "the same initial A hard assignment; HCRA does not recompute its relations from B",
+  "scoring_network_not_rerun_for_ABC": true,
+  "model_constructions_in_accepted_full_replay": 1,
+  "model_constructions_in_analysis": 0,
+  "preflight_model_loads": 2,
+  "preflight_explanation": "One failed exact-JADE check and one same-weight flag-toggle probe; neither used for branch comparisons.",
+  "preserved_native_requires_grad_flags": true,
+  "freeze_enforcement": [
+    "no_grad",
+    "deny optimizer construction and step",
+    "deny backward",
+    "state hash before/after"
+  ],
+  "native_requires_grad_probe": "True/False/False/True on one strict-loaded model reproduces 1-ULP JADE shift; precise operator/kernel not identified",
+  "historical_permutations_not_archived": true,
+  "user_approved_native_replay_reference": true,
+  "native_H_JADE_and_endpoint_H_JFDE_per_window_exact": true,
+  "all_ABC_per_person_bijections": true,
+  "singleton_identity": true,
+  "C_gate_passed_before_attribution": true,
+  "optimizer_steps_real": 0,
+  "optimizer_steps_synthetic": 0,
+  "backward_calls": 0,
+  "test_use": false,
+  "model_selection": false,
+  "original_run_updates_unchanged": 5040
+}

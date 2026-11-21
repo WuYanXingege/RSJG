@@ -1,0 +1,22 @@
+{
+  "unit_tests_passed": 7,
+  "unit_test_command": "CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=1 ../.conda/rsjg/bin/python -m pytest -q tests/test_v3_frozen_matching.py",
+  "coverage": [
+    "second-best assignment gap vs exhaustive 4! enumeration, 3 seeds",
+    "strict vs positive near ties",
+    "uniform world relabel vs correspondence change",
+    "row/column gauge invariance",
+    "tie-breaking non-equivariance"
+  ],
+  "production_acceptance": {
+    "native_archive_JFDE_exact_windows": 590,
+    "native_archive_JADE_exact_windows": 590,
+    "C_native_permutation_exact_windows": 590,
+    "A_initial_permutation_exact_windows": 590,
+    "A_archived_I_JFDE_exact_windows": 590,
+    "independent_ABC_bijection_windows": 590,
+    "singleton_identical_windows": 89
+  },
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 0
+}
