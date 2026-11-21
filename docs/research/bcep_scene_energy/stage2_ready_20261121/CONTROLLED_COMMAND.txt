@@ -1,0 +1,2 @@
+# Prepared only; execute ONLY after separate explicit training authorization.
+cd -- /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/RSJG_SSEC_formal_ready_20261121 && env RUN_ONE_ZARA2_SSEC=true CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python -m bcep_scene_energy.formal train --frozen-sha 3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842

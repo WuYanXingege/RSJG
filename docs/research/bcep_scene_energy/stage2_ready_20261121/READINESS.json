@@ -1,0 +1,40 @@
+{
+  "status": "READY_FOR_SEPARATE_TRAINING_AUTHORIZATION",
+  "base": "b51966c36ef2ff43246c9daac76666f6814bc2c8",
+  "frozen_file_sha256": "3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842",
+  "source_manifest_sha256": "8c9180d4251647fd610237e73cd0477a73b29c3abf6a10a5da20af608fda6253",
+  "initial_model_sha256": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+  "gates": {
+    "source_manifest_frozen": true,
+    "CPU_RECEIPT.json": true,
+    "REAL_INPUTS.json": true,
+    "REAL_ACCEPTANCE.json": true,
+    "RECOVERY_RECEIPT.json": true,
+    "INITIAL_DEV.json": true,
+    "LOGICAL_GROUP_BACKWARD.json": true,
+    "590_windows_20_DDIM_initial_only": true,
+    "initial_model_fingerprint": true,
+    "exact_original_grouped_backward": true,
+    "energy_monotone_and_finite": true,
+    "frozen_marginal": true,
+    "original_optimizer_scheduler_selector": true,
+    "existing_architecture_and_controllers_unchanged": true,
+    "all_protected_assets_unchanged": true,
+    "protected_queue_states": true,
+    "no_training_started": true,
+    "no_new_step_call": true
+  },
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 0,
+  "training_authorized": false,
+  "completed_training_epochs": 0,
+  "CPU_tests": 42,
+  "unresolved_engineering_blockers": [],
+  "limitations": [
+    "zero-step recovery does not claim equivalence after positive AdamW updates",
+    "Top5/stop rules tested via actual native writer/expressions with explicit fixtures; no trained synthetic epochs",
+    "actual post-step parameter changes will be observed only after separate training authorization",
+    "fixed person membership/order remains required; SSEC order dependence and soft/hard bias persist",
+    "initial dev metrics do not establish trained model quality"
+  ]
+}

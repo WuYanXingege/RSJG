@@ -1,0 +1,54 @@
+{
+  "passed": true,
+  "initial_model_sha256": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+  "previous_initial_fingerprint_exact": true,
+  "parameters": 7627950,
+  "energy_only": true,
+  "native_vs_instrumented_backward_exact": true,
+  "losses": [
+    1.358112096786499,
+    1.358112096786499
+  ],
+  "endpoint_noise_checks": [
+    {
+      "index": 0,
+      "N": 1,
+      "actual_DDIM_steps": 20,
+      "actual_sampler_calls": 1,
+      "exact_endpoint": true,
+      "actual_keyed_noise_exact": true
+    },
+    {
+      "index": 3,
+      "N": 2,
+      "actual_DDIM_steps": 20,
+      "actual_sampler_calls": 1,
+      "exact_endpoint": true,
+      "actual_keyed_noise_exact": true
+    },
+    {
+      "index": 955,
+      "N": 9,
+      "actual_DDIM_steps": 20,
+      "actual_sampler_calls": 1,
+      "exact_endpoint": true,
+      "actual_keyed_noise_exact": true
+    },
+    {
+      "index": 1658,
+      "N": 57,
+      "actual_DDIM_steps": 20,
+      "actual_sampler_calls": 1,
+      "exact_endpoint": true,
+      "actual_keyed_noise_exact": true
+    }
+  ],
+  "model_unchanged": true,
+  "actual_optimizer_step_hooks_fired": 0,
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 0,
+  "implementation_hash": "8c9180d4251647fd610237e73cd0477a73b29c3abf6a10a5da20af608fda6253",
+  "optimizer_guard": {
+    "optimizer_step_calls": 0
+  }
+}

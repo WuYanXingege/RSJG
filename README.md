@@ -1,3 +1,5 @@
+> 2026-11-21 SSEC 正式入口准备：已完成真实数据零更新验收与590窗初态验证，状态 [READY_FOR_SEPARATE_TRAINING_AUTHORIZATION](docs/research/bcep_scene_energy/stage2_ready_20261121/README.md)。42项CPU测试通过，真实/合成 optimizer 更新均为0；唯一受控命令已准备，尚未启动训练。
+
 > 2026-11-21 SSEC 候选身份修复：原57人101个重编号变化已降为0，32项CPU测试及完整GPU回归通过；[本轮报告](docs/research/bcep_scene_energy/candidate_identity_20261121/README.md)。当前冻结成员顺序下工程门槛通过，训练仍禁用；行人重排/访问顺序依赖仍明确保留。
 
 > 2026-11-21 SSEC：已实现可训练公共场景能量网络；[工程验收报告](docs/research/bcep_scene_energy/acceptance_20261121/README.md) 为 **BLOCKED**（默认首配重编号敏感）。19项内核测试、GPU/接口验收完成，真实与合成 optimizer 更新均为0，不启动训练。
