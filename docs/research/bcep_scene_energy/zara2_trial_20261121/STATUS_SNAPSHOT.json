@@ -1,0 +1,62 @@
+{
+  "status": "RUNNING_INTERIM_NOT_FINAL",
+  "native_status": {
+    "status": "RUNNING",
+    "pid": 2042583,
+    "optimizer_updates": 0,
+    "resume": false
+  },
+  "reported_progress": {
+    "fold": "zara2",
+    "stage": "joint",
+    "epoch": 1,
+    "update": 30,
+    "cursor": 480,
+    "unix": 1795269657.0647,
+    "pid": 2042583,
+    "grad_norm": 3.297668218612671,
+    "metrics": {
+      "loss": 2.8208032697439194,
+      "pair_softmin_m": 0.8343262374401093,
+      "pair_exact_hard_jfde_m": 0.5817427672445774,
+      "world_weight_entropy": 1.0175203159451485,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000002,
+      "pair_weight": 1.0,
+      "effective_edges": 1202.0,
+      "clean_path_raw_sum": 0.3143294195178896,
+      "clean_path_signal_sum": 0.08887849858729169,
+      "valid_scene_count": 16.0,
+      "clean_path_term": 0.0002777453116777906,
+      "diffusion_term": 1.9153692043472514,
+      "geometry_term": 0.00016812804392429825,
+      "pair_term": 0.8343262374401093,
+      "map_term": 0.07066178246797081,
+      "coupling.energy.phi.gradient_l2": 0.013261961150238593,
+      "coupling.energy.rho.gradient_l2": 0.0062286835238251044,
+      "bridge.encoder.gradient_l2": 0.04256562635496819,
+      "ssec_attempted": 134.0,
+      "ssec_accepted": 132.0,
+      "ssec_rejected": 2.0,
+      "ssec_strict_ties": 0.0,
+      "ssec_reliable_decreases": 132.0,
+      "ssec_roundoff_uncertain": 0.0,
+      "ssec_accepted_energy_delta": -5.988805792170815,
+      "coupling.energy.phi.parameter_delta_l2": 0.0008554089974117184,
+      "coupling.energy.rho.parameter_delta_l2": 0.0016604829320479113,
+      "bridge.encoder.parameter_delta_l2": 0.00945912332444624
+    }
+  },
+  "completed_epochs": 0,
+  "latest_observed_update": 36,
+  "recorded_physical_steps": 36,
+  "first_update_passed": true,
+  "first_epoch_passed": false,
+  "thresholds": [
+    0.4097670185111337,
+    0.7841791655426308,
+    1.296843430188697
+  ],
+  "runtime_code_commit": "ece95ce6f1f59d58a8119fef7cdd79bf9d04ee86",
+  "unix": 1795269711.025767
+}

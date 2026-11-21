@@ -1,0 +1,78 @@
+{
+  "passed": true,
+  "first_real_update": 1,
+  "first_update_progress": {
+    "fold": "zara2",
+    "stage": "joint",
+    "epoch": 1,
+    "update": 1,
+    "cursor": 16,
+    "unix": 1795269452.088615,
+    "pid": 2042583,
+    "grad_norm": 1.0111366510391235,
+    "metrics": {
+      "loss": 3.2358065769076347,
+      "pair_softmin_m": 1.2418929301202297,
+      "pair_exact_hard_jfde_m": 1.006794560700655,
+      "world_weight_entropy": 1.17378880828619,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.1,
+      "pair_weight": 1.0,
+      "effective_edges": 1206.0,
+      "clean_path_raw_sum": 0.8644372590524654,
+      "clean_path_signal_sum": 0.33818139243612677,
+      "valid_scene_count": 16.0,
+      "clean_path_term": 0.001056816876698008,
+      "diffusion_term": 1.9219462119096906,
+      "geometry_term": 0.00011965915789602377,
+      "pair_term": 1.2418929301202297,
+      "map_term": 0.07079097623480302,
+      "coupling.energy.phi.gradient_l2": 0.02370379605804329,
+      "coupling.energy.rho.gradient_l2": 0.008635487718320395,
+      "bridge.encoder.gradient_l2": 0.03629521786669777,
+      "ssec_attempted": 141.0,
+      "ssec_accepted": 138.0,
+      "ssec_rejected": 3.0,
+      "ssec_strict_ties": 0.0,
+      "ssec_reliable_decreases": 138.0,
+      "ssec_roundoff_uncertain": 0.0,
+      "ssec_accepted_energy_delta": -13.441745758151436,
+      "coupling.energy.phi.parameter_delta_l2": 0.0023545448247602515,
+      "coupling.energy.rho.parameter_delta_l2": 0.003215005016863909,
+      "bridge.encoder.parameter_delta_l2": 0.021758519580160608
+    }
+  },
+  "modules": {
+    "coupling.energy.phi.": {
+      "gradient_l2": 0.02370379605804329,
+      "present_tensors": 4,
+      "nonzero_tensors": 4,
+      "parameter_delta_l2": 0.0023545448247602515,
+      "parameter_delta_max": 2.0001083612442017e-05
+    },
+    "coupling.energy.rho.": {
+      "gradient_l2": 0.008635487718320395,
+      "present_tensors": 4,
+      "nonzero_tensors": 4,
+      "parameter_delta_l2": 0.003215005016863909,
+      "parameter_delta_max": 2.0001083612442017e-05
+    },
+    "bridge.encoder.": {
+      "gradient_l2": 0.03629521786669777,
+      "present_tensors": 92,
+      "nonzero_tensors": 92,
+      "parameter_delta_l2": 0.021758519580160608,
+      "parameter_delta_max": 2.002716064453125e-05
+    }
+  },
+  "coordinated_windows": 16,
+  "accepted_updates_reliably_monotone": true,
+  "finite_energy": true,
+  "checkpoint_update": 1,
+  "complete_checkpoint_fields": true,
+  "source_commit": "ece95ce6f1f59d58a8119fef7cdd79bf9d04ee86",
+  "frozen_file_sha256": "3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842",
+  "allocated_peak_bytes": 1814337536,
+  "disk_free_bytes": 76929855488,
+  "unix": 1795269472.5251431
+}
