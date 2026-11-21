@@ -1,0 +1,35 @@
+{
+  "status": "BLOCKED",
+  "gates": {
+    "CPU_RECEIPT.json": true,
+    "GPU_RECEIPT.json": true,
+    "MECHANISM_RECEIPT.json": true,
+    "INTERFACE_RECEIPT.json": true,
+    "DDIM_RECEIPT.json": true,
+    "GPU_receipt_matches_final_network_source": true,
+    "certified_monotone_updates": true,
+    "native_Hungarian_exact_on_neural_proposals": true,
+    "new_uniqueness_median_faster_in_each_measured_class": true,
+    "carried_incumbent_candidate_world_relabel": true,
+    "default_entry_candidate_relabel_stable": false,
+    "historical_assets_unchanged": true,
+    "native_source_unchanged": true,
+    "old_queue_states_unchanged": true
+  },
+  "CPU_tests": 19,
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 0,
+  "training_authorized": false,
+  "primary_variant": "energy_only",
+  "unresolved_engineering_blockers": [
+    "default_entry_candidate_relabel_stable"
+  ],
+  "limitations": [
+    "one-sweep physical visitation-order dependence",
+    "native S0 tie and candidate relabel dependence may remain",
+    "proposal-ST is a biased training-only adjoint; uniform-soft/hard discrepancy remains",
+    "no learned generalization, convergence or H-JADE/H-JFDE improvement established",
+    "measured slowdown versus v2/v3; no optimizer-state-allocation peak or real training executed",
+    "completed-epoch early-stop/Top5 controller unchanged, not reexecuted with forbidden optimizer steps"
+  ]
+}

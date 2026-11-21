@@ -1,0 +1,30 @@
+[
+  {
+    "name": "subnormal",
+    "integer_certificate": {
+      "unique": true,
+      "native_solution_exactly_optimal": true,
+      "gap": 2.802596928649634e-45,
+      "gap_integer": "2",
+      "lattice_exponent": 149,
+      "arithmetic": "int64",
+      "hungarian_calls_for_uniqueness": 0
+    },
+    "old_FP64_summed_gap": 2.802596928649634e-45,
+    "note": "wide-range case validated against exact integer exhaustive enumeration; FP64 total subtraction can lose the positive gap"
+  },
+  {
+    "name": "wide_dynamic_range",
+    "integer_certificate": {
+      "unique": true,
+      "native_solution_exactly_optimal": true,
+      "gap": 1.999999936531045e-20,
+      "gap_integer": "24758800",
+      "lattice_exponent": 90,
+      "arithmetic": "python_integer",
+      "hungarian_calls_for_uniqueness": 0
+    },
+    "old_FP64_summed_gap": 0.0,
+    "note": "wide-range case validated against exact integer exhaustive enumeration; FP64 total subtraction can lose the positive gap"
+  }
+]

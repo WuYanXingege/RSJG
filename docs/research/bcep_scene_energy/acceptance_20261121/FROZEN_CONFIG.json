@@ -1,0 +1,94 @@
+{
+  "base": "24feb26fd68b2f1a977d8de24020cc0f548851c8",
+  "variant": "energy_only",
+  "optional_variant": "energy_csee",
+  "historical_reference": "v3 full architecture ONLY",
+  "real_optimizer_updates": 0,
+  "synthetic_optimizer_updates": 0,
+  "allow_real_training": false,
+  "candidate_seed": 2035,
+  "initialization_seed": 3201,
+  "phi": [
+    200,
+    64,
+    16
+  ],
+  "rho": [
+    408,
+    64,
+    1
+  ],
+  "edge_chunk": 64,
+  "sweeps": 1,
+  "rejection_gradient": "proposal_st",
+  "sinkhorn_iterations": 20,
+  "sinkhorn_temperature": 1.0,
+  "pair_objective": "final_coordinate",
+  "bridge_layers": 6,
+  "ddim_steps": 20,
+  "flow_layers": 4,
+  "M": 256,
+  "K": 20,
+  "selection": "official dev H-JADE; exact ties earlier epoch",
+  "unique_check": "exact FP32 integer lattice minimum alternating cycle",
+  "energy_verification": "detached FP64 complete scene with arithmetic-error bound",
+  "protected_before_files": 45631,
+  "protected_before_bytes": 12797345136,
+  "provider_identity": [
+    {
+      "stage": "density",
+      "epoch": 19,
+      "sha256": "9fc32ec8cb05075c269c79c7d6069fcf8b010fc66e6ad2280124b973ca340923",
+      "file": "epoch_019.pt"
+    },
+    {
+      "stage": "head",
+      "epoch": 9,
+      "sha256": "7fdaaac8cfa2d50471e4b6ff5428880ddf20c5f74298afbe0c5e4033380745b2",
+      "file": "epoch_009.pt"
+    }
+  ],
+  "bank_sha256": [
+    "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+    "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+  ],
+  "official_counts": {
+    "train": {
+      "windows": 2681,
+      "agents": 26076,
+      "max_agents": 57,
+      "N_ge_9": 797
+    },
+    "selection_dev": {
+      "windows": 590,
+      "agents": 4262,
+      "max_agents": 42,
+      "N_ge_9": 127
+    }
+  },
+  "native_recipe": {
+    "optimizer": "AdamW",
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "warmup_epochs": 5,
+    "scheduler_horizon": 100,
+    "minimum": 30,
+    "patience": 15,
+    "max_epochs": 100,
+    "logical_scenes": 16,
+    "updates_per_epoch": 168,
+    "train_seed": 3201
+  },
+  "retention": "unchanged native writer: all complete epochs, best, last, and H-JADE Top5 distinct epochs; exact ties earlier epoch",
+  "partial_epoch_never_claimed_complete": true,
+  "public_training_command_enabled": false,
+  "network_source_sha256": {
+    "bcep_scene_energy/__init__.py": "85068f55eda3d080b350d946f606512f7da9361e2d166e9dea19f8a32618aab3",
+    "bcep_scene_energy/interface.py": "38f0b7aaf78bd6d1ac1440e4cc58083d994222bb2c2e36c76d37cc7828b6acee",
+    "bcep_scene_energy/energy.py": "df087b053225c934eec42c1395265cc2bb6c4d377a90ce9207cbc12dda3c7a10",
+    "bcep_scene_energy/verification.py": "6fd575af80e8ea063bd10729fd44b339e782f9d6d506842eaad8b626ab097e4e",
+    "bcep_scene_energy/model.py": "dcc2b1e7e3774763141916fc7095b5dc9c67cf968088f905e58ea35bab411c48",
+    "bcep_scene_energy/matching.py": "47161a04860b30a789227e644b2c084b4e5b90e09bc6ab38ef340e53abb8f1a8",
+    "bcep_scene_energy/coupling.py": "1f04d5a25bc859c095659ec629bc01a7905a19f7a4165c6436aa1cc000f83f4c"
+  }
+}
