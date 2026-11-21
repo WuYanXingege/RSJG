@@ -1,0 +1,27 @@
+{
+  "platform": "Linux-5.15.0-139-generic-x86_64-with-glibc2.31",
+  "cpu": "x86_64",
+  "numpy": "1.26.4",
+  "torch": "2.8.0+cu128",
+  "real_data_used": false,
+  "optimizer_guard": {
+    "optimizer_constructions": 0,
+    "optimizer_step_calls": 0
+  },
+  "N": 57,
+  "K": 20,
+  "R": 16,
+  "edges": 1596,
+  "dtype": "float64",
+  "table_bytes": 5107200,
+  "latent_bytes": 145920,
+  "FP32_table_bytes": 2553600,
+  "FP32_pair_relation_12_bytes": 30643200,
+  "replacement_score_FP32_bytes": 91200,
+  "seconds_one_sweep": 0.800548312952742,
+  "native_Hungarian_calls": 1197,
+  "accepted": 57,
+  "initial_energy": 18251.43651854749,
+  "final_energy": 14737.649358614071,
+  "note": "untrained synthetic algebra, CPU only; includes exact second-best tie audit; excludes learned neural edge-feature computation; not JFDE or training throughput"
+}

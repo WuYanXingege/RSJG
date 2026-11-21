@@ -1,0 +1,53 @@
+{
+  "base_commit": "2c64c136438cac755b9a3d1723d5225a873dd707",
+  "old_source_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "models": {
+    "v2_e5": {
+      "epoch": 5,
+      "sha256": "9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317"
+    },
+    "v2_e26": {
+      "epoch": 26,
+      "sha256": "aac597735d1ac457357e9c1e5ddc74658ba073765055bd904e8d8dc9161d463a"
+    },
+    "v3_e12": {
+      "epoch": 12,
+      "sha256": "ae2ff4c81d0df7e1e42515a598208d2a2a7d6042513052bcb1fabd13bcf2be76"
+    }
+  },
+  "candidates": 20,
+  "seed": 2035,
+  "windows": 590,
+  "near_gap": 1e-06,
+  "sinkhorn_iterations": 20,
+  "sinkhorn_score_temperature": 1,
+  "no_temperature_search": true,
+  "optimizer_steps": 0,
+  "reused_v3_score_windows": 590,
+  "reused_v2_archived_permutations": 1180,
+  "new_v2_score_windows": 1180,
+  "new_features_windows": 1770,
+  "DDIM_calls": 0,
+  "gradient_sampling": "for each N bin [1,2-4,5-8,9-12,13-20,21+], six evenly spaced positions in official dev order; same windows for all models",
+  "gradient_scope": "native final_coordinate pair loss, canonical dev without augmentation; parameter VJPs, no optimizer",
+  "scores_source": "old v2 native 468c5edd; v3 cached 2c64c136; no score recomputation for cached v3 inference",
+  "notes": "gradient-enabled forwards are necessary new graph audits and are separately compared against frozen inference scores",
+  "frozen_config_canonical_sha256": "294054c2cf7605caafe016507bb601e2d85518b70555369ca3690b74138e9e43",
+  "frozen_config_file_sha256": "0d31934d740795846ac8e216f130539f4fd32a670b290470d93a4e9d4d7ca553",
+  "split_canonical_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
+  "bank_sha256": {
+    "train": "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+    "selection_dev": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+  },
+  "single_windows": 89,
+  "multi_windows": 501,
+  "N_ge_9_windows": 127,
+  "agents": 4262,
+  "dev_max_agents": 42,
+  "strict_tie_definition": "complete best-second gap == 0, FP64 sums of original FP32 scores",
+  "near_tie_definition": "0 < complete gap <= 1e-6 (diagnostic only; never alters solver)",
+  "synthetic_optimizer_steps": 0,
+  "real_optimizer_steps": 0,
+  "gradient_mode": "original train mode required for cuDNN GRU backward; no dropout, no BatchNorm; unchanged score/permutation verified on all 108 sampled forwards",
+  "final_indirect_gradient": "measured initial-ST adjoint followed by original Sinkhorn VJP; avoid FP32 subtraction cancellation"
+}

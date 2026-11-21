@@ -1,3 +1,5 @@
+> 2026-11-21：已完成 [联合评分可辨识性与软硬分配冻结审查](docs/research/bcep_v3/joint_score_identifiability_20261121/README.md)。真实/合成 optimizer 更新均为 0；附三模型诊断、公共场景能量设计和 10 项 CPU 测试。结论支持下一版工程实现，不代表训练效果已获验证。
+
 # Endpoint–Bridge Joint Diffusion (EBJD)
 
 **Endpoint–Bridge Joint Diffusion for Joint Pedestrian Trajectory Prediction**
