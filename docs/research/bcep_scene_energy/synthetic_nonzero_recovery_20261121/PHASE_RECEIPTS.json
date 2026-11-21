@@ -1,0 +1,1167 @@
+[
+  {
+    "phase": "continuous",
+    "passed": true,
+    "actual_synthetic_optimizer_updates": 4,
+    "real_optimizer_updates": 0,
+    "start_update": 0,
+    "stop_update": 4,
+    "planned_interruption": false,
+    "checkpoint_unchanged_on_interruption": false,
+    "native_controller": true,
+    "record_progress": false,
+    "native_state_has_no_wall_clock_fields": true,
+    "frozen_config_sha256": "3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842",
+    "initial_model_sha256": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+    "final_model_sha256": "8ae356e302018e3de91709dc2922992587756f19f2a77ae38b99a1f6227b2f7d",
+    "parameters": 7627950,
+    "buffers": [
+      "bridge.representation.a",
+      "bridge.representation.bridge_cholesky",
+      "bridge.representation.goal_scale",
+      "bridge.representation.bridge_scale",
+      "bridge.encoder.goal_scale",
+      "bridge.denoiser.future_time"
+    ],
+    "source_sha256": "8c9180d4251647fd610237e73cd0477a73b29c3abf6a10a5da20af608fda6253",
+    "duration_seconds": 27.516167072113603,
+    "data_accesses": [
+      [
+        207,
+        1158,
+        2279,
+        1002
+      ],
+      [
+        2612,
+        272,
+        80,
+        2633
+      ],
+      [
+        1373,
+        2258,
+        2655,
+        1445
+      ],
+      [
+        1724,
+        1073,
+        2387,
+        1978
+      ],
+      [
+        90,
+        2388,
+        662,
+        797
+      ],
+      [
+        987,
+        1885,
+        285,
+        645
+      ],
+      [
+        2261,
+        521,
+        169,
+        1132
+      ],
+      [
+        290,
+        556,
+        2146,
+        879
+      ],
+      [
+        698,
+        836,
+        1368,
+        2150
+      ],
+      [
+        2356,
+        2016,
+        63,
+        275
+      ],
+      [
+        2468,
+        281,
+        1867,
+        1171
+      ],
+      [
+        732,
+        1540,
+        2510,
+        239
+      ],
+      [
+        195,
+        339,
+        2193,
+        1135
+      ],
+      [
+        1851,
+        887,
+        1489,
+        1848
+      ],
+      [
+        25,
+        1277,
+        348,
+        922
+      ],
+      [
+        2338,
+        2228,
+        153,
+        1552
+      ],
+      [
+        207
+      ],
+      [
+        1158
+      ],
+      [
+        2279
+      ],
+      [
+        1002
+      ]
+    ],
+    "input_guard": {
+      "denied_cross_workspace_accesses": 0
+    },
+    "rows": [
+      {
+        "phase": "continuous",
+        "logical_update": 1,
+        "physical_optimizer_event": 1,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          207,
+          1158,
+          2279,
+          1002,
+          2612,
+          272,
+          80,
+          2633,
+          1373,
+          2258,
+          2655,
+          1445,
+          1724,
+          1073,
+          2387,
+          1978
+        ],
+        "checkpoint": "continuous_update_001.pt",
+        "checkpoint_sha256": "892999640a000f5fe4bdce3f1fd503de865bbacc25c13b08d133ecd2c551a25e",
+        "model_sha256": "e243da6719aab53b391ca7614cea9e3a4b38c4df1574ad982867e5746f9395d2",
+        "metrics": {
+          "loss": 2.5213576406240463,
+          "pair_softmin_m": 0.7626363784074783,
+          "pair_exact_hard_jfde_m": 0.504890825599432,
+          "world_weight_entropy": 0.9539574719965458,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 618.0,
+          "clean_path_raw_sum": 0.05217815097421408,
+          "clean_path_signal_sum": 0.018851441680453718,
+          "valid_scene_count": 16,
+          "clean_path_term": 5.891075511499366e-05,
+          "diffusion_term": 1.6877780388230863,
+          "geometry_term": 6.784357219657977e-05,
+          "pair_term": 0.7626363784074783,
+          "map_term": 0.07081644949705704,
+          "coupling.energy.phi.gradient_l2": 0.21014408103232662,
+          "coupling.energy.rho.gradient_l2": 0.03664407287316112,
+          "bridge.encoder.gradient_l2": 0.2112184171975762,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -10.565422473162643,
+          "coupling.energy.phi.parameter_delta_l2": 0.002356473948706521,
+          "coupling.energy.rho.parameter_delta_l2": 0.0032325550720184197,
+          "bridge.encoder.parameter_delta_l2": 0.021840602885568248
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      },
+      {
+        "phase": "continuous",
+        "logical_update": 2,
+        "physical_optimizer_event": 2,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          90,
+          2388,
+          662,
+          797,
+          987,
+          1885,
+          285,
+          645,
+          2261,
+          521,
+          169,
+          1132,
+          290,
+          556,
+          2146,
+          879
+        ],
+        "checkpoint": "continuous_update_002.pt",
+        "checkpoint_sha256": "dcb06f5e2be4ce1d19f40dbe9dc8d4449a88cf2bf06980575066ff5dc8ba5239",
+        "model_sha256": "e67828051ebd5b19909be2660c66e3575f2b0d66e76e9ac3b4cce214d00e6937",
+        "metrics": {
+          "loss": 2.2357670217752457,
+          "pair_softmin_m": 0.7797870337963104,
+          "pair_exact_hard_jfde_m": 0.5247054472565651,
+          "world_weight_entropy": 0.9192036241292953,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 600.0,
+          "clean_path_raw_sum": 0.04270869051106274,
+          "clean_path_signal_sum": 0.022082000719819916,
+          "valid_scene_count": 16,
+          "clean_path_term": 6.900625479744349e-05,
+          "diffusion_term": 1.3850121890073237,
+          "geometry_term": 8.677968901338318e-05,
+          "pair_term": 0.7797870337963104,
+          "map_term": 0.0708119985849961,
+          "coupling.energy.phi.gradient_l2": 0.21990275582726318,
+          "coupling.energy.rho.gradient_l2": 0.03694905747134508,
+          "bridge.encoder.gradient_l2": 0.23445575325168677,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -11.948656870293213,
+          "coupling.energy.phi.parameter_delta_l2": 0.001934147656872407,
+          "coupling.energy.rho.parameter_delta_l2": 0.002738629390803999,
+          "bridge.encoder.parameter_delta_l2": 0.01817666943710543
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      },
+      {
+        "phase": "continuous",
+        "logical_update": 3,
+        "physical_optimizer_event": 3,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          698,
+          836,
+          1368,
+          2150,
+          2356,
+          2016,
+          63,
+          275,
+          2468,
+          281,
+          1867,
+          1171,
+          732,
+          1540,
+          2510,
+          239
+        ],
+        "checkpoint": "continuous_update_003.pt",
+        "checkpoint_sha256": "42811c9870556033e16aa7e84d10161d46f49dced660dcbcb33f80c4ec2d7e9a",
+        "model_sha256": "5c3c85f72a966c3ab0bc56924d654ae28b18217d43f9893a8ef7bb4075662148",
+        "metrics": {
+          "loss": 2.627962499856949,
+          "pair_softmin_m": 0.8895651921629906,
+          "pair_exact_hard_jfde_m": 0.6356587186455727,
+          "world_weight_entropy": 0.9675440415740013,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 610.0,
+          "clean_path_raw_sum": 0.04425196768715978,
+          "clean_path_signal_sum": 0.017912473413161933,
+          "valid_scene_count": 16,
+          "clean_path_term": 5.5976479188757367e-05,
+          "diffusion_term": 1.667449873426686,
+          "geometry_term": 8.471433693557628e-05,
+          "pair_term": 0.8895651921629906,
+          "map_term": 0.07080670195105283,
+          "coupling.energy.phi.gradient_l2": 0.20890873574300003,
+          "coupling.energy.rho.gradient_l2": 0.03370361736688786,
+          "bridge.encoder.gradient_l2": 0.22344064508044956,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -10.130294925231555,
+          "coupling.energy.phi.parameter_delta_l2": 0.001909966632587621,
+          "coupling.energy.rho.parameter_delta_l2": 0.0026959372598215647,
+          "bridge.encoder.parameter_delta_l2": 0.017405683786577513
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      },
+      {
+        "phase": "continuous",
+        "logical_update": 4,
+        "physical_optimizer_event": 4,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          195,
+          339,
+          2193,
+          1135,
+          1851,
+          887,
+          1489,
+          1848,
+          25,
+          1277,
+          348,
+          922,
+          2338,
+          2228,
+          153,
+          1552
+        ],
+        "checkpoint": "continuous_update_004.pt",
+        "checkpoint_sha256": "f35b2593b7eb3c025e67cc1a8bd7d4140ec606a4824a120dcb31d1294bfd9437",
+        "model_sha256": "8ae356e302018e3de91709dc2922992587756f19f2a77ae38b99a1f6227b2f7d",
+        "metrics": {
+          "loss": 1.9467592537403107,
+          "pair_softmin_m": 0.7590603530406952,
+          "pair_exact_hard_jfde_m": 0.5016170851886272,
+          "world_weight_entropy": 0.9179271347820759,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 606.0,
+          "clean_path_raw_sum": 0.03791370114777237,
+          "clean_path_signal_sum": 0.010234610876068473,
+          "valid_scene_count": 16,
+          "clean_path_term": 3.198315926056239e-05,
+          "diffusion_term": 1.1168218676162802,
+          "geometry_term": 4.199498846446659e-05,
+          "pair_term": 0.7590603530406952,
+          "map_term": 0.07080300128006417,
+          "coupling.energy.phi.gradient_l2": 0.10349764609927965,
+          "coupling.energy.rho.gradient_l2": 0.016968658645731275,
+          "bridge.encoder.gradient_l2": 0.10779816488909617,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -8.657457604202403,
+          "coupling.energy.phi.parameter_delta_l2": 0.0017648433435033678,
+          "coupling.energy.rho.parameter_delta_l2": 0.002515860573364703,
+          "bridge.encoder.parameter_delta_l2": 0.015854510046751077
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      }
+    ],
+    "runtime": {
+      "torch": "2.8.0+cu128",
+      "cuda": "12.8",
+      "gpu": "NVIDIA GeForce RTX 5070 Ti",
+      "deterministic": true,
+      "TF32": false
+    }
+  },
+  {
+    "phase": "partial",
+    "passed": true,
+    "actual_synthetic_optimizer_updates": 2,
+    "real_optimizer_updates": 0,
+    "start_update": 0,
+    "stop_update": 2,
+    "planned_interruption": false,
+    "checkpoint_unchanged_on_interruption": false,
+    "native_controller": true,
+    "record_progress": false,
+    "native_state_has_no_wall_clock_fields": true,
+    "frozen_config_sha256": "3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842",
+    "initial_model_sha256": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+    "final_model_sha256": "e67828051ebd5b19909be2660c66e3575f2b0d66e76e9ac3b4cce214d00e6937",
+    "parameters": 7627950,
+    "buffers": [
+      "bridge.representation.a",
+      "bridge.representation.bridge_cholesky",
+      "bridge.representation.goal_scale",
+      "bridge.representation.bridge_scale",
+      "bridge.encoder.goal_scale",
+      "bridge.denoiser.future_time"
+    ],
+    "source_sha256": "8c9180d4251647fd610237e73cd0477a73b29c3abf6a10a5da20af608fda6253",
+    "duration_seconds": 11.96774776512757,
+    "data_accesses": [
+      [
+        207,
+        1158,
+        2279,
+        1002
+      ],
+      [
+        2612,
+        272,
+        80,
+        2633
+      ],
+      [
+        1373,
+        2258,
+        2655,
+        1445
+      ],
+      [
+        1724,
+        1073,
+        2387,
+        1978
+      ],
+      [
+        90,
+        2388,
+        662,
+        797
+      ],
+      [
+        987,
+        1885,
+        285,
+        645
+      ],
+      [
+        2261,
+        521,
+        169,
+        1132
+      ],
+      [
+        290,
+        556,
+        2146,
+        879
+      ]
+    ],
+    "input_guard": {
+      "denied_cross_workspace_accesses": 0
+    },
+    "rows": [
+      {
+        "phase": "partial",
+        "logical_update": 1,
+        "physical_optimizer_event": 1,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          207,
+          1158,
+          2279,
+          1002,
+          2612,
+          272,
+          80,
+          2633,
+          1373,
+          2258,
+          2655,
+          1445,
+          1724,
+          1073,
+          2387,
+          1978
+        ],
+        "checkpoint": "partial_update_001.pt",
+        "checkpoint_sha256": "ab761fa12a23000bdcd828f25c399cac496d074d427c342731cce495301cc0c3",
+        "model_sha256": "e243da6719aab53b391ca7614cea9e3a4b38c4df1574ad982867e5746f9395d2",
+        "metrics": {
+          "loss": 2.5213576406240463,
+          "pair_softmin_m": 0.7626363784074783,
+          "pair_exact_hard_jfde_m": 0.504890825599432,
+          "world_weight_entropy": 0.9539574719965458,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 618.0,
+          "clean_path_raw_sum": 0.05217815097421408,
+          "clean_path_signal_sum": 0.018851441680453718,
+          "valid_scene_count": 16,
+          "clean_path_term": 5.891075511499366e-05,
+          "diffusion_term": 1.6877780388230863,
+          "geometry_term": 6.784357219657977e-05,
+          "pair_term": 0.7626363784074783,
+          "map_term": 0.07081644949705704,
+          "coupling.energy.phi.gradient_l2": 0.21014408103232662,
+          "coupling.energy.rho.gradient_l2": 0.03664407287316112,
+          "bridge.encoder.gradient_l2": 0.2112184171975762,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -10.565422473162643,
+          "coupling.energy.phi.parameter_delta_l2": 0.002356473948706521,
+          "coupling.energy.rho.parameter_delta_l2": 0.0032325550720184197,
+          "bridge.encoder.parameter_delta_l2": 0.021840602885568248
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      },
+      {
+        "phase": "partial",
+        "logical_update": 2,
+        "physical_optimizer_event": 2,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          90,
+          2388,
+          662,
+          797,
+          987,
+          1885,
+          285,
+          645,
+          2261,
+          521,
+          169,
+          1132,
+          290,
+          556,
+          2146,
+          879
+        ],
+        "checkpoint": "partial_update_002.pt",
+        "checkpoint_sha256": "4220fa7790ce21a9e60188a1df77003a8f5f400a0cd117eb1cfeadd6027580b0",
+        "model_sha256": "e67828051ebd5b19909be2660c66e3575f2b0d66e76e9ac3b4cce214d00e6937",
+        "metrics": {
+          "loss": 2.2357670217752457,
+          "pair_softmin_m": 0.7797870337963104,
+          "pair_exact_hard_jfde_m": 0.5247054472565651,
+          "world_weight_entropy": 0.9192036241292953,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 600.0,
+          "clean_path_raw_sum": 0.04270869051106274,
+          "clean_path_signal_sum": 0.022082000719819916,
+          "valid_scene_count": 16,
+          "clean_path_term": 6.900625479744349e-05,
+          "diffusion_term": 1.3850121890073237,
+          "geometry_term": 8.677968901338318e-05,
+          "pair_term": 0.7797870337963104,
+          "map_term": 0.0708119985849961,
+          "coupling.energy.phi.gradient_l2": 0.21990275582726318,
+          "coupling.energy.rho.gradient_l2": 0.03694905747134508,
+          "bridge.encoder.gradient_l2": 0.23445575325168677,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -11.948656870293213,
+          "coupling.energy.phi.parameter_delta_l2": 0.001934147656872407,
+          "coupling.energy.rho.parameter_delta_l2": 0.002738629390803999,
+          "bridge.encoder.parameter_delta_l2": 0.01817666943710543
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      }
+    ],
+    "runtime": {
+      "torch": "2.8.0+cu128",
+      "cuda": "12.8",
+      "gpu": "NVIDIA GeForce RTX 5070 Ti",
+      "deterministic": true,
+      "TF32": false
+    }
+  },
+  {
+    "phase": "resume",
+    "passed": true,
+    "actual_synthetic_optimizer_updates": 2,
+    "real_optimizer_updates": 0,
+    "start_update": 2,
+    "stop_update": 4,
+    "planned_interruption": false,
+    "checkpoint_unchanged_on_interruption": false,
+    "native_controller": true,
+    "record_progress": false,
+    "native_state_has_no_wall_clock_fields": true,
+    "frozen_config_sha256": "3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842",
+    "initial_model_sha256": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+    "final_model_sha256": "8ae356e302018e3de91709dc2922992587756f19f2a77ae38b99a1f6227b2f7d",
+    "parameters": 7627950,
+    "buffers": [
+      "bridge.representation.a",
+      "bridge.representation.bridge_cholesky",
+      "bridge.representation.goal_scale",
+      "bridge.representation.bridge_scale",
+      "bridge.encoder.goal_scale",
+      "bridge.denoiser.future_time"
+    ],
+    "source_sha256": "8c9180d4251647fd610237e73cd0477a73b29c3abf6a10a5da20af608fda6253",
+    "duration_seconds": 18.23060106113553,
+    "data_accesses": [
+      [
+        698,
+        836,
+        1368,
+        2150
+      ],
+      [
+        2356,
+        2016,
+        63,
+        275
+      ],
+      [
+        2468,
+        281,
+        1867,
+        1171
+      ],
+      [
+        732,
+        1540,
+        2510,
+        239
+      ],
+      [
+        195,
+        339,
+        2193,
+        1135
+      ],
+      [
+        1851,
+        887,
+        1489,
+        1848
+      ],
+      [
+        25,
+        1277,
+        348,
+        922
+      ],
+      [
+        2338,
+        2228,
+        153,
+        1552
+      ],
+      [
+        207
+      ],
+      [
+        1158
+      ],
+      [
+        2279
+      ],
+      [
+        1002
+      ]
+    ],
+    "input_guard": {
+      "denied_cross_workspace_accesses": 0
+    },
+    "rows": [
+      {
+        "phase": "resume",
+        "logical_update": 3,
+        "physical_optimizer_event": 1,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          698,
+          836,
+          1368,
+          2150,
+          2356,
+          2016,
+          63,
+          275,
+          2468,
+          281,
+          1867,
+          1171,
+          732,
+          1540,
+          2510,
+          239
+        ],
+        "checkpoint": "resume_update_003.pt",
+        "checkpoint_sha256": "4f2ba05fbd16c3a51f0335549ba20f280db9a20b5f939a70789c21a6ac8f3694",
+        "model_sha256": "5c3c85f72a966c3ab0bc56924d654ae28b18217d43f9893a8ef7bb4075662148",
+        "metrics": {
+          "loss": 2.627962499856949,
+          "pair_softmin_m": 0.8895651921629906,
+          "pair_exact_hard_jfde_m": 0.6356587186455727,
+          "world_weight_entropy": 0.9675440415740013,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 610.0,
+          "clean_path_raw_sum": 0.04425196768715978,
+          "clean_path_signal_sum": 0.017912473413161933,
+          "valid_scene_count": 16,
+          "clean_path_term": 5.5976479188757367e-05,
+          "diffusion_term": 1.667449873426686,
+          "geometry_term": 8.471433693557628e-05,
+          "pair_term": 0.8895651921629906,
+          "map_term": 0.07080670195105283,
+          "coupling.energy.phi.gradient_l2": 0.20890873574300003,
+          "coupling.energy.rho.gradient_l2": 0.03370361736688786,
+          "bridge.encoder.gradient_l2": 0.22344064508044956,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -10.130294925231555,
+          "coupling.energy.phi.parameter_delta_l2": 0.001909966632587621,
+          "coupling.energy.rho.parameter_delta_l2": 0.0026959372598215647,
+          "bridge.encoder.parameter_delta_l2": 0.017405683786577513
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      },
+      {
+        "phase": "resume",
+        "logical_update": 4,
+        "physical_optimizer_event": 2,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          195,
+          339,
+          2193,
+          1135,
+          1851,
+          887,
+          1489,
+          1848,
+          25,
+          1277,
+          348,
+          922,
+          2338,
+          2228,
+          153,
+          1552
+        ],
+        "checkpoint": "resume_update_004.pt",
+        "checkpoint_sha256": "f443d81682deb449f1d0309a0695d56d630e8b09e3bbd69ec7939abd2d30a170",
+        "model_sha256": "8ae356e302018e3de91709dc2922992587756f19f2a77ae38b99a1f6227b2f7d",
+        "metrics": {
+          "loss": 1.9467592537403107,
+          "pair_softmin_m": 0.7590603530406952,
+          "pair_exact_hard_jfde_m": 0.5016170851886272,
+          "world_weight_entropy": 0.9179271347820759,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 606.0,
+          "clean_path_raw_sum": 0.03791370114777237,
+          "clean_path_signal_sum": 0.010234610876068473,
+          "valid_scene_count": 16,
+          "clean_path_term": 3.198315926056239e-05,
+          "diffusion_term": 1.1168218676162802,
+          "geometry_term": 4.199498846446659e-05,
+          "pair_term": 0.7590603530406952,
+          "map_term": 0.07080300128006417,
+          "coupling.energy.phi.gradient_l2": 0.10349764609927965,
+          "coupling.energy.rho.gradient_l2": 0.016968658645731275,
+          "bridge.encoder.gradient_l2": 0.10779816488909617,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -8.657457604202403,
+          "coupling.energy.phi.parameter_delta_l2": 0.0017648433435033678,
+          "coupling.energy.rho.parameter_delta_l2": 0.002515860573364703,
+          "bridge.encoder.parameter_delta_l2": 0.015854510046751077
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      }
+    ],
+    "runtime": {
+      "torch": "2.8.0+cu128",
+      "cuda": "12.8",
+      "gpu": "NVIDIA GeForce RTX 5070 Ti",
+      "deterministic": true,
+      "TF32": false
+    }
+  },
+  {
+    "phase": "replay_crash",
+    "passed": true,
+    "actual_synthetic_optimizer_updates": 1,
+    "real_optimizer_updates": 0,
+    "start_update": 2,
+    "stop_update": 3,
+    "planned_interruption": true,
+    "checkpoint_unchanged_on_interruption": true,
+    "native_controller": true,
+    "record_progress": false,
+    "native_state_has_no_wall_clock_fields": true,
+    "frozen_config_sha256": "3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842",
+    "initial_model_sha256": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+    "final_model_sha256": "5c3c85f72a966c3ab0bc56924d654ae28b18217d43f9893a8ef7bb4075662148",
+    "parameters": 7627950,
+    "buffers": [
+      "bridge.representation.a",
+      "bridge.representation.bridge_cholesky",
+      "bridge.representation.goal_scale",
+      "bridge.representation.bridge_scale",
+      "bridge.encoder.goal_scale",
+      "bridge.denoiser.future_time"
+    ],
+    "source_sha256": "8c9180d4251647fd610237e73cd0477a73b29c3abf6a10a5da20af608fda6253",
+    "duration_seconds": 6.83510977611877,
+    "data_accesses": [
+      [
+        698,
+        836,
+        1368,
+        2150
+      ],
+      [
+        2356,
+        2016,
+        63,
+        275
+      ],
+      [
+        2468,
+        281,
+        1867,
+        1171
+      ],
+      [
+        732,
+        1540,
+        2510,
+        239
+      ]
+    ],
+    "input_guard": {
+      "denied_cross_workspace_accesses": 0
+    },
+    "rows": [
+      {
+        "phase": "replay_crash",
+        "logical_update": 3,
+        "physical_optimizer_event": 1,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          698,
+          836,
+          1368,
+          2150,
+          2356,
+          2016,
+          63,
+          275,
+          2468,
+          281,
+          1867,
+          1171,
+          732,
+          1540,
+          2510,
+          239
+        ],
+        "checkpoint": "replay_crash_update_003.pt",
+        "checkpoint_sha256": "1577117b455366d82ccb5602910969ab61f222ed2a8fb4e5ca6ae5ddba60a689",
+        "model_sha256": "5c3c85f72a966c3ab0bc56924d654ae28b18217d43f9893a8ef7bb4075662148",
+        "metrics": {
+          "loss": 2.627962499856949,
+          "pair_softmin_m": 0.8895651921629906,
+          "pair_exact_hard_jfde_m": 0.6356587186455727,
+          "world_weight_entropy": 0.9675440415740013,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 610.0,
+          "clean_path_raw_sum": 0.04425196768715978,
+          "clean_path_signal_sum": 0.017912473413161933,
+          "valid_scene_count": 16,
+          "clean_path_term": 5.5976479188757367e-05,
+          "diffusion_term": 1.667449873426686,
+          "geometry_term": 8.471433693557628e-05,
+          "pair_term": 0.8895651921629906,
+          "map_term": 0.07080670195105283,
+          "coupling.energy.phi.gradient_l2": 0.20890873574300003,
+          "coupling.energy.rho.gradient_l2": 0.03370361736688786,
+          "bridge.encoder.gradient_l2": 0.22344064508044956,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -10.130294925231555,
+          "coupling.energy.phi.parameter_delta_l2": 0.001909966632587621,
+          "coupling.energy.rho.parameter_delta_l2": 0.0026959372598215647,
+          "bridge.encoder.parameter_delta_l2": 0.017405683786577513
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      }
+    ],
+    "runtime": {
+      "torch": "2.8.0+cu128",
+      "cuda": "12.8",
+      "gpu": "NVIDIA GeForce RTX 5070 Ti",
+      "deterministic": true,
+      "TF32": false
+    }
+  },
+  {
+    "phase": "replay_resume",
+    "passed": true,
+    "actual_synthetic_optimizer_updates": 2,
+    "real_optimizer_updates": 0,
+    "start_update": 2,
+    "stop_update": 4,
+    "planned_interruption": false,
+    "checkpoint_unchanged_on_interruption": false,
+    "native_controller": true,
+    "record_progress": false,
+    "native_state_has_no_wall_clock_fields": true,
+    "frozen_config_sha256": "3ff36b653703307be4f38457d9cb9395c264ea7647c0df339913376f38b9d842",
+    "initial_model_sha256": "b2a83f867e2c051d8a746558d1e6d96e29310818b163b8f5ac5554d39b3177d5",
+    "final_model_sha256": "8ae356e302018e3de91709dc2922992587756f19f2a77ae38b99a1f6227b2f7d",
+    "parameters": 7627950,
+    "buffers": [
+      "bridge.representation.a",
+      "bridge.representation.bridge_cholesky",
+      "bridge.representation.goal_scale",
+      "bridge.representation.bridge_scale",
+      "bridge.encoder.goal_scale",
+      "bridge.denoiser.future_time"
+    ],
+    "source_sha256": "8c9180d4251647fd610237e73cd0477a73b29c3abf6a10a5da20af608fda6253",
+    "duration_seconds": 17.879166071070358,
+    "data_accesses": [
+      [
+        698,
+        836,
+        1368,
+        2150
+      ],
+      [
+        2356,
+        2016,
+        63,
+        275
+      ],
+      [
+        2468,
+        281,
+        1867,
+        1171
+      ],
+      [
+        732,
+        1540,
+        2510,
+        239
+      ],
+      [
+        195,
+        339,
+        2193,
+        1135
+      ],
+      [
+        1851,
+        887,
+        1489,
+        1848
+      ],
+      [
+        25,
+        1277,
+        348,
+        922
+      ],
+      [
+        2338,
+        2228,
+        153,
+        1552
+      ],
+      [
+        207
+      ],
+      [
+        1158
+      ],
+      [
+        2279
+      ],
+      [
+        1002
+      ]
+    ],
+    "input_guard": {
+      "denied_cross_workspace_accesses": 0
+    },
+    "rows": [
+      {
+        "phase": "replay_resume",
+        "logical_update": 3,
+        "physical_optimizer_event": 1,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          698,
+          836,
+          1368,
+          2150,
+          2356,
+          2016,
+          63,
+          275,
+          2468,
+          281,
+          1867,
+          1171,
+          732,
+          1540,
+          2510,
+          239
+        ],
+        "checkpoint": "replay_resume_update_003.pt",
+        "checkpoint_sha256": "fca2f50825f6b6289a31e7e9f36a97c99eab2a2bdb26c7f32e52f6f0dd969417",
+        "model_sha256": "5c3c85f72a966c3ab0bc56924d654ae28b18217d43f9893a8ef7bb4075662148",
+        "metrics": {
+          "loss": 2.627962499856949,
+          "pair_softmin_m": 0.8895651921629906,
+          "pair_exact_hard_jfde_m": 0.6356587186455727,
+          "world_weight_entropy": 0.9675440415740013,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 610.0,
+          "clean_path_raw_sum": 0.04425196768715978,
+          "clean_path_signal_sum": 0.017912473413161933,
+          "valid_scene_count": 16,
+          "clean_path_term": 5.5976479188757367e-05,
+          "diffusion_term": 1.667449873426686,
+          "geometry_term": 8.471433693557628e-05,
+          "pair_term": 0.8895651921629906,
+          "map_term": 0.07080670195105283,
+          "coupling.energy.phi.gradient_l2": 0.20890873574300003,
+          "coupling.energy.rho.gradient_l2": 0.03370361736688786,
+          "bridge.encoder.gradient_l2": 0.22344064508044956,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -10.130294925231555,
+          "coupling.energy.phi.parameter_delta_l2": 0.001909966632587621,
+          "coupling.energy.rho.parameter_delta_l2": 0.0026959372598215647,
+          "bridge.encoder.parameter_delta_l2": 0.017405683786577513
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      },
+      {
+        "phase": "replay_resume",
+        "logical_update": 4,
+        "physical_optimizer_event": 2,
+        "real_optimizer_inputs": 0,
+        "synthetic_windows": [
+          195,
+          339,
+          2193,
+          1135,
+          1851,
+          887,
+          1489,
+          1848,
+          25,
+          1277,
+          348,
+          922,
+          2338,
+          2228,
+          153,
+          1552
+        ],
+        "checkpoint": "replay_resume_update_004.pt",
+        "checkpoint_sha256": "28e07ea762427b1ab86f00be594c761469ea72010b34d310f9bd4655f00d02e9",
+        "model_sha256": "8ae356e302018e3de91709dc2922992587756f19f2a77ae38b99a1f6227b2f7d",
+        "metrics": {
+          "loss": 1.9467592537403107,
+          "pair_softmin_m": 0.7590603530406952,
+          "pair_exact_hard_jfde_m": 0.5016170851886272,
+          "world_weight_entropy": 0.9179271347820759,
+          "assignment_temperature": 1.0,
+          "pair_temperature_m": 0.1,
+          "pair_weight": 1.0,
+          "effective_edges": 606.0,
+          "clean_path_raw_sum": 0.03791370114777237,
+          "clean_path_signal_sum": 0.010234610876068473,
+          "valid_scene_count": 16,
+          "clean_path_term": 3.198315926056239e-05,
+          "diffusion_term": 1.1168218676162802,
+          "geometry_term": 4.199498846446659e-05,
+          "pair_term": 0.7590603530406952,
+          "map_term": 0.07080300128006417,
+          "coupling.energy.phi.gradient_l2": 0.10349764609927965,
+          "coupling.energy.rho.gradient_l2": 0.016968658645731275,
+          "bridge.encoder.gradient_l2": 0.10779816488909617,
+          "ssec_attempted": 92,
+          "ssec_accepted": 79,
+          "ssec_rejected": 13,
+          "ssec_strict_ties": 0,
+          "ssec_reliable_decreases": 79,
+          "ssec_roundoff_uncertain": 0,
+          "ssec_accepted_energy_delta": -8.657457604202403,
+          "coupling.energy.phi.parameter_delta_l2": 0.0017648433435033678,
+          "coupling.energy.rho.parameter_delta_l2": 0.002515860573364703,
+          "bridge.encoder.parameter_delta_l2": 0.015854510046751077
+        },
+        "candidate_invariants": true,
+        "energy_monotone": true
+      }
+    ],
+    "runtime": {
+      "torch": "2.8.0+cu128",
+      "cuda": "12.8",
+      "gpu": "NVIDIA GeForce RTX 5070 Ti",
+      "deterministic": true,
+      "TF32": false
+    }
+  }
+]

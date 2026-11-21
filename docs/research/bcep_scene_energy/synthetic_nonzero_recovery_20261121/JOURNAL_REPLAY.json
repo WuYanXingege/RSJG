@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "continuous": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "split": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "replay": [
+    1,
+    2,
+    3,
+    3,
+    4
+  ],
+  "committed_at_crash": [
+    1,
+    2
+  ],
+  "committed_after_replay": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "both_update3_attempts_preserved": true,
+  "latest_session_selected": true,
+  "all_numeric_telemetry_exact": true,
+  "native_incomplete_epoch_rejected": true,
+  "no_fabricated_epoch_records": true,
+  "variable_operational_fields": [
+    "session",
+    "unix",
+    "logical_group_forward_backward_seconds",
+    "allocated_peak_bytes",
+    "coupling_forward_seconds"
+  ]
+}
