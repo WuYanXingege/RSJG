@@ -24,12 +24,17 @@ def state_hash(model):
 
 def wait_for_gpu():
     status = ROOT/'RSJG_EBJD_assets/experiments/zara2_ssec_energy_stage2_20261121/STATUS.json'
+    supervisor = status.with_name('SUPERVISOR_STATUS.json')
     while True:
         raw = subprocess.check_output(['nvidia-smi', '--query-compute-apps=pid', '--format=csv,noheader,nounits'], text=True)
         active = [x.strip() for x in raw.splitlines() if x.strip()]
         old_status = read(status)['status']
-        if not active and old_status == 'COMPLETE':
-            write(RUN/'GPU_RELEASE.json', dict(unix=time.time(), ssec_status=old_status, compute_pids=[]))
+        supervision = read(supervisor)['status']
+        released = old_status == 'COMPLETE' or (
+            old_status == 'PAUSED_RESUMABLE' and supervision == 'PAUSED_NO_AUTOMATIC_RESUME')
+        if not active and released:
+            write(RUN/'GPU_RELEASE.json', dict(unix=time.time(), ssec_status=old_status,
+                  ssec_supervisor_status=supervision, compute_pids=[], ssec_untouched=True))
             return
         write(RUN/'STATUS.json', dict(status='WAITING_FOR_GPU', ssec_status=old_status, compute_pids=active, unix=time.time()))
         print('WAITING_FOR_GPU', old_status, active, flush=True)
