@@ -1,11 +1,13 @@
-# SSEC Energy-only ZARA2 Stage2：运行中收据
+# SSEC Energy-only ZARA2 Stage2：运行中分析
 
-**训练仍在运行，尚无最终结论。** 固定源码`ece95ce6f1f59d58a8119fef7cdd79bf9d04ee86`，唯一正式运行，seed3201。快照记录有效逻辑更新36、已完成0轮；首次真实更新验收True，首次完整epoch验收False。
+**尚非最终结果。** 北京时间2026-11-22T12:23:21+08:00快照：已观察到6384次真实更新，完成37轮，当前按H-JADE选择的rank1为epoch 31。
 
-最近完整epoch：暂无。以下为当时结果，不是最终rank1，不据此提前停止或调参。
+[完整中文阶段分析](status_20261122_122319/README.md) · [三项门槛比较](status_20261122_122319/THRESHOLD_COMPARISON.json) · [匿名逐窗对照](status_20261122_122319/CURRENT_RANK1_VS_OLD5_WINDOWS.csv) · [逐轮CSV](EPOCH_GROUPS.csv)
 
-尚无完整epoch的开发集结果。
+| 指标 | 当前rank1 m | 旧epoch5门槛 m |
+|---|---:|---:|
+| 全体H-JADE | 0.409868506 | ≤0.409767019 |
+| 全体H-JFDE | 0.813756070 | <0.784179166 |
+| N≥9 H-JFDE | 1.340309367 | <1.296843430 |
 
-原minimum30/patience15/max100、H-JADE唯一选模和全部冻结条件保持。后台监督器只执行唯一受控命令；技术故障仅从本次last恢复；结束后自动生成最终报告、匿名逐窗比较、全epoch/Top5哈希并推送本独立分支。未启动任何其他seed/折/测试集或旧队列。
-
-[状态快照](STATUS_SNAPSHOT.json) · [源码/配置身份](SOURCE_IDENTITY.json) · [启动核验](PREFLIGHT.json) · [唯一命令与复现](REPRODUCE.md)
+训练仍在后台按原规则继续；本次报告更新不改变训练、选模或停止规则。完成后监督器将发布最终研究报告并核验远端SHA。正式训练源码固定`ece95ce6f1f59d58a8119fef7cdd79bf9d04ee86`，报告分支不作为训练入口。
