@@ -1,0 +1,336 @@
+{
+  "zara1": {
+    "fold": "zara1",
+    "original_folder": "<host-path-sha256:d916bad1d928be0fc235ee29be46bcee998e55be0d585c95dd29b95480a37ad8>",
+    "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+    "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+    "split_path": "<host-path-sha256:98da631f895ee949fcd5af5f6711c95ecf16a781c3c8bdfad605fb05bcc518cc>",
+    "identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "zara1",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+      "members_redacted_sha256": "66d5cec32d19cfa39684446310c5483c3febd878c338d8a21d5910a7169d7586",
+      "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330"
+    },
+    "train_windows": 2889,
+    "dev_windows": 671,
+    "raw_record_files": 4265,
+    "missing_assets": [],
+    "stages": {
+      "density": {
+        "available": true,
+        "complete_epoch_files": 76,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 100,
+          "minimum": 20,
+          "patience": 15,
+          "scheduler_patience": 3
+        },
+        "selector": "dev_nll_final_agent_micro",
+        "status": "COMPLETE",
+        "completed_epoch": 76,
+        "epoch": 77,
+        "update": 54948,
+        "cursor": 0,
+        "frozen": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+          "epoch": 61,
+          "updates": 44103,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8072421300127228,
+          "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+        }
+      },
+      "head": {
+        "available": true,
+        "complete_epoch_files": 9,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0005,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 20,
+          "minimum": 5,
+          "patience": 5,
+          "scheduler_patience": 2
+        },
+        "selector": "dev_minfde20_agent_micro",
+        "status": "SESSION_BUDGET_PAUSED",
+        "completed_epoch": 9,
+        "epoch": 10,
+        "update": 7097,
+        "cursor": 2360,
+        "frozen": null
+      },
+      "joint": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3201,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 5.0,
+          "logical_scenes": 16,
+          "max_epochs": 100,
+          "minimum": 30,
+          "patience": 15,
+          "scheduler_horizon": 100
+        },
+        "selector": "dev_H_JADE"
+      }
+    },
+    "complete_base_caches": 7,
+    "complete_refined_banks": 0,
+    "caps": {
+      "density": 72300,
+      "head": 14460,
+      "joint": 18100
+    },
+    "heldout_future_materialized": false
+  },
+  "hotel": {
+    "fold": "hotel",
+    "original_folder": "<host-path-sha256:7c0829c539967143bad8dc55bfd24e70ef5122cf6c8b01e1ebc36212fd13b208>",
+    "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+    "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+    "split_path": "<host-path-sha256:100a2055ee53a18878026830599a38e1127faf9faec74b9e3da98da2c93f7ef0>",
+    "identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "hotel",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4"
+    },
+    "train_windows": 3118,
+    "dev_windows": 688,
+    "raw_record_files": 4251,
+    "missing_assets": [],
+    "stages": {
+      "density": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 100,
+          "minimum": 20,
+          "patience": 15,
+          "scheduler_patience": 3
+        },
+        "selector": "dev_nll_final_agent_micro"
+      },
+      "head": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0005,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 20,
+          "minimum": 5,
+          "patience": 5,
+          "scheduler_patience": 2
+        },
+        "selector": "dev_minfde20_agent_micro"
+      },
+      "joint": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3201,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 5.0,
+          "logical_scenes": 16,
+          "max_epochs": 100,
+          "minimum": 30,
+          "patience": 15,
+          "scheduler_horizon": 100
+        },
+        "selector": "dev_H_JADE"
+      }
+    },
+    "complete_base_caches": 0,
+    "complete_refined_banks": 0,
+    "caps": {
+      "density": 78000,
+      "head": 15600,
+      "joint": 19500
+    },
+    "heldout_future_materialized": false
+  },
+  "univ": {
+    "fold": "univ",
+    "original_folder": "<host-path-sha256:da383422acf381a0abecd611f68e3ae2eac730595f02f2fc76f6c8f9f7ce3bad>",
+    "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+    "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+    "split_path": "<host-path-sha256:4ab538ed8e5c065b9e576ca967997c2909319b17e75b69c660d19958c95ecf4f>",
+    "identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "univ",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "39f90a22926eb7a219bc9e82d403fef9ce4da956f3fd11d92ec3055f0b101bfb",
+      "members_redacted_sha256": "a2c9e4f74e7852539922882ae802fdc02bfe2d2a9b60c1ca23a08b43ad7b3348",
+      "geometry": "612d219a504b606b4724506d1e292c3e53bb9e5ad9aead1a4486c99bad1d28fc"
+    },
+    "train_windows": 2719,
+    "dev_windows": 622,
+    "raw_record_files": 4288,
+    "missing_assets": [],
+    "stages": {
+      "density": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 100,
+          "minimum": 20,
+          "patience": 15,
+          "scheduler_patience": 3
+        },
+        "selector": "dev_nll_final_agent_micro"
+      },
+      "head": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0005,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 20,
+          "minimum": 5,
+          "patience": 5,
+          "scheduler_patience": 2
+        },
+        "selector": "dev_minfde20_agent_micro"
+      },
+      "joint": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3201,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 5.0,
+          "logical_scenes": 16,
+          "max_epochs": 100,
+          "minimum": 30,
+          "patience": 15,
+          "scheduler_horizon": 100
+        },
+        "selector": "dev_H_JADE"
+      }
+    },
+    "complete_base_caches": 0,
+    "complete_refined_banks": 0,
+    "caps": {
+      "density": 68000,
+      "head": 13600,
+      "joint": 17000
+    },
+    "heldout_future_materialized": false
+  },
+  "eth": {
+    "fold": "eth",
+    "original_folder": "<host-path-sha256:9a994f7fccb86fc54e7adde1a10f23040a892de6d12649dc40b1067f5535dde3>",
+    "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+    "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+    "split_path": "<host-path-sha256:f9a64b9273fa6111e8c1da6d9534ba91548ee99e01890766648e3f651cff5471>",
+    "identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "eth",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "geometry": "f16b8df240ea4dd56e1c06cf53c918da2b6df16c1bde16ca8d91bc03e00694a2"
+    },
+    "train_windows": 3283,
+    "dev_windows": 733,
+    "raw_record_files": 4269,
+    "missing_assets": [],
+    "stages": {
+      "density": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 100,
+          "minimum": 20,
+          "patience": 15,
+          "scheduler_patience": 3
+        },
+        "selector": "dev_nll_final_agent_micro"
+      },
+      "head": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3102,
+          "lr": 0.0005,
+          "weight_decay": 0.0001,
+          "clip": 1.0,
+          "logical_scenes": 4,
+          "max_epochs": 20,
+          "minimum": 5,
+          "patience": 5,
+          "scheduler_patience": 2
+        },
+        "selector": "dev_minfde20_agent_micro"
+      },
+      "joint": {
+        "available": false,
+        "complete_epoch_files": 0,
+        "recipe": {
+          "seed": 3201,
+          "lr": 0.0001,
+          "weight_decay": 0.0001,
+          "clip": 5.0,
+          "logical_scenes": 16,
+          "max_epochs": 100,
+          "minimum": 30,
+          "patience": 15,
+          "scheduler_horizon": 100
+        },
+        "selector": "dev_H_JADE"
+      }
+    },
+    "complete_base_caches": 0,
+    "complete_refined_banks": 0,
+    "caps": {
+      "density": 82100,
+      "head": 16420,
+      "joint": 20600
+    },
+    "heldout_future_materialized": false
+  }
+}
