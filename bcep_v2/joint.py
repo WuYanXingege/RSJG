@@ -81,7 +81,7 @@ class FeedbackCoupling(LearnableJointCouplingHead):
             output = output.index_add(0, b * agents + i, msg)
         return (output / degree.clamp_min(1)[:, None, None]).reshape(batch, agents, worlds, worlds)
 
-    def assign(self, context, proposals, goal_scale, *, straight_through):
+    def assign(self, context, proposals, goal_scale, *, straight_through, return_initial=False):
         valid = context.valid
         if not valid.any(1).all():
             raise ValueError("empty scene")
@@ -95,13 +95,16 @@ class FeedbackCoupling(LearnableJointCouplingHead):
             scores = super().forward(context, safe, goal_scale)
         finally:
             handle.remove()
-        _, initial, _ = assignment(scores, valid, straight_through)
+        initial_indices, initial, _ = assignment(scores, valid, straight_through)
         scores = scores + self.messages(features[0], context.observed, safe, valid, initial)
         indices, _, soft = assignment(scores, valid, straight_through)
         hard = gather_candidates(proposals, indices)
         if straight_through:
             surrogate = torch.einsum("bnkj,bnjd->bknd", soft.float(), safe.transpose(1, 2).float())
             hard = hard + (surrogate - surrogate.detach()).to(hard)
+        if return_initial:
+            # Both permutations belong to this exact forward. G is not I.
+            return hard, indices, scores, initial_indices
         return hard, indices, scores
 
 
