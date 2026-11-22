@@ -1,0 +1,80 @@
+{
+  "completed_epochs": 30,
+  "updates": 5040,
+  "stop_reason": "early_stop",
+  "rank1_epoch": 2,
+  "rank1_sha256": "6d55fa16192f40030c5a42431ba0934d6ed10097dfdefd30c546e63facda8731",
+  "rank1_cache_metrics": {
+    "all": {
+      "minADE": 0.22810698190259523,
+      "minFDE": 0.3520422351797007,
+      "JADE": 0.4095851420472234,
+      "JFDE": 0.7845035932958127,
+      "scene_weighted_minADE": 0.22785831750449487,
+      "scene_weighted_minFDE": 0.33942601943420153,
+      "coordination_gap_ADE": 0.18172682454272854,
+      "coordination_gap_FDE": 0.4450775738616111,
+      "agent_count": 4262,
+      "scene_count": 590,
+      "sums": {
+        "agent_minADE": 972.1919568688609,
+        "agent_minFDE": 1500.4040063358843,
+        "scene_JADE": 241.6552338078618,
+        "scene_JFDE": 462.85712004452944,
+        "scene_marginal_ADE": 134.43640732765198,
+        "scene_marginal_FDE": 200.2613514661789
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.239033961309454,
+      "minFDE": 0.38215856724521,
+      "JADE": 0.6163246270239823,
+      "JFDE": 1.2932718896021054,
+      "scene_weighted_minADE": 0.25610034021101596,
+      "scene_weighted_minFDE": 0.420352599282903,
+      "coordination_gap_ADE": 0.3602242868129663,
+      "coordination_gap_FDE": 0.8729192903192025,
+      "agent_count": 2549,
+      "scene_count": 127,
+      "sums": {
+        "agent_minADE": 609.2975673777983,
+        "agent_minFDE": 974.1221879080404,
+        "scene_JADE": 78.27322763204575,
+        "scene_JFDE": 164.2455299794674,
+        "scene_marginal_ADE": 32.52474320679903,
+        "scene_marginal_FDE": 53.38478010892868
+      }
+    },
+    "switches": 195,
+    "dense_switches": 48
+  },
+  "optimizer_parameter_names": [
+    "node.0.weight",
+    "node.0.bias",
+    "node.2.weight",
+    "node.2.bias",
+    "edge.0.weight",
+    "edge.0.bias",
+    "edge.2.weight",
+    "edge.2.bias",
+    "agent.0.weight",
+    "agent.0.bias",
+    "world.0.weight",
+    "world.0.bias",
+    "readout.0.weight",
+    "readout.0.bias",
+    "readout.2.weight",
+    "readout.2.bias"
+  ],
+  "recipe": {
+    "seed": 3201,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "clip": 5.0,
+    "logical_scenes": 16,
+    "max_epochs": 100,
+    "minimum": 30,
+    "patience": 15,
+    "scheduler_horizon": 100
+  }
+}
