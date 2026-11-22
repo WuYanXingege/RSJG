@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "real_dev_windows": [
+    {
+      "window": "dev_0001",
+      "agents": 1,
+      "edges": 0,
+      "R_min_eigenvalue": 1.0,
+      "R_diagonal_max_abs": 0.0,
+      "initial_delta_nll_nat_per_person": 0.0,
+      "first_layer_gradient_l2": 0.0,
+      "last_layer_gradient_l2": 0.0,
+      "singleton_connected_zero": true,
+      "inverse": {
+        "local_max_abs": 1.1548399925231934e-07,
+        "world_max_abs_m": 0.0,
+        "inverse_atol": 0.0001,
+        "inverse_rtol": 1e-05
+      },
+      "native_H0_minus_archive_m": {
+        "JADE": 0.0,
+        "JFDE": 0.0
+      },
+      "native_H0_replay_atol_m": 1e-06,
+      "raw_ids_unique": true,
+      "raw_id_keyed_bridge_noise_exact": true,
+      "endpoint_noise_transport_exact": true,
+      "five_shuffles_endpoint_minfde_exact": true,
+      "new_route_Hungarian_bypassed": true,
+      "new_route_old_candidates_bypassed": true,
+      "correction_calls": 1,
+      "ddim_calls": 1,
+      "denoiser_calls": 20,
+      "sampler_vs_explicit_u_solve_max_abs": 0.0,
+      "endpoint_path_max_abs_m": 0.0
+    },
+    {
+      "window": "dev_0002",
+      "agents": 4,
+      "edges": 6,
+      "R_min_eigenvalue": 0.9994990718348803,
+      "R_diagonal_max_abs": 1.1920928955078125e-07,
+      "initial_delta_nll_nat_per_person": -7.224082946777344e-05,
+      "first_layer_gradient_l2": 0.0013914217706769705,
+      "last_layer_gradient_l2": 0.04509632661938667,
+      "singleton_connected_zero": false,
+      "inverse": {
+        "local_max_abs": 7.152557373046875e-07,
+        "world_max_abs_m": 9.5367431640625e-07,
+        "inverse_atol": 0.0001,
+        "inverse_rtol": 1e-05
+      },
+      "native_H0_minus_archive_m": {
+        "JADE": 0.0,
+        "JFDE": 0.0
+      },
+      "native_H0_replay_atol_m": 1e-06,
+      "raw_ids_unique": true,
+      "raw_id_keyed_bridge_noise_exact": true,
+      "endpoint_noise_transport_exact": true,
+      "five_shuffles_endpoint_minfde_exact": true,
+      "new_route_Hungarian_bypassed": true,
+      "new_route_old_candidates_bypassed": true,
+      "correction_calls": 1,
+      "ddim_calls": 1,
+      "denoiser_calls": 20,
+      "sampler_vs_explicit_u_solve_max_abs": 4.76837158203125e-07,
+      "endpoint_path_max_abs_m": 0.0
+    },
+    {
+      "window": "dev_0310",
+      "agents": 9,
+      "edges": 36,
+      "R_min_eigenvalue": 0.9994098587081028,
+      "R_diagonal_max_abs": 2.384185791015625e-07,
+      "initial_delta_nll_nat_per_person": -0.00042279562330804765,
+      "first_layer_gradient_l2": 0.002415067981928587,
+      "last_layer_gradient_l2": 0.09800926595926285,
+      "singleton_connected_zero": false,
+      "inverse": {
+        "local_max_abs": 2.384185791015625e-07,
+        "world_max_abs_m": 0.0,
+        "inverse_atol": 0.0001,
+        "inverse_rtol": 1e-05
+      },
+      "native_H0_minus_archive_m": {
+        "JADE": 0.0,
+        "JFDE": 0.0
+      },
+      "native_H0_replay_atol_m": 1e-06,
+      "raw_ids_unique": true,
+      "raw_id_keyed_bridge_noise_exact": true,
+      "endpoint_noise_transport_exact": true,
+      "five_shuffles_endpoint_minfde_exact": true,
+      "new_route_Hungarian_bypassed": true,
+      "new_route_old_candidates_bypassed": true,
+      "correction_calls": 1,
+      "ddim_calls": 1,
+      "denoiser_calls": 20,
+      "sampler_vs_explicit_u_solve_max_abs": 7.152557373046875e-07,
+      "endpoint_path_max_abs_m": 0.0
+    }
+  ],
+  "maximum_train_matrix_check": {
+    "agents": 57,
+    "edges": 277,
+    "R_min_eigenvalue": 0.9981651187965209,
+    "R_diagonal_max_abs": 2.384185791015625e-07,
+    "initial_delta_nll_nat_per_person": -0.0008117943652905524,
+    "first_layer_gradient_l2": 0.0017645327607169747,
+    "last_layer_gradient_l2": 0.06028706952929497,
+    "singleton_connected_zero": false,
+    "inverse": {
+      "local_max_abs": 5.960464477539062e-07,
+      "world_max_abs_m": 9.5367431640625e-07,
+      "inverse_atol": 0.0001,
+      "inverse_rtol": 1e-05
+    }
+  },
+  "archive": {
+    "commit": "203b83c51f414beca340d62be27dc146cf11f3b0",
+    "csv_sha256": "a445587256f871487a5166ce41c07fd41c4b85e53ae0b63771057bba868ab715"
+  },
+  "dependency_weights_unchanged": true,
+  "all_rng_restored": true,
+  "gradients_restored": true,
+  "optimizer_constructions": 0,
+  "optimizer_updates": 0,
+  "same_R_for_likelihood_and_sampling": true,
+  "future_used_only_for_targets_and_offline_metrics": true
+}

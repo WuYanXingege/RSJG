@@ -1,0 +1,112 @@
+{
+  "delta_nll_nat_per_person": {
+    "B": {
+      "all": -0.07401542822910291,
+      "N_ge_9": -0.028815154715873828
+    },
+    "C": {
+      "all": 0.0,
+      "N_ge_9": 0.0
+    }
+  },
+  "coverage": {
+    "B": {
+      "all": {
+        "raw256": {
+          "agent_micro_minFDE": 0.1639177785566232,
+          "scene_macro_minFDE": 0.1628010490858715,
+          "agent_count": 4262,
+          "scene_count": 590
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.4537915903248637,
+          "scene_macro_minFDE": 0.4254771907033168,
+          "agent_count": 4262,
+          "scene_count": 590
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.4573110812132173,
+          "scene_macro_minFDE": 0.42881799478844584,
+          "agent_count": 4262,
+          "scene_count": 590
+        }
+      },
+      "N_ge_9": {
+        "raw256": {
+          "agent_micro_minFDE": 0.17663478523691323,
+          "scene_macro_minFDE": 0.20711888108370005,
+          "agent_count": 2549,
+          "scene_count": 127
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.48906448152405035,
+          "scene_macro_minFDE": 0.5585675804564627,
+          "agent_count": 2549,
+          "scene_count": 127
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.4936470376340787,
+          "scene_macro_minFDE": 0.5641411624073633,
+          "agent_count": 2549,
+          "scene_count": 127
+        }
+      }
+    },
+    "C": {
+      "all": {
+        "raw256": {
+          "agent_micro_minFDE": 0.16333950869164765,
+          "scene_macro_minFDE": 0.16185209891480168,
+          "agent_count": 4262,
+          "scene_count": 590
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.46175944952719167,
+          "scene_macro_minFDE": 0.43148857985693245,
+          "agent_count": 4262,
+          "scene_count": 590
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.4660603135350785,
+          "scene_macro_minFDE": 0.43768979032129574,
+          "agent_count": 4262,
+          "scene_count": 590
+        }
+      },
+      "N_ge_9": {
+        "raw256": {
+          "agent_micro_minFDE": 0.17769077211577114,
+          "scene_macro_minFDE": 0.20986852452219207,
+          "agent_count": 2549,
+          "scene_count": 127
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.5002344224731393,
+          "scene_macro_minFDE": 0.571697478426969,
+          "agent_count": 2549,
+          "scene_count": 127
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.5044319537079046,
+          "scene_macro_minFDE": 0.5777860936903011,
+          "agent_count": 2549,
+          "scene_count": 127
+        }
+      }
+    }
+  },
+  "numerical_diagnostics": {
+    "B_R_diagonal_block_max_abs_error": 4.76837158203125e-07,
+    "B_R_cholesky_diagonal_min": 0.45546022057533264,
+    "endpoint_vs_path_agent_minFDE_max_abs_drift_m": {
+      "B": 0.0,
+      "C": 0.0
+    }
+  },
+  "marginal_preservation": {
+    "endpoint_sets_exact_checks": 2950,
+    "endpoint_minFDE_exact_checks": 2950,
+    "path_agent_minFDE_max_abs_drift_m": 0.0,
+    "explanation": "D preserves corrected endpoint sets and endpoint minFDE exactly; any native decoded-path minFDE drift is recorded separately."
+  }
+}
