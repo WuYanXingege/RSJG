@@ -11,7 +11,6 @@ def keyed_normal(stream, *key, shape):
 
 
 def base_noise(scene, agents, edges, seed=2035, count=256):
-    assert seed == 2035
     epsilon = torch.stack([keyed_normal('personal', scene, str(a), seed, shape=(count, 2)) for a in agents], 1)
     edge_values = []
     for i, j in edges.cpu().tolist():

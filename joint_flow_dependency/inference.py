@@ -23,11 +23,11 @@ def flow_world(provider, observed, context, z):
 
 
 @torch.no_grad()
-def sample_endpoints(provider, dependence, batch, context, map_features, *, independent=False, shared_base=None):
+def sample_endpoints(provider, dependence, batch, context, map_features, *, independent=False, shared_base=None, seed=2035):
     observed = batch.observed[0]
     edges = undirected_edges(observed)
     scene, agents = batch.scene_ids[0], batch.agent_ids[0]
-    epsilon, xi = base_noise(scene, agents, edges) if shared_base is None else shared_base
+    epsilon, xi = base_noise(scene, agents, edges, seed=seed) if shared_base is None else shared_base
     epsilon, xi = epsilon.to(observed.device), xi.to(observed.device)
     if independent:
         z = epsilon
@@ -42,7 +42,7 @@ def sample_endpoints(provider, dependence, batch, context, map_features, *, inde
     corrected, shift = provider.head(provider.base, observed, batch.semantic_maps[0], batch.valid[0],
         selected, context, map_features, dict(layout=GEOMETRY))
     assert shift.norm(dim=-1).max() < 0.5
-    noise = bridge_noise(scene, agents, indices.cpu().tolist()).to(observed.device)
+    noise = bridge_noise(scene, agents, indices.cpu().tolist(), seed=seed).to(observed.device)
     return dict(raw=raw, selected=selected, corrected=corrected[None], noise=noise,
                 raw_indices=indices, distortion=distortion, R=None if independent else factorization['R'],
                 epsilon=epsilon, xi=xi, correction_calls=1)
@@ -58,11 +58,11 @@ def decode(model, context, corrected, noise):
 
 
 @torch.no_grad()
-def generate(model, provider, dependence, batch, *, independent=False):
+def generate(model, provider, dependence, batch, *, independent=False, seed=2035):
     """The supplied batch must come from the truth=False reader. Future is never read."""
     model.eval(); provider.eval(); dependence.eval()
     context, features = encode_observed(provider, batch)
-    endpoints = sample_endpoints(provider, dependence, batch, context, features, independent=independent)
+    endpoints = sample_endpoints(provider, dependence, batch, context, features, independent=independent, seed=seed)
     bridge_context = model.encode_context(batch.observed, batch.semantic_maps, batch.valid)
     path = decode(model, bridge_context, endpoints['corrected'], endpoints['noise'])
     return path, endpoints, dict(ddim_calls=1, ddim_steps=20, correction_calls=1,
