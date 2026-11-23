@@ -1,0 +1,117 @@
+{
+  "reference": {
+    "all": {
+      "minADE": 0.2380095291433171,
+      "minFDE": 0.42489901439140804,
+      "JADE": 0.352340999137105,
+      "JFDE": 0.6913416453792635,
+      "scene_weighted_minADE": 0.23059104773980715,
+      "scene_weighted_minFDE": 0.40311386016643036,
+      "coordination_gap_ADE": 0.12174995139729783,
+      "coordination_gap_FDE": 0.2882277852128331,
+      "agent_count": 5184,
+      "scene_count": 671,
+      "sums": {
+        "agent_minADE": 1233.8413990789559,
+        "agent_minFDE": 2202.6764906050594,
+        "scene_JADE": 236.42081042099744,
+        "scene_JFDE": 463.8902440494858,
+        "scene_marginal_ADE": 154.7265930334106,
+        "scene_marginal_FDE": 270.4894001716748
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.2586951090229128,
+      "minFDE": 0.47140426544005304,
+      "JADE": 0.4865416772457776,
+      "JFDE": 1.0447794819734373,
+      "scene_weighted_minADE": 0.27164380766904156,
+      "scene_weighted_minFDE": 0.5153462825888429,
+      "coordination_gap_ADE": 0.21489786957673607,
+      "coordination_gap_FDE": 0.5294331993845944,
+      "agent_count": 3087,
+      "scene_count": 181,
+      "sums": {
+        "agent_minADE": 798.5918015537318,
+        "agent_minFDE": 1455.2249674134437,
+        "scene_JADE": 88.06404358148575,
+        "scene_JFDE": 189.10508623719215,
+        "scene_marginal_ADE": 49.16752918809652,
+        "scene_marginal_FDE": 93.27767714858055
+      }
+    },
+    "epoch": 6,
+    "windows": 671,
+    "dense_windows": 181,
+    "dev_delta_nll_nat_per_person": -0.06274073141748113,
+    "actual_ddim_calls": 671,
+    "correction_calls": 671,
+    "ddim_steps": 20,
+    "seed": 2035,
+    "seconds": 305.2452980938833,
+    "test_access": false,
+    "coverage": {
+      "all": {
+        "raw256": {
+          "agent_micro_minFDE": 0.16043456443687693,
+          "scene_macro_minFDE": 0.1541553105499047,
+          "agent_count": 5184,
+          "scene_count": 671
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.4281599041129511,
+          "scene_macro_minFDE": 0.40543557492324384,
+          "agent_count": 5184,
+          "scene_count": 671
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.42489901439140804,
+          "scene_macro_minFDE": 0.40311385994280174,
+          "agent_count": 5184,
+          "scene_count": 671
+        }
+      },
+      "N_ge_9": {
+        "raw256": {
+          "agent_micro_minFDE": 0.1777393628502342,
+          "scene_macro_minFDE": 0.2021218054901516,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.47407237980941186,
+          "scene_macro_minFDE": 0.5167341805435447,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.47140426544005304,
+          "scene_macro_minFDE": 0.5153462846425997,
+          "agent_count": 3087,
+          "scene_count": 181
+        }
+      }
+    },
+    "delta_nll_nat_per_person": {
+      "all": -0.06274073141748113,
+      "N_ge_9": -0.03433624719905034
+    }
+  },
+  "replay_difference": {
+    "all": {
+      "JADE": -2.0555718849291083e-08,
+      "JFDE": -5.330815466830785e-08,
+      "minADE": -1.9448185561987685e-08,
+      "minFDE": -1.1422073775690933e-07
+    },
+    "N_ge_9": {
+      "JADE": -2.2886866402060946e-08,
+      "JFDE": -1.1608086936121254e-08,
+      "minADE": -1.8840124738073172e-08,
+      "minFDE": 1.6659564727738996e-08
+    }
+  },
+  "device": "CPU",
+  "reference_device": "CUDA",
+  "minFDE_absolute_tolerance_m": 1e-05
+}
