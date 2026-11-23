@@ -1,0 +1,34 @@
+[
+  {
+    "stage": "density",
+    "completed_epochs": 76,
+    "selected_epoch": 61,
+    "selector": "dev_nll_final_agent_micro",
+    "value": 0.8072421300127228,
+    "checkpoint_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178"
+  },
+  {
+    "stage": "head",
+    "completed_epochs": 12,
+    "selected_epoch": 7,
+    "selector": "dev_minfde20_agent_micro",
+    "value": 0.333091471705659,
+    "checkpoint_sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af"
+  },
+  {
+    "stage": "joint",
+    "completed_epochs": 30,
+    "selected_epoch": 15,
+    "selector": "dev_H_JADE",
+    "value": 0.4047397857673477,
+    "checkpoint_sha256": "bf85c688ec1fb96bbcea3de1384f54e9f5abd40c91be38294fe3cd11c0eb210f"
+  },
+  {
+    "stage": "dependency_B",
+    "completed_epochs": 30,
+    "selected_epoch": 6,
+    "selector": "full-dev JADE seed2035",
+    "value": 0.352340999137105,
+    "checkpoint_sha256": "fc7d9cca99769b12f2366eda20396130f547534248c82451e1041d640ff8389d"
+  }
+]

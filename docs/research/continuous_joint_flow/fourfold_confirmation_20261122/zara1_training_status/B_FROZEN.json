@@ -1,0 +1,179 @@
+{
+  "fold": "zara1",
+  "rank1_checkpoint": "<host-path-sha256:f73dfd14311e6f192b197fed1c6299d43facb9595317e5f3a01bebcdb398d2ae>",
+  "rank1_epoch": 6,
+  "rank1_sha256": "fc7d9cca99769b12f2366eda20396130f547534248c82451e1041d640ff8389d",
+  "rank1_metrics": {
+    "all": {
+      "minADE": 0.2380095291433171,
+      "minFDE": 0.42489901439140804,
+      "JADE": 0.352340999137105,
+      "JFDE": 0.6913416453792635,
+      "scene_weighted_minADE": 0.23059104773980715,
+      "scene_weighted_minFDE": 0.40311386016643036,
+      "coordination_gap_ADE": 0.12174995139729783,
+      "coordination_gap_FDE": 0.2882277852128331,
+      "agent_count": 5184,
+      "scene_count": 671,
+      "sums": {
+        "agent_minADE": 1233.8413990789559,
+        "agent_minFDE": 2202.6764906050594,
+        "scene_JADE": 236.42081042099744,
+        "scene_JFDE": 463.8902440494858,
+        "scene_marginal_ADE": 154.7265930334106,
+        "scene_marginal_FDE": 270.4894001716748
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.2586951090229128,
+      "minFDE": 0.47140426544005304,
+      "JADE": 0.4865416772457776,
+      "JFDE": 1.0447794819734373,
+      "scene_weighted_minADE": 0.27164380766904156,
+      "scene_weighted_minFDE": 0.5153462825888429,
+      "coordination_gap_ADE": 0.21489786957673607,
+      "coordination_gap_FDE": 0.5294331993845944,
+      "agent_count": 3087,
+      "scene_count": 181,
+      "sums": {
+        "agent_minADE": 798.5918015537318,
+        "agent_minFDE": 1455.2249674134437,
+        "scene_JADE": 88.06404358148575,
+        "scene_JFDE": 189.10508623719215,
+        "scene_marginal_ADE": 49.16752918809652,
+        "scene_marginal_FDE": 93.27767714858055
+      }
+    },
+    "epoch": 6,
+    "windows": 671,
+    "dense_windows": 181,
+    "dev_delta_nll_nat_per_person": -0.06274073141748113,
+    "actual_ddim_calls": 671,
+    "correction_calls": 671,
+    "ddim_steps": 20,
+    "seed": 2035,
+    "seconds": 305.2452980938833,
+    "test_access": false,
+    "coverage": {
+      "all": {
+        "raw256": {
+          "agent_micro_minFDE": 0.16043456443687693,
+          "scene_macro_minFDE": 0.1541553105499047,
+          "agent_count": 5184,
+          "scene_count": 671
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.4281599041129511,
+          "scene_macro_minFDE": 0.40543557492324384,
+          "agent_count": 5184,
+          "scene_count": 671
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.42489901439140804,
+          "scene_macro_minFDE": 0.40311385994280174,
+          "agent_count": 5184,
+          "scene_count": 671
+        }
+      },
+      "N_ge_9": {
+        "raw256": {
+          "agent_micro_minFDE": 0.1777393628502342,
+          "scene_macro_minFDE": 0.2021218054901516,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.47407237980941186,
+          "scene_macro_minFDE": 0.5167341805435447,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.47140426544005304,
+          "scene_macro_minFDE": 0.5153462846425997,
+          "agent_count": 3087,
+          "scene_count": 181
+        }
+      }
+    },
+    "delta_nll_nat_per_person": {
+      "all": -0.06274073141748113,
+      "N_ge_9": -0.03433624719905034
+    }
+  },
+  "completed_epochs": 30,
+  "updates": 5430,
+  "stop_reason": "early_stop",
+  "recipe": {
+    "seed": 3201,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "clip": 5.0,
+    "logical_scenes": 16,
+    "max_epochs": 100,
+    "minimum": 30,
+    "patience": 15,
+    "scheduler_horizon": 100
+  },
+  "optimizer_parameter_names": [
+    "net.0.weight",
+    "net.0.bias",
+    "net.2.weight",
+    "net.2.bias"
+  ],
+  "identity": {
+    "fold": "zara1",
+    "frozen_manifest_sha256": "4e51dee5a7e7ef44d4c182dd33f62b2e92b51a01905df4697d3324ccce9f4580",
+    "upstream_identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "zara1",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+      "members_redacted_sha256": "66d5cec32d19cfa39684446310c5483c3febd878c338d8a21d5910a7169d7586",
+      "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330"
+    },
+    "split_sha256": "c021422e469f6a86e5d3c0dbcf52f8f7e5ab812eb5ecfdfcd335f9780cc7e998",
+    "split_file_sha256": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+    "config_file_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+    "checkpoint_sha256": "bf85c688ec1fb96bbcea3de1384f54e9f5abd40c91be38294fe3cd11c0eb210f",
+    "provider": [
+      {
+        "stage": "density",
+        "epoch": 61,
+        "sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178"
+      },
+      {
+        "stage": "head",
+        "epoch": 7,
+        "sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af"
+      }
+    ],
+    "banks": {
+      "train": "d25cb323f50d434bf51ea05731de5a967e0c9ffa7302e8c1f4aa177a5445d978",
+      "selection_dev": "48aa3ee1d01dd3df6c52006bd663b19b2230cc1dfff9dfea2c51e0f4edc9734a"
+    },
+    "config": "d479f1ca2c507d6551b1611e256a054125e4b821a3ea95b5798131a1a1f62ad2",
+    "stage": "joint",
+    "experiment": "continuous_joint_flow_remaining_folds",
+    "selector": "minimum actual full-dev B JADE; exact ties earlier completed epoch",
+    "latent_caches": {
+      "train": "d7d6946bae14bad65e72ab9ed8e4fde87dd699b6af9fdf433a6ff26993131973",
+      "selection_dev": "ada2ed6920a5a87ad4969aee0745d31f3e513a44812a0f583bae000c00bf1ffc"
+    }
+  },
+  "frozen_unchanged": true,
+  "retention": {
+    "all_completed_epoch_snapshots": 30,
+    "top5_distinct_epochs": [
+      6,
+      26,
+      5,
+      7,
+      29
+    ],
+    "complete_resume_state_verified": true,
+    "aliases_do_not_count_as_distinct_epochs": true
+  },
+  "test_access": false
+}

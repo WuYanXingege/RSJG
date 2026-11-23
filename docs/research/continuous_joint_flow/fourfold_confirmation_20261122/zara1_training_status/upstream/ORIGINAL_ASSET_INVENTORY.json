@@ -1,0 +1,100 @@
+{
+  "fold": "zara1",
+  "original_folder": "<host-path-sha256:d916bad1d928be0fc235ee29be46bcee998e55be0d585c95dd29b95480a37ad8>",
+  "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+  "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "split_path": "<host-path-sha256:98da631f895ee949fcd5af5f6711c95ecf16a781c3c8bdfad605fb05bcc518cc>",
+  "identity": {
+    "schema": "bcep-ebjd-v2-resolved-v1",
+    "fold": "zara1",
+    "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+    "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+    "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+    "members_redacted_sha256": "66d5cec32d19cfa39684446310c5483c3febd878c338d8a21d5910a7169d7586",
+    "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330"
+  },
+  "train_windows": 2889,
+  "dev_windows": 671,
+  "raw_record_files": 4265,
+  "missing_assets": [],
+  "stages": {
+    "density": {
+      "available": true,
+      "complete_epoch_files": 76,
+      "recipe": {
+        "seed": 3102,
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "clip": 1.0,
+        "logical_scenes": 4,
+        "max_epochs": 100,
+        "minimum": 20,
+        "patience": 15,
+        "scheduler_patience": 3
+      },
+      "selector": "dev_nll_final_agent_micro",
+      "status": "COMPLETE",
+      "completed_epoch": 76,
+      "epoch": 77,
+      "update": 54948,
+      "cursor": 0,
+      "frozen": {
+        "stage": "density",
+        "trained": true,
+        "frozen": true,
+        "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+        "epoch": 61,
+        "updates": 44103,
+        "selection": "dev_nll_final_agent_micro",
+        "value": 0.8072421300127228,
+        "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+      }
+    },
+    "head": {
+      "available": true,
+      "complete_epoch_files": 9,
+      "recipe": {
+        "seed": 3102,
+        "lr": 0.0005,
+        "weight_decay": 0.0001,
+        "clip": 1.0,
+        "logical_scenes": 4,
+        "max_epochs": 20,
+        "minimum": 5,
+        "patience": 5,
+        "scheduler_patience": 2
+      },
+      "selector": "dev_minfde20_agent_micro",
+      "status": "SESSION_BUDGET_PAUSED",
+      "completed_epoch": 9,
+      "epoch": 10,
+      "update": 7097,
+      "cursor": 2360,
+      "frozen": null
+    },
+    "joint": {
+      "available": false,
+      "complete_epoch_files": 0,
+      "recipe": {
+        "seed": 3201,
+        "lr": 0.0001,
+        "weight_decay": 0.0001,
+        "clip": 5.0,
+        "logical_scenes": 16,
+        "max_epochs": 100,
+        "minimum": 30,
+        "patience": 15,
+        "scheduler_horizon": 100
+      },
+      "selector": "dev_H_JADE"
+    }
+  },
+  "complete_base_caches": 7,
+  "complete_refined_banks": 0,
+  "caps": {
+    "density": 72300,
+    "head": 14460,
+    "joint": 18100
+  },
+  "heldout_future_materialized": false
+}
