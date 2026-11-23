@@ -1,0 +1,33 @@
+{
+  "base_commit": "171bcff3b6b2dbb6aad0becb04e8d7c086c8ffe3",
+  "calibration_commit": "e0ce0fbbafa7bb671c2febcbe984ed7aafcc45a5",
+  "calibration": {
+    "seed": 2035,
+    "M": 256,
+    "K": 20,
+    "DDIM": 20,
+    "eta": 0,
+    "updates": 0,
+    "budget_m": 0.01,
+    "solver": "scipy SLSQP float64, analytic gradients",
+    "ftol": 1e-10,
+    "maxiter": 300,
+    "fp32_atol_m": 1e-05,
+    "device": "cpu",
+    "threads": 2,
+    "checkpoint_sha256": "ea13cd7fd99a02c44c3c9af9a14a0cc9b5166b629e5c338694cca97f1c8c502a",
+    "assignment": "fixed nearest corrected endpoint; tie smaller original sample ID",
+    "fallback": "feasible zero if objective increases; radial budget correction",
+    "base_commit": "d4fbe6d8e3b142645b9e801116aac308fcb19c9d"
+  },
+  "checkpoint_sha256": "ea13cd7fd99a02c44c3c9af9a14a0cc9b5166b629e5c338694cca97f1c8c502a",
+  "purpose": "heldout_confirmation",
+  "seed": 2035,
+  "windows": 998,
+  "dense_windows": 214,
+  "updates": 0,
+  "native_prediction_manifest_sha256": "71f8fb531304063ce7d381df4651283c015f5bc6e90d2ed032b929ee21da2b95",
+  "endpoint_replay": "original GPU FP32 seed2035 Flow/head; compare corrected endpoints to sealed B final frames atol1e-6 rtol0",
+  "scoring": "native CPU FP32 hard metrics, FP64 accumulation; joint window macro, marginal agent micro",
+  "source_sha256": "a22278121c4a2449e28ddd4c2acd9c3064c64864726df7d1e7b586dfc5221459"
+}
