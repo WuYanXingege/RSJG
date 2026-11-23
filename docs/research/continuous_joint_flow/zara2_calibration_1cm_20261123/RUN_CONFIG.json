@@ -1,0 +1,20 @@
+{
+  "seed": 2035,
+  "M": 256,
+  "K": 20,
+  "DDIM": 20,
+  "eta": 0,
+  "updates": 0,
+  "budget_m": 0.01,
+  "solver": "scipy SLSQP float64, analytic gradients",
+  "ftol": 1e-10,
+  "maxiter": 300,
+  "fp32_atol_m": 1e-05,
+  "device": "cpu",
+  "threads": 2,
+  "checkpoint_sha256": "ea13cd7fd99a02c44c3c9af9a14a0cc9b5166b629e5c338694cca97f1c8c502a",
+  "assignment": "fixed nearest corrected endpoint; tie smaller original sample ID",
+  "fallback": "feasible zero if objective increases; radial budget correction",
+  "base_commit": "d4fbe6d8e3b142645b9e801116aac308fcb19c9d",
+  "source_sha256": "7a2762f0bde7b1d278153152bdc52f695855bfda48858b069bd4d83ceb86f28e"
+}
