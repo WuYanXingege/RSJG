@@ -1,0 +1,63 @@
+{
+  "status": "ALL_AVAILABLE_MODELS_FROZEN_BEFORE_TEST",
+  "requested_folds": [
+    "zara1",
+    "hotel"
+  ],
+  "folds": {
+    "zara1": {
+      "A_checkpoint": "<host-path-sha256:0d053438789434c73ff2203c7e55d83ee51882e1d8fb59e4998aeb5bedc438ad>",
+      "A_sha256": "bf85c688ec1fb96bbcea3de1384f54e9f5abd40c91be38294fe3cd11c0eb210f",
+      "A_epoch": 15,
+      "A_selection": "rank1 dev H-JADE",
+      "B_checkpoint": "<host-path-sha256:f73dfd14311e6f192b197fed1c6299d43facb9595317e5f3a01bebcdb398d2ae>",
+      "B_sha256": "fc7d9cca99769b12f2366eda20396130f547534248c82451e1041d640ff8389d",
+      "B_epoch": 6,
+      "B_selection": "rank1 dev JADE seed2035",
+      "density_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+      "head_sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af",
+      "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+      "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+      "counts": {
+        "A_epoch": 15,
+        "A_sha256": "bf85c688ec1fb96bbcea3de1384f54e9f5abd40c91be38294fe3cd11c0eb210f",
+        "B_epoch": 6,
+        "B_sha256": "fc7d9cca99769b12f2366eda20396130f547534248c82451e1041d640ff8389d",
+        "windows": 705,
+        "dense_windows": 28,
+        "agents": 2356,
+        "dense_agents": 288
+      }
+    },
+    "hotel": {
+      "A_checkpoint": "<host-path-sha256:84df33ddcdcb58474546229412b2ac2ee794ba38aaf6f643c0a6162a38b4a54b>",
+      "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+      "A_epoch": 12,
+      "A_selection": "rank1 dev H-JADE",
+      "B_checkpoint": "<host-path-sha256:5abf4d1a7ebbe00e7a81c396f2d8ba0e864368cdab42bed6b701bf6fd04881ff>",
+      "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+      "B_epoch": 19,
+      "B_selection": "rank1 dev JADE seed2035",
+      "density_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+      "head_sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b",
+      "upstream_manifest_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+      "B_manifest_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+      "counts": {
+        "A_epoch": 12,
+        "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+        "B_epoch": 19,
+        "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+        "windows": 445,
+        "dense_windows": 0,
+        "agents": 1197,
+        "dense_agents": 0
+      }
+    }
+  },
+  "missing_folds": {},
+  "completed_fold_count": 2,
+  "scope": "only the two folds authorized for immediate testing",
+  "source_config_sha256": "a078b1c9ff23acea1e9ff8aaa095f4423ec2473943931788931b3207354701f1",
+  "authorization_amendment_sha256": "4dd9c7389e66a8c9512eb8ac9c41c32d2c66ac049deff26218624ef03753ca94",
+  "freeze_unix": 1795487519.8202531
+}

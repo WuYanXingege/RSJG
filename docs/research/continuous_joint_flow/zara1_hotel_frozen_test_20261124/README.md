@@ -1,9 +1,9 @@
-# ZARA1、HOTEL冻结测试：启动记录
+# ZARA1、HOTEL冻结测试
 
-用户于2026-11-24授权立即完成已训练新模型的ZARA1/HOTEL测试。本次提前测试这两折，不等待UNIV/ETH选模结束；原四折控制器的源码、配置、训练和选模规则保持原状态。
+**ZARA1的五种子测试已完成，HOTEL正在运行。**
 
-固定ZARA1 A epoch15、B epoch6，HOTEL A epoch12、B epoch19。官方heldout_confirmation分别705窗/2356人次和445窗/1197人次，N≥9分别28窗/288人次和0窗/0人次。HOTEL密集组记N/A。
+ZARA1完整测试集705窗，N≥9为28窗。相对固定A，B全体JADE下降2.867 cm、JFDE下降6.683 cm，N≥9 JFDE下降7.923 cm；全体边缘minADE上升1.369 cm、minFDE上升6.179 cm。五个推理种子的方向一致。
 
-使用原生joint_flow_fourfold.test入口，种子2035–2039，各自K20，M256、12帧、20步DDIM、eta=0。零训练，关闭1 cm校准、整组交换和A轨迹重排。每折五种子全部A/B预测先封存并核验，再读取测试未来，用原生指标评分；报告五种子均值、样本标准差及配对差。
+[ZARA1完整中文报告](zara1/README.md) · [逐种子CSV](zara1/PER_SEED.csv) · [匿名逐窗CSV](zara1/PER_WINDOW.csv) · [汇总CSV](zara1/SUMMARY.csv)
 
-启动：`CUBLAS_WORKSPACE_CONFIG=:4096:8 python -m joint_flow_pair_test.run --push-on-complete`。进程按同一配置恢复，完成后本页自动替换为中文结果报告。原始预测和权重不上传GitHub。
+本次按2026-11-24用户指示提前测试已冻结的ZARA1/HOTEL，原UNIV/ETH训练仍按既定配置和选模规则继续。每折五种子预测全部封存后才评分；没有测试调参或重新选模。HOTEL完成后自动更新为两折完整报告。

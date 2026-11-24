@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-24",
+  "authorized_folds": [
+    "zara1",
+    "hotel"
+  ],
+  "user_instruction": "给我们完成新模型在ZARA1以及HOTEL的测试集测试",
+  "previous_order": "wait for all four new-fold A/B weights to freeze before any new-fold test",
+  "effective_order": "test the already frozen ZARA1/HOTEL A/B now; UNIV/ETH training continues with its original fixed recipe and selector",
+  "original_controller_source_or_config_modified": false,
+  "additional_training_updates": 0,
+  "predictions": "per fold, seal all five seeds A/B before reading any heldout future",
+  "later_controller_reuse": "independent test directory; original controller remains unchanged"
+}

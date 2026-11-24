@@ -1,0 +1,64 @@
+{
+  "fold": "zara1",
+  "identity": {
+    "upstream": {
+      "fold": "zara1",
+      "frozen_manifest_sha256": "4e51dee5a7e7ef44d4c182dd33f62b2e92b51a01905df4697d3324ccce9f4580",
+      "upstream_identity": {
+        "schema": "bcep-ebjd-v2-resolved-v1",
+        "fold": "zara1",
+        "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+        "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+        "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+        "members_redacted_sha256": "66d5cec32d19cfa39684446310c5483c3febd878c338d8a21d5910a7169d7586",
+        "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330"
+      },
+      "split_sha256": "c021422e469f6a86e5d3c0dbcf52f8f7e5ab812eb5ecfdfcd335f9780cc7e998",
+      "split_file_sha256": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+      "config_file_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+      "checkpoint_sha256": "bf85c688ec1fb96bbcea3de1384f54e9f5abd40c91be38294fe3cd11c0eb210f",
+      "provider": [
+        {
+          "stage": "density",
+          "epoch": 61,
+          "sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178"
+        },
+        {
+          "stage": "head",
+          "epoch": 7,
+          "sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af"
+        }
+      ],
+      "banks": {
+        "train": "d25cb323f50d434bf51ea05731de5a967e0c9ffa7302e8c1f4aa177a5445d978",
+        "selection_dev": "48aa3ee1d01dd3df6c52006bd663b19b2230cc1dfff9dfea2c51e0f4edc9734a"
+      }
+    },
+    "B_sha256": "fc7d9cca99769b12f2366eda20396130f547534248c82451e1041d640ff8389d",
+    "B_epoch": 6,
+    "freeze_barrier": "c76112bb055d9d17135cc2ce4ed87c13f10c1406f0a622464215aa74b905f904",
+    "fold": "zara1",
+    "heldout_members": "d7e20b793be2115a544c191e2d84e7a2b9049cac65dd296fe0d7eb7ba156389a"
+  },
+  "seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "M": 256,
+  "K": 20,
+  "ddim_steps": 20,
+  "eta": 0.0,
+  "prediction_frames": 12,
+  "windows": 705,
+  "A": "native coordinate H0 dev rank1",
+  "B": "frozen dependency dev JADE rank1",
+  "scoring": "native CPU FP32 hard metrics; FP64 native accumulation",
+  "prediction_barrier": "all five seeds and A/B saved and sealed before heldout truth",
+  "joint_aggregation": "equal windows",
+  "marginal_aggregation": "valid-agent weighted",
+  "no_heldout_model_selection": true,
+  "frozen_cross_fold_manifest": "c76112bb055d9d17135cc2ce4ed87c13f10c1406f0a622464215aa74b905f904"
+}
