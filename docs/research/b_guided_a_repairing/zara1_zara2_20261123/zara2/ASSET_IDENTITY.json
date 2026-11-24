@@ -1,0 +1,36 @@
+{
+  "fold": "zara2",
+  "models": {
+    "A_epoch": 5,
+    "A_sha256": "9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317",
+    "B_epoch": 35,
+    "B_sha256": "ea13cd7fd99a02c44c3c9af9a14a0cc9b5166b629e5c338694cca97f1c8c502a",
+    "windows": 590,
+    "dense_windows": 127
+  },
+  "original_B_identity": {
+    "fold": "zara2",
+    "upstream": {
+      "base": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+      "checkpoint_sha256": "9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317",
+      "split_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
+      "banks": {
+        "train": "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+        "selection_dev": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+      }
+    },
+    "checkpoint_sha256": "ea13cd7fd99a02c44c3c9af9a14a0cc9b5166b629e5c338694cca97f1c8c502a",
+    "epoch": 35,
+    "dev_windows": 590,
+    "dense_windows": 127,
+    "frozen_states": {
+      "backbone": "1dd15d1400a0ec7a975eaaf51604ea381556d5a54a1b588866d00015f85b3123",
+      "provider": "a59f17d7caa5639284f943781c26579587a861574fec49a4c2e121b08941ea2e",
+      "dependence": "0dd8bb2556dddb62a3f4bc2dd951687738e41ec94999da97e8df3102d7ef8dae"
+    }
+  },
+  "original_B_seal_sha256": "de8be26037ddfad7b63036f1998ec1d097182bc130c07947e3e92373f609b7ee",
+  "original_B_config_sha256": "d58f868f7524f2b793e35baa8bef6090fc822a44a7b791450ecd90dc31073887",
+  "A_dev_bank_sha256": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560",
+  "member_sequence_sha256": "12a28243c38f36072e8ef9f7021b4a51fbb037cb7710ae6c0d82bc91aba405c9"
+}

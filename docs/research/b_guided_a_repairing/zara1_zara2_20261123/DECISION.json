@@ -1,0 +1,150 @@
+{
+  "scope": "two-fold selection_dev, single inference seed2035",
+  "marginal_identity": true,
+  "all_six_joint_checks_pass": false,
+  "conclusion": "未达到预定判据，结束本次重排方案",
+  "failed_items": [
+    {
+      "fold": "zara1",
+      "group": "all",
+      "metric": "JADE",
+      "R_minus_limit_m": 0.11742869895076502,
+      "R_minus_limit_cm": 11.742869895076502,
+      "retention_percent": -134.10572909278332
+    },
+    {
+      "fold": "zara1",
+      "group": "all",
+      "metric": "JFDE",
+      "R_minus_limit_m": 0.2775215019553833,
+      "R_minus_limit_cm": 27.752150195538327,
+      "retention_percent": -130.38175687293273
+    },
+    {
+      "fold": "zara1",
+      "group": "N_ge_9",
+      "metric": "JFDE",
+      "R_minus_limit_m": 0.39978647660978606,
+      "R_minus_limit_cm": 39.97864766097861,
+      "retention_percent": -183.49692279785353
+    },
+    {
+      "fold": "zara2",
+      "group": "all",
+      "metric": "JADE",
+      "R_minus_limit_m": 0.07648645408577837,
+      "R_minus_limit_cm": 7.648645408577837,
+      "retention_percent": -154.62828131980206
+    },
+    {
+      "fold": "zara2",
+      "group": "all",
+      "metric": "JFDE",
+      "R_minus_limit_m": 0.16644219954245543,
+      "R_minus_limit_cm": 16.644219954245543,
+      "retention_percent": -163.91015429546442
+    },
+    {
+      "fold": "zara2",
+      "group": "N_ge_9",
+      "metric": "JFDE",
+      "R_minus_limit_m": 0.3092717942525083,
+      "R_minus_limit_cm": 30.927179425250827,
+      "retention_percent": -198.93589926073776
+    }
+  ],
+  "joint_checks": [
+    {
+      "fold": "zara1",
+      "group": "all",
+      "metric": "JADE",
+      "A": 0.40473977241237635,
+      "B": 0.35234097858138613,
+      "R": 0.47500955691525015,
+      "B_positive_gain": true,
+      "retention_rate": -1.341057290927833,
+      "retention_percent": -134.10572909278332,
+      "limit_m": 0.35758085796448513,
+      "R_minus_limit_m": 0.11742869895076502,
+      "R_minus_limit_cm": 11.742869895076502,
+      "passed": false
+    },
+    {
+      "fold": "zara1",
+      "group": "all",
+      "metric": "JFDE",
+      "A": 0.8172692123484061,
+      "B": 0.6913415920711088,
+      "R": 0.9814558560542218,
+      "B_positive_gain": true,
+      "retention_rate": -1.3038175687293272,
+      "retention_percent": -130.38175687293273,
+      "limit_m": 0.7039343540988385,
+      "R_minus_limit_m": 0.2775215019553833,
+      "R_minus_limit_cm": 27.752150195538327,
+      "passed": false
+    },
+    {
+      "fold": "zara1",
+      "group": "N_ge_9",
+      "metric": "JFDE",
+      "A": 1.190955329501168,
+      "B": 1.0447794703653503,
+      "R": 1.4591835328887182,
+      "B_positive_gain": true,
+      "retention_rate": -1.8349692279785355,
+      "retention_percent": -183.49692279785353,
+      "limit_m": 1.059397056278932,
+      "R_minus_limit_m": 0.39978647660978606,
+      "R_minus_limit_cm": 39.97864766097861,
+      "passed": false
+    },
+    {
+      "fold": "zara2",
+      "group": "all",
+      "metric": "JADE",
+      "A": 0.40976700670385763,
+      "B": 0.378500607874939,
+      "R": 0.4581137018436092,
+      "B_positive_gain": true,
+      "retention_rate": -1.5462828131980206,
+      "retention_percent": -154.62828131980206,
+      "limit_m": 0.38162724775783086,
+      "R_minus_limit_m": 0.07648645408577837,
+      "R_minus_limit_cm": 7.648645408577837,
+      "passed": false
+    },
+    {
+      "fold": "zara2",
+      "group": "all",
+      "metric": "JFDE",
+      "A": 0.7841791621898696,
+      "B": 0.7186275500441128,
+      "R": 0.8916249108011439,
+      "B_positive_gain": true,
+      "retention_rate": -1.639101542954644,
+      "retention_percent": -163.91015429546442,
+      "limit_m": 0.7251827112586885,
+      "R_minus_limit_m": 0.16644219954245543,
+      "R_minus_limit_cm": 16.644219954245543,
+      "passed": false
+    },
+    {
+      "fold": "zara2",
+      "group": "N_ge_9",
+      "metric": "JFDE",
+      "A": 1.2968434323006728,
+      "B": 1.1898052293484604,
+      "R": 1.50978084389619,
+      "B_positive_gain": true,
+      "retention_rate": -1.9893589926073776,
+      "retention_percent": -198.93589926073776,
+      "limit_m": 1.2005090496436817,
+      "R_minus_limit_m": 0.3092717942525083,
+      "R_minus_limit_cm": 30.927179425250827,
+      "passed": false
+    }
+  ],
+  "training_updates": 0,
+  "test_access": 0
+}
