@@ -33,4 +33,37 @@ class ProtocolTest(unittest.TestCase):
         for n,g in [(1,'N_eq_1'),(2,'N_2_to_8'),(8,'N_2_to_8'),(9,'N_ge_9')]:
             self.assertEqual(groups_for(n),('all',g))
 
+
+class SeedProtocolTest(unittest.TestCase):
+    def test_paths_and_pair_sd(self):
+        from .common import expected_row
+        from .statistics import paired_summary
+        from statistics import stdev
+        split={'members':[{'agent_ids':['a']}]}
+        a=expected_row('zara1',2036,1,0,split,{})
+        b=expected_row('zara1',2037,1,0,split,{})
+        self.assertNotEqual(a['file'],b['file']);self.assertNotEqual(a['seed'],b['seed'])
+        rows=[]
+        for k in range(5):
+            rows.append(dict(fold='x',group='all',fold_count=1,windows=1,agents=1,metric='JFDE',seed=2035+k,
+                B_m=10.*k,Bstar_m=10.*k-(k+1),delta_cm=-100.*(k+1),four_metrics_improved=True))
+        result=paired_summary(rows)
+        self.assertEqual(result['delta_std_cm'],stdev([-100.,-200.,-300.,-400.,-500.]))
+        self.assertEqual(result['improved'],5)
+
+    def test_three_noise_streams_repeat_and_change(self):
+        import torch
+        from types import SimpleNamespace
+        from .random_audit import regenerate,fingerprint
+        obs=torch.zeros(1,2,8,2);obs[0,1,:,0]=1.
+        batch=SimpleNamespace(observed=obs,scene_ids=['fixture'],agent_ids=[['a','b']])
+        ids=torch.arange(20)
+        a=regenerate(batch,ids,2036);b=regenerate(batch,ids,2037);repeat=regenerate(batch,ids,2036)
+        for k in a:
+            self.assertGreater(a[k].numel(),0)
+            self.assertEqual(fingerprint(a[k]),fingerprint(repeat[k]))
+            self.assertNotEqual(fingerprint(a[k]),fingerprint(b[k]))
+        moved=regenerate(batch,ids.flip(0),2036)
+        self.assertTrue(torch.equal(moved['bridge'],a['bridge'][:,torch.arange(19,-1,-1)]))
+
 if __name__=='__main__':unittest.main()

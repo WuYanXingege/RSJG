@@ -1,97 +1,88 @@
-"""Archive anonymous frozen outcomes, including any adverse effects."""
+"""Post-2035 five-seed replication; all adverse outcomes retained."""
 import csv
-import math
 import shutil
 from .common import *
 from joint_flow_fourfold.report import public_metadata
-
-
-def direction(delta):
-    return '改善' if delta<0 else '恶化' if delta>0 else '持平'
 
 
 def build_report():
     DOC.mkdir(parents=True,exist_ok=True)
     config=read(RUN/'RUN_CONFIG.json');receipt=read(RUN/'SCORE_RECEIPT.json');native=read(RUN/'NATIVE_METRICS.json')
     assert receipt['status']=='COMPLETE' and read(RUN/'BASELINE_REPLAY.json')['passed']
-    rows=list(csv.DictReader((RUN/'SUMMARY.csv').open()));sub=list(csv.DictReader((RUN/'SUBGROUPS.csv').open()))
+    summary=list(csv.DictReader((RUN/'SUMMARY.csv').open()));sub=list(csv.DictReader((RUN/'SUBGROUPS.csv').open()))
+    def row(f,g,q):return next(r for r in summary if r['fold']==f and r['group']==g and r['metric']==q)
+    def delta(f,s,g,q):
+        v=native[f][str(s)][g];return 100*(v['Bstar'][q]-v['B'][q])
     outcomes=[]
-    for fold in FOLDS:
-        b=native[fold]['all']['B'];s=native[fold]['all']['Bstar'];dev=read(DEV_DOC/fold/'RESULT.json')
-        dev_gain=100*(dev['baseline']['all']['minFDE']-dev['metrics']['all']['minFDE'])
-        test_gain=100*(b['minFDE']-s['minFDE']);percent=100*test_gain/dev_gain
-        outcomes.append(dict(fold=fold,dev_minFDE_gain_cm=dev_gain,test_minFDE_gain_cm=test_gain,
-            gain_retained_percent=percent,all_four_down=all(s[q]<b[q] for q in METRICS),
-            joint_both_nonincreasing=s['JADE']<=b['JADE'] and s['JFDE']<=b['JFDE']))
-    lines=['# B* 三折冻结测试：联合与边缘轨迹修正',
-           '**结论范围：三折正式冻结测试、单推理种子 2035。**',
-           '三折均使用预先锁定的同一轮完整双分配修正头；训练更新为0，没有依据测试结果换权重、调参或添加后处理。B与B*来自同一次真实推理的20个场景，不合并种子。']
-    for r in outcomes:
-        n=native[r['fold']]['all'];delta={q:100*(n['Bstar'][q]-n['B'][q]) for q in METRICS}
-        lines.append(f"- **{r['fold'].upper()}**：minFDE{direction(delta['minFDE'])}{abs(delta['minFDE']):.6f} cm；开发集改善{r['dev_minFDE_gain_cm']:.6f} cm，测试保留率{r['gain_retained_percent']:.2f}%。JADE变化{delta['JADE']:+.6f} cm，JFDE变化{delta['JFDE']:+.6f} cm，minADE变化{delta['minADE']:+.6f} cm。四项同时下降：{'是' if r['all_four_down'] else '否'}。")
-    lines+=['保留率=(B测试minFDE−B*测试minFDE)/(B开发minFDE−B*开发minFDE)。负值表示测试中反向恶化，超过100%照实保留；不是同分布误差的统计置信区间。',
-            '## 测试主表',
-            '绝对值为米，Δ=100×(B*−B)为厘米，负值表示改善。联合指标按窗等权，边缘指标按有效行人人次加权；四项分别取最优样本。',
-            '| 折 | 分组 | 窗数/人次 | 指标 | B (m) | B* (m) | Δ (cm) |',
-            '|---|---|---:|---|---:|---:|---:|']
-    for r in rows:
-        label=r['fold'].upper() if r['fold']!='equal_fold_mean' else f"折等权（{r['fold_count']}折）"
-        vals=[f"{float(r[k]):.9f}" if r[k] else 'N/A' for k in ('B_m','Bstar_m','delta_cm')]
-        lines.append(f"| {label} | {r['group']} | {r['windows']}/{r['agents']} | {r['metric']} | {' | '.join(vals)} |")
-    lines+=['全体汇总为三折各指标等权平均；密集组汇总只含ZARA1、ZARA2两折。HOTEL没有N≥9测试窗，记N/A，不补零。只有一个推理种子，不报告跨种子标准差或将开发集门槛当成测试选模规则。',
-            '## 人数分组解释',
-            '| 折 | 人数组 | 窗数/人次 | ΔJFDE (cm) | ΔminFDE (cm) |',
-            '|---|---|---:|---:|---:|']
-    dev_groups=[]
-    for fold in FOLDS:
-        for g in ('N_eq_1','N_2_to_8','N_ge_9'):
-            b=native[fold][g]['B'];s=native[fold][g]['Bstar']
-            if b:lines.append(f"| {fold.upper()} | {g} | {b['scene_count']}/{b['agent_count']} | {100*(s['JFDE']-b['JFDE']):+.9f} | {100*(s['minFDE']-b['minFDE']):+.9f} |")
-            else:lines.append(f'| {fold.upper()} | {g} | 0/0 | N/A | N/A |')
-        devrows=list(csv.DictReader((DEV_DOC/fold/'PER_WINDOW.csv').open()))
-        for g in ('N_eq_1','N_2_to_8','N_ge_9'):
-            selected=[r for r in devrows if g in groups_for(int(r['n']))];n=sum(int(r['n']) for r in selected)
-            dev_groups.append(dict(fold=fold,group=g,windows=len(selected),agents=n,
-                JFDE_delta_cm=100*math.fsum(float(r['student_JFDE'])-float(r['B_JFDE']) for r in selected)/len(selected) if selected else None,
-                minFDE_delta_cm=100*math.fsum(float(r['student_minFDE_sum'])-float(r['B_minFDE_sum']) for r in selected)/n if n else None))
-    lines.append('ZARA2逐组与同一选中轮次的开发集比较（仅作解释，不重新选模）：')
-    for dev in [r for r in dev_groups if r['fold']=='zara2']:
-        b=native['zara2'][dev['group']]['B'];s=native['zara2'][dev['group']]['Bstar']
-        df=100*(s['JFDE']-b['JFDE']);dm=100*(s['minFDE']-b['minFDE'])
-        lines.append(f"- {dev['group']}：开发集ΔJFDE={dev['JFDE_delta_cm']:+.6f} cm，测试ΔJFDE={df:+.6f} cm（{direction(df)}）；开发集ΔminFDE={dev['minFDE_delta_cm']:+.6f} cm，测试ΔminFDE={dm:+.6f} cm（{direction(dm)}）。")
-    z=native['zara2'];low=[z[g] for g in ('N_eq_1','N_2_to_8')];count=sum(v['B']['scene_count'] for v in low)
-    low_delta=100*sum(v['Bstar']['sums']['scene_JFDE']-v['B']['sums']['scene_JFDE'] for v in low)/count
-    dense_delta=100*(z['N_ge_9']['Bstar']['JFDE']-z['N_ge_9']['B']['JFDE'])
-    lines.append(f"ZARA2合并N≤8测试窗的ΔJFDE={low_delta:+.6f} cm，N≥9为{dense_delta:+.6f} cm。因此，低人数JFDE上升而拥挤窗JFDE改善的方向在测试中{'复现' if low_delta>0 and dense_delta<0 else '未同时复现'}。分组结果只是解释，未用于训练或测试选模。")
-    replay=read(RUN/'BASELINE_REPLAY.json')
-    lines+=['## 身份、封存与评分核验',
-        f"三折完整2148窗先生成并逐片核验成员哈希、有效人数、FP32形状、有限性、20个唯一原始编号和文件SHA256，再建立全局封存清单；首个测试真值读取时间为{receipt['first_truth_read_unix']}，晚于全局封存{receipt['global_seal_unix']}和完整核验{receipt['global_verification_unix']}。每窗B与B*共用同一次桥解码，覆盖摘要读取本窗原始256组终点。",
-        f"B与历史PER_SEED.csv中2035行对照通过，全体/密集四项指标最大绝对差为{replay['maximum_absolute_difference_m']:.12g} m。固定FP32核验容差为atol=rtol=1e−6，未用五种子均值代替对照。",
-        '| 折 | 冻结B轮次 | 头轮次 | 头SHA256 |','|---|---:|---:|---|']
-    for fold in FOLDS:
-        i=config['identities'][fold];lines.append(f"| {fold.upper()} | {i['teacher_identity']['teacher_epoch']} | {i['head_epoch']} | `{i['head_sha256']}` |")
-    wall=read(RUN/'WALL_TIME.json')
-    lines+=['全部上游和修正头均eval、requires_grad=False；运行前后state hash一致，无优化器或训练更新。保留头checkpoint中的优化开关：关闭geometry,hungarian,logging,modulation,proposal,schedule；头为CPU FP32，教师为确定性CUDA FP32。原训练入口仍不允许测试访问。',
-        '## 运行与交付',
-        '执行命令：`OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=0 CUBLAS_WORKSPACE_CONFIG=:4096:8 python -m residual_frozen_test.run --push-on-complete`。使用本次控制器锁及辅助GPU锁，单辅助worker，40%显存上限，启动前至少6 GiB余量；UNIV/ETH原控制器未改动。',
-        f"从预测调度开始至评分完成的实际墙钟{wall['wall_seconds']:.3f}s（{wall['wall_seconds']/60:.2f}分钟，不含首次接口检查及Git推送）；评分墙钟{receipt['scoring_wall_seconds']:.3f}s。实际各进程命令、时段见COMMANDS.json。",
-        '权重、原始观测、完整轨迹和人员ID保留在训练主机。公开窗口清单与预测封存清单只含匿名窗口号、计数、身份哈希及预测文件哈希；JSON中的主机路径经过脱敏。',
-        '[汇总CSV](SUMMARY.csv) · [人数分组](SUBGROUPS.csv) · [匿名逐窗CSV](PER_WINDOW.csv) · [配置](RUN_CONFIG.json) · [封存清单](PREDICTIONS_FROZEN.json) · [评分收据](SCORE_RECEIPT.json) · [B回放核对](BASELINE_REPLAY.json)']
+    for f in FOLDS:
+        mf=row(f,'all','minFDE');jf=row(f,'all','JFDE')
+        both=sum(delta(f,s,'all','minFDE')<0 and delta(f,s,'all','JFDE')<0 for s in SEEDS)
+        outcomes.append(dict(fold=f,minFDE_and_JFDE_improved_seeds=both,
+            minFDE_gain_mean_cm=-float(mf['delta_mean_cm']),minFDE_gain_seed2035_cm=-delta(f,2035,'all','minFDE'),
+            minFDE_improved=int(mf['improved']),minFDE_worsened=int(mf['worsened']),
+            JFDE_improved=int(jf['improved']),JFDE_worsened=int(jf['worsened']),
+            all_four_improved_seeds=int(mf['four_metrics_improved_seeds'])))
+    z1=outcomes[0]
+    lines=['# B* 三折五推理种子冻结复核',
+        '**三折正式冻结复核，推理种子2035–2039，固定权重，每个种子独立K20。**',
+        '**时间顺序披露：本次是在已看到2035上“ZARA1改善、ZARA2和HOTEL恶化”的结果后决定补齐2036–2039。** 2035的原预测、封存、评分不覆盖、不重跑；新增8592个配对，合并后10740个配对，来自同一批2148个测试窗。训练更新为0，没有测试选模、调参、校准或其他后处理。',
+        '## 三个问题的回答',
+        f"1. ZARA1的minFDE与JFDE在 **{z1['minFDE_and_JFDE_improved_seeds']}/5** 个种子上同时改善。2035的minFDE收益为{z1['minFDE_gain_seed2035_cm']:.6f} cm，五种子平均收益为 **{z1['minFDE_gain_mean_cm']:.6f} cm**。四项同时改善{z1['all_four_improved_seeds']}/5次。"]
+    for f in ('zara2','hotel'):
+        r=next(x for x in outcomes if x['fold']==f)
+        counts={q:sum(delta(f,s,'all',q)>0 for s in NEW_SEEDS) for q in METRICS}
+        lines.append(f"2. {f.upper()}：五种子中minFDE恶化{r['minFDE_worsened']}/5、JFDE恶化{r['JFDE_worsened']}/5；仅新增四种子中，JADE/JFDE/minADE/minFDE恶化次数分别为{counts['JADE']}/{counts['JFDE']}/{counts['minADE']}/{counts['minFDE']}（每项分母4）。四项同时改善{r['all_four_improved_seeds']}/5次。")
+    dense=row('zara2','N_ge_9','JFDE')
+    lines.append(f"ZARA2拥挤组JFDE：改善{dense['improved']}、持平{dense['tied']}、恶化{dense['worsened']}次；五种子配对差{float(dense['delta_mean_cm']):+.6f} ± {float(dense['delta_std_cm']):.6f} cm。")
+    avg={q:row('equal_fold_mean','all',q) for q in METRICS}
+    lines.append('3. 三折等权后，JADE/JFDE/minADE/minFDE的五种子平均配对差分别为'+
+        '/'.join(f"{float(avg[q]['delta_mean_cm']):+.6f}" for q in METRICS)+' cm。'+
+        ('四项平均值同时改善。' if all(float(avg[q]['delta_mean_cm'])<0 for q in METRICS) else '未同时改善边缘和联合指标。'))
+    if z1['minFDE_and_JFDE_improved_seeds']>=3 and all(next(x for x in outcomes if x['fold']==f)['minFDE_worsened']>=3 and next(x for x in outcomes if x['fold']==f)['JFDE_worsened']>=3 for f in ('zara2','hotel')):
+        lines.append('**建议保留冻结B作为跨折主模型，结束这一版B*的迭代。** ZARA1的收益不能代表跨折可靠收益；本轮不追加训练、匹配代价、后处理或种子搜索。')
+    else:
+        lines.append('方向未满足一致的跨折收益；具体混合方向及次数全部列于主表，不据本轮结果换权重或追加搜索。')
+    lines+=['## 五种子主表',
+        'B、B*为五种子均值（米）；Δ=100×(B*−B)，报告五个配对差的均值±样本标准差（厘米，ddof=1）。改善/持平/恶化按未舍入值<0/=0/>0判定。“四项同降”为同一seed四项均严格下降的次数。',
+        '| 折 | 分组 | 窗/人次（每seed） | 指标 | B均值(m) | B*均值(m) | 配对Δ均值±SD(cm) | 改善/持平/恶化 | 四项同降 |',
+        '|---|---|---:|---|---:|---:|---:|---:|---:|']
+    for r in summary:
+        label=r['fold'].upper() if r['fold']!='equal_fold_mean' else f"折等权({r['fold_count']}折)"
+        if r['B_mean_m']:
+            values=f"{float(r['B_mean_m']):.9f} | {float(r['Bstar_mean_m']):.9f} | {float(r['delta_mean_cm']):+.6f} ± {float(r['delta_std_cm']):.6f} | {r['improved']}/{r['tied']}/{r['worsened']} | {r['four_metrics_improved_seeds']}/5"
+        else:values='N/A | N/A | N/A | N/A | N/A'
+        lines.append(f"| {label} | {r['group']} | {r['windows']}/{r['agents']} | {r['metric']} | {values} |")
+    lines+=['全体折均值先在每个seed内对三折等权平均，再对五个seed计算均值和样本标准差。密集组只含ZARA1/ZARA2两折；HOTEL没有N≥9窗口，记N/A，不补零。K20分别计分，不合并成K100。五种子的波动仅描述固定权重的推理随机性，不代表跨训练种子、跨数据集的统计不确定性。',
+        '## 人数分组（五种子配对）',
+        '| 折 | 分组 | 窗/人次（每seed） | 指标 | Δ均值±SD(cm) | 改善/持平/恶化 |',
+        '|---|---|---:|---|---:|---:|']
+    for r in sub:
+        if r['metric'] not in ('JFDE','minFDE'):continue
+        values=(f"{float(r['delta_mean_cm']):+.6f} ± {float(r['delta_std_cm']):.6f} | {r['improved']}/{r['tied']}/{r['worsened']}" if r['delta_mean_cm'] else 'N/A | N/A')
+        lines.append(f"| {r['fold'].upper()} | {r['group']} | {r['windows']}/{r['agents']} | {r['metric']} | {values} |")
+    replay=read(RUN/'BASELINE_REPLAY.json');audit=read(RUN/'RANDOM_INPUT_AUDIT.json');wall=read(RUN/'WALL_TIME.json')
+    lines+=['## 冻结身份、随机流和封存',
+        '冻结B轮次：ZARA1=6、ZARA2=35、HOTEL=19；完整双分配头轮次分别21/16/15，ablation=False。权重、teacher_identity、CPU头/CUDA教师FP32、优化开关与2035测试完全相同。全部模块eval且冻结。详见WEIGHT_IDENTITIES.json与RUN_CONFIG.json。',
+        f"在{audit['windows']}个固定观测窗口记录每个新增seed实际进入推理的个人、共享边和桥噪声指纹。每个非空噪声流在四个seed间有四种不同指纹；用同seed重建输入与实际噪声逐元素完全一致。空边集合不要求变化。检查不新增DDIM调用，桥键保留原始联合样本编号。支持断点时用同seed再次核验噪声指纹。",
+        f"新增8592个配对全部校验并封存于{receipt['global_seal_unix']}；完整封存复核于{receipt['global_verification_unix']}；首个新真值读取在{receipt['first_truth_read_unix']}。每窗未来只读取一次用于四个新增seed的独立计分，共2148次；2035本轮真值读取与DDIM调用均为0。",
+        f"100项历史B对照核验全部通过（五seed、三折全体和有密集组的两折、四指标），最大绝对误差{replay['maximum_absolute_difference_m']:.12g} m；容差固定atol=rtol=1e−6。各seed按自身历史PER_SEED.csv行核对，不使用五种子均值。",
+        '## 执行与归档',
+        '命令：`OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=0 CUBLAS_WORKSPACE_CONFIG=:4096:8 python -m residual_frozen_test.run --push-on-complete`。worker显式传入`--worker <fold> --seed <2036..2039>`。逐次真实命令/退出码见COMMANDS.json。单辅助GPU进程、40%显存上限、6GiB启动余量，原UNIV/ETH控制器和暂停队列不变。',
+        f"本轮从预测调度至评分完成的墙钟{wall['wall_seconds']:.3f}s（{wall['wall_seconds']/60:.2f}分钟，包含重试/恢复等待，不含首次接口检查和Git推送）；评分{receipt['scoring_wall_seconds']:.3f}s。原2035耗时不并入本次新增推理耗时。",
+        '权重、原始观测、人员ID和完整轨迹留在训练主机。公开结果为匿名窗口、计数和指标，路径与测试成员索引脱敏。原2035归档保留不变。',
+        '[逐种子CSV](PER_SEED.csv) · [五种子配对汇总](SUMMARY.csv) · [人数分组](SUBGROUPS.csv) · [匿名逐窗](PER_WINDOW.csv) · [随机输入核验](RANDOM_INPUT_AUDIT.json) · [2035复用收据](REUSE_2035_RECEIPT.json) · [封存清单](PREDICTIONS_FROZEN.json) · [B核对](BASELINE_REPLAY.json) · [评分收据](SCORE_RECEIPT.json)']
     (DOC/'README.md').write_text('\n\n'.join(lines).replace('|\n\n|','|\n|')+'\n')
-    for name in ('SUMMARY.csv','SUBGROUPS.csv','PER_WINDOW.csv'):
-        shutil.copyfile(RUN/name,DOC/name)
-    csvwrite(DOC/'GAIN_RETENTION.csv',outcomes);csvwrite(DOC/'DEV_SUBGROUPS.csv',dev_groups)
-    for name in ('RUN_CONFIG.json','SCORE_RECEIPT.json','PRE_SCORE_VERIFICATION.json','BASELINE_REPLAY.json','NATIVE_METRICS.json','COMMANDS.json','WALL_TIME.json'):
+    for name in ('SUMMARY.csv','PER_SEED.csv','SUBGROUPS.csv','PER_WINDOW.csv'):shutil.copyfile(RUN/name,DOC/name)
+    csvwrite(DOC/'CONCLUSIONS.csv',outcomes)
+    for name in ('RUN_CONFIG.json','SCORE_RECEIPT.json','PRE_SCORE_VERIFICATION.json','BASELINE_REPLAY.json','NATIVE_METRICS.json',
+                 'COMMANDS.json','WALL_TIME.json','REUSE_2035_RECEIPT.json','RANDOM_INPUT_AUDIT.json'):
         write(DOC/name,public_metadata(read(RUN/name)))
-    seal=read(RUN/'PREDICTIONS_FROZEN.json')
-    seal['rows']=[{k:v for k,v in row.items() if k!='index'} for row in seal['rows']]
-    seal['host_full_manifest_sha256']=digest(RUN/'PREDICTIONS_FROZEN.json')
-    write(DOC/'PREDICTIONS_FROZEN.json',seal)
+    seal=read(RUN/'PREDICTIONS_FROZEN.json');seal['rows']=[{k:v for k,v in r.items() if k!='index'} for r in seal['rows']]
+    seal['host_full_manifest_sha256']=digest(RUN/'PREDICTIONS_FROZEN.json');write(DOC/'PREDICTIONS_FROZEN.json',seal)
     write(DOC/'WEIGHT_IDENTITIES.json',public_metadata(config['identities']))
     for fold in FOLDS:
-        out=DOC/fold;out.mkdir(exist_ok=True)
-        manifest=read(RUN/fold/'TEST_WINDOWS.json')
-        manifest['rows']=[{k:v for k,v in r.items() if k!='index'} for r in manifest['rows']]
-        write(out/'TEST_WINDOWS.json',manifest)
-        write(out/'EXPORT_TIMING.json',read(RUN/fold/'EXPORT_TIMING.json'))
+        out=DOC/fold;out.mkdir(exist_ok=True);m=read(RUN/fold/'TEST_WINDOWS.json')
+        m['rows']=[{k:v for k,v in r.items() if k!='index'} for r in m['rows']];write(out/'TEST_WINDOWS.json',m)
+        for seed in NEW_SEEDS:
+            write(out/f'EXPORT_TIMING_{seed}.json',read(RUN/fold/f'seed_{seed}/EXPORT_TIMING.json'))
     write(DOC/'ARTIFACT_SHA256.json',{str(p.relative_to(DOC)):digest(p) for p in sorted(DOC.rglob('*')) if p.is_file() and p.name!='ARTIFACT_SHA256.json'})

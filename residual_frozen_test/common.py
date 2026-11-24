@@ -7,12 +7,14 @@ from joint_flow_fourfold.common import immutable
 
 SOURCE = Path(__file__).resolve().parents[1]
 ROOT = SOURCE.parent
-RUN = ROOT/'RSJG_EBJD_assets/experiments/residual_threefold_frozen_test_20261124'
+OLD_RUN = ROOT/'RSJG_EBJD_assets/experiments/residual_threefold_frozen_test_20261124'
+RUN = ROOT/'RSJG_EBJD_assets/experiments/residual_threefold_five_seed_20261124'
 PRIOR = ROOT/'RSJG_EBJD_assets/experiments/joint_marginal_residual_20261124'
-DOC = SOURCE/'docs/research/joint_marginal_residual/frozen_test_20261124'
+OLD_DOC = SOURCE/'docs/research/joint_marginal_residual/frozen_test_20261124'
+DOC = SOURCE/'docs/research/joint_marginal_residual/five_seed_test_20261124'
 DEV_DOC = SOURCE/'docs/research/joint_marginal_residual/20261124'
-BASE = 'e07ed1f15adc70553dbaf40c7dcdb58c31315912'
-BRANCH = 'experiment/residual-threefold-frozen-test-20261124'
+BASE = '09c52eddc7b35a03bd3c7d589181097e08779e88'
+BRANCH = 'experiment/residual-threefold-five-seed-20261124'
 FOLDS = ('zara1', 'zara2', 'hotel')
 EXPECTED = {'zara1': (6, 21, 705, 2356, 28, 288),
             'zara2': (35, 16, 998, 5910, 214, 2197),
@@ -20,7 +22,8 @@ EXPECTED = {'zara1': (6, 21, 705, 2356, 28, 288),
 PURPOSE = 'heldout_confirmation'
 METRICS = ('JADE', 'JFDE', 'minADE', 'minFDE')
 GROUPS = ('all', 'N_eq_1', 'N_2_to_8', 'N_ge_9')
-SEED = 2035
+SEEDS = (2035, 2036, 2037, 2038, 2039)
+NEW_SEEDS = (2036, 2037, 2038, 2039)
 PACKAGES = ('residual_frozen_test','joint_marginal_residual','bcep_v2','bcep_joint',
             'bcep_formal','bcep','ebjd','joint_flow_dependency','joint_flow_fourfold',
             'joint_flow_frozen_test','scene_pair_selector')
@@ -66,12 +69,13 @@ def arrays(path, n):
     return values
 
 
-def expected_row(fold, position, index, split, config):
+def expected_row(fold, seed, position, index, split, config):
+    assert seed in NEW_SEEDS
     member = split['members'][index]
     return dict(fold=fold, window=f'test_{position:04d}', index=index,
-                n=len(member['agent_ids']), seed=SEED,
+                n=len(member['agent_ids']), seed=seed,
                 member_sha256=canonical_hash(member),
-                file=f'{fold}/predictions/test_{position:04d}.npz',
+                file=f'{fold}/seed_{seed}/predictions/test_{position:04d}.npz',
                 source_config_sha256=canonical_hash(config))
 
 

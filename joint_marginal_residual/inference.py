@@ -10,7 +10,7 @@ from .model import ResidualHead
 from .assets import load_teacher,load_inputs
 
 @torch.no_grad()
-def generate_student(model,provider,dependence,head,batch,*,seed=2035,ablation=False):
+def generate_student(model,provider,dependence,head,batch,*,seed=2035,ablation=False,audit_random_inputs=False):
  assert not batch.future.count_nonzero(),'inference entry accepts observations only'
  if batch.observed.is_cuda:torch.cuda.synchronize()
  tick=time.perf_counter();prediction,endpoints,detail=generate(model,provider,dependence,batch,seed=seed)
@@ -22,7 +22,11 @@ def generate_student(model,provider,dependence,head,batch,*,seed=2035,ablation=F
  feature_seconds=time.perf_counter()-tick;tick=time.perf_counter();device=next(head.parameters()).device
  pack={k:v.to(device) for k,v in features.items() if torch.is_tensor(v)}
  result=head(prediction[0].to(device),pack['base_features'],pack['difference_features'],pack['valid'],ablation=ablation)
- return result,dict(B=prediction[0],raw_ids=endpoints['raw_indices'],features=features,ddim_calls=detail['ddim_calls'],
+ proof = None
+ if audit_random_inputs:
+  from residual_frozen_test.random_audit import audit_actual
+  proof = audit_actual(batch,endpoints,seed)
+ return result,dict(random_inputs=proof,B=prediction[0],raw_ids=endpoints['raw_indices'],features=features,ddim_calls=detail['ddim_calls'],
   teacher_seconds=teacher_seconds,feature_seconds=feature_seconds,head_seconds=time.perf_counter()-tick)
 
 def main():
