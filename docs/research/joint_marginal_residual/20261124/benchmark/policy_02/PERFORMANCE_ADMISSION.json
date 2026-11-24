@@ -1,0 +1,34 @@
+{
+  "rejected": [
+    {
+      "optimizations": [
+        "logging"
+      ],
+      "evidence": "density_update_plus_validation",
+      "median_speed_ratio": 0.987365112047101,
+      "paired_faster_trials": 1,
+      "reason": "no clear timing improvement under the fixed shared-resource admission rule"
+    },
+    {
+      "optimizations": [
+        "proposal",
+        "schedule"
+      ],
+      "evidence": "observed_to_B",
+      "median_speed_ratio": 1.0093445018358633,
+      "paired_faster_trials": 2,
+      "reason": "no clear timing improvement under the fixed shared-resource admission rule"
+    },
+    {
+      "optimizations": [
+        "geometry"
+      ],
+      "evidence": "coordinate_update",
+      "median_speed_ratio": 1.0032978813310154,
+      "paired_faster_trials": 3,
+      "reason": "no clear timing improvement under the fixed shared-resource admission rule"
+    }
+  ],
+  "threshold_median_speed_ratio": 1.02,
+  "minimum_faster_pairs": 2
+}

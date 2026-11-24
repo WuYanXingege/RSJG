@@ -1,0 +1,26 @@
+{
+  "policy": {
+    "output_atol": 9.5367431640625e-07,
+    "output_rtol": 9.5367431640625e-07,
+    "gradient_atol": 3.814697265625e-06,
+    "gradient_rtol": 3.814697265625e-06,
+    "update_atol": 9.5367431640625e-07,
+    "update_rtol": 9.5367431640625e-07,
+    "discrete": "exact equality, including metric winner indices"
+  },
+  "baseline_repeat": {
+    "passed": true,
+    "checks": 1082,
+    "max_abs_by_category": {
+      "output": 0.0,
+      "gradient": 0.0,
+      "update": 0.0
+    },
+    "failures": []
+  },
+  "baseline_witness_sha256": [
+    "ae88dcc234a980caea7108c34903054ef96e7d822bce138af77b50b9f6c68e7d",
+    "ae88dcc234a980caea7108c34903054ef96e7d822bce138af77b50b9f6c68e7d"
+  ],
+  "locked_before_optimized_unix": 1795498476.0130045
+}

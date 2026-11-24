@@ -1,0 +1,185 @@
+{
+  "status": "COMPLETE",
+  "device": "cuda",
+  "dtype": "float32",
+  "K": 20,
+  "M": 256,
+  "DDIM": 20,
+  "train_seed": 3201,
+  "inference_seed": 2036,
+  "native_validation_seed": 2035,
+  "selection": {
+    "train": [
+      {
+        "ordinal": 1,
+        "n": 1
+      },
+      {
+        "ordinal": 4,
+        "n": 2
+      },
+      {
+        "ordinal": 623,
+        "n": 9
+      },
+      {
+        "ordinal": 2,
+        "n": 1
+      },
+      {
+        "ordinal": 3,
+        "n": 1
+      },
+      {
+        "ordinal": 5,
+        "n": 2
+      },
+      {
+        "ordinal": 6,
+        "n": 3
+      },
+      {
+        "ordinal": 7,
+        "n": 3
+      },
+      {
+        "ordinal": 8,
+        "n": 3
+      },
+      {
+        "ordinal": 9,
+        "n": 3
+      },
+      {
+        "ordinal": 10,
+        "n": 3
+      },
+      {
+        "ordinal": 11,
+        "n": 3
+      },
+      {
+        "ordinal": 12,
+        "n": 3
+      },
+      {
+        "ordinal": 13,
+        "n": 3
+      },
+      {
+        "ordinal": 14,
+        "n": 3
+      },
+      {
+        "ordinal": 15,
+        "n": 3
+      }
+    ],
+    "selection_dev": [
+      {
+        "ordinal": 1,
+        "n": 1
+      },
+      {
+        "ordinal": 20,
+        "n": 2
+      },
+      {
+        "ordinal": 146,
+        "n": 9
+      }
+    ]
+  },
+  "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+  "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+  "native_source": "<host-path-sha256:f88b8bc1febf1272c5196a1a496e8e0a89d1d3c6b7d4d0c0eff2151f594a648d>",
+  "stages": {
+    "density": {
+      "logical_windows": 4,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 0.23151424108073115,
+      "validation_seconds": 0.07166096987202764,
+      "cold_validation_seconds": 0.07349178311415017,
+      "context_cache_after_cold": null,
+      "context_cache_after_warm": null,
+      "measured_read_seconds": 0.011859780875965953,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 240215552,
+      "peak_reserved_bytes": 270532608,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    },
+    "head": {
+      "logical_windows": 4,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 0.09777110791765153,
+      "validation_seconds": 0.07464118488132954,
+      "cold_validation_seconds": 0.07221407000906765,
+      "context_cache_after_cold": null,
+      "context_cache_after_warm": null,
+      "measured_read_seconds": 0.024083884665742517,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 217156096,
+      "peak_reserved_bytes": 270532608,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    },
+    "coordinate": {
+      "logical_windows": 16,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 2.242601925972849,
+      "validation_seconds": 1.43620555405505,
+      "cold_validation_seconds": 1.5122847948223352,
+      "context_cache_after_cold": null,
+      "context_cache_after_warm": null,
+      "measured_read_seconds": 0.09755599801428616,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 1953510400,
+      "peak_reserved_bytes": 3539992576,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    },
+    "dependency": {
+      "logical_windows": 16,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 0.08709289995022118,
+      "validation_seconds": 1.4936299258843064,
+      "cold_validation_seconds": 1.5351216129492968,
+      "context_cache_after_cold": null,
+      "context_cache_after_warm": null,
+      "measured_read_seconds": 0.022393594961613417,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 975555584,
+      "peak_reserved_bytes": 3539992576,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    }
+  },
+  "cold_start_load_and_verify_seconds": 2.3862705409992486,
+  "initial_data_read_seconds": 0.05899596121162176,
+  "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+  "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+  "resource_telemetry": {
+    "before": {
+      "gpu": "NVIDIA GeForce RTX 5070 Ti, 4183, 16303, 29",
+      "processes": "2122662, 3202\n2132031, 220"
+    },
+    "after": {
+      "gpu": "NVIDIA GeForce RTX 5070 Ti, 7858, 16303, 93",
+      "processes": "2122662, 3202\n2132031, 3890"
+    },
+    "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+  },
+  "disabled_optimizations": [],
+  "four_stage_fixture_wall_seconds": 22.08241337700747,
+  "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+  "observed_to_B_seconds": 1.4525886699557304,
+  "observed_to_B_windows": 3,
+  "witnesses_sha256": "ae88dcc234a980caea7108c34903054ef96e7d822bce138af77b50b9f6c68e7d",
+  "test_access": 0,
+  "production_checkpoint_updates": 0
+}

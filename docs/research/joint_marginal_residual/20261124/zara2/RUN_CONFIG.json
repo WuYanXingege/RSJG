@@ -1,0 +1,53 @@
+{
+  "recipe": {
+    "seed": 3201,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "logical_scenes": 32,
+    "clip": 1.0,
+    "epochs": 30,
+    "precision": "FP32",
+    "scheduler": null
+  },
+  "fold": "zara2",
+  "ablation": false,
+  "teacher_identity": {
+    "fold": "zara2",
+    "teacher_epoch": 35,
+    "teacher_sha256": "ea13cd7fd99a02c44c3c9af9a14a0cc9b5166b629e5c338694cca97f1c8c502a",
+    "upstream": {
+      "base": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+      "checkpoint_sha256": "9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317",
+      "split_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
+      "banks": {
+        "train": "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+        "selection_dev": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+      }
+    },
+    "train_members": "4bcd442c7c33444e1d6f5677dac01f736c21a7f0ff110716fe7c0f8f696a1c99",
+    "dev_members": "12a28243c38f36072e8ef9f7021b4a51fbb037cb7710ae6c0d82bc91aba405c9",
+    "states": {
+      "backbone": "1dd15d1400a0ec7a975eaaf51604ea381556d5a54a1b588866d00015f85b3123",
+      "provider": "a59f17d7caa5639284f943781c26579587a861574fec49a4c2e121b08941ea2e",
+      "dependence": "0dd8bb2556dddb62a3f4bc2dd951687738e41ec94999da97e8df3102d7ef8dae"
+    }
+  },
+  "cache_sha256": {
+    "train": "0543693879d3f05ec77ec453121acb1cb85fc9e09f0cfbd3c8ff7912df1179e2",
+    "selection_dev": "b1024d6a1c6257b3a5ab9138456b29858e9742d2bf7c011877814c77aee16ea3"
+  },
+  "scales": {
+    "minADE": 0.23352667713169012,
+    "minFDE": 0.3868302419410753,
+    "JADE": 0.33927424047149213,
+    "JFDE": 0.6085759603111154
+  },
+  "parameters": 27332,
+  "initial_model_sha256": "1bfa266481f405fa5ff2b8c8d2347022f2449ee921e0abc2074dad83e75376b2",
+  "selector": "passed: minFDE,JFDE,epoch; otherwise maximum six-condition violation,minFDE,epoch",
+  "retention": "all completed epochs plus official Top5, best and last; complete optimizer, RNG, order and counters",
+  "device": "cpu",
+  "input_normalization": "none",
+  "upstream_frozen": true,
+  "native_disabled_optimizations": "geometry,hungarian,logging,modulation,proposal,schedule"
+}

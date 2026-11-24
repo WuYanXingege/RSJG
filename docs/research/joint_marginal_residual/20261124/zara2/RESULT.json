@@ -1,0 +1,197 @@
+{
+  "completed_epochs": 30,
+  "rank1_epoch": 16,
+  "checkpoint": "<host-path-sha256:32e9b475f852a21b9d3304c67fc6f0b8056ce4a02578e34aebf147b41594d007>",
+  "checkpoint_sha256": "a83642b2b841eb72bd0a7a76aeafcc3fdeeb0b4d11d81525491faed6edcd85c5",
+  "metrics": {
+    "all": {
+      "minADE": 0.24809244964232452,
+      "minFDE": 0.42606250455696204,
+      "JADE": 0.37598424744555503,
+      "JFDE": 0.71753177080556,
+      "scene_weighted_minADE": 0.24752625563513425,
+      "scene_weighted_minFDE": 0.41081490247052604,
+      "coordination_gap_ADE": 0.12845799181042078,
+      "coordination_gap_FDE": 0.3067168683350339,
+      "agent_count": 4262,
+      "scene_count": 590,
+      "sums": {
+        "agent_minADE": 1057.370020375587,
+        "agent_minFDE": 1815.878394421772,
+        "scene_JADE": 221.83070599287748,
+        "scene_JFDE": 423.34374477528036,
+        "scene_marginal_ADE": 146.0404908247292,
+        "scene_marginal_FDE": 242.38079245761037
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.2582239808058735,
+      "minFDE": 0.45315155425192455,
+      "JADE": 0.551556010180571,
+      "JFDE": 1.1584723493245643,
+      "scene_weighted_minADE": 0.2894939616557181,
+      "scene_weighted_minFDE": 0.5271410049181285,
+      "coordination_gap_ADE": 0.2620620485248529,
+      "coordination_gap_FDE": 0.6313313444064358,
+      "agent_count": 2549,
+      "scene_count": 127,
+      "sums": {
+        "agent_minADE": 658.2129270741716,
+        "agent_minFDE": 1155.0833117881557,
+        "scene_JADE": 70.04761329293251,
+        "scene_JFDE": 147.12598836421967,
+        "scene_marginal_ADE": 36.7657331302762,
+        "scene_marginal_FDE": 66.94690762460232
+      }
+    }
+  },
+  "gate": {
+    "passed": false,
+    "checks": [
+      {
+        "group": "all",
+        "metric": "minFDE",
+        "available": true,
+        "B": 0.4573110812863661,
+        "student": 0.42606250455696204,
+        "difference_m": -0.031248576729404065,
+        "threshold_m": -0.02,
+        "strict": false,
+        "passed": true,
+        "margin_m": -0.011248576729404065,
+        "violation_m": 0.0
+      },
+      {
+        "group": "all",
+        "metric": "JFDE",
+        "available": true,
+        "B": 0.7186288586584851,
+        "student": 0.71753177080556,
+        "difference_m": -0.0010970878529251715,
+        "threshold_m": -0.005,
+        "strict": false,
+        "passed": false,
+        "margin_m": 0.0039029121470748286,
+        "violation_m": 0.0039029121470748286
+      },
+      {
+        "group": "all",
+        "metric": "minADE",
+        "available": true,
+        "B": 0.2577760469963611,
+        "student": 0.24809244964232452,
+        "difference_m": -0.009683597354036566,
+        "threshold_m": 0.0,
+        "strict": true,
+        "passed": true,
+        "margin_m": -0.009683597354036566,
+        "violation_m": 0.0
+      },
+      {
+        "group": "all",
+        "metric": "JADE",
+        "available": true,
+        "B": 0.37850092136758867,
+        "student": 0.37598424744555503,
+        "difference_m": -0.002516673922033641,
+        "threshold_m": 0.0,
+        "strict": true,
+        "passed": true,
+        "margin_m": -0.002516673922033641,
+        "violation_m": 0.0
+      },
+      {
+        "group": "N_ge_9",
+        "metric": "JFDE",
+        "available": true,
+        "B": 1.1898052359190512,
+        "student": 1.1584723493245643,
+        "difference_m": -0.03133288659448685,
+        "threshold_m": 0.0,
+        "strict": false,
+        "passed": true,
+        "margin_m": -0.03133288659448685,
+        "violation_m": 0.0
+      },
+      {
+        "group": "N_ge_9",
+        "metric": "minFDE",
+        "available": true,
+        "B": 0.49364703766878865,
+        "student": 0.45315155425192455,
+        "difference_m": -0.0404954834168641,
+        "threshold_m": 0.0,
+        "strict": false,
+        "passed": true,
+        "margin_m": -0.0404954834168641,
+        "violation_m": 0.0
+      }
+    ],
+    "max_violation_m": 0.0039029121470748286,
+    "hardest_conditions": [
+      "all.JFDE"
+    ]
+  },
+  "baseline": {
+    "all": {
+      "minADE": 0.2577760469963611,
+      "minFDE": 0.4573110812863661,
+      "JADE": 0.37850092136758867,
+      "JFDE": 0.7186288586584851,
+      "scene_weighted_minADE": 0.25170816008822394,
+      "scene_weighted_minFDE": 0.42881799344707405,
+      "coordination_gap_ADE": 0.12679276127936473,
+      "coordination_gap_FDE": 0.2898108652114111,
+      "agent_count": 4262,
+      "scene_count": 590,
+      "sums": {
+        "agent_minADE": 1098.6415122984909,
+        "agent_minFDE": 1949.0598284424923,
+        "scene_JADE": 223.31554360687733,
+        "scene_JFDE": 423.9910266085062,
+        "scene_marginal_ADE": 148.50781445205212,
+        "scene_marginal_FDE": 253.0026161337737
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.27199605748692374,
+      "minFDE": 0.49364703766878865,
+      "JADE": 0.568436229088175,
+      "JFDE": 1.1898052359190512,
+      "scene_weighted_minADE": 0.300977896341658,
+      "scene_weighted_minFDE": 0.5641411622678201,
+      "coordination_gap_ADE": 0.26745833274651704,
+      "coordination_gap_FDE": 0.6256640736512311,
+      "agent_count": 2549,
+      "scene_count": 127,
+      "sums": {
+        "agent_minADE": 693.3179505341686,
+        "agent_minFDE": 1258.3062990177423,
+        "scene_JADE": 72.19140109419823,
+        "scene_JFDE": 151.1052649617195,
+        "scene_marginal_ADE": 38.22419283539057,
+        "scene_marginal_FDE": 71.64592760801315
+      }
+    }
+  },
+  "parameters": 27332,
+  "training_updates": 2520,
+  "optimizer_only_head": true,
+  "timing": {
+    "cache_load_seconds": 3.477712821215391,
+    "train_update_seconds": 174.4474696603138,
+    "validation_seconds": 14.805933164898306,
+    "measured_compute_seconds": 189.2534028252121,
+    "cold_cache_seconds": 1907.0328320409171
+  },
+  "retained_completed_epochs": 30,
+  "top5_epochs": [
+    16,
+    13,
+    21,
+    11,
+    23
+  ],
+  "test_access": 0,
+  "ablation": false
+}

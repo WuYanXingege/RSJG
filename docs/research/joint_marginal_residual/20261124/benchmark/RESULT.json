@@ -1,0 +1,1759 @@
+{
+  "status": "COMPLETE",
+  "correctness_passed": true,
+  "real_fold": "zara1",
+  "paired_repeats": 3,
+  "timings": [
+    {
+      "stage": "density",
+      "component": "update_seconds",
+      "baseline_median_seconds": 0.25886777183040977,
+      "optimized_median_seconds": 0.24962942395359278,
+      "speed_ratio": 1.0370082489896482,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "density",
+      "component": "validation_seconds",
+      "baseline_median_seconds": 0.07607405190356076,
+      "optimized_median_seconds": 0.15759640792384744,
+      "speed_ratio": 0.4827143772231198,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "head",
+      "component": "update_seconds",
+      "baseline_median_seconds": 0.10271570598706603,
+      "optimized_median_seconds": 0.09610893414355814,
+      "speed_ratio": 1.0687425357734104,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "head",
+      "component": "validation_seconds",
+      "baseline_median_seconds": 0.07464118488132954,
+      "optimized_median_seconds": 0.06706548715010285,
+      "speed_ratio": 1.11295970629828,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "coordinate",
+      "component": "update_seconds",
+      "baseline_median_seconds": 2.5380735700018704,
+      "optimized_median_seconds": 2.594255856005475,
+      "speed_ratio": 0.9783435832385046,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "coordinate",
+      "component": "validation_seconds",
+      "baseline_median_seconds": 1.5540401958860457,
+      "optimized_median_seconds": 1.5657664199825376,
+      "speed_ratio": 0.9925108726647601,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "dependency",
+      "component": "update_seconds",
+      "baseline_median_seconds": 0.25980162899941206,
+      "optimized_median_seconds": 0.10812713392078876,
+      "speed_ratio": 2.402742212604435,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "dependency",
+      "component": "validation_seconds",
+      "baseline_median_seconds": 1.5348114329390228,
+      "optimized_median_seconds": 1.6549676889553666,
+      "speed_ratio": 0.9273966151616001,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "pipeline",
+      "component": "cold_start_load_and_verify_seconds",
+      "baseline_median_seconds": 2.40900422912091,
+      "optimized_median_seconds": 2.3967006080783904,
+      "speed_ratio": 1.0051335661204612,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "pipeline",
+      "component": "initial_data_read_seconds",
+      "baseline_median_seconds": 0.06353244837373495,
+      "optimized_median_seconds": 0.0660240980796516,
+      "speed_ratio": 0.962261510896965,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "pipeline",
+      "component": "four_stage_fixture_wall_seconds",
+      "baseline_median_seconds": 25.447344139916822,
+      "optimized_median_seconds": 25.890535986050963,
+      "speed_ratio": 0.9828820907233083,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    },
+    {
+      "stage": "pipeline",
+      "component": "observed_to_B_seconds",
+      "baseline_median_seconds": 1.5827496978454292,
+      "optimized_median_seconds": 1.5820641859900206,
+      "speed_ratio": 1.000433302176662,
+      "paired_trials": 3,
+      "clearly_estimated_full_training": false
+    }
+  ],
+  "observations": [
+    {
+      "variant": "baseline",
+      "trial": 0,
+      "status": "COMPLETE",
+      "device": "cuda",
+      "dtype": "float32",
+      "K": 20,
+      "M": 256,
+      "DDIM": 20,
+      "train_seed": 3201,
+      "inference_seed": 2036,
+      "native_validation_seed": 2035,
+      "selection": {
+        "train": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 4,
+            "n": 2
+          },
+          {
+            "ordinal": 623,
+            "n": 9
+          },
+          {
+            "ordinal": 2,
+            "n": 1
+          },
+          {
+            "ordinal": 3,
+            "n": 1
+          },
+          {
+            "ordinal": 5,
+            "n": 2
+          },
+          {
+            "ordinal": 6,
+            "n": 3
+          },
+          {
+            "ordinal": 7,
+            "n": 3
+          },
+          {
+            "ordinal": 8,
+            "n": 3
+          },
+          {
+            "ordinal": 9,
+            "n": 3
+          },
+          {
+            "ordinal": 10,
+            "n": 3
+          },
+          {
+            "ordinal": 11,
+            "n": 3
+          },
+          {
+            "ordinal": 12,
+            "n": 3
+          },
+          {
+            "ordinal": 13,
+            "n": 3
+          },
+          {
+            "ordinal": 14,
+            "n": 3
+          },
+          {
+            "ordinal": 15,
+            "n": 3
+          }
+        ],
+        "selection_dev": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 20,
+            "n": 2
+          },
+          {
+            "ordinal": 146,
+            "n": 9
+          }
+        ]
+      },
+      "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+      "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+      "native_source": "<host-path-sha256:f88b8bc1febf1272c5196a1a496e8e0a89d1d3c6b7d4d0c0eff2151f594a648d>",
+      "stages": {
+        "density": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.23151424108073115,
+          "validation_seconds": 0.07166096987202764,
+          "cold_validation_seconds": 0.07349178311415017,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.011859780875965953,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 240215552,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "head": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.09777110791765153,
+          "validation_seconds": 0.07464118488132954,
+          "cold_validation_seconds": 0.07221407000906765,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.024083884665742517,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 217156096,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "coordinate": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 2.242601925972849,
+          "validation_seconds": 1.43620555405505,
+          "cold_validation_seconds": 1.5122847948223352,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.09755599801428616,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 1953510400,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "dependency": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.08709289995022118,
+          "validation_seconds": 1.4936299258843064,
+          "cold_validation_seconds": 1.5351216129492968,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.022393594961613417,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 975555584,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        }
+      },
+      "cold_start_load_and_verify_seconds": 2.3862705409992486,
+      "initial_data_read_seconds": 0.05899596121162176,
+      "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+      "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+      "resource_telemetry": {
+        "before": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 4183, 16303, 29",
+          "processes": "2122662, 3202\n2132031, 220"
+        },
+        "after": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 7858, 16303, 93",
+          "processes": "2122662, 3202\n2132031, 3890"
+        },
+        "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+      },
+      "disabled_optimizations": [],
+      "four_stage_fixture_wall_seconds": 22.08241337700747,
+      "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+      "observed_to_B_seconds": 1.4525886699557304,
+      "observed_to_B_windows": 3,
+      "witnesses_sha256": "ae88dcc234a980caea7108c34903054ef96e7d822bce138af77b50b9f6c68e7d",
+      "test_access": 0,
+      "production_checkpoint_updates": 0
+    },
+    {
+      "variant": "optimized",
+      "trial": 0,
+      "status": "COMPLETE",
+      "device": "cuda",
+      "dtype": "float32",
+      "K": 20,
+      "M": 256,
+      "DDIM": 20,
+      "train_seed": 3201,
+      "inference_seed": 2036,
+      "native_validation_seed": 2035,
+      "selection": {
+        "train": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 4,
+            "n": 2
+          },
+          {
+            "ordinal": 623,
+            "n": 9
+          },
+          {
+            "ordinal": 2,
+            "n": 1
+          },
+          {
+            "ordinal": 3,
+            "n": 1
+          },
+          {
+            "ordinal": 5,
+            "n": 2
+          },
+          {
+            "ordinal": 6,
+            "n": 3
+          },
+          {
+            "ordinal": 7,
+            "n": 3
+          },
+          {
+            "ordinal": 8,
+            "n": 3
+          },
+          {
+            "ordinal": 9,
+            "n": 3
+          },
+          {
+            "ordinal": 10,
+            "n": 3
+          },
+          {
+            "ordinal": 11,
+            "n": 3
+          },
+          {
+            "ordinal": 12,
+            "n": 3
+          },
+          {
+            "ordinal": 13,
+            "n": 3
+          },
+          {
+            "ordinal": 14,
+            "n": 3
+          },
+          {
+            "ordinal": 15,
+            "n": 3
+          }
+        ],
+        "selection_dev": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 20,
+            "n": 2
+          },
+          {
+            "ordinal": 146,
+            "n": 9
+          }
+        ]
+      },
+      "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+      "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+      "native_source": "<host-path-sha256:4f09f862b1941e2d8e9ead03db0b1cfe692910364af72dd0e6861d6ca4145b65>",
+      "stages": {
+        "density": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.22044008411467075,
+          "validation_seconds": 0.0640961651224643,
+          "cold_validation_seconds": 0.06632034690119326,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.010810325155034661,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 240215552,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "head": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.09610893414355814,
+          "validation_seconds": 0.058401981834322214,
+          "cold_validation_seconds": 0.06987116090022027,
+          "context_cache_after_cold": {
+            "bytes": 6297600,
+            "max_bytes": 1073741824,
+            "entries": 3,
+            "hits": 0,
+            "misses": 3
+          },
+          "context_cache_after_warm": {
+            "bytes": 6297600,
+            "max_bytes": 1073741824,
+            "entries": 3,
+            "hits": 3,
+            "misses": 3
+          },
+          "measured_read_seconds": 0.025633158395066857,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 217156096,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "coordinate": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 2.169631006894633,
+          "validation_seconds": 1.4390143509954214,
+          "cold_validation_seconds": 1.4684389799367636,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.09586203214712441,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 1953510400,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "dependency": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.1875127179082483,
+          "validation_seconds": 1.6549676889553666,
+          "cold_validation_seconds": 1.6467796419747174,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.035412747180089355,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 975555584,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        }
+      },
+      "cold_start_load_and_verify_seconds": 2.289973688777536,
+      "initial_data_read_seconds": 0.060548237757757306,
+      "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+      "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+      "resource_telemetry": {
+        "before": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 4191, 16303, 23",
+          "processes": "2122662, 3202\n2132047, 220"
+        },
+        "after": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 7857, 16303, 76",
+          "processes": "2122662, 3202\n2132047, 3890"
+        },
+        "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+      },
+      "disabled_optimizations": [
+        "geometry",
+        "hungarian",
+        "logging",
+        "modulation",
+        "proposal",
+        "schedule"
+      ],
+      "four_stage_fixture_wall_seconds": 22.035255796974525,
+      "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+      "observed_to_B_seconds": 1.4869419960305095,
+      "observed_to_B_windows": 3,
+      "witnesses_sha256": "5d01cf62a5ddca085cfedc40010c7959d1e4f69db83eb4a9d4c8de712768513a",
+      "test_access": 0,
+      "production_checkpoint_updates": 0
+    },
+    {
+      "variant": "optimized",
+      "trial": 1,
+      "status": "COMPLETE",
+      "device": "cuda",
+      "dtype": "float32",
+      "K": 20,
+      "M": 256,
+      "DDIM": 20,
+      "train_seed": 3201,
+      "inference_seed": 2036,
+      "native_validation_seed": 2035,
+      "selection": {
+        "train": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 4,
+            "n": 2
+          },
+          {
+            "ordinal": 623,
+            "n": 9
+          },
+          {
+            "ordinal": 2,
+            "n": 1
+          },
+          {
+            "ordinal": 3,
+            "n": 1
+          },
+          {
+            "ordinal": 5,
+            "n": 2
+          },
+          {
+            "ordinal": 6,
+            "n": 3
+          },
+          {
+            "ordinal": 7,
+            "n": 3
+          },
+          {
+            "ordinal": 8,
+            "n": 3
+          },
+          {
+            "ordinal": 9,
+            "n": 3
+          },
+          {
+            "ordinal": 10,
+            "n": 3
+          },
+          {
+            "ordinal": 11,
+            "n": 3
+          },
+          {
+            "ordinal": 12,
+            "n": 3
+          },
+          {
+            "ordinal": 13,
+            "n": 3
+          },
+          {
+            "ordinal": 14,
+            "n": 3
+          },
+          {
+            "ordinal": 15,
+            "n": 3
+          }
+        ],
+        "selection_dev": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 20,
+            "n": 2
+          },
+          {
+            "ordinal": 146,
+            "n": 9
+          }
+        ]
+      },
+      "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+      "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+      "native_source": "<host-path-sha256:4f09f862b1941e2d8e9ead03db0b1cfe692910364af72dd0e6861d6ca4145b65>",
+      "stages": {
+        "density": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.32254614192061126,
+          "validation_seconds": 0.2952550011686981,
+          "cold_validation_seconds": 0.0597980369348079,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.013596335658803582,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 240215552,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "head": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.12981557892635465,
+          "validation_seconds": 0.06706548715010285,
+          "cold_validation_seconds": 0.07900389493443072,
+          "context_cache_after_cold": {
+            "bytes": 6297600,
+            "max_bytes": 1073741824,
+            "entries": 3,
+            "hits": 0,
+            "misses": 3
+          },
+          "context_cache_after_warm": {
+            "bytes": 6297600,
+            "max_bytes": 1073741824,
+            "entries": 3,
+            "hits": 3,
+            "misses": 3
+          },
+          "measured_read_seconds": 0.03317486238665879,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 217156096,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "coordinate": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 2.594255856005475,
+          "validation_seconds": 1.5657664199825376,
+          "cold_validation_seconds": 1.5771315591409802,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.11559815844520926,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 1953510400,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "dependency": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.09357028012163937,
+          "validation_seconds": 1.585228028940037,
+          "cold_validation_seconds": 1.7314643301069736,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.03473757277242839,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 975555584,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        }
+      },
+      "cold_start_load_and_verify_seconds": 2.3967006080783904,
+      "initial_data_read_seconds": 0.0718720587901771,
+      "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+      "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+      "resource_telemetry": {
+        "before": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 4188, 16303, 38",
+          "processes": "2122662, 3202\n2132075, 220"
+        },
+        "after": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 7863, 16303, 8",
+          "processes": "2122662, 3202\n2132075, 3890"
+        },
+        "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+      },
+      "disabled_optimizations": [
+        "geometry",
+        "hungarian",
+        "logging",
+        "modulation",
+        "proposal",
+        "schedule"
+      ],
+      "four_stage_fixture_wall_seconds": 25.890535986050963,
+      "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+      "observed_to_B_seconds": 1.5820641859900206,
+      "observed_to_B_windows": 3,
+      "witnesses_sha256": "5d01cf62a5ddca085cfedc40010c7959d1e4f69db83eb4a9d4c8de712768513a",
+      "test_access": 0,
+      "production_checkpoint_updates": 0
+    },
+    {
+      "variant": "baseline",
+      "trial": 1,
+      "status": "COMPLETE",
+      "device": "cuda",
+      "dtype": "float32",
+      "K": 20,
+      "M": 256,
+      "DDIM": 20,
+      "train_seed": 3201,
+      "inference_seed": 2036,
+      "native_validation_seed": 2035,
+      "selection": {
+        "train": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 4,
+            "n": 2
+          },
+          {
+            "ordinal": 623,
+            "n": 9
+          },
+          {
+            "ordinal": 2,
+            "n": 1
+          },
+          {
+            "ordinal": 3,
+            "n": 1
+          },
+          {
+            "ordinal": 5,
+            "n": 2
+          },
+          {
+            "ordinal": 6,
+            "n": 3
+          },
+          {
+            "ordinal": 7,
+            "n": 3
+          },
+          {
+            "ordinal": 8,
+            "n": 3
+          },
+          {
+            "ordinal": 9,
+            "n": 3
+          },
+          {
+            "ordinal": 10,
+            "n": 3
+          },
+          {
+            "ordinal": 11,
+            "n": 3
+          },
+          {
+            "ordinal": 12,
+            "n": 3
+          },
+          {
+            "ordinal": 13,
+            "n": 3
+          },
+          {
+            "ordinal": 14,
+            "n": 3
+          },
+          {
+            "ordinal": 15,
+            "n": 3
+          }
+        ],
+        "selection_dev": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 20,
+            "n": 2
+          },
+          {
+            "ordinal": 146,
+            "n": 9
+          }
+        ]
+      },
+      "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+      "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+      "native_source": "<host-path-sha256:f88b8bc1febf1272c5196a1a496e8e0a89d1d3c6b7d4d0c0eff2151f594a648d>",
+      "stages": {
+        "density": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.2919464928563684,
+          "validation_seconds": 0.334211396984756,
+          "cold_validation_seconds": 0.056455359095707536,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.011546729132533073,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 240215552,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "head": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.10860928799957037,
+          "validation_seconds": 0.07252975204028189,
+          "cold_validation_seconds": 0.20198297104798257,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.030193569837138057,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 217156096,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "coordinate": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 2.7014471758157015,
+          "validation_seconds": 1.5540401958860457,
+          "cold_validation_seconds": 1.5482026811223477,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.07909696479327977,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 1953510400,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "dependency": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.25980162899941206,
+          "validation_seconds": 1.5348114329390228,
+          "cold_validation_seconds": 1.7032810021191835,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.02273820387199521,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 975555584,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        }
+      },
+      "cold_start_load_and_verify_seconds": 2.564261096995324,
+      "initial_data_read_seconds": 0.06353244837373495,
+      "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+      "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+      "resource_telemetry": {
+        "before": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 4189, 16303, 14",
+          "processes": "2122662, 3202\n2132104, 220"
+        },
+        "after": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 7888, 16303, 98",
+          "processes": "2122662, 3202\n2132104, 3890"
+        },
+        "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+      },
+      "disabled_optimizations": [],
+      "four_stage_fixture_wall_seconds": 25.962009879993275,
+      "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+      "observed_to_B_seconds": 1.6808684370480478,
+      "observed_to_B_windows": 3,
+      "witnesses_sha256": "ae88dcc234a980caea7108c34903054ef96e7d822bce138af77b50b9f6c68e7d",
+      "test_access": 0,
+      "production_checkpoint_updates": 0
+    },
+    {
+      "variant": "baseline",
+      "trial": 2,
+      "status": "COMPLETE",
+      "device": "cuda",
+      "dtype": "float32",
+      "K": 20,
+      "M": 256,
+      "DDIM": 20,
+      "train_seed": 3201,
+      "inference_seed": 2036,
+      "native_validation_seed": 2035,
+      "selection": {
+        "train": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 4,
+            "n": 2
+          },
+          {
+            "ordinal": 623,
+            "n": 9
+          },
+          {
+            "ordinal": 2,
+            "n": 1
+          },
+          {
+            "ordinal": 3,
+            "n": 1
+          },
+          {
+            "ordinal": 5,
+            "n": 2
+          },
+          {
+            "ordinal": 6,
+            "n": 3
+          },
+          {
+            "ordinal": 7,
+            "n": 3
+          },
+          {
+            "ordinal": 8,
+            "n": 3
+          },
+          {
+            "ordinal": 9,
+            "n": 3
+          },
+          {
+            "ordinal": 10,
+            "n": 3
+          },
+          {
+            "ordinal": 11,
+            "n": 3
+          },
+          {
+            "ordinal": 12,
+            "n": 3
+          },
+          {
+            "ordinal": 13,
+            "n": 3
+          },
+          {
+            "ordinal": 14,
+            "n": 3
+          },
+          {
+            "ordinal": 15,
+            "n": 3
+          }
+        ],
+        "selection_dev": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 20,
+            "n": 2
+          },
+          {
+            "ordinal": 146,
+            "n": 9
+          }
+        ]
+      },
+      "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+      "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+      "native_source": "<host-path-sha256:f88b8bc1febf1272c5196a1a496e8e0a89d1d3c6b7d4d0c0eff2151f594a648d>",
+      "stages": {
+        "density": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.25886777183040977,
+          "validation_seconds": 0.07607405190356076,
+          "cold_validation_seconds": 0.1435823638457805,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.013597049517557025,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 240215552,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "head": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.10271570598706603,
+          "validation_seconds": 0.16352915996685624,
+          "cold_validation_seconds": 0.10652959602884948,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.02848878293298185,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 217156096,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "coordinate": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 2.5380735700018704,
+          "validation_seconds": 1.565834976034239,
+          "cold_validation_seconds": 1.4487080699764192,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.13277654303237796,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 1953510400,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "dependency": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.2610440319404006,
+          "validation_seconds": 1.6269253040663898,
+          "cold_validation_seconds": 1.5658788681030273,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.029750507092103362,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 975555584,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        }
+      },
+      "cold_start_load_and_verify_seconds": 2.40900422912091,
+      "initial_data_read_seconds": 0.08613346167840064,
+      "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+      "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+      "resource_telemetry": {
+        "before": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 4214, 16303, 83",
+          "processes": "2122662, 3202\n2132181, 220"
+        },
+        "after": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 7859, 16303, 97",
+          "processes": "2122662, 3202\n2132181, 3890"
+        },
+        "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+      },
+      "disabled_optimizations": [],
+      "four_stage_fixture_wall_seconds": 25.447344139916822,
+      "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+      "observed_to_B_seconds": 1.5827496978454292,
+      "observed_to_B_windows": 3,
+      "witnesses_sha256": "ae88dcc234a980caea7108c34903054ef96e7d822bce138af77b50b9f6c68e7d",
+      "test_access": 0,
+      "production_checkpoint_updates": 0
+    },
+    {
+      "variant": "optimized",
+      "trial": 2,
+      "status": "COMPLETE",
+      "device": "cuda",
+      "dtype": "float32",
+      "K": 20,
+      "M": 256,
+      "DDIM": 20,
+      "train_seed": 3201,
+      "inference_seed": 2036,
+      "native_validation_seed": 2035,
+      "selection": {
+        "train": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 4,
+            "n": 2
+          },
+          {
+            "ordinal": 623,
+            "n": 9
+          },
+          {
+            "ordinal": 2,
+            "n": 1
+          },
+          {
+            "ordinal": 3,
+            "n": 1
+          },
+          {
+            "ordinal": 5,
+            "n": 2
+          },
+          {
+            "ordinal": 6,
+            "n": 3
+          },
+          {
+            "ordinal": 7,
+            "n": 3
+          },
+          {
+            "ordinal": 8,
+            "n": 3
+          },
+          {
+            "ordinal": 9,
+            "n": 3
+          },
+          {
+            "ordinal": 10,
+            "n": 3
+          },
+          {
+            "ordinal": 11,
+            "n": 3
+          },
+          {
+            "ordinal": 12,
+            "n": 3
+          },
+          {
+            "ordinal": 13,
+            "n": 3
+          },
+          {
+            "ordinal": 14,
+            "n": 3
+          },
+          {
+            "ordinal": 15,
+            "n": 3
+          }
+        ],
+        "selection_dev": [
+          {
+            "ordinal": 1,
+            "n": 1
+          },
+          {
+            "ordinal": 20,
+            "n": 2
+          },
+          {
+            "ordinal": 146,
+            "n": 9
+          }
+        ]
+      },
+      "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+      "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+      "native_source": "<host-path-sha256:4f09f862b1941e2d8e9ead03db0b1cfe692910364af72dd0e6861d6ca4145b65>",
+      "stages": {
+        "density": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.24962942395359278,
+          "validation_seconds": 0.15759640792384744,
+          "cold_validation_seconds": 0.24268981092609465,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.014508236199617386,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 240215552,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "head": {
+          "logical_windows": 4,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.09534981194883585,
+          "validation_seconds": 0.11880612699314952,
+          "cold_validation_seconds": 0.08589999098330736,
+          "context_cache_after_cold": {
+            "bytes": 6297600,
+            "max_bytes": 1073741824,
+            "entries": 3,
+            "hits": 0,
+            "misses": 3
+          },
+          "context_cache_after_warm": {
+            "bytes": 6297600,
+            "max_bytes": 1073741824,
+            "entries": 3,
+            "hits": 3,
+            "misses": 3
+          },
+          "measured_read_seconds": 0.021179924253374338,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 217156096,
+          "peak_reserved_bytes": 270532608,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "coordinate": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 2.6726213111542165,
+          "validation_seconds": 1.5883039699401706,
+          "cold_validation_seconds": 1.5610570630524307,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.11298283003270626,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 1953510400,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        },
+        "dependency": {
+          "logical_windows": 16,
+          "validation_windows": 3,
+          "warmups": 1,
+          "update_seconds": 0.10812713392078876,
+          "validation_seconds": 1.7971623300109059,
+          "cold_validation_seconds": 1.7509913190733641,
+          "context_cache_after_cold": null,
+          "context_cache_after_warm": null,
+          "measured_read_seconds": 0.02046185778453946,
+          "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+          "peak_allocated_bytes": 975555584,
+          "peak_reserved_bytes": 3539992576,
+          "recovery_exact": true,
+          "formal_training_epochs": 0
+        }
+      },
+      "cold_start_load_and_verify_seconds": 2.522800402948633,
+      "initial_data_read_seconds": 0.0660240980796516,
+      "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+      "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+      "resource_telemetry": {
+        "before": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 4190, 16303, 32",
+          "processes": "2122662, 3202\n2132198, 220"
+        },
+        "after": {
+          "gpu": "NVIDIA GeForce RTX 5070 Ti, 7865, 16303, 32",
+          "processes": "2122662, 3202\n2132198, 3890"
+        },
+        "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+      },
+      "disabled_optimizations": [
+        "geometry",
+        "hungarian",
+        "logging",
+        "modulation",
+        "proposal",
+        "schedule"
+      ],
+      "four_stage_fixture_wall_seconds": 25.947933141840622,
+      "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+      "observed_to_B_seconds": 1.67550842394121,
+      "observed_to_B_windows": 3,
+      "witnesses_sha256": "5d01cf62a5ddca085cfedc40010c7959d1e4f69db83eb4a9d4c8de712768513a",
+      "test_access": 0,
+      "production_checkpoint_updates": 0
+    }
+  ],
+  "baseline_repeat": {
+    "passed": true,
+    "checks": 1082,
+    "max_abs_by_category": {
+      "output": 0.0,
+      "gradient": 0.0,
+      "update": 0.0
+    },
+    "failures": []
+  },
+  "disabled_optimizations": [
+    "geometry",
+    "hungarian",
+    "logging",
+    "modulation",
+    "proposal",
+    "schedule"
+  ],
+  "optimization_resolution": [
+    {
+      "policy": 0,
+      "reason": "fixed correctness budget failed",
+      "disabled": [
+        "hungarian"
+      ],
+      "failures": [
+        {
+          "field": "<host-path-sha256:ab1e8382f1a74ca4f0fd40d04de1f1cba5c3d02e2fc84544c9aa423dd0c75715>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 2.12155282497406e-06,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7a31704393341660105da4e6aeff62600b3af67168f512ac6eec77c59de5b540>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f2f3e6a0fed227a70e2b73532758a142d75fc0e577e272fde947e4d470b0d373>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0017271315058072223,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:8a4ee562baa01a81c25f9b8bf144d779c2745a38bc50a6bae99480ea8022462c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7bc504da93b466a5e4c62894aae32bdfbce8282efd6fb511b9f767455c2979e5>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:307b99c88ea1eea1f4e54339b4e53b1e61092c6401910bc97bd4971d67f7e05c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.002501433094342531,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:d8abe0b3d94d9b9af448281789cd946242a24e1c0a77a5c73ddd2208099dfbe4>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.102437620361646,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:e6970f8fdfe5effa68d15ecfdb210e42e00f7a9ba65110ed2a132af72f5149fd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1af2008febbda5be6e213149f51bcfdfb7c8f097ed151a18e9ab5e2ed33bbcf0>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.02072557806968689,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:432d50af3d9e3a334557b59dc004c9cb625989cee1f403e911a4c7cede7e8fea>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.2998085618019104,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:6c5f137ca45ae720619fe38ce2825b3534ffe8965fc8c191aa797dabea545500>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.3844323754310608,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:5826edbd7be2bb73cf62a274b9ceef0412c0fed4305047955b1165fd0be0b4fe>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.007504299283027649,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:a9829f485a5273535cdc03d6b469c1b50c2c993e9e0453055e75dd17e46afa8d>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 7.436051726341248,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:54b152270cf915421faf6752422ecd8385461d0617a5551867fc13411d9aaca8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:00f087df41dc351b343434725de525db73c99a930b8488fa4b80ac2cc35688b8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:16b709c61cfc8e46e6bd48eb1bf4a2f1c11e2ce1dcb77fea0dda7eb898809b49>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9fe664230f9d2599a355f11251fda11939b483ddcf725c25b0cec3ebc06113bd>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:73d06334616c272d5ddeec43f21a63a7c08e7122e3cea7f5f27c1d1dd0c68945>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.010081827640533447,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:9fc16a28b3a77f3f35d485381dc4a6061775de330273b3070cace8956d11a0f6>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.31472325325012207,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:2f8d11dbe230ebf7d194994689a2ca3505b042d52d27a2a2e04cdf29f58c494a>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.4018503427505493,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1532e88ad06fbf8f4513abe7a450f902bd1b082c0006371285cce3fdbe653a2e>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.006687521934509277,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1e7f0310d9c39b6a0b3d8dfc4ebe8b18e59def962f0d80b4a586c527a039b50c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 4.008784055709839,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7c675af32858971dbd11b868bde5a094be3fac8b2a8b420b06f48611f5115dd7>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:8a212f42074872a64eb410972e0a65e4e7d790a8bcc7d3f83ec0d21f789cc16e>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:58f1b11fa00ec3e1043cdd9e45cacb9c43dfcc39f90adfc8f78817dac244a451>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:35a87f1be2aea301b8e3499a84948f64c0e761c4f8cbf4b40da3c9d9cec3c1b3>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:cdb531482810344acad1692b7b294babe74b0d218e379ffaecbc6f12193b9075>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9f6bfd9eb59edc98e4fa10b1d4511c89c5a32251a76ecbdf344cf5473e6f5242>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.026247113943099976,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:b96f2a6edd71f97e42136d2ddbf56ee311c8499256571787fc23057c8935e572>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.014914631843566895,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:49e92d8e1d0008089903be9e049cf1591d87aa48ce5f5fa279448eca34dcf8bd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.017417967319488525,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f68540ef899e6a65cfef8436794cf6693b122e5c75e3bc4b219c61cb158ea34c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0008167177438735962,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        }
+      ]
+    },
+    {
+      "policy": 1,
+      "reason": "fixed correctness budget failed",
+      "disabled": [
+        "modulation"
+      ],
+      "failures": [
+        {
+          "field": "<host-path-sha256:ab1e8382f1a74ca4f0fd40d04de1f1cba5c3d02e2fc84544c9aa423dd0c75715>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 2.12155282497406e-06,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7a31704393341660105da4e6aeff62600b3af67168f512ac6eec77c59de5b540>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f2f3e6a0fed227a70e2b73532758a142d75fc0e577e272fde947e4d470b0d373>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0017271315058072223,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:8a4ee562baa01a81c25f9b8bf144d779c2745a38bc50a6bae99480ea8022462c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7bc504da93b466a5e4c62894aae32bdfbce8282efd6fb511b9f767455c2979e5>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:307b99c88ea1eea1f4e54339b4e53b1e61092c6401910bc97bd4971d67f7e05c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.002501433094342531,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:d8abe0b3d94d9b9af448281789cd946242a24e1c0a77a5c73ddd2208099dfbe4>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.102437620361646,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:e6970f8fdfe5effa68d15ecfdb210e42e00f7a9ba65110ed2a132af72f5149fd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1af2008febbda5be6e213149f51bcfdfb7c8f097ed151a18e9ab5e2ed33bbcf0>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.02072557806968689,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:432d50af3d9e3a334557b59dc004c9cb625989cee1f403e911a4c7cede7e8fea>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.2998085618019104,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:6c5f137ca45ae720619fe38ce2825b3534ffe8965fc8c191aa797dabea545500>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.3844323754310608,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:5826edbd7be2bb73cf62a274b9ceef0412c0fed4305047955b1165fd0be0b4fe>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.007504299283027649,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:a9829f485a5273535cdc03d6b469c1b50c2c993e9e0453055e75dd17e46afa8d>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 7.436051726341248,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:54b152270cf915421faf6752422ecd8385461d0617a5551867fc13411d9aaca8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:00f087df41dc351b343434725de525db73c99a930b8488fa4b80ac2cc35688b8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:16b709c61cfc8e46e6bd48eb1bf4a2f1c11e2ce1dcb77fea0dda7eb898809b49>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9fe664230f9d2599a355f11251fda11939b483ddcf725c25b0cec3ebc06113bd>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:73d06334616c272d5ddeec43f21a63a7c08e7122e3cea7f5f27c1d1dd0c68945>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.010081827640533447,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:9fc16a28b3a77f3f35d485381dc4a6061775de330273b3070cace8956d11a0f6>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.31472325325012207,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:2f8d11dbe230ebf7d194994689a2ca3505b042d52d27a2a2e04cdf29f58c494a>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.4018503427505493,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1532e88ad06fbf8f4513abe7a450f902bd1b082c0006371285cce3fdbe653a2e>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.006687521934509277,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1e7f0310d9c39b6a0b3d8dfc4ebe8b18e59def962f0d80b4a586c527a039b50c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 4.008784055709839,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7c675af32858971dbd11b868bde5a094be3fac8b2a8b420b06f48611f5115dd7>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:8a212f42074872a64eb410972e0a65e4e7d790a8bcc7d3f83ec0d21f789cc16e>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:58f1b11fa00ec3e1043cdd9e45cacb9c43dfcc39f90adfc8f78817dac244a451>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:35a87f1be2aea301b8e3499a84948f64c0e761c4f8cbf4b40da3c9d9cec3c1b3>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:cdb531482810344acad1692b7b294babe74b0d218e379ffaecbc6f12193b9075>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9f6bfd9eb59edc98e4fa10b1d4511c89c5a32251a76ecbdf344cf5473e6f5242>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.026247113943099976,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:b96f2a6edd71f97e42136d2ddbf56ee311c8499256571787fc23057c8935e572>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.014914631843566895,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:49e92d8e1d0008089903be9e049cf1591d87aa48ce5f5fa279448eca34dcf8bd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.017417967319488525,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f68540ef899e6a65cfef8436794cf6693b122e5c75e3bc4b219c61cb158ea34c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0008167177438735962,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        }
+      ]
+    },
+    {
+      "policy": 2,
+      "reason": "no clear timing benefit",
+      "disabled": [
+        "geometry",
+        "logging",
+        "proposal",
+        "schedule"
+      ],
+      "evidence": [
+        {
+          "optimizations": [
+            "logging"
+          ],
+          "evidence": "density_update_plus_validation",
+          "median_speed_ratio": 0.987365112047101,
+          "paired_faster_trials": 1,
+          "reason": "no clear timing improvement under the fixed shared-resource admission rule"
+        },
+        {
+          "optimizations": [
+            "proposal",
+            "schedule"
+          ],
+          "evidence": "observed_to_B",
+          "median_speed_ratio": 1.0093445018358633,
+          "paired_faster_trials": 2,
+          "reason": "no clear timing improvement under the fixed shared-resource admission rule"
+        },
+        {
+          "optimizations": [
+            "geometry"
+          ],
+          "evidence": "coordinate_update",
+          "median_speed_ratio": 1.0032978813310154,
+          "paired_faster_trials": 3,
+          "reason": "no clear timing improvement under the fixed shared-resource admission rule"
+        }
+      ]
+    }
+  ],
+  "final_policy": 3,
+  "full_old_training_runs_measured": false,
+  "student_full_fold_seconds": "reported by formal head controller separately",
+  "interpretation": "native four-stage representative logical updates/three-window dev, and observed-to-B chain; no full-network training speedup inferred from different denominators"
+}

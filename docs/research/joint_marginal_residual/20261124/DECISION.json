@@ -1,0 +1,360 @@
+{
+  "zara1_pass": true,
+  "trained": [
+    "zara1",
+    "zara1_control",
+    "zara2",
+    "hotel"
+  ],
+  "gates": {
+    "zara1": {
+      "passed": true,
+      "checks": [
+        {
+          "group": "all",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.424899014600749,
+          "student": 0.4036849687636838,
+          "difference_m": -0.02121404583706521,
+          "threshold_m": -0.02,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.0012140458370652092,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "JFDE",
+          "available": true,
+          "B": 0.6913416460399334,
+          "student": 0.6850045940765193,
+          "difference_m": -0.006337051963414164,
+          "threshold_m": -0.005,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.0013370519634141641,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "minADE",
+          "available": true,
+          "B": 0.238009522383683,
+          "student": 0.23272376060934075,
+          "difference_m": -0.005285761774342257,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.005285761774342257,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "JADE",
+          "available": true,
+          "B": 0.35234098981277556,
+          "student": 0.3460575318471952,
+          "difference_m": -0.006283457965580386,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.006283457965580386,
+          "violation_m": 0.0
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "JFDE",
+          "available": true,
+          "B": 1.044779480985515,
+          "student": 1.0287261233145362,
+          "difference_m": -0.01605335767097893,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.01605335767097893,
+          "violation_m": 0.0
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.471404265444503,
+          "student": 0.4489359837419489,
+          "difference_m": -0.022468281702554105,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.022468281702554105,
+          "violation_m": 0.0
+        }
+      ],
+      "max_violation_m": 0.0,
+      "hardest_conditions": [
+        "all.minFDE"
+      ]
+    },
+    "zara1_control": {
+      "passed": false,
+      "checks": [
+        {
+          "group": "all",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.424899014600749,
+          "student": 0.4258102646981233,
+          "difference_m": 0.0009112500973742499,
+          "threshold_m": -0.02,
+          "strict": false,
+          "passed": false,
+          "margin_m": 0.02091125009737425,
+          "violation_m": 0.02091125009737425
+        },
+        {
+          "group": "all",
+          "metric": "JFDE",
+          "available": true,
+          "B": 0.6913416460399334,
+          "student": 0.6916934958507824,
+          "difference_m": 0.00035184981084901423,
+          "threshold_m": -0.005,
+          "strict": false,
+          "passed": false,
+          "margin_m": 0.005351849810849014,
+          "violation_m": 0.005351849810849014
+        },
+        {
+          "group": "all",
+          "metric": "minADE",
+          "available": true,
+          "B": 0.238009522383683,
+          "student": 0.23614345592059294,
+          "difference_m": -0.0018660664630900659,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.0018660664630900659,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "JADE",
+          "available": true,
+          "B": 0.35234098981277556,
+          "student": 0.3501137520995785,
+          "difference_m": -0.00222723771319705,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.00222723771319705,
+          "violation_m": 0.0
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "JFDE",
+          "available": true,
+          "B": 1.044779480985515,
+          "student": 1.0459897868870371,
+          "difference_m": 0.0012103059015220463,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": false,
+          "margin_m": 0.0012103059015220463,
+          "violation_m": 0.0012103059015220463
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.471404265444503,
+          "student": 0.47280634086368317,
+          "difference_m": 0.0014020754191801932,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": false,
+          "margin_m": 0.0014020754191801932,
+          "violation_m": 0.0014020754191801932
+        }
+      ],
+      "max_violation_m": 0.02091125009737425,
+      "hardest_conditions": [
+        "all.minFDE"
+      ]
+    },
+    "zara2": {
+      "passed": false,
+      "checks": [
+        {
+          "group": "all",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.4573110812863661,
+          "student": 0.42606250455696204,
+          "difference_m": -0.031248576729404065,
+          "threshold_m": -0.02,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.011248576729404065,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "JFDE",
+          "available": true,
+          "B": 0.7186288586584851,
+          "student": 0.71753177080556,
+          "difference_m": -0.0010970878529251715,
+          "threshold_m": -0.005,
+          "strict": false,
+          "passed": false,
+          "margin_m": 0.0039029121470748286,
+          "violation_m": 0.0039029121470748286
+        },
+        {
+          "group": "all",
+          "metric": "minADE",
+          "available": true,
+          "B": 0.2577760469963611,
+          "student": 0.24809244964232452,
+          "difference_m": -0.009683597354036566,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.009683597354036566,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "JADE",
+          "available": true,
+          "B": 0.37850092136758867,
+          "student": 0.37598424744555503,
+          "difference_m": -0.002516673922033641,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.002516673922033641,
+          "violation_m": 0.0
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "JFDE",
+          "available": true,
+          "B": 1.1898052359190512,
+          "student": 1.1584723493245643,
+          "difference_m": -0.03133288659448685,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.03133288659448685,
+          "violation_m": 0.0
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.49364703766878865,
+          "student": 0.45315155425192455,
+          "difference_m": -0.0404954834168641,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.0404954834168641,
+          "violation_m": 0.0
+        }
+      ],
+      "max_violation_m": 0.0039029121470748286,
+      "hardest_conditions": [
+        "all.JFDE"
+      ]
+    },
+    "hotel": {
+      "passed": true,
+      "checks": [
+        {
+          "group": "all",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.4497455630738098,
+          "student": 0.42432845057181257,
+          "difference_m": -0.02541711250199724,
+          "threshold_m": -0.02,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.005417112501997241,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "JFDE",
+          "available": true,
+          "B": 0.7230634318033862,
+          "student": 0.7150659615033155,
+          "difference_m": -0.007997470300070697,
+          "threshold_m": -0.005,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.002997470300070697,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "minADE",
+          "available": true,
+          "B": 0.24224465596485134,
+          "student": 0.23648646377293203,
+          "difference_m": -0.005758192191919309,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.005758192191919309,
+          "violation_m": 0.0
+        },
+        {
+          "group": "all",
+          "metric": "JADE",
+          "available": true,
+          "B": 0.3643612428392327,
+          "student": 0.3590591488200305,
+          "difference_m": -0.00530209401920223,
+          "threshold_m": 0.0,
+          "strict": true,
+          "passed": true,
+          "margin_m": -0.00530209401920223,
+          "violation_m": 0.0
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "JFDE",
+          "available": true,
+          "B": 1.0703286488247181,
+          "student": 1.0426027652143774,
+          "difference_m": -0.027725883610340674,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.027725883610340674,
+          "violation_m": 0.0
+        },
+        {
+          "group": "N_ge_9",
+          "metric": "minFDE",
+          "available": true,
+          "B": 0.48790733278307313,
+          "student": 0.4626826148879617,
+          "difference_m": -0.025224717895111437,
+          "threshold_m": 0.0,
+          "strict": false,
+          "passed": true,
+          "margin_m": -0.025224717895111437,
+          "violation_m": 0.0
+        }
+      ],
+      "max_violation_m": 0.0,
+      "hardest_conditions": [
+        "all.JFDE"
+      ]
+    }
+  },
+  "test_access": 0
+}

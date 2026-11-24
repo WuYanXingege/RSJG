@@ -1,0 +1,406 @@
+{
+  "disabled_optimizations": [
+    "hungarian",
+    "modulation"
+  ],
+  "decision_history": [
+    {
+      "policy": 0,
+      "reason": "fixed correctness budget failed",
+      "disabled": [
+        "hungarian"
+      ],
+      "failures": [
+        {
+          "field": "<host-path-sha256:ab1e8382f1a74ca4f0fd40d04de1f1cba5c3d02e2fc84544c9aa423dd0c75715>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 2.12155282497406e-06,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7a31704393341660105da4e6aeff62600b3af67168f512ac6eec77c59de5b540>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f2f3e6a0fed227a70e2b73532758a142d75fc0e577e272fde947e4d470b0d373>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0017271315058072223,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:8a4ee562baa01a81c25f9b8bf144d779c2745a38bc50a6bae99480ea8022462c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7bc504da93b466a5e4c62894aae32bdfbce8282efd6fb511b9f767455c2979e5>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:307b99c88ea1eea1f4e54339b4e53b1e61092c6401910bc97bd4971d67f7e05c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.002501433094342531,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:d8abe0b3d94d9b9af448281789cd946242a24e1c0a77a5c73ddd2208099dfbe4>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.102437620361646,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:e6970f8fdfe5effa68d15ecfdb210e42e00f7a9ba65110ed2a132af72f5149fd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1af2008febbda5be6e213149f51bcfdfb7c8f097ed151a18e9ab5e2ed33bbcf0>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.02072557806968689,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:432d50af3d9e3a334557b59dc004c9cb625989cee1f403e911a4c7cede7e8fea>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.2998085618019104,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:6c5f137ca45ae720619fe38ce2825b3534ffe8965fc8c191aa797dabea545500>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.3844323754310608,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:5826edbd7be2bb73cf62a274b9ceef0412c0fed4305047955b1165fd0be0b4fe>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.007504299283027649,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:a9829f485a5273535cdc03d6b469c1b50c2c993e9e0453055e75dd17e46afa8d>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 7.436051726341248,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:54b152270cf915421faf6752422ecd8385461d0617a5551867fc13411d9aaca8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:00f087df41dc351b343434725de525db73c99a930b8488fa4b80ac2cc35688b8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:16b709c61cfc8e46e6bd48eb1bf4a2f1c11e2ce1dcb77fea0dda7eb898809b49>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9fe664230f9d2599a355f11251fda11939b483ddcf725c25b0cec3ebc06113bd>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:73d06334616c272d5ddeec43f21a63a7c08e7122e3cea7f5f27c1d1dd0c68945>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.010081827640533447,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:9fc16a28b3a77f3f35d485381dc4a6061775de330273b3070cace8956d11a0f6>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.31472325325012207,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:2f8d11dbe230ebf7d194994689a2ca3505b042d52d27a2a2e04cdf29f58c494a>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.4018503427505493,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1532e88ad06fbf8f4513abe7a450f902bd1b082c0006371285cce3fdbe653a2e>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.006687521934509277,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1e7f0310d9c39b6a0b3d8dfc4ebe8b18e59def962f0d80b4a586c527a039b50c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 4.008784055709839,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7c675af32858971dbd11b868bde5a094be3fac8b2a8b420b06f48611f5115dd7>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:8a212f42074872a64eb410972e0a65e4e7d790a8bcc7d3f83ec0d21f789cc16e>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:58f1b11fa00ec3e1043cdd9e45cacb9c43dfcc39f90adfc8f78817dac244a451>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:35a87f1be2aea301b8e3499a84948f64c0e761c4f8cbf4b40da3c9d9cec3c1b3>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:cdb531482810344acad1692b7b294babe74b0d218e379ffaecbc6f12193b9075>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9f6bfd9eb59edc98e4fa10b1d4511c89c5a32251a76ecbdf344cf5473e6f5242>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.026247113943099976,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:b96f2a6edd71f97e42136d2ddbf56ee311c8499256571787fc23057c8935e572>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.014914631843566895,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:49e92d8e1d0008089903be9e049cf1591d87aa48ce5f5fa279448eca34dcf8bd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.017417967319488525,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f68540ef899e6a65cfef8436794cf6693b122e5c75e3bc4b219c61cb158ea34c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0008167177438735962,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        }
+      ]
+    },
+    {
+      "policy": 1,
+      "reason": "fixed correctness budget failed",
+      "disabled": [
+        "modulation"
+      ],
+      "failures": [
+        {
+          "field": "<host-path-sha256:ab1e8382f1a74ca4f0fd40d04de1f1cba5c3d02e2fc84544c9aa423dd0c75715>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 2.12155282497406e-06,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7a31704393341660105da4e6aeff62600b3af67168f512ac6eec77c59de5b540>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f2f3e6a0fed227a70e2b73532758a142d75fc0e577e272fde947e4d470b0d373>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0017271315058072223,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:8a4ee562baa01a81c25f9b8bf144d779c2745a38bc50a6bae99480ea8022462c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.09993618726730347,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7bc504da93b466a5e4c62894aae32bdfbce8282efd6fb511b9f767455c2979e5>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:307b99c88ea1eea1f4e54339b4e53b1e61092c6401910bc97bd4971d67f7e05c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.002501433094342531,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:d8abe0b3d94d9b9af448281789cd946242a24e1c0a77a5c73ddd2208099dfbe4>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.102437620361646,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:e6970f8fdfe5effa68d15ecfdb210e42e00f7a9ba65110ed2a132af72f5149fd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.1281441251436869,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1af2008febbda5be6e213149f51bcfdfb7c8f097ed151a18e9ab5e2ed33bbcf0>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.02072557806968689,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:432d50af3d9e3a334557b59dc004c9cb625989cee1f403e911a4c7cede7e8fea>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.2998085618019104,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:6c5f137ca45ae720619fe38ce2825b3534ffe8965fc8c191aa797dabea545500>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.3844323754310608,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:5826edbd7be2bb73cf62a274b9ceef0412c0fed4305047955b1165fd0be0b4fe>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.007504299283027649,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:a9829f485a5273535cdc03d6b469c1b50c2c993e9e0453055e75dd17e46afa8d>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 7.436051726341248,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:54b152270cf915421faf6752422ecd8385461d0617a5551867fc13411d9aaca8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:00f087df41dc351b343434725de525db73c99a930b8488fa4b80ac2cc35688b8>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:16b709c61cfc8e46e6bd48eb1bf4a2f1c11e2ce1dcb77fea0dda7eb898809b49>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9fe664230f9d2599a355f11251fda11939b483ddcf725c25b0cec3ebc06113bd>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:73d06334616c272d5ddeec43f21a63a7c08e7122e3cea7f5f27c1d1dd0c68945>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.010081827640533447,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:9fc16a28b3a77f3f35d485381dc4a6061775de330273b3070cace8956d11a0f6>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.31472325325012207,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:2f8d11dbe230ebf7d194994689a2ca3505b042d52d27a2a2e04cdf29f58c494a>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.4018503427505493,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1532e88ad06fbf8f4513abe7a450f902bd1b082c0006371285cce3fdbe653a2e>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.006687521934509277,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:1e7f0310d9c39b6a0b3d8dfc4ebe8b18e59def962f0d80b4a586c527a039b50c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 4.008784055709839,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:7c675af32858971dbd11b868bde5a094be3fac8b2a8b420b06f48611f5115dd7>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:8a212f42074872a64eb410972e0a65e4e7d790a8bcc7d3f83ec0d21f789cc16e>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:58f1b11fa00ec3e1043cdd9e45cacb9c43dfcc39f90adfc8f78817dac244a451>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:35a87f1be2aea301b8e3499a84948f64c0e761c4f8cbf4b40da3c9d9cec3c1b3>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:cdb531482810344acad1692b7b294babe74b0d218e379ffaecbc6f12193b9075>",
+          "reason": "strict identity/index/noise differs"
+        },
+        {
+          "field": "<host-path-sha256:9f6bfd9eb59edc98e4fa10b1d4511c89c5a32251a76ecbdf344cf5473e6f5242>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.026247113943099976,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:b96f2a6edd71f97e42136d2ddbf56ee311c8499256571787fc23057c8935e572>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.014914631843566895,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:49e92d8e1d0008089903be9e049cf1591d87aa48ce5f5fa279448eca34dcf8bd>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.017417967319488525,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        },
+        {
+          "field": "<host-path-sha256:f68540ef899e6a65cfef8436794cf6693b122e5c75e3bc4b219c61cb158ea34c>",
+          "reason": "fixed FP32 tolerance exceeded",
+          "max_abs": 0.0008167177438735962,
+          "atol": 9.5367431640625e-07,
+          "rtol": 9.5367431640625e-07
+        }
+      ]
+    }
+  ]
+}

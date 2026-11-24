@@ -1,0 +1,33 @@
+{
+  "historical_measured_segments": {
+    "density": {
+      "recorded_update_seconds": 10684.288780340925,
+      "recorded_validation_seconds": 896.2426037059631,
+      "completed_epochs": 76
+    },
+    "head": {
+      "recorded_update_seconds": 2030.5456690064166,
+      "recorded_validation_seconds": 211.71321685565636,
+      "completed_epochs": 12
+    },
+    "coordinate": {
+      "recorded_update_seconds": 27116.141284920508,
+      "recorded_validation_seconds": 8880.300366234733,
+      "completed_epochs": 30
+    },
+    "dependency": {
+      "recorded_update_seconds": 433.3845074316487,
+      "recorded_validation_seconds": 10237.253942432115,
+      "completed_epochs": 30
+    }
+  },
+  "estimated_full_training_seconds_by_stage": {
+    "density": 12159.665743337882,
+    "head": 2090.1644518499797,
+    "coordinate": 36663.68662826454,
+    "dependency": 11219.071787685007
+  },
+  "estimated_total_seconds": 62132.58861113741,
+  "full_optimized_training_actually_run": false,
+  "assumption": "representative measured stage ratios apply to historical epoch workload; shared-GPU contention makes this a rough estimate, not measured full-run speedup"
+}

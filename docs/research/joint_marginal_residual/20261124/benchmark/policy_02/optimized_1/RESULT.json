@@ -1,0 +1,200 @@
+{
+  "status": "COMPLETE",
+  "device": "cuda",
+  "dtype": "float32",
+  "K": 20,
+  "M": 256,
+  "DDIM": 20,
+  "train_seed": 3201,
+  "inference_seed": 2036,
+  "native_validation_seed": 2035,
+  "selection": {
+    "train": [
+      {
+        "ordinal": 1,
+        "n": 1
+      },
+      {
+        "ordinal": 4,
+        "n": 2
+      },
+      {
+        "ordinal": 623,
+        "n": 9
+      },
+      {
+        "ordinal": 2,
+        "n": 1
+      },
+      {
+        "ordinal": 3,
+        "n": 1
+      },
+      {
+        "ordinal": 5,
+        "n": 2
+      },
+      {
+        "ordinal": 6,
+        "n": 3
+      },
+      {
+        "ordinal": 7,
+        "n": 3
+      },
+      {
+        "ordinal": 8,
+        "n": 3
+      },
+      {
+        "ordinal": 9,
+        "n": 3
+      },
+      {
+        "ordinal": 10,
+        "n": 3
+      },
+      {
+        "ordinal": 11,
+        "n": 3
+      },
+      {
+        "ordinal": 12,
+        "n": 3
+      },
+      {
+        "ordinal": 13,
+        "n": 3
+      },
+      {
+        "ordinal": 14,
+        "n": 3
+      },
+      {
+        "ordinal": 15,
+        "n": 3
+      }
+    ],
+    "selection_dev": [
+      {
+        "ordinal": 1,
+        "n": 1
+      },
+      {
+        "ordinal": 20,
+        "n": 2
+      },
+      {
+        "ordinal": 146,
+        "n": 9
+      }
+    ]
+  },
+  "upstream_manifest_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+  "B_manifest_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+  "native_source": "<host-path-sha256:4f09f862b1941e2d8e9ead03db0b1cfe692910364af72dd0e6861d6ca4145b65>",
+  "stages": {
+    "density": {
+      "logical_windows": 4,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 0.2346553960815072,
+      "validation_seconds": 0.08139467006549239,
+      "cold_validation_seconds": 0.07365133287385106,
+      "context_cache_after_cold": null,
+      "context_cache_after_warm": null,
+      "measured_read_seconds": 0.01151097216643393,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 240217600,
+      "peak_reserved_bytes": 270532608,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    },
+    "head": {
+      "logical_windows": 4,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 0.10246987291611731,
+      "validation_seconds": 0.07977522816509008,
+      "cold_validation_seconds": 0.07703345804475248,
+      "context_cache_after_cold": {
+        "bytes": 6297600,
+        "max_bytes": 1073741824,
+        "entries": 3,
+        "hits": 0,
+        "misses": 3
+      },
+      "context_cache_after_warm": {
+        "bytes": 6297600,
+        "max_bytes": 1073741824,
+        "entries": 3,
+        "hits": 3,
+        "misses": 3
+      },
+      "measured_read_seconds": 0.028593309922143817,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 217156096,
+      "peak_reserved_bytes": 270532608,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    },
+    "coordinate": {
+      "logical_windows": 16,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 2.1788651500828564,
+      "validation_seconds": 1.4032804360613227,
+      "cold_validation_seconds": 1.4298811990302056,
+      "context_cache_after_cold": null,
+      "context_cache_after_warm": null,
+      "measured_read_seconds": 0.08448324631899595,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 1953561600,
+      "peak_reserved_bytes": 3539992576,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    },
+    "dependency": {
+      "logical_windows": 16,
+      "validation_windows": 3,
+      "warmups": 1,
+      "update_seconds": 0.09702063002623618,
+      "validation_seconds": 1.466195238986984,
+      "cold_validation_seconds": 1.4898830188903958,
+      "context_cache_after_cold": null,
+      "context_cache_after_warm": null,
+      "measured_read_seconds": 0.026576634729281068,
+      "io_scope": "native update and validation reads only; audit/warmup reads excluded",
+      "peak_allocated_bytes": 975606784,
+      "peak_reserved_bytes": 3539992576,
+      "recovery_exact": true,
+      "formal_training_epochs": 0
+    }
+  },
+  "cold_start_load_and_verify_seconds": 2.321899266913533,
+  "initial_data_read_seconds": 0.052082837326452136,
+  "cold_io_scope": "first reads in this worker; OS page cache not flushed",
+  "cached_assets": "read existing native base/refined banks and frozen context/latent cache; no full candidate or latent cache rebuild",
+  "resource_telemetry": {
+    "before": {
+      "gpu": "NVIDIA GeForce RTX 5070 Ti, 4200, 16303, 29",
+      "processes": "2122662, 3202\n2131916, 220"
+    },
+    "after": {
+      "gpu": "NVIDIA GeForce RTX 5070 Ti, 7860, 16303, 41",
+      "processes": "2122662, 3202\n2131916, 3890"
+    },
+    "mode": "shared GPU with original training; paired timings are not isolated-GPU claims"
+  },
+  "disabled_optimizations": [
+    "hungarian",
+    "modulation"
+  ],
+  "four_stage_fixture_wall_seconds": 21.63986012293026,
+  "four_stage_fixture_includes": "warmup, native updates/validation, witnesses and recovery checks; not a production full training run",
+  "observed_to_B_seconds": 1.4508322020992637,
+  "observed_to_B_windows": 3,
+  "witnesses_sha256": "5d01cf62a5ddca085cfedc40010c7959d1e4f69db83eb4a9d4c8de712768513a",
+  "test_access": 0,
+  "production_checkpoint_updates": 0
+}

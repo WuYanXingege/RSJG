@@ -1,0 +1,37 @@
+{
+  "identity": {
+    "fold": "zara2",
+    "teacher_epoch": 35,
+    "teacher_sha256": "ea13cd7fd99a02c44c3c9af9a14a0cc9b5166b629e5c338694cca97f1c8c502a",
+    "upstream": {
+      "base": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+      "checkpoint_sha256": "9281673fda5c439bdd463b0bfc9af1a65a3a0fea30941ad3c956cbb617943317",
+      "split_sha256": "716e44710ff74faeffae1a6d7d814687443621e44623a0a9a1233cf8bf4f9bbb",
+      "banks": {
+        "train": "2883ba7a847c6dcf34e08159529d1b10803e9ff5626cbffbd9c8bd66aa8d605a",
+        "selection_dev": "b6aee909ed8bcdac6bb08b93fba554303829f94707cf54e87eccd399a07c1560"
+      }
+    },
+    "train_members": "4bcd442c7c33444e1d6f5677dac01f736c21a7f0ff110716fe7c0f8f696a1c99",
+    "dev_members": "12a28243c38f36072e8ef9f7021b4a51fbb037cb7710ae6c0d82bc91aba405c9",
+    "states": {
+      "backbone": "1dd15d1400a0ec7a975eaaf51604ea381556d5a54a1b588866d00015f85b3123",
+      "provider": "a59f17d7caa5639284f943781c26579587a861574fec49a4c2e121b08941ea2e",
+      "dependence": "0dd8bb2556dddb62a3f4bc2dd951687738e41ec94999da97e8df3102d7ef8dae"
+    }
+  },
+  "seeds": {
+    "train": 2036,
+    "selection_dev": 2035
+  },
+  "M": 256,
+  "K": 20,
+  "DDIM": 20,
+  "eta": 0,
+  "feature_version": "dual-assignment-world-meters-v1",
+  "prediction_device": "cuda",
+  "dtype": "float32",
+  "truth_in_features": false,
+  "execution_policy": "geometry,hungarian,logging,modulation,proposal,schedule",
+  "run_config_sha256": "00c19b6b7b66bfa77df9c82ee4d2a8a02cd1a6380b2e5d66144f3c32bb7d1d12"
+}

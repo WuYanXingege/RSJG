@@ -1,0 +1,49 @@
+{
+  "real_train_windows": [
+    "train_00001",
+    "train_00004",
+    "train_02096"
+  ],
+  "zero_head_exact_B": true,
+  "readout_gradient_norms": {
+    "shared_mlp.0.weight": 0.0,
+    "shared_mlp.0.bias": 0.0,
+    "shared_mlp.2.weight": 0.0,
+    "shared_mlp.2.bias": 0.0,
+    "common_readout.0.weight": 0.0,
+    "common_readout.0.bias": 0.0,
+    "common_readout.2.weight": 0.31122177839279175,
+    "common_readout.2.bias": 0.8344883322715759,
+    "person_readout.0.weight": 0.0,
+    "person_readout.0.bias": 0.0,
+    "person_readout.2.weight": 0.025638023391366005
+  },
+  "optimizer_resume_next_update_exact": true,
+  "real_window_permutation_checks": [
+    {
+      "window": "train_00001",
+      "n": 1,
+      "identical_repeat_max_abs_m": 0.0,
+      "person_and_slot_permutation_max_abs_m": 0.0,
+      "relative_displacement_sum_max_abs_m": 0.0
+    },
+    {
+      "window": "train_00004",
+      "n": 2,
+      "identical_repeat_max_abs_m": 0.0,
+      "person_and_slot_permutation_max_abs_m": 0.0,
+      "relative_displacement_sum_max_abs_m": 1.4551915228366852e-11
+    },
+    {
+      "window": "train_02096",
+      "n": 57,
+      "identical_repeat_max_abs_m": 0.0,
+      "person_and_slot_permutation_max_abs_m": 9.5367431640625e-07,
+      "relative_displacement_sum_max_abs_m": 2.561137080192566e-09
+    }
+  ],
+  "permutation_atol_m": 1e-06,
+  "permutation_rtol": 1e-06,
+  "disposable_check_models": true,
+  "formal_training_updates": 0
+}

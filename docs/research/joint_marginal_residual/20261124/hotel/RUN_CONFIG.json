@@ -1,0 +1,77 @@
+{
+  "recipe": {
+    "seed": 3201,
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "logical_scenes": 32,
+    "clip": 1.0,
+    "epochs": 30,
+    "precision": "FP32",
+    "scheduler": null
+  },
+  "fold": "hotel",
+  "ablation": false,
+  "teacher_identity": {
+    "fold": "hotel",
+    "teacher_epoch": 19,
+    "teacher_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+    "upstream": {
+      "fold": "hotel",
+      "frozen_manifest_sha256": "2f2ed6c313f0e1d7e14a7c85b0cef371dd3a14e23a084821034bab7d8e1c481e",
+      "upstream_identity": {
+        "schema": "bcep-ebjd-v2-resolved-v1",
+        "fold": "hotel",
+        "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+        "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+        "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+        "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+        "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4"
+      },
+      "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+      "split_file_sha256": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "config_file_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+      "checkpoint_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+      "provider": [
+        {
+          "stage": "density",
+          "epoch": 57,
+          "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+        },
+        {
+          "stage": "head",
+          "epoch": 4,
+          "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+        }
+      ],
+      "banks": {
+        "train": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+        "selection_dev": "5cb8690ac4f6ce36b7ac7572d43ff70d430d274132b0a76eed236a5928ce2b35"
+      }
+    },
+    "train_members": "cb11111a4af756e7d76f031eb292710007f582ead2f8c94410aebd069a36138b",
+    "dev_members": "62be77faae33b5d848bac88445b6134d7b7e5f314162168318ae9654638e809f",
+    "states": {
+      "backbone": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669",
+      "provider": "ea254070fda120345d69c5ebca230b95c3cdb84d19d578495c30957ca89da55e",
+      "dependence": "46f2d3c93d396858d72c13e4f73ece3dc8a9f0bdb0188999375e060d4c477178"
+    }
+  },
+  "cache_sha256": {
+    "train": "43b2ae08d092ebe858c8d25c1efb74ba0b1b3ca149757081f41e8c1313075e84",
+    "selection_dev": "cccef607bf81b2a741e60b000d10eac3e1181ac81b47eefc7201f2591f5dc54e"
+  },
+  "scales": {
+    "minADE": 0.222043968197867,
+    "minFDE": 0.3781420965283571,
+    "JADE": 0.32258510869011314,
+    "JFDE": 0.5999390633229879
+  },
+  "parameters": 27332,
+  "initial_model_sha256": "1bfa266481f405fa5ff2b8c8d2347022f2449ee921e0abc2074dad83e75376b2",
+  "selector": "passed: minFDE,JFDE,epoch; otherwise maximum six-condition violation,minFDE,epoch",
+  "retention": "all completed epochs plus official Top5, best and last; complete optimizer, RNG, order and counters",
+  "device": "cpu",
+  "input_normalization": "none",
+  "upstream_frozen": true,
+  "native_disabled_optimizations": "geometry,hungarian,logging,modulation,proposal,schedule"
+}
