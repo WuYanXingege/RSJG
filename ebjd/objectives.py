@@ -44,23 +44,34 @@ def supervision_edges(
         (distance <= radius_m) | (cpa_distance <= cpa_radius_m))
 
 
+def relative_motion_targets(target, context, radius_m=6.0, cpa_radius_m=2.0, cpa_horizon_s=4.8):
+    """Static supervision reusable for coarse/final predictions in one graph.
+
+    Preserve the original left-to-right pair subtraction arithmetic instead of
+    pre-subtracting target pairs, which would perturb FP32 losses.
+    """
+    edges = supervision_edges(context, radius_m, cpa_radius_m, cpa_horizon_s)
+    true_velocity = torch.empty_like(target)
+    true_velocity[..., 0, :] = (target[..., 0, :] - context.observed[..., -1, :]) / 0.4
+    true_velocity[..., 1:, :] = (target[..., 1:, :] - target[..., :-1, :]) / 0.4
+    return edges, true_velocity
+
+
 def relative_motion_loss(
     prediction: torch.Tensor, target: torch.Tensor, context: EBJDContext,
     radius_m: float = 6.0, cpa_radius_m: float = 2.0,
     cpa_horizon_s: float = 4.8,
+    *, target_state=None,
 ) -> torch.Tensor:
     """Return [B] relative position/velocity losses; no-edge scenes are zero."""
     if prediction.ndim == 5:
         prediction = prediction.mean(1)
-    edges = supervision_edges(context, radius_m, cpa_radius_m, cpa_horizon_s)
+    edges, true_velocity = (relative_motion_targets(target, context, radius_m, cpa_radius_m, cpa_horizon_s)
+                            if target_state is None else target_state)
     pred_velocity = torch.empty_like(prediction)
-    true_velocity = torch.empty_like(target)
     pred_velocity[..., 0, :] = (
         prediction[..., 0, :] - context.observed[..., -1, :]) / 0.4
-    true_velocity[..., 0, :] = (
-        target[..., 0, :] - context.observed[..., -1, :]) / 0.4
     pred_velocity[..., 1:, :] = (prediction[..., 1:, :] - prediction[..., :-1, :]) / 0.4
-    true_velocity[..., 1:, :] = (target[..., 1:, :] - target[..., :-1, :]) / 0.4
     rel_position_error = (
         prediction[:, :, None] - prediction[:, None, :]
         - target[:, :, None] + target[:, None, :])

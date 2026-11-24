@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import OrderedDict
 import torch
 from torch.profiler import record_function
 from torch.utils.checkpoint import checkpoint
@@ -9,6 +10,30 @@ from torch.utils.checkpoint import checkpoint
 from .encoders import EBJDContext
 from .model import EBJDModel
 from .representation import cosine_vp
+from .execution import enabled
+
+
+_SCHEDULES = OrderedDict()
+
+
+def _ddim_schedule(steps, batch, device, dtype):
+    """Bounded, parameter-free schedule cache; callers must not mutate tensors."""
+    key = (steps, batch, str(device), dtype)
+    if not enabled('schedule') or key not in _SCHEDULES:
+        schedule = []
+        for index in range(steps, 0, -1):
+            time = torch.full((batch,), index / steps, device=device, dtype=torch.float32)
+            next_time = torch.full_like(time, (index - 1) / steps)
+            # Preserve original tensor shapes and per-step trigonometric arithmetic.
+            coefficients = (*cosine_vp(time), *cosine_vp(next_time))
+            schedule.append((time, *(x.to(dtype).float().view(batch, 1, 1, 1, 1) for x in coefficients)))
+        if not enabled('schedule'):
+            return tuple(schedule)
+        _SCHEDULES[key] = tuple(schedule)
+        if len(_SCHEDULES) > 16:
+            _SCHEDULES.popitem(last=False)
+    _SCHEDULES.move_to_end(key)
+    return _SCHEDULES[key]
 
 
 def differentiable_sample(
@@ -27,10 +52,12 @@ def differentiable_sample(
         raise ValueError("steps must be positive")
     latent = initial_noise.float()
     batch = latent.shape[0]
-    for index in range(steps, 0, -1):
-        time = torch.full(
-            (batch,), index / steps, device=latent.device, dtype=torch.float32)
-        next_time = torch.full_like(time, (index - 1) / steps)
+    proposal_condition = None
+    if model.denoiser.proposal_conditioned and enabled('proposal'):
+        if proposal_goals is None:
+            raise ValueError("proposal-conditioned sampling requires proposal_goals")
+        proposal_condition = model.denoiser.encode_proposal_condition(context, proposal_goals, latent.dtype)
+    for time, alpha, sigma, next_alpha, next_sigma in _ddim_schedule(steps, batch, latent.device, latent.dtype):
         if checkpoint_steps and torch.is_grad_enabled():
             # Capture an immutable per-call policy.  In rollout training the
             # outer DDIM-step checkpoint is sufficient; nesting six block
@@ -41,21 +68,17 @@ def differentiable_sample(
                     lambda z, t, policy=block_policy: model.denoiser(
                         z, t, context, checkpoint_blocks=policy,
                         proposal_goals=proposal_goals,
-                        proposal_eta=proposal_eta)[0],
+                        proposal_eta=proposal_eta,
+                        proposal_condition=proposal_condition)[0],
                     latent, time, use_reentrant=False,
                     preserve_rng_state=checkpoint_preserve_rng_state)
         else:
             velocity = model.denoiser(
                 latent, time, context, checkpoint_blocks=checkpoint_blocks,
                 proposal_goals=proposal_goals,
-                proposal_eta=proposal_eta)[0]
+                proposal_eta=proposal_eta,
+                proposal_condition=proposal_condition)[0]
         with torch.autocast(device_type=latent.device.type, enabled=False):
-            alpha, sigma = cosine_vp(time)
-            next_alpha, next_sigma = cosine_vp(next_time)
-            alpha = alpha.to(latent).float().view(batch, 1, 1, 1, 1)
-            sigma = sigma.to(latent).float().view(batch, 1, 1, 1, 1)
-            next_alpha = next_alpha.to(latent).float().view(batch, 1, 1, 1, 1)
-            next_sigma = next_sigma.to(latent).float().view(batch, 1, 1, 1, 1)
             clean = alpha * latent.float() - sigma * velocity.float()
             noise = sigma * latent.float() + alpha * velocity.float()
             latent = next_alpha * clean + next_sigma * noise
