@@ -1,0 +1,20 @@
+{
+  "math_tests": {
+    "command": "python -m pytest protected_single_swap/test_math.py -q",
+    "passed": 5
+  },
+  "native_graph_parity": {
+    "passed": true,
+    "truth_reads": 0,
+    "DDIM_calls": 0,
+    "training_updates": 0,
+    "device": "NVIDIA GeForce RTX 5070 Ti",
+    "records_redacted_sha256": "65a62b74b80c1eef52602d36080621185b69d8b396bf0c06d4489b516645907b",
+    "records_count": 3,
+    "command": "CUBLAS_WORKSPACE_CONFIG=:4096:8 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 CUDA_VISIBLE_DEVICES=0 /media/ee615/cede1227-a7b1-4ab4-b6cb-dc50ddd8a336/RSJG/.conda/rsjg/bin/python - (stdin preflight)",
+    "lock": "RSJG_EBJD_assets/experiments/auxiliary_gpu.lock",
+    "cuda_allocator_fraction": 0.4,
+    "method": "Original observed-only reader; original encode_observed; sealed raw256 and native IDs; one graph per N; every positive-gain candidate at dev_0170 (N8), first64 positive candidates at N1/N42. All evaluated endpoints compared bitwise to separate unmodified CandidateHead calls. Native baseline compared bitwise to archived native_post. Graph update and final short chunk also compared bitwise."
+  },
+  "review": "Independent math review: exact single-swap ordering and native-shape graph completeness passed; no future reads"
+}

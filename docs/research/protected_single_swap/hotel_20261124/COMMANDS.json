@@ -1,0 +1,32 @@
+[
+  {
+    "stage": "controller_launch",
+    "command": [
+      "nice",
+      "-n",
+      "10",
+      "<host-path-sha256:ab9a0b1d5fce09fba20797c77b45340060e44a9faeec71d9599f49772749b936>",
+      "-m",
+      "protected_single_swap.run"
+    ],
+    "environment": {
+      "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+      "OMP_NUM_THREADS": "2",
+      "MKL_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "1",
+      "CUDA_VISIBLE_DEVICES": "0"
+    },
+    "start_unix": 1795521638.6565223
+  },
+  {
+    "command": [
+      "<host-path-sha256:ab9a0b1d5fce09fba20797c77b45340060e44a9faeec71d9599f49772749b936>",
+      "-m",
+      "protected_single_swap.run",
+      "--worker"
+    ],
+    "exit_code": 0,
+    "start_unix": 1795521642.1373625,
+    "wall_seconds": 403.70741033554077
+  }
+]
