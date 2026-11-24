@@ -1,0 +1,39 @@
+{
+  "passed": true,
+  "atol": 1e-06,
+  "rtol": 1e-06,
+  "checks": [
+    {
+      "metric": "raw256_minFDE",
+      "reference_m": 0.1736822056510894,
+      "actual_m": 0.17368220558723213,
+      "difference_m": -6.385728057445306e-11,
+      "allowed_m": 1.1736822056510893e-06,
+      "passed": true
+    },
+    {
+      "metric": "selected20_minFDE",
+      "reference_m": 0.45528425735247885,
+      "actual_m": 0.45528425750261275,
+      "difference_m": 1.5013390530782544e-10,
+      "allowed_m": 1.4552842573524788e-06,
+      "passed": true
+    },
+    {
+      "metric": "corrected20_minFDE",
+      "reference_m": 0.449745562799765,
+      "actual_m": 0.4497455630738098,
+      "difference_m": 2.7404478686321454e-10,
+      "allowed_m": 1.4497455627997649e-06,
+      "passed": true
+    },
+    {
+      "metric": "corrected20_JFDE",
+      "reference_m": 0.723063430501159,
+      "actual_m": 0.7230634318033862,
+      "difference_m": 1.3022272149498804e-09,
+      "allowed_m": 1.7230634305011589e-06,
+      "passed": true
+    }
+  ]
+}
