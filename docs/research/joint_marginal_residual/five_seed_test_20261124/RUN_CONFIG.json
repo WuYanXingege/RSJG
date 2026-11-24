@@ -314,22 +314,6 @@
     "scene_pair_selector/run.py": "9c40c324ce5b02e1a4a5ba1b5556f3161a642c09e0f6937c298d5460d3964116",
     "scene_pair_selector/train.py": "1056e231317d88f35aec48304456789852f4a651d1f7128468d19b1a0d769764"
   },
-  "random_audit_indices": {
-    "zara1": [
-      3663,
-      3560,
-      3980
-    ],
-    "zara2": [
-      3288,
-      3271,
-      3358
-    ],
-    "hotel": [
-      3825,
-      3806
-    ]
-  },
   "protocol": {
     "purpose": "heldout_confirmation",
     "M": 256,
@@ -396,5 +380,22 @@
   },
   "disclosure": "Seeds 2036-2039 were authorized AFTER observing seed2035: ZARA1 improved, ZARA2/HOTEL worsened. Frozen weights and settings unchanged.",
   "random_audit": "fixed singleton/small/dense windows; actual epsilon/xi/bridge fingerprints, exact repeat regeneration, cross-seed distinct nonempty streams; no extra DDIM",
-  "seal_rule": "All 8592 new pairs across four seeds and three folds sealed before ANY new truth read; reuse original 2035 scores without re-inference/re-scoring"
+  "seal_rule": "All 8592 new pairs across four seeds and three folds sealed before ANY new truth read; reuse original 2035 scores without re-inference/re-scoring",
+  "random_audit_indices_redacted_sha256": "310adb6fd432100864d36959efea1b9f5391f35dd3798131e9134f8afcacdd9e",
+  "random_audit_windows": {
+    "zara1": [
+      "test_0104",
+      "test_0001",
+      "test_0421"
+    ],
+    "zara2": [
+      "test_0018",
+      "test_0001",
+      "test_0088"
+    ],
+    "hotel": [
+      "test_0020",
+      "test_0001"
+    ]
+  }
 }

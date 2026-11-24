@@ -8,9 +8,7 @@
 
 1. ZARA1的minFDE与JFDE在 **5/5** 个种子上同时改善。2035的minFDE收益为1.698729 cm，五种子平均收益为 **1.712793 cm**。四项同时改善5/5次。
 
-2. ZARA2：五种子中minFDE恶化5/5、JFDE恶化5/5；仅新增四种子中，JADE/JFDE/minADE/minFDE恶化次数分别为4/4/4/4（每项分母4）。四项同时改善0/5次。
-
-2. HOTEL：五种子中minFDE恶化5/5、JFDE恶化5/5；仅新增四种子中，JADE/JFDE/minADE/minFDE恶化次数分别为4/4/4/4（每项分母4）。四项同时改善0/5次。
+2. ZARA2：五种子中minFDE恶化5/5、JFDE恶化5/5；仅新增四种子中，JADE/JFDE/minADE/minFDE恶化次数分别为4/4/4/4（每项分母4）。四项同时改善0/5次。 HOTEL：五种子中minFDE恶化5/5、JFDE恶化5/5；仅新增四种子中，JADE/JFDE/minADE/minFDE恶化次数分别为4/4/4/4（每项分母4）。四项同时改善0/5次。
 
 ZARA2拥挤组JFDE：改善0、持平0、恶化5次；五种子配对差+4.753604 ± 0.253012 cm。
 
