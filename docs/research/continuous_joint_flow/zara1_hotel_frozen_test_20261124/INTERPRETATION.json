@@ -1,0 +1,29 @@
+{
+  "scope": "ZARA1 and HOTEL heldout_confirmation; five inference seeds at fixed weights",
+  "folds": {
+    "zara1": {
+      "all_JADE_lower": true,
+      "all_JFDE_lower": true,
+      "N_ge_9_JFDE_lower": true,
+      "marginal_minFDE_change_cm": {
+        "all": 6.178621224646186,
+        "N_ge_9": 8.65311648751635
+      },
+      "comparator": "same heldout test windows and paired seeds; frozen upstream dev-rank1 coordinate A",
+      "development_thresholds_applied": false,
+      "prediction_or_model_selection": false
+    },
+    "hotel": {
+      "all_JADE_lower": true,
+      "all_JFDE_lower": true,
+      "N_ge_9_JFDE_lower": null,
+      "marginal_minFDE_change_cm": {
+        "all": 5.600641944024295,
+        "N_ge_9": null
+      },
+      "comparator": "same heldout test windows and paired seeds; frozen upstream dev-rank1 coordinate A",
+      "development_thresholds_applied": false,
+      "prediction_or_model_selection": false
+    }
+  }
+}

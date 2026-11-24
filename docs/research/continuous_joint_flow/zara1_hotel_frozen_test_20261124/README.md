@@ -1,9 +1,22 @@
-# ZARA1、HOTEL冻结测试
+# ZARA1、HOTEL：冻结 A/B 五推理种子测试
 
-**ZARA1的五种子测试已完成，HOTEL正在运行。**
+本报告使用完整官方heldout_confirmation。新模型B与同折固定A比较；每个推理种子单独生成K=20的完整12帧轨迹，随后汇总五个种子的均值和样本标准差（ddof=1）。训练更新为0。
 
-ZARA1完整测试集705窗，N≥9为28窗。相对固定A，B全体JADE下降2.867 cm、JFDE下降6.683 cm，N≥9 JFDE下降7.923 cm；全体边缘minADE上升1.369 cm、minFDE上升6.179 cm。五个推理种子的方向一致。
+根据2026-11-24用户指示，已完成训练的ZARA1/HOTEL提前执行测试，不等待UNIV/ETH选模结束。原四折控制器、其训练配置与选模规则保持原状态。测试结果不用于调整其余折训练或重新选择本次权重。
 
-[ZARA1完整中文报告](zara1/README.md) · [逐种子CSV](zara1/PER_SEED.csv) · [匿名逐窗CSV](zara1/PER_WINDOW.csv) · [汇总CSV](zara1/SUMMARY.csv)
+ZARA1：全体JADE变化-2.866951 cm，JFDE变化-6.683352 cm；边缘minADE变化+1.368982 cm，边缘minFDE变化+6.178621 cm（均为B−A）。 N≥9的JFDE变化-7.923374 cm。
 
-本次按2026-11-24用户指示提前测试已冻结的ZARA1/HOTEL，原UNIV/ETH训练仍按既定配置和选模规则继续。每折五种子预测全部封存后才评分；没有测试调参或重新选模。HOTEL完成后自动更新为两折完整报告。
+HOTEL：全体JADE变化-5.114709 cm，JFDE变化-12.275640 cm；边缘minADE变化+0.614945 cm，边缘minFDE变化+5.600642 cm（均为B−A）。 测试集无N≥9窗口，密集组为N/A。
+
+| 折 | A固定轮次 | B固定轮次 | 全体窗数／人次 | N≥9窗数／人次 |
+|---|---:|---:|---:|---:|
+| ZARA1 | 15 | 6 | 705 / 2356 | 28 / 288 |
+| HOTEL | 12 | 19 | 445 / 1197 | 0 / 0 |
+
+HOTEL无密集窗口，不对其密集组填零或推断收益。本次只给出这两折的冻结测试结论，五折确认需等待其余折完成。
+
+五个种子描述固定权重下的推理波动。所有训练配置、模型权重和开发集选模结果在测试前固定；没有训练更新、测试调参或测试选模。
+
+[ZARA1中文报告](zara1/README.md) · [HOTEL中文报告](hotel/README.md) · [汇总CSV](SUMMARY.csv) · [逐种子CSV](PER_SEED.csv) · [匿名逐窗CSV](PER_WINDOW.csv) · [协议顺序调整](AUTHORIZATION_AMENDMENT.json)
+
+权重、候选库与原始预测留在训练主机。使用独立输出目录，原四折控制器的源码、配置和工作目录未修改。
