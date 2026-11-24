@@ -1,5 +1,5 @@
 """Frozen two-fold B-guided permutation of native A/H0 full trajectories."""
-import csv,fcntl,json,os,subprocess,time,traceback
+import argparse,csv,fcntl,json,os,subprocess,time,traceback
 from contextlib import contextmanager
 from dataclasses import fields
 from pathlib import Path
@@ -18,6 +18,7 @@ from .matching import repair_trajectories,joint_criterion
 
 SOURCE=Path(__file__).resolve().parents[1];ROOT=SOURCE.parent
 RUN=ROOT/'RSJG_EBJD_assets/experiments/zara1_zara2_b_guided_a_repairing_20261123'
+ORIGINAL_RUN=RUN
 DOC=SOURCE/'docs/research/b_guided_a_repairing/zara1_zara2_20261123'
 SWAP=ROOT/'RSJG_EBJD_assets/experiments/zara1_zara2_whole_scene_swap_20261123'
 FOUR=ROOT/'RSJG_EBJD_assets/experiments/joint_flow_fourfold_confirmation_20261122'
@@ -90,6 +91,7 @@ def save_npz(path,**arrays):
 @torch.no_grad()
 def predict_fold(fold,config):
  inputs,model,identity,prior=fold_assets(fold);folder=RUN/fold;folder.mkdir(exist_ok=True)
+ device=config['model_device'];model.to(device)
  immutable(folder/'IDENTITY.json',identity)
  ids=inputs.split['selection_dev_indices'];pred=folder/'predictions';pred.mkdir(exist_ok=True)
  acache=folder/'native_A';acache.mkdir(exist_ok=True)
@@ -120,13 +122,19 @@ def predict_fold(fold,config):
      tick=time.perf_counter();batch=inputs.data.batch([index],'selection_dev',truth=False)
      assert batch.valid.all() and not batch.future.count_nonzero()
      goals=inputs.banks['selection_dev'].batch([index],batch)
-     _,path,hpi,proof=generate_a(model,batch.observed,batch.semantic_maps,batch.valid,batch.scene_ids,batch.agent_ids,goals,2035,mode='H')
+     x=batch.to(device)
+     _,path,hpi,proof=generate_a(model,x.observed,x.semantic_maps,x.valid,x.scene_ids,x.agent_ids,goals.to(device),2035,mode='H')
      assert proof['exact_candidate_gather'] and proof['exact_noise_gather'] and proof['per_agent_bijection']
      a=path[0].cpu().numpy();valid=batch.valid[0].cpu().numpy()
      save_npz(ap,A=a,valid=valid,H0_permutation=hpi.cpu().numpy())
      ainfo=dict(alignment_sha256=alignment,identity_sha256=idsha,sha256=digest(ap),
       A_checkpoint_sha256=EXPECTED[fold]['A_sha256'],seed=2035,mode='H',DDIM=20,eta=0.,
-      native_inference_seconds=time.perf_counter()-tick,origin='this_run_missing_native_A_inferred_once',proof=proof)
+      native_inference_seconds=time.perf_counter()-tick,origin='native_A_canonical_cuda_recovery' if device=='cuda' else 'this_run_missing_native_A_inferred_once',proof=proof,device=device)
+     if device=='cuda':
+      cpu_path=ORIGINAL_RUN/fold/'native_A'/ap.name
+      cpu_info=read(cpu_path.with_suffix('.json'));assert digest(cpu_path)==cpu_info['sha256']
+      with np.load(cpu_path,allow_pickle=False) as old_a:cpu_pi=old_a['H0_permutation'].copy()
+      ainfo.update(prior_cpu_prediction_sha256=cpu_info['sha256'],cpu_cuda_changed_H0_slots=int(np.count_nonzero(cpu_pi!=hpi.cpu().numpy())))
      write(apmeta,ainfo)
     assert a.dtype==np.float32 and a.shape==b.shape and valid.shape==(old['n'],)
     assert valid.all() and np.isfinite(a).all()
@@ -137,6 +145,7 @@ def predict_fold(fold,config):
      A_source_sha256=ainfo['sha256'],B_source_sha256=old['sha256'],
      A_origin=ainfo['origin'],B_origin='original_B_from_sealed_whole_scene_swap_cache',
      native_A_inference_seconds=ainfo['native_inference_seconds'],matching=matching,
+     A_device=device,cpu_cuda_changed_H0_slots=ainfo.get('cpu_cuda_changed_H0_slots',0),
      R_additional_decode_calls=0,calibration=False,whole_scene_swap=False)
     write(side,row)
    rows.append(row)
@@ -248,6 +257,8 @@ def score_fold(fold,seal,global_verification):
   changed_windows=sum(r['changed_window'] for r in rows),zero_change_windows=sum(not r['changed_window'] for r in rows),
   matching_seconds=sum(r['matching_seconds'] for r in rows),hungarian_seconds=sum(r['hungarian_seconds'] for r in rows),
   B_reused_prior_windows=len(rows),A_reused_prior_full_trajectory_windows=0,A_missing_windows_inferred=len(rows),B_new_inference_windows=0,R_decode_calls=0,
+  A_device=seal['rows'][0]['A_device'],cpu_cuda_H0_changed_windows=sum(r['cpu_cuda_changed_H0_slots']>0 for r in seal['rows']),
+  prior_cpu_native_A_windows_retained_for_audit=len(rows) if seal['rows'][0]['A_device']=='cuda' else 0,
   A_native_decode_seconds=sum(r['native_A_inference_seconds'] for r in seal['rows']),training_updates=0,test_access=0)
  decision=dict(fold=fold,marginal_identity=True,joint_checks=checks,passed=all(r['passed'] for r in checks))
  summary=[]
@@ -268,19 +279,42 @@ def score_fold(fold,seal,global_verification):
 
 
 def main():
+ global RUN
+ parser=argparse.ArgumentParser()
+ parser.add_argument('--recover-canonical-cuda',action='store_true',help='Preserve failed CPU run and repeat native A with original CUDA execution in a new recovery directory.')
+ args=parser.parse_args()
+ recovery=None
+ if args.recover_canonical_cuda:
+  assert read(ORIGINAL_RUN/'STATUS.json')['status']=='INTERRUPTED_RESUME_SAME_RUN'
+  old=read(ORIGINAL_RUN/'RUN_CONFIG.json')
+  assert old['model_device']=='cpu' and old['seed']==2035 and old['training_updates']==old['test_access']==0
+  audit=read(ORIGINAL_RUN/'DEVICE_AUDIT_24.json')
+  assert audit['truth_access']==0 and all(r['cpu_stored_equal'] for r in audit['records'])
+  assert any(not r['gpu_stored_equal'] for r in audit['records'])
+  recovery=dict(original_run_config_sha256=digest(ORIGINAL_RUN/'RUN_CONFIG.json'),original_source_commit='afbc81e12ddc7f3a875c1887e45d066855afb02d',
+   original_prediction_manifests={f:digest(ORIGINAL_RUN/f/'PREDICTIONS_FROZEN.json') for f in FOLDS},
+   original_cpu_scored_windows={f:len(list((ORIGINAL_RUN/f/'scored_windows').glob('*.json'))) for f in FOLDS},
+   diagnostic_sha256=digest(ORIGINAL_RUN/'DEVICE_AUDIT_24.json'),
+   reason='CPU and original deterministic CUDA native H0 assignments differ; restore canonical CUDA execution without changing weights, matching, seeds, or thresholds. Original CPU predictions and scores remain on host and are excluded from final decision.')
+  RUN=ORIGINAL_RUN/'canonical_cuda_recovery'
  RUN.mkdir(parents=True,exist_ok=True);DOC.mkdir(parents=True,exist_ok=True)
  with (RUN/'run.lock').open('a') as lock:
   fcntl.flock(lock,fcntl.LOCK_EX|fcntl.LOCK_NB)
   torch.set_num_threads(2);torch.use_deterministic_algorithms(True)
+  if args.recover_canonical_cuda:
+   from bcep_v2.runtime import configure_cuda
+   configure_cuda()
   config=dict(base_commit=BASE,folds=list(FOLDS),models=EXPECTED,seed=2035,K=20,unit='m',observation_frames=8,dt_seconds=.4,prediction_frames=12,DDIM=20,eta=0.,training_updates=0,test_access=0,
    matching='independent per-valid-agent endpoint Euclidean float64 Hungarian; rows shared B scene ID; columns native A trajectory ID; full 12-frame gather',
    scipy_version=scipy.__version__,numpy_version=np.__version__,torch_version=str(torch.__version__),solver='scipy.optimize.linear_sum_assignment',
    tie_protocol='original row/column numbering; fixed solver version; no random perturbation',
    B_source='sealed original B array from whole_scene_swap; never swap output',calibration=False,whole_scene_swap=False,
    criterion='marginal exact identity AND all six unrounded joint checks; positive gain retention>=90%; otherwise R<=A',
-   model_device='cpu',torch_threads=2,matching_precision='float64',scoring='native CPU FP32 hard metrics and native FP64 accumulator',
+   model_device='cuda' if args.recover_canonical_cuda else 'cpu',torch_threads=2,matching_precision='float64',scoring='native CPU FP32 hard metrics and native FP64 accumulator',
    joint_aggregation='equal windows',marginal_aggregation='valid-agent weighted',
    A_archive_replay_absolute_tolerance_m=1e-4,marginal_identity_tolerance_m=0.,source_sha256=source_hashes())
+  if recovery is not None:config['recovery']=recovery
+  if recovery is not None:write(DOC/'DEVICE_AUDIT.json',dict(truth_access=0,records=audit['records'],original_audit_sha256=recovery['diagnostic_sha256']))
   immutable(RUN/'RUN_CONFIG.json',config);check_protection(read(FOUR/'RUN_CONFIG.json'))
   seals={f:predict_fold(f,config) for f in FOLDS}
   verification=verify_all_seals(seals)
