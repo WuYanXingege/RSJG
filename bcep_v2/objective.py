@@ -1,7 +1,6 @@
 import torch
-from ebjd.objectives import diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss, relative_motion_targets
+from ebjd.objectives import diffusion_loss, gated_geometry_mean, map_loss, relative_motion_loss
 from ebjd.representation import cosine_vp
-from ebjd.execution import enabled
 from .joint import clean_path_terms, pair_loss
 
 
@@ -44,10 +43,9 @@ def bridge_and_pair_loss(
     )
     options = model.training_options
     loss_diff = diffusion_loss(final, coarse, target, batch.valid, options["coarse"])
-    geometry_target = relative_motion_targets(batch.future, context, 6.0, 2.0, 4.8) if enabled('geometry') else None
     per_scene_geo = 0.5 * (
-        relative_motion_loss(coarse_path, batch.future, context, 6.0, 2.0, 4.8, target_state=geometry_target)
-        + relative_motion_loss(final_path, batch.future, context, 6.0, 2.0, 4.8, target_state=geometry_target)
+        relative_motion_loss(coarse_path, batch.future, context, 6.0, 2.0, 4.8)
+        + relative_motion_loss(final_path, batch.future, context, 6.0, 2.0, 4.8)
     )
     loss_geo = gated_geometry_mean(per_scene_geo, alpha)
     loss_map = map_loss(batch.future, context, 0.5)

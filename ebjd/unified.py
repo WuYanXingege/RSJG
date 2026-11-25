@@ -9,7 +9,6 @@ from torch import nn
 
 from .encoders import EBJDContext
 from .model import EBJDModel
-from .execution import enabled
 
 
 class FrozenNativeGoalProvider(nn.Module):
@@ -46,35 +45,19 @@ def hard_assignment_indices(scores: torch.Tensor, valid: torch.Tensor) -> torch.
     batch, agents, worlds, candidates = scores.shape
     if worlds != candidates:
         raise ValueError("assignment must be square")
-    if not enabled('hungarian'):
-        identity = torch.arange(worlds, device=scores.device)
-        result = identity.view(1, worlds, 1).expand(batch, worlds, agents).clone()
-        detached = scores.detach().float().cpu().numpy()
-        for scene in range(batch):
-            active = valid[scene].nonzero(as_tuple=False).flatten().tolist()
-            if len(active) <= 1:
-                continue
-            for agent in active:
-                row, column = linear_sum_assignment(-detached[scene, agent])
-                ordered = np.empty(worlds, dtype=np.int64)
-                ordered[row] = column
-                result[scene, :, agent] = torch.as_tensor(ordered, device=scores.device)
-        return result
-    # SciPy runs on the host. Assemble all indices there, then transfer once.
-    result = np.broadcast_to(np.arange(worlds, dtype=np.int64)[None, :, None],
-                             (batch, worlds, agents)).copy()
+    identity = torch.arange(worlds, device=scores.device)
+    result = identity.view(1, worlds, 1).expand(batch, worlds, agents).clone()
     detached = scores.detach().float().cpu().numpy()
-    host_valid = valid.detach().cpu().numpy()
     for scene in range(batch):
-        active = np.flatnonzero(host_valid[scene])
+        active = valid[scene].nonzero(as_tuple=False).flatten().tolist()
         if len(active) <= 1:
             continue
         for agent in active:
             row, column = linear_sum_assignment(-detached[scene, agent])
             ordered = np.empty(worlds, dtype=np.int64)
             ordered[row] = column
-            result[scene, :, agent] = ordered
-    return torch.from_numpy(result).to(device=scores.device)
+            result[scene, :, agent] = torch.as_tensor(ordered, device=scores.device)
+    return result
 
 
 def permutation_matrix(indices: torch.Tensor, candidates: int) -> torch.Tensor:

@@ -11,7 +11,6 @@ from torch.utils.checkpoint import checkpoint
 from .encoders import EBJDContext
 from .layers import BiasedMultiheadAttention, sinusoidal_embedding
 from .representation import cosine_vp
-from .execution import enabled
 
 
 class FactorizedJointAttentionBlock(nn.Module):
@@ -47,21 +46,12 @@ class FactorizedJointAttentionBlock(nn.Module):
             time_embedding[:, None, None, None, :].expand(batch, 1, agents, 1, dim),
             social_h[:, None, :, None, :],
         ), dim=-1)
-        # The condition is invariant across the four sublayers of this block.
-        # Keep all four LayerNorms and the same arithmetic, sharing only the MLP.
-        if enabled('modulation'):
-            gamma, beta = self.modulation(condition).chunk(2, dim=-1)
-            def modulate(x):
-                return (1 + gamma) * x + beta
-        else:
-            def modulate(x):
-                return self._modulate(x, condition)
-        query = modulate(self.norms[0](hidden))
+        query = self._modulate(self.norms[0](hidden), condition)
         temporal = query.reshape(batch * worlds * agents, times, dim)
         temporal = self.temporal(temporal, temporal, temporal, need_weights=False)[0]
         hidden = hidden + temporal.reshape_as(hidden)
 
-        query = modulate(self.norms[1](hidden))
+        query = self._modulate(self.norms[1](hidden), condition)
         social = query.permute(0, 1, 3, 2, 4).reshape(
             batch * worlds * times, agents, dim)
         flat_bias = bias.reshape(
@@ -72,13 +62,13 @@ class FactorizedJointAttentionBlock(nn.Module):
         hidden = hidden + social.reshape(
             batch, worlds, times, agents, dim).permute(0, 1, 3, 2, 4)
 
-        query = modulate(self.norms[2](hidden))
+        query = self._modulate(self.norms[2](hidden), condition)
         flat_query = query.reshape(batch * worlds * agents, times, dim)
         flat_memory = memory[:, None].expand(batch, worlds, agents, 72, dim).reshape(
             batch * worlds * agents, 72, dim)
         cross = self.cross(flat_query, flat_memory, flat_memory, need_weights=False)[0]
         hidden = hidden + cross.reshape_as(hidden)
-        query = modulate(self.norms[3](hidden))
+        query = self._modulate(self.norms[3](hidden), condition)
         hidden = hidden + self.ff(query)
         return hidden * valid[:, None, :, None, None].to(hidden.dtype)
 
@@ -289,13 +279,6 @@ class GeometryConditionedJointDenoiser(nn.Module):
                 goal_delta.unsqueeze(-2).expand(*position.shape[:-1], 2),
             ), dim=-1)
 
-    def encode_proposal_condition(self, context, proposal_goals, dtype):
-        """Reusable within one rollout only; preserve its current autograd graph."""
-        normalized = (
-            proposal_goals.float() - context.baseline[:, None, :, -1, :].float()
-        ) / self.representation.goal_scale.float()
-        return self.proposal_embedding(normalized.to(dtype)).unsqueeze(-2)
-
     def forward(
         self,
         latent: torch.Tensor,
@@ -304,7 +287,6 @@ class GeometryConditionedJointDenoiser(nn.Module):
         checkpoint_blocks: bool | None = None,
         proposal_goals: torch.Tensor | None = None,
         proposal_eta: float = 1.0,
-        proposal_condition: torch.Tensor | None = None,
     ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
         if latent.ndim != 5 or latent.shape[-2:] != (12, 2):
             raise ValueError("latent must have shape [B,P,N,12,2]")
@@ -336,11 +318,11 @@ class GeometryConditionedJointDenoiser(nn.Module):
             if proposal_goals.shape != expected:
                 raise ValueError(
                     f"proposal_goals must have shape {expected}, got {tuple(proposal_goals.shape)}")
-            if proposal_condition is None:
-                proposal_condition = self.encode_proposal_condition(context, proposal_goals, hidden.dtype)
-            if proposal_condition.shape != (batch, worlds, agents, 1, self.dim):
-                raise ValueError("invalid cached proposal condition shape")
-            hidden = hidden + proposal_condition
+            normalized = (
+                proposal_goals.float() - context.baseline[:, None, :, -1, :].float()
+            ) / self.representation.goal_scale.float()
+            hidden = hidden + self.proposal_embedding(
+                normalized.to(hidden.dtype)).unsqueeze(-2)
         elif proposal_goals is not None:
             raise ValueError("legacy denoiser does not accept proposal_goals")
         observed = context.observed_bias[:, None, None].expand(
