@@ -1,0 +1,36 @@
+{
+  "identity": {
+    "fold": "univ",
+    "seed": 2035,
+    "epoch": 8,
+    "checkpoint_sha256": "99ba19d12c5edf185c7357906882d80ef35e6cad53d8f43c711f321c77cbc0f0",
+    "purpose": "heldout_confirmation",
+    "scope": "原测试集上的单种子探索性开发评估",
+    "split_members_sha256": "38b70970d83b32b08202dadd13a402d5eb801f8c7e3772bb7980a45b0c29415d",
+    "output_state_sha256": {
+      "model": "efea62e62e5c8ec67f4fa66d2faf8ded1d1d98e63992b8cb673f389e0bfa19b7",
+      "provider": "95dba073915cd929275af60545edec818870bc989e6da26e5d5777a979a46372",
+      "dependence": "307a0d421b337881dd07976f0fe812268dbc63ddac5457d02a032c1c10e48f4b"
+    },
+    "B_initial_sha256": "776235267e5cf4f1be2a9ba80cd5eaf8c44cdda5a8e94b6cde3ae3f78a24681a",
+    "B_initial_epoch": 33,
+    "history_sha256": {
+      "PER_SEED.csv": "a0fd42bd9a9d7cdbebd8e89a4a39cdcd6f8902076240c7f5560741d03f7b9c09",
+      "PER_WINDOW.csv": "4515d62913ba4704d14762bd61bed93ef741f2c987e0841de9438887c1167dc8"
+    },
+    "historical_predictions_seal_sha256": "b01da014495de1bac536b7523e919baac4b4087c5f4b006830d3ec6a6bd04da0"
+  },
+  "M": 256,
+  "K": 20,
+  "gates": {
+    "delta_minFDE_at_most": -0.02,
+    "delta_JFDE_strictly_below": 0.0
+  },
+  "bridge": {
+    "ddim_steps": 20,
+    "eta": 0.0,
+    "noise": "original sample ID from sealed endpoints"
+  },
+  "marginal_aggregation": "agent-weighted",
+  "joint_L_G_aggregation": "window-weighted"
+}
