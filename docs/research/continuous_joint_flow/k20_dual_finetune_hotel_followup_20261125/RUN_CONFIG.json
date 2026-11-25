@@ -1,0 +1,86 @@
+{
+  "base_commit": "c0391f8db015ce7583a54e8a85b518fb6358d76b",
+  "reporting_scope": "看到 HOTEL 第 8 轮终点双降后追加的单种子探索性开发评估",
+  "fold": "hotel",
+  "seed": 2035,
+  "M": 256,
+  "K": 20,
+  "windows": 445,
+  "agents": 1197,
+  "single_windows": 144,
+  "multi_windows": 301,
+  "parent_checkpoint": "<host-path-sha256:6de128ce40a9d05325d63a68947b412c156a06e5e6cc6ad9bfd5ed477669633c>",
+  "parent_sha256": "863d169a44122fbe40668d2299202b39d605dbae708a62f2da8e2c20eb6797cc",
+  "parent_epoch": 8,
+  "parent_updates": 1560,
+  "target_epoch_on_pass": 16,
+  "original_archive_manifest_sha256": "9358c5efc3169a5c3eca4b421eed2c86e589ec2786824fe71f62e3299732ee8e",
+  "original_endpoint_gate_sha256": "b0b7a3cc24bd9edbedc2937eedc4d5dd3e69910f16e7405ff2b6793845c4b630",
+  "original_score_receipt_sha256": "d2bd8b40f4830ecb44a54b76447b7078cab6b96c578fe8fa0be1a8bbefaec064",
+  "original_endpoint_seal_sha256": "cb3097edcba6055836f3d043e894995040903f1b1b33246e6ddf0fd11292f6ad",
+  "original_historical_csv_sha256": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+  "original_training_recipe": {
+    "seed": 3201,
+    "train_noise_seed": 2035,
+    "epochs": 8,
+    "logical_windows": 16,
+    "dependence_lr": 0.0001,
+    "head_lr": 2e-05,
+    "weight_decay": 0.0001,
+    "clip_grad_norm": 5.0,
+    "delta_nll_weight": 0.1,
+    "M": 256,
+    "K": 20
+  },
+  "teacher_identity": {
+    "teacher_epoch": 19,
+    "teacher_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+    "checkpoint": "<host-path-sha256:5abf4d1a7ebbe00e7a81c396f2d8ba0e864368cdab42bed6b701bf6fd04881ff>",
+    "upstream_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+    "selection_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+    "upstream_weights": {
+      "density": {
+        "epoch": 57,
+        "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+      },
+      "head": {
+        "epoch": 4,
+        "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+      },
+      "joint": {
+        "epoch": 12,
+        "sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b"
+      }
+    },
+    "split_sha256": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+    "train_windows": 3118,
+    "exploratory_windows": 445,
+    "historic_per_seed_sha256": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+    "historic_score_receipt_sha256": "4114ca40e1c8c8d1f17317c5a340e4ca321844cdf1aa46812158d1b07f1a69aa"
+  },
+  "source_sha256": {
+    "hotel_k20_followup/__init__.py": "e909e50393d4c1d050866d6bdba3f0c6871b91ed5366c5f912c64ddb3fad79c3",
+    "hotel_k20_followup/continuation.py": "b77f90d579b6bf08fa9119a8901b10c25934d8b449fe7a676d0e8c5bcf0c28eb",
+    "hotel_k20_followup/evaluation.py": "8f6daa4f5237a9f399a26ef7ce14575da7adf2334508137a95334f16fdc21d9e",
+    "hotel_k20_followup/report.py": "8d5b78da4392c8d6e6498d5aeb5c5be922caf14fa0ecaf132c1bdb3eebb3091d",
+    "hotel_k20_followup/run.py": "52c36858fed1043a7f566a41ae993130cec13f601141cc3d5efdfe6abd04dec3"
+  },
+  "environment": {
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "1",
+    "CUDA_VISIBLE_DEVICES": "0"
+  },
+  "continuation_gate": "epoch8 JADE, JFDE, minADE, minFDE each strictly lower than same-seed B",
+  "extension_value": "epoch16 all four <= epoch8, at least one strictly lower",
+  "historical_target_minFDE_reduction_m": 0.02,
+  "ddim_steps": 20,
+  "eta": 0.0,
+  "endpoint_replay_tolerance": {
+    "atol": 1e-06,
+    "rtol": 1e-06
+  },
+  "cuda_allocator_fraction": 0.35,
+  "min_free_gpu_mib": 6144
+}

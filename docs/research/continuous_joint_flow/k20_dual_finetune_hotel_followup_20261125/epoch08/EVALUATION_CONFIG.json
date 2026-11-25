@@ -1,0 +1,35 @@
+{
+  "identity": {
+    "fold": "hotel",
+    "seed": 2035,
+    "epoch": 8,
+    "checkpoint_sha256": "863d169a44122fbe40668d2299202b39d605dbae708a62f2da8e2c20eb6797cc",
+    "purpose": "heldout_confirmation",
+    "scope": "看到 HOTEL 第 8 轮终点双降后追加的单种子探索性开发评估",
+    "split_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+    "output_state_sha256": {
+      "model": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669",
+      "provider": "984f096fca7a075a69a87dc01125d7b5ca523a003e615d5b5688216e2f6fe08d",
+      "dependence": "9e584666e541556f5ce991f90081721497d2584e1c19b4fcddef613e79a874c2"
+    },
+    "B_initial_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+    "B_initial_epoch": 19,
+    "history_sha256": {
+      "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+      "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+    },
+    "historical_predictions_seal_sha256": "12d73378a0b33d5e2f678796b06131d7e71e482a8516268b92f30ca9f848d8e2"
+  },
+  "M": 256,
+  "K": 20,
+  "reuse_original_endpoint_seal": true,
+  "complete_trajectory_scoring": true,
+  "trajectory_training_updates": 0,
+  "bridge": {
+    "ddim_steps": 20,
+    "eta": 0.0,
+    "noise": "observed scene, ordered agents, original raw IDs and seed"
+  },
+  "marginal_aggregation": "agent-weighted",
+  "joint_aggregation": "window-weighted"
+}
