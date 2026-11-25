@@ -1,0 +1,148 @@
+{
+  "fold": "univ",
+  "seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "seed_count": 5,
+  "ddof": 1,
+  "unit": "m",
+  "K_per_seed": 20,
+  "aggregation": "native metrics within each seed; equally weighted five-seed mean and sample standard deviation",
+  "difference_std": "sample standard deviation of the five paired B-minus-A seed differences",
+  "groups": {
+    "all": {
+      "scene_count": 947,
+      "agent_count": 24334,
+      "available": true,
+      "A": {
+        "JADE": {
+          "mean": 0.769105454725474,
+          "std": 0.0016105351556370785
+        },
+        "JFDE": {
+          "mean": 1.6076680250001683,
+          "std": 0.003993301924298105
+        },
+        "minADE": {
+          "mean": 0.28621206927888865,
+          "std": 0.0005451265670321219
+        },
+        "minFDE": {
+          "mean": 0.5023885499059166,
+          "std": 0.0016499012543188675
+        }
+      },
+      "B": {
+        "JADE": {
+          "mean": 0.702936455695531,
+          "std": 0.0010896898925970152
+        },
+        "JFDE": {
+          "mean": 1.4681953154999956,
+          "std": 0.0013839460511428092
+        },
+        "minADE": {
+          "mean": 0.34681770658975175,
+          "std": 0.0005890627987330436
+        },
+        "minFDE": {
+          "mean": 0.6726230026066569,
+          "std": 0.0009937549235620009
+        }
+      },
+      "B_minus_A": {
+        "JADE": {
+          "mean": -0.06616899902994304,
+          "std": 0.001754519319310067
+        },
+        "JFDE": {
+          "mean": -0.13947270950017282,
+          "std": 0.004366641802030693
+        },
+        "minADE": {
+          "mean": 0.0606056373108631,
+          "std": 0.0008977614683802982
+        },
+        "minFDE": {
+          "mean": 0.17023445270074017,
+          "std": 0.0014844339603608157
+        }
+      }
+    },
+    "N_ge_9": {
+      "scene_count": 907,
+      "agent_count": 24099,
+      "available": true,
+      "A": {
+        "JADE": {
+          "mean": 0.7748331384267144,
+          "std": 0.0014791926911193992
+        },
+        "JFDE": {
+          "mean": 1.6183140027089316,
+          "std": 0.003864417809539181
+        },
+        "minADE": {
+          "mean": 0.28599219593643443,
+          "std": 0.0005441647386834812
+        },
+        "minFDE": {
+          "mean": 0.5019279264992378,
+          "std": 0.0015871279219018646
+        }
+      },
+      "B": {
+        "JADE": {
+          "mean": 0.706347179741423,
+          "std": 0.0009803615597645027
+        },
+        "JFDE": {
+          "mean": 1.474187002699851,
+          "std": 0.0012930992168282542
+        },
+        "minADE": {
+          "mean": 0.3462799669101353,
+          "std": 0.0006075290044214815
+        },
+        "minFDE": {
+          "mean": 0.6711394843650101,
+          "std": 0.0010484623922693904
+        }
+      },
+      "B_minus_A": {
+        "JADE": {
+          "mean": -0.06848595868529136,
+          "std": 0.0015860255737436503
+        },
+        "JFDE": {
+          "mean": -0.14412700000908046,
+          "std": 0.004315920320860736
+        },
+        "minADE": {
+          "mean": 0.06028777097370088,
+          "std": 0.0008991186479296865
+        },
+        "minFDE": {
+          "mean": 0.16921155786577233,
+          "std": 0.0013552272063356683
+        }
+      }
+    }
+  },
+  "interpretation": {
+    "all_JADE_lower": true,
+    "all_JFDE_lower": true,
+    "N_ge_9_JFDE_lower": true,
+    "marginal_minFDE_change_cm": {
+      "all": 17.023445270074017,
+      "N_ge_9": 16.921155786577234
+    },
+    "comparator": "same heldout test windows and paired seeds; frozen upstream dev-rank1 coordinate A",
+    "development_thresholds_applied": false,
+    "prediction_or_model_selection": false
+  }
+}

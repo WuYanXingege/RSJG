@@ -1,0 +1,17 @@
+{
+  "scope": "UNIV heldout_confirmation; five inference seeds at fixed weights",
+  "folds": {
+    "univ": {
+      "all_JADE_lower": true,
+      "all_JFDE_lower": true,
+      "N_ge_9_JFDE_lower": true,
+      "marginal_minFDE_change_cm": {
+        "all": 17.023445270074017,
+        "N_ge_9": 16.921155786577234
+      },
+      "comparator": "same heldout test windows and paired seeds; frozen upstream dev-rank1 coordinate A",
+      "development_thresholds_applied": false,
+      "prediction_or_model_selection": false
+    }
+  }
+}

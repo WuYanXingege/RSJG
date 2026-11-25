@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-25",
+  "authorized_folds": [
+    "univ"
+  ],
+  "user_instruction": "开启UNIV的测试集测评",
+  "previous_order": "wait for all four new-fold A/B weights to freeze before any new-fold test",
+  "effective_order": "test the already frozen UNIV A/B now; ETH training continues with its original fixed recipe and selector",
+  "original_controller_source_or_config_modified": false,
+  "additional_training_updates": 0,
+  "predictions": "per fold, seal all five seeds A/B before reading any heldout future",
+  "later_controller_reuse": "independent test directory; original controller remains unchanged"
+}
