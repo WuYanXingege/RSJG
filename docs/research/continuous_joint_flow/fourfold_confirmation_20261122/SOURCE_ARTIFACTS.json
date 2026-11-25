@@ -1,0 +1,854 @@
+[
+  {
+    "artifact": "zara1/test/RUN_CONFIG.json",
+    "original_sha256": "c5e0dc3a1ab75b13a47d24d8e92be3f4861f50e15f0098344589389f0769baff",
+    "public_sha256": "90040411754765f0a3a73481419daa71d7cea7080b0ecf6cda07918f7f94792b",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/test/PER_WINDOW.csv",
+    "original_sha256": "b5a5e0c2b6624e142115057d222239ceea835561226a7b1af68d3e785fcbee5f",
+    "public_sha256": "b5a5e0c2b6624e142115057d222239ceea835561226a7b1af68d3e785fcbee5f",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/test/PER_SEED.csv",
+    "original_sha256": "dcde07f414f53428c8d7140f3751e4701cb40b2d7bb41566ed3d02a4f16fe6a8",
+    "public_sha256": "dcde07f414f53428c8d7140f3751e4701cb40b2d7bb41566ed3d02a4f16fe6a8",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/test/SUMMARY.json",
+    "original_sha256": "524519a9724f8f588733f9b4161a6c853957ee3f2feb67adb29ccaad9124f44b",
+    "public_sha256": "524519a9724f8f588733f9b4161a6c853957ee3f2feb67adb29ccaad9124f44b",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/test/SUMMARY.csv",
+    "original_sha256": "60bc52d3ba8ce8b0fa1c7e37268da66a47d027b701b27f0ec6b9ff722a68ab57",
+    "public_sha256": "60bc52d3ba8ce8b0fa1c7e37268da66a47d027b701b27f0ec6b9ff722a68ab57",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/test/NATIVE_METRICS.json",
+    "original_sha256": "2a085e9bab9f65eb7b6243d005da0013c09dd06ba90245a07dedf267affd7db1",
+    "public_sha256": "2a085e9bab9f65eb7b6243d005da0013c09dd06ba90245a07dedf267affd7db1",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/test/SCORE_RECEIPT.json",
+    "original_sha256": "9f968c638413e8d0f69b59d221f4c13452cb52c63b426c0e2db5e3364b83253d",
+    "public_sha256": "9f968c638413e8d0f69b59d221f4c13452cb52c63b426c0e2db5e3364b83253d",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/test/PRE_SCORE_SEAL_VERIFICATION.json",
+    "original_sha256": "1765efac4dfe48990189ded2c785a0581bbe0d73343fa1707cebf2a536fd5521",
+    "public_sha256": "1765efac4dfe48990189ded2c785a0581bbe0d73343fa1707cebf2a536fd5521",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/test/FROZEN_MODELS.json",
+    "original_sha256": "232a6dc54ea3a8cf5ff2ec5e6eb30f754ccba8f8edf556164e5afa393b85d715",
+    "public_sha256": "232a6dc54ea3a8cf5ff2ec5e6eb30f754ccba8f8edf556164e5afa393b85d715",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/RUN_CONFIG.json",
+    "original_sha256": "40485ad2ebd57045467000d805774ced5ed7bb406945941eea2030e26b35134c",
+    "public_sha256": "ee59a189e36f3a6db726c95caa26b70df87dcdd7437f48bd4a602ce33648ddeb",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/test/PER_WINDOW.csv",
+    "original_sha256": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32",
+    "public_sha256": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/PER_SEED.csv",
+    "original_sha256": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+    "public_sha256": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/SUMMARY.json",
+    "original_sha256": "797025b8982fee1257d03f3cb813bd1aa9a376294a7f05ddc1c9b503c1aef2b3",
+    "public_sha256": "797025b8982fee1257d03f3cb813bd1aa9a376294a7f05ddc1c9b503c1aef2b3",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/SUMMARY.csv",
+    "original_sha256": "565b59669aef466a6bfb03620d849d136b97e5b55742f40b91dbc130a036367b",
+    "public_sha256": "565b59669aef466a6bfb03620d849d136b97e5b55742f40b91dbc130a036367b",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/NATIVE_METRICS.json",
+    "original_sha256": "488f0480212b04476ae1f9c67705c0e3ca821fc327fd75655f4e8bc07730b1f4",
+    "public_sha256": "488f0480212b04476ae1f9c67705c0e3ca821fc327fd75655f4e8bc07730b1f4",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/SCORE_RECEIPT.json",
+    "original_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+    "public_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/PRE_SCORE_SEAL_VERIFICATION.json",
+    "original_sha256": "6a418300017146148e7615bc30485a5ed87763c7f52583205c8c27dbb775088f",
+    "public_sha256": "6a418300017146148e7615bc30485a5ed87763c7f52583205c8c27dbb775088f",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/test/FROZEN_MODELS.json",
+    "original_sha256": "034a5fa759b688ee3b0bfa7bc816fc8f9c8534b8a436719b3e31c808d9a7c675",
+    "public_sha256": "034a5fa759b688ee3b0bfa7bc816fc8f9c8534b8a436719b3e31c808d9a7c675",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/RUN_CONFIG.json",
+    "original_sha256": "4332faaa1709cc87f1e7351dbea004e8ecfcdbbf927d2b8ebf219d79068cfefc",
+    "public_sha256": "2fd70eb7a74434e6628aaa412df0b2e33821d5454e23e5187bbd45a02945a1d5",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/test/PER_WINDOW.csv",
+    "original_sha256": "4515d62913ba4704d14762bd61bed93ef741f2c987e0841de9438887c1167dc8",
+    "public_sha256": "4515d62913ba4704d14762bd61bed93ef741f2c987e0841de9438887c1167dc8",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/PER_SEED.csv",
+    "original_sha256": "a0fd42bd9a9d7cdbebd8e89a4a39cdcd6f8902076240c7f5560741d03f7b9c09",
+    "public_sha256": "a0fd42bd9a9d7cdbebd8e89a4a39cdcd6f8902076240c7f5560741d03f7b9c09",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/SUMMARY.json",
+    "original_sha256": "1659d2f9ef675e17af9d896c04ea416e14e36092771fa97468e2cbdded57665c",
+    "public_sha256": "1659d2f9ef675e17af9d896c04ea416e14e36092771fa97468e2cbdded57665c",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/SUMMARY.csv",
+    "original_sha256": "c16f5b3ac4676cbcfea9c08b6ba2e75db84fa0415b5af26a92a3f56799a87c78",
+    "public_sha256": "c16f5b3ac4676cbcfea9c08b6ba2e75db84fa0415b5af26a92a3f56799a87c78",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/NATIVE_METRICS.json",
+    "original_sha256": "336521a762ec24f0782437e5e3218aa0d942474dd9b10b25642aea7cfa6bb9ae",
+    "public_sha256": "336521a762ec24f0782437e5e3218aa0d942474dd9b10b25642aea7cfa6bb9ae",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/SCORE_RECEIPT.json",
+    "original_sha256": "4751485cb75736e41a6ba552ac02b5722e1f729ccc62d28d1af75ea7fa0fb093",
+    "public_sha256": "4751485cb75736e41a6ba552ac02b5722e1f729ccc62d28d1af75ea7fa0fb093",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/PRE_SCORE_SEAL_VERIFICATION.json",
+    "original_sha256": "0a06a418b82799ecd01a35149feeb08404b070254ffe47870d010cf2b41dbd4b",
+    "public_sha256": "0a06a418b82799ecd01a35149feeb08404b070254ffe47870d010cf2b41dbd4b",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/test/FROZEN_MODELS.json",
+    "original_sha256": "a562ed8d76d2ab4bb05f02a7d89d2b85c75e18d96b23ba4f0af79c3c24ea5bcd",
+    "public_sha256": "a562ed8d76d2ab4bb05f02a7d89d2b85c75e18d96b23ba4f0af79c3c24ea5bcd",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/RUN_CONFIG.json",
+    "original_sha256": "7dd3236e4d45b544832695f6ec255d987c2cb08b7f1e0e913056b20c2dcbe5a8",
+    "public_sha256": "f0b4653b4deaa3f597b69326e73fcf613df1e735e4e402162d27987bacf410bf",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/test/PER_WINDOW.csv",
+    "original_sha256": "c417de96dc6e5cf3d5cd109afa22ff59468ea28843ce054dfdbfc54204629cab",
+    "public_sha256": "c417de96dc6e5cf3d5cd109afa22ff59468ea28843ce054dfdbfc54204629cab",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/PER_SEED.csv",
+    "original_sha256": "6bf24631eeb6b1a04d71f19630315eb63b3df387f0d5218d4af20a88bd94502b",
+    "public_sha256": "6bf24631eeb6b1a04d71f19630315eb63b3df387f0d5218d4af20a88bd94502b",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/SUMMARY.json",
+    "original_sha256": "9ddf1e67d448c586fbcdf564bd822a3a6de812446bc4df7526dc945deb36d662",
+    "public_sha256": "9ddf1e67d448c586fbcdf564bd822a3a6de812446bc4df7526dc945deb36d662",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/SUMMARY.csv",
+    "original_sha256": "8ee2d0aee35695c16c42d683f8770057983596a33712b98f47504a5af08418de",
+    "public_sha256": "8ee2d0aee35695c16c42d683f8770057983596a33712b98f47504a5af08418de",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/NATIVE_METRICS.json",
+    "original_sha256": "a8ea915bbbe9fddb5d89c6d9da6c0069280e27f8b345865acdd440949e2f66df",
+    "public_sha256": "a8ea915bbbe9fddb5d89c6d9da6c0069280e27f8b345865acdd440949e2f66df",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/SCORE_RECEIPT.json",
+    "original_sha256": "601d80ee406eb01e77e173991cef9f56a296736954b47cb85895bb0a2bbcc53d",
+    "public_sha256": "601d80ee406eb01e77e173991cef9f56a296736954b47cb85895bb0a2bbcc53d",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/PRE_SCORE_SEAL_VERIFICATION.json",
+    "original_sha256": "4eec2b88a4a9117a611f361dd291515ef17a1cd971653cc2660ed6c51bed5014",
+    "public_sha256": "4eec2b88a4a9117a611f361dd291515ef17a1cd971653cc2660ed6c51bed5014",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/test/FROZEN_MODELS.json",
+    "original_sha256": "19fd9ed685d013c064099a834f9810b5670a129eb5f74d9d7accf6fd4ff6362f",
+    "public_sha256": "19fd9ed685d013c064099a834f9810b5670a129eb5f74d9d7accf6fd4ff6362f",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/RUN_CONFIG.json",
+    "original_sha256": "8e0f116eafa6de72d15ffb0f3f4485ea6e80368bfb14474116fcbf25cb9baa3b",
+    "public_sha256": "8e0f116eafa6de72d15ffb0f3f4485ea6e80368bfb14474116fcbf25cb9baa3b",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/PER_WINDOW.csv",
+    "original_sha256": "f9f81cf6fe9ad7062baba747a1aae19d40d6e80ac065ce02b18e285a8c068523",
+    "public_sha256": "f9f81cf6fe9ad7062baba747a1aae19d40d6e80ac065ce02b18e285a8c068523",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/PER_SEED.csv",
+    "original_sha256": "c5ce8ac122051dd68f1adc02041d2d4cba21e51330e1c2f87bfecf3fde3a55ac",
+    "public_sha256": "c5ce8ac122051dd68f1adc02041d2d4cba21e51330e1c2f87bfecf3fde3a55ac",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/SUMMARY.json",
+    "original_sha256": "2a232415a084eee284478878e2a137a0acbaba2e1a2b803f847ec63b550e322e",
+    "public_sha256": "2a232415a084eee284478878e2a137a0acbaba2e1a2b803f847ec63b550e322e",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/SUMMARY.csv",
+    "original_sha256": "a91a401c63393b19d1242c569d22d290d46893f328a53d10d4a382ebe0614d15",
+    "public_sha256": "a91a401c63393b19d1242c569d22d290d46893f328a53d10d4a382ebe0614d15",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/NATIVE_METRICS.json",
+    "original_sha256": "b35be9db7f084621d3d26b21237a3a7ae90373f27f2b90e3b29080f910dede25",
+    "public_sha256": "b35be9db7f084621d3d26b21237a3a7ae90373f27f2b90e3b29080f910dede25",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/SCORE_RECEIPT.json",
+    "original_sha256": "1e936aa00fd699f7a6c650dd223c936f7d369526d80f85ea069f2ae7105e7aab",
+    "public_sha256": "1e936aa00fd699f7a6c650dd223c936f7d369526d80f85ea069f2ae7105e7aab",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/PRE_SCORE_SEAL_VERIFICATION.json",
+    "original_sha256": "dd9e857c4459f47073426c04308f0ff9c2f3ba0df256b537c7d9196d636b1f24",
+    "public_sha256": "dd9e857c4459f47073426c04308f0ff9c2f3ba0df256b537c7d9196d636b1f24",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/FROZEN_MODELS.json",
+    "original_sha256": "4c9798330ffa7525ee503ce1b2d6d91d1999cf754edabc3c5302750e772183db",
+    "public_sha256": "4c9798330ffa7525ee503ce1b2d6d91d1999cf754edabc3c5302750e772183db",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara2/test/A_BANKS.json",
+    "original_sha256": "444a8b26802a76f17d036d21f1950d53c401e108c4700c9aa191ae9427325548",
+    "public_sha256": "444a8b26802a76f17d036d21f1950d53c401e108c4700c9aa191ae9427325548",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "RUN_CONFIG.json",
+    "original_sha256": "d617408c2262ff2f7c423884d275ee2e22f4d62567e62c9bdd0b21d9bedd1e32",
+    "public_sha256": "d617408c2262ff2f7c423884d275ee2e22f4d62567e62c9bdd0b21d9bedd1e32",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "ASSET_INVENTORY.json",
+    "original_sha256": "312f13f4ea1f3f36a625c2e6da5235cd657018d46147798aac29074645483566",
+    "public_sha256": "230bcfe49f589a50ee6c26adc02664c9ac5758282d952b61d032b43af1ed241b",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "STATUS.json",
+    "original_sha256": "95b2078b9ea988bb883c24b4209aaf187bc56b58db2910cb1cd75ee2f37b5a45",
+    "public_sha256": "95b2078b9ea988bb883c24b4209aaf187bc56b58db2910cb1cd75ee2f37b5a45",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "FROZEN_MODELS.json",
+    "original_sha256": "c126130ee73180ecb2210e9ac4ae33f2724a7aa0f9ae693a614cc67b58f580c9",
+    "public_sha256": "83d5faaa86e3cfa1d70a99663b89799a98b4447fe69ebbdfc273c9810cfe5378",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/UPSTREAM_FROZEN.json",
+    "original_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+    "public_sha256": "84ec7fac984aa1c1aa39384a96c08ca7cf77e4fa22d894ed48de4e530d0b770a",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/B_FROZEN.json",
+    "original_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+    "public_sha256": "3fdca3bfae525e2a4568c8981ffe7304b16174cd293feca7b0cd87995ff12eb1",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/dependency/RUN_CONFIG.json",
+    "original_sha256": "8b71e9d71c880d7f70a405d8ff803f1aedf4e71cbcba88a4fcd38205f537e0a7",
+    "public_sha256": "3e36b029bda89268ac2c3db9b5174b106b1ae3553ed657f8b2493437fd40cdd4",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/dependency/TRAINING_RESULT.json",
+    "original_sha256": "dea2368905998dc8c937246154ff09b4c6d90710a04d4735b09d1f5db7d060db",
+    "public_sha256": "3fdca3bfae525e2a4568c8981ffe7304b16174cd293feca7b0cd87995ff12eb1",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/dependency/FROZEN_MODELS.json",
+    "original_sha256": "d21c8ff47c1328bbac65b0adc667b56a02d244dd59ab895ec5d6c0e081ecf8de",
+    "public_sha256": "1c9ca69b5d1221b11e36c1ea9e346dab5a4e0a746601a86f08c6a30387f02843",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/dependency/PREFLIGHT.json",
+    "original_sha256": "8b0f12fec2461d111f0a5c70c0eafc8f89b7387ca520f55c51295fc4aed22774",
+    "public_sha256": "6b83571e96a7b77156e9bb196ceb5e617aa38a92eba56ddeead373dc770e9616",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/dependency/dependence/EPOCH_METRICS.json",
+    "original_sha256": "3089bb144664b76a563d82166812af50c775b55bface47bcef6dcf059ec2ee71",
+    "public_sha256": "3089bb144664b76a563d82166812af50c775b55bface47bcef6dcf059ec2ee71",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/dependency/dependence/TOP5.json",
+    "original_sha256": "db57025d0775277eb375a2ba0e6d9907a1c0af43b6a00f00d6539b8fd6d80b20",
+    "public_sha256": "db57025d0775277eb375a2ba0e6d9907a1c0af43b6a00f00d6539b8fd6d80b20",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/ADAPTER_CONFIG.json",
+    "original_sha256": "358d61a1718a66d39f34b9b954b52dbe5a1e77edbdf5d5a71dd2b305e5c83fdd",
+    "public_sha256": "c407388061372bccb6fa56cbff61e0ae1729e3e3da13eddf2435796c626b9f2c",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/upstream/UPSTREAM_FROZEN.json",
+    "original_sha256": "2a05686a19ff122fc353f71f35c66a2635572c8a1e35838dcb824659bff9a115",
+    "public_sha256": "84ec7fac984aa1c1aa39384a96c08ca7cf77e4fa22d894ed48de4e530d0b770a",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/upstream/UPSTREAM_STATUS.json",
+    "original_sha256": "046f5589733dc9245f1cea72aefff34bea94976b483c16736c72ea4891fa59eb",
+    "public_sha256": "046f5589733dc9245f1cea72aefff34bea94976b483c16736c72ea4891fa59eb",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/density/EPOCH_METRICS.json",
+    "original_sha256": "8642c29834a567009113d78c37c40e302804f0f956f4b33018eb367fb6d2f86e",
+    "public_sha256": "8642c29834a567009113d78c37c40e302804f0f956f4b33018eb367fb6d2f86e",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/density/TOP5.json",
+    "original_sha256": "f90827ae422430a5d2ef4c3c689b4beddaf7ef63a1bc7524f1e74a992f4d7591",
+    "public_sha256": "f90827ae422430a5d2ef4c3c689b4beddaf7ef63a1bc7524f1e74a992f4d7591",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/density/FROZEN.json",
+    "original_sha256": "262166c127259f2da2ea0b067aff4227517898b719889da3ec43305ea1c001df",
+    "public_sha256": "262166c127259f2da2ea0b067aff4227517898b719889da3ec43305ea1c001df",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/receipts/density.json",
+    "original_sha256": "ef3e2a1542a32deeae06cfc6a162a24191cb6d4de60b6e0c2b3139698f7318ce",
+    "public_sha256": "53383e3855417f4a193fcb143ccbbd554e24a1156808dd2e82a91865f4c99c89",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/upstream/head/EPOCH_METRICS.json",
+    "original_sha256": "b424ea80791a9d241bfd18e0195238ebd690d6b2f679d9cd25e5d7fc17783a87",
+    "public_sha256": "b424ea80791a9d241bfd18e0195238ebd690d6b2f679d9cd25e5d7fc17783a87",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/head/TOP5.json",
+    "original_sha256": "75742bf5cbb855ed439a14488f5fe5f124eb1cd584a56e2f992e21621c82a0f4",
+    "public_sha256": "75742bf5cbb855ed439a14488f5fe5f124eb1cd584a56e2f992e21621c82a0f4",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/head/FROZEN.json",
+    "original_sha256": "15fcfc4da6395c3d98817c9d71a72d4756d7327bd71120e7dc159baa81237c61",
+    "public_sha256": "15fcfc4da6395c3d98817c9d71a72d4756d7327bd71120e7dc159baa81237c61",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/receipts/head.json",
+    "original_sha256": "89806a2c01cb8ea8b623f7628cf09e0a0548eae0f1fce272329b973ecc4532d0",
+    "public_sha256": "37171453777a935f23f863a72af78f19c5155ec0d7698aef8c1e21446a0bd964",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "zara1/upstream/joint/EPOCH_METRICS.json",
+    "original_sha256": "6ffed713dd7d233a72c34e2aa17242c06fd094f11eda35d80b9200b1107967aa",
+    "public_sha256": "6ffed713dd7d233a72c34e2aa17242c06fd094f11eda35d80b9200b1107967aa",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/joint/TOP5.json",
+    "original_sha256": "f8d5a749894394333972d4643b293356558abf33cae31f608c4bf759cd8df03e",
+    "public_sha256": "f8d5a749894394333972d4643b293356558abf33cae31f608c4bf759cd8df03e",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/joint/FROZEN.json",
+    "original_sha256": "65c96585f43babb3fcedd960c8da4cdbb8e2e9471dc160a58d34ae85716f1001",
+    "public_sha256": "65c96585f43babb3fcedd960c8da4cdbb8e2e9471dc160a58d34ae85716f1001",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "zara1/upstream/receipts/joint.json",
+    "original_sha256": "e255ab31ddf3046781f3a6fda8b5f2bee4a112bc1f680a167a4ccef2034cfaa7",
+    "public_sha256": "74eb1aeedfef8810aae87ed1ef70f9b876578cb7c04ae578e161d55a03618041",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/UPSTREAM_FROZEN.json",
+    "original_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+    "public_sha256": "b2a794ff1dbdf409fd8d614bbc969c3c15837c515ceb1883267bdbb5ea0d632d",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/B_FROZEN.json",
+    "original_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+    "public_sha256": "8019003352f701eec54ecc5e7f9c0aa42b5480575a6660b900e410a22af80c0b",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/dependency/RUN_CONFIG.json",
+    "original_sha256": "33e26dcedd7c2aced946d6d80b7767a9feabe566ce6e25a7c02bc03eefc714b0",
+    "public_sha256": "bf3134b155814485d1642d947c71863052fc39e90b7947565697d2ac16895f89",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/dependency/TRAINING_RESULT.json",
+    "original_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+    "public_sha256": "8019003352f701eec54ecc5e7f9c0aa42b5480575a6660b900e410a22af80c0b",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/dependency/FROZEN_MODELS.json",
+    "original_sha256": "83a6b452e90a1c42b84ff7a827249a48035885dc2129b1bb9cf06e67e19dcb2d",
+    "public_sha256": "4eb49fcc0c083064a4a401a12aecd89fd93c39ed5d18b773716e33e31f3c611d",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/dependency/PREFLIGHT.json",
+    "original_sha256": "a0dcb0cf742b0a274a2bb8d76435049bb7eb0d4b598ad0bd8f26815c212dd1be",
+    "public_sha256": "0232f476988a8851185685ac9efbb298d7b9936f524a2e4f47626c72a76a37e8",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/dependency/dependence/EPOCH_METRICS.json",
+    "original_sha256": "cf4708e8afac37c99836d8efe57a4a272cfafebafd99a5f03866b096376579f8",
+    "public_sha256": "cf4708e8afac37c99836d8efe57a4a272cfafebafd99a5f03866b096376579f8",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/dependency/dependence/TOP5.json",
+    "original_sha256": "36865b28320fc0f6d5938518d6372c8be3bf5190f7ed7fb2948a6622b6d89d3c",
+    "public_sha256": "36865b28320fc0f6d5938518d6372c8be3bf5190f7ed7fb2948a6622b6d89d3c",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/ADAPTER_CONFIG.json",
+    "original_sha256": "11925618ecb33a7ac5df8a26c68ee458595f0f82c05f24c0df97c7d83f6e7930",
+    "public_sha256": "91cebca4fa009a525c3ee35b76ec83c5799285c5e21648cf959efa9381e7895f",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/upstream/UPSTREAM_FROZEN.json",
+    "original_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+    "public_sha256": "b2a794ff1dbdf409fd8d614bbc969c3c15837c515ceb1883267bdbb5ea0d632d",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/upstream/UPSTREAM_STATUS.json",
+    "original_sha256": "a567dad0322d11ac816b8e626c323b788eea59167015de56222b867fc6aa8f4b",
+    "public_sha256": "a567dad0322d11ac816b8e626c323b788eea59167015de56222b867fc6aa8f4b",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/density/EPOCH_METRICS.json",
+    "original_sha256": "d1f94e8bb389861799fc5f186a72bf7d8bc5a57ad13f1c368cd8015597935558",
+    "public_sha256": "d1f94e8bb389861799fc5f186a72bf7d8bc5a57ad13f1c368cd8015597935558",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/density/TOP5.json",
+    "original_sha256": "230b635d556146caaa600948ec77745c577fe65873675b86a9d3a9e4a7bee866",
+    "public_sha256": "230b635d556146caaa600948ec77745c577fe65873675b86a9d3a9e4a7bee866",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/density/FROZEN.json",
+    "original_sha256": "bcb7b07dbfbaba5a3db8e5de763cb100f829516266e73afb96c025b475288cb9",
+    "public_sha256": "bcb7b07dbfbaba5a3db8e5de763cb100f829516266e73afb96c025b475288cb9",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/receipts/density.json",
+    "original_sha256": "16b46b3aaf71ff112fcf1ee286fa4fd13a9af6a339ceff51ed2d81c7a6c7259e",
+    "public_sha256": "82a04bd4759a928bf62fd3cf9bd08aa65d9d30e51dfe1a67b7a298331857d78c",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/upstream/head/EPOCH_METRICS.json",
+    "original_sha256": "1a77c753d247c65fc1c2726f5c0cdc7d834a172ceb9640912c73d42e2ccc1586",
+    "public_sha256": "1a77c753d247c65fc1c2726f5c0cdc7d834a172ceb9640912c73d42e2ccc1586",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/head/TOP5.json",
+    "original_sha256": "6518eafe47507660a6552a5811d75171f21792ad265f2ddf6902fc7344f618e9",
+    "public_sha256": "6518eafe47507660a6552a5811d75171f21792ad265f2ddf6902fc7344f618e9",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/head/FROZEN.json",
+    "original_sha256": "8a0196dc17dd3aa02fb9e5edbbc01cfa797b6fd040c73eb12c4a6fb34c215b46",
+    "public_sha256": "8a0196dc17dd3aa02fb9e5edbbc01cfa797b6fd040c73eb12c4a6fb34c215b46",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/receipts/head.json",
+    "original_sha256": "a7fe396573d74539669332bc0cba783e99247297e28498843a0471a8a546af6e",
+    "public_sha256": "805061bdbd3585d0291ba6c9fa621ba56061241f8fd2a9df80ccc5d996fda202",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "hotel/upstream/joint/EPOCH_METRICS.json",
+    "original_sha256": "910e80e6903d8af573c8d11b1414ad0801c0274d891c43520b876b669118fb43",
+    "public_sha256": "910e80e6903d8af573c8d11b1414ad0801c0274d891c43520b876b669118fb43",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/joint/TOP5.json",
+    "original_sha256": "99065bb55ab9fc7c6e42cc4a0b6d691802f797d936162527dfb2c415c09ca1dd",
+    "public_sha256": "99065bb55ab9fc7c6e42cc4a0b6d691802f797d936162527dfb2c415c09ca1dd",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/joint/FROZEN.json",
+    "original_sha256": "1682e19e9be93ed1ceaaed533a3f60380744767cb6c672067071b8dda17e7478",
+    "public_sha256": "1682e19e9be93ed1ceaaed533a3f60380744767cb6c672067071b8dda17e7478",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "hotel/upstream/receipts/joint.json",
+    "original_sha256": "964ef27f5880e9ee1640a704fd3a7eb3d7c4bd8907f4ba5e9285850e1d17f6da",
+    "public_sha256": "d6b5cc244de036ff64eb918e1b636accdf192e29d7cf684b5dc6382fb35cb2d9",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/UPSTREAM_FROZEN.json",
+    "original_sha256": "f88ac1ae910020e9c8c32784c4caa4741792a9eb3320a83374e964e55d123ba9",
+    "public_sha256": "75ec1b11cf4df857fb7cbc7a35a0970ee57b9d9440aa751dfaea4524c352f43f",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/B_FROZEN.json",
+    "original_sha256": "d26c691100abed21b843f54c6c3942c6044070131d1735983564e2a161c38d50",
+    "public_sha256": "021ed3fa154ab5e848420cfc9ee106e0509d58c11043414da6cd36ebeef592bf",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/dependency/RUN_CONFIG.json",
+    "original_sha256": "67c44faffdfab02206e1fc42acf00761910aa1f36501aa8acc6c653ba96ec473",
+    "public_sha256": "43b088de01d41b985ebe36f573acfeb9e83299142d6c3f1f1d2875216bd1b87a",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/dependency/TRAINING_RESULT.json",
+    "original_sha256": "d26c691100abed21b843f54c6c3942c6044070131d1735983564e2a161c38d50",
+    "public_sha256": "021ed3fa154ab5e848420cfc9ee106e0509d58c11043414da6cd36ebeef592bf",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/dependency/FROZEN_MODELS.json",
+    "original_sha256": "00ec258369d7a4ffbb1f2b92f3e06e59c1ce518e85d19438b9221f3617a13be1",
+    "public_sha256": "938668fe01375e0d62aaf06891943a8d4e493c7853bc6eb678b3fd83899f98b2",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/dependency/PREFLIGHT.json",
+    "original_sha256": "83a30d46522d3e908296abf5001278c5fa04bd1ad3103695e52d2428c5fb8f2f",
+    "public_sha256": "49adb65a3052fdd6bd61609d5ce98c3f5c0c5f40d16d6b1423c9668b7432079a",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/dependency/dependence/EPOCH_METRICS.json",
+    "original_sha256": "07047fc21e02c5297526cd2263a1b1f6517c290735722943ea16e772196a3141",
+    "public_sha256": "07047fc21e02c5297526cd2263a1b1f6517c290735722943ea16e772196a3141",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/dependency/dependence/TOP5.json",
+    "original_sha256": "e49a2cdc56cc0c76f110305affa7e652065ef2adcc9fd8fee2b6d8c3bb8e2bb7",
+    "public_sha256": "e49a2cdc56cc0c76f110305affa7e652065ef2adcc9fd8fee2b6d8c3bb8e2bb7",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/ADAPTER_CONFIG.json",
+    "original_sha256": "e704a59bb8e9d249698697b8bbc6bb97269c219e3e23445b1ca79bb0c914ea62",
+    "public_sha256": "9caaaff41de7b6f679ac66ee3b0ad09af627ff8ed11161b785bd780cac859058",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/upstream/UPSTREAM_FROZEN.json",
+    "original_sha256": "f88ac1ae910020e9c8c32784c4caa4741792a9eb3320a83374e964e55d123ba9",
+    "public_sha256": "75ec1b11cf4df857fb7cbc7a35a0970ee57b9d9440aa751dfaea4524c352f43f",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/upstream/UPSTREAM_STATUS.json",
+    "original_sha256": "4009206e0429b2c0ea3e72eaab4b0580d50ff0fcfc834a60971ee7a51db89b5f",
+    "public_sha256": "4009206e0429b2c0ea3e72eaab4b0580d50ff0fcfc834a60971ee7a51db89b5f",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/density/EPOCH_METRICS.json",
+    "original_sha256": "e21530354817bcc33fd69a4730285a7ecdaf33f9733137f917224282db2de830",
+    "public_sha256": "e21530354817bcc33fd69a4730285a7ecdaf33f9733137f917224282db2de830",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/density/TOP5.json",
+    "original_sha256": "ab51634d4bbcab4cfa167984391331d4e63ce9babf24789aff81041091dd5873",
+    "public_sha256": "ab51634d4bbcab4cfa167984391331d4e63ce9babf24789aff81041091dd5873",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/density/FROZEN.json",
+    "original_sha256": "0dbd98bedcbdca38bfca4b936f2e19bae9b955e2b17c926d4850ec9c5085fb00",
+    "public_sha256": "0dbd98bedcbdca38bfca4b936f2e19bae9b955e2b17c926d4850ec9c5085fb00",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/receipts/density.json",
+    "original_sha256": "8b2ba5f3a3f873c5b67e5aa651b0b6d381d78a0228bb3df5360c63c38bcbdeb5",
+    "public_sha256": "443674ab80f414b2422af80c6e018184c6ca35082015bcc359e328d31bbed9f9",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/upstream/head/EPOCH_METRICS.json",
+    "original_sha256": "51eceb9b76dc0b72007a50d7bce9ea672a5213e4e441cb8b4336487dd39c24df",
+    "public_sha256": "51eceb9b76dc0b72007a50d7bce9ea672a5213e4e441cb8b4336487dd39c24df",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/head/TOP5.json",
+    "original_sha256": "c11bbb27141208d5f13832f77a2b5e434776817c9a261adadc19fd531bdbcd24",
+    "public_sha256": "c11bbb27141208d5f13832f77a2b5e434776817c9a261adadc19fd531bdbcd24",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/head/FROZEN.json",
+    "original_sha256": "d297e81f1f3c5e001e98660153974345cb41c371624ed2b8c68322eb1202b141",
+    "public_sha256": "d297e81f1f3c5e001e98660153974345cb41c371624ed2b8c68322eb1202b141",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/receipts/head.json",
+    "original_sha256": "3030c93172a57e57ac67231e629cc07409acdc60d21cd3f2a551106891c56f40",
+    "public_sha256": "af56e488776efeaad53c2431e552deafe8cb2a3e13414cfe314045853c628e89",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "univ/upstream/joint/EPOCH_METRICS.json",
+    "original_sha256": "70cf787530ccee0306c0b604d132d27362d1cf4f3e29b6d835fe57611260e27f",
+    "public_sha256": "70cf787530ccee0306c0b604d132d27362d1cf4f3e29b6d835fe57611260e27f",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/joint/TOP5.json",
+    "original_sha256": "a3c78fa89b436c277cd1647ddef88c820900a54eb565664a48aec11b06bd85c6",
+    "public_sha256": "a3c78fa89b436c277cd1647ddef88c820900a54eb565664a48aec11b06bd85c6",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/joint/FROZEN.json",
+    "original_sha256": "f49035c165bb5b848941eb00b46340d18178aeaa4d842f7f27138dee980b4a5b",
+    "public_sha256": "f49035c165bb5b848941eb00b46340d18178aeaa4d842f7f27138dee980b4a5b",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "univ/upstream/receipts/joint.json",
+    "original_sha256": "2b79f55ce6deeb2dc23d9f9fb61fd5b595dc946837a5235835e49d3cf24890b4",
+    "public_sha256": "806ce29a893c8302799779ddffeda4d2448b8264e4eeec2162b1869c1cc23d62",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/UPSTREAM_FROZEN.json",
+    "original_sha256": "38c932be53f10931e2e9ef723d117dc79d9f664ba200879b8443bb9b18a63b9b",
+    "public_sha256": "782fd01f2af0260a3218787ebd67937371c869c306910ed8568690ddc0161e4d",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/B_FROZEN.json",
+    "original_sha256": "63187d590d8daa49ba921f9a228137edacf077319636b4f8dded5b309350cafd",
+    "public_sha256": "09cc09183b7b136c37f190d73b8d2980c54c0460a15c1aab5af8cdeaf9ad1f30",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/dependency/RUN_CONFIG.json",
+    "original_sha256": "b950f4a543ae722a7ebbf661738d7b530403873e04b1fd580af284265830428e",
+    "public_sha256": "da9f34ae287f25192a72094710d749409b5d683b7e05a29e8f1dbb300df816c9",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/dependency/TRAINING_RESULT.json",
+    "original_sha256": "63187d590d8daa49ba921f9a228137edacf077319636b4f8dded5b309350cafd",
+    "public_sha256": "09cc09183b7b136c37f190d73b8d2980c54c0460a15c1aab5af8cdeaf9ad1f30",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/dependency/FROZEN_MODELS.json",
+    "original_sha256": "2633bbdf2f3e89faae72bfc2967c35a67ff8f5f38a531b3b20be57624b782551",
+    "public_sha256": "ac9a9e5b1f191cf77da792b2fd043c685e7c4c5705e1ca0174ad5037fd89d462",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/dependency/PREFLIGHT.json",
+    "original_sha256": "63d93bb8330482e59dc1cb7042bf6a3ef63c65d1b4fa188dc023781e7f717815",
+    "public_sha256": "bcfe15c4dfa6a4f5ec445943e633135f56f702ee3b7c8e9cc53fd794e88b3536",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/dependency/dependence/EPOCH_METRICS.json",
+    "original_sha256": "062f80809b22802b31da6f1ef36a51aeda8a7f76ff27d77c7f92833d7da7f7cb",
+    "public_sha256": "062f80809b22802b31da6f1ef36a51aeda8a7f76ff27d77c7f92833d7da7f7cb",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/dependency/dependence/TOP5.json",
+    "original_sha256": "6813812eab72778ba802547e64973dea80d939bac6c67f310b704541630b2824",
+    "public_sha256": "6813812eab72778ba802547e64973dea80d939bac6c67f310b704541630b2824",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/ADAPTER_CONFIG.json",
+    "original_sha256": "ae799346249c95643f12c167f751491fa87429a978e10a559bce83cae9709d9b",
+    "public_sha256": "dcfc34debd5ba4f1988720f09ae9d4828a4ffa013d3a0d5ea29eec13135dce60",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/upstream/UPSTREAM_FROZEN.json",
+    "original_sha256": "38c932be53f10931e2e9ef723d117dc79d9f664ba200879b8443bb9b18a63b9b",
+    "public_sha256": "782fd01f2af0260a3218787ebd67937371c869c306910ed8568690ddc0161e4d",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/upstream/UPSTREAM_STATUS.json",
+    "original_sha256": "ae84b43097324278071b31cf2b9db5e0817dee75b8569e6dfae29419bd22f48f",
+    "public_sha256": "ae84b43097324278071b31cf2b9db5e0817dee75b8569e6dfae29419bd22f48f",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/density/EPOCH_METRICS.json",
+    "original_sha256": "6bde1a80d6555843c770c9b29d170c028b5529591f571343eeb690b58fd12251",
+    "public_sha256": "6bde1a80d6555843c770c9b29d170c028b5529591f571343eeb690b58fd12251",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/density/TOP5.json",
+    "original_sha256": "898da61b268e9473e59b5d114d1f4b2d92fdc48cc8bdd6b5e0c0100314dea710",
+    "public_sha256": "898da61b268e9473e59b5d114d1f4b2d92fdc48cc8bdd6b5e0c0100314dea710",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/density/FROZEN.json",
+    "original_sha256": "c035bdf7452c99295e7abdba4f0891a9d684cc9e1f3132f4b473ee66c6346ee1",
+    "public_sha256": "c035bdf7452c99295e7abdba4f0891a9d684cc9e1f3132f4b473ee66c6346ee1",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/receipts/density.json",
+    "original_sha256": "1755d0268f44562792fa396d95b0c534292ff31ef6660f273a296d201602d077",
+    "public_sha256": "1716c2ca5ffd971f2be27d6ee7cce1c6efc02131cd8a429c1a5f4256171da988",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/upstream/head/EPOCH_METRICS.json",
+    "original_sha256": "52e3a9e37038c504b1372ca9fb0d23d284b47bd2eecad6a850971205e079ac96",
+    "public_sha256": "52e3a9e37038c504b1372ca9fb0d23d284b47bd2eecad6a850971205e079ac96",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/head/TOP5.json",
+    "original_sha256": "191e2aad6e2309bdba957fb1c7b2b35cfe45938c790f4c06422a54096c01a644",
+    "public_sha256": "191e2aad6e2309bdba957fb1c7b2b35cfe45938c790f4c06422a54096c01a644",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/head/FROZEN.json",
+    "original_sha256": "70834bc530279ca8cb257f75e1e40e8b41808477d007f115ae46446271062d22",
+    "public_sha256": "70834bc530279ca8cb257f75e1e40e8b41808477d007f115ae46446271062d22",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/receipts/head.json",
+    "original_sha256": "9f88969b35fba52135e0ca545e8346ef94b29b63c8730e529c360f2477f75b53",
+    "public_sha256": "2a6d83c8b8659022f3cbcb1e2ce06741ecd91e11606f0c7c6652e12d54a9a38e",
+    "identifiers_or_host_paths_redacted": true
+  },
+  {
+    "artifact": "eth/upstream/joint/EPOCH_METRICS.json",
+    "original_sha256": "789e1138e748883d00abea3d692fad33f88f9c0a0f2b309c1fe1e9678ddab3c0",
+    "public_sha256": "789e1138e748883d00abea3d692fad33f88f9c0a0f2b309c1fe1e9678ddab3c0",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/joint/TOP5.json",
+    "original_sha256": "a6200f34043861aa2e32ad6e49e898b768f3ca71828b52b4994901a9dbed20cd",
+    "public_sha256": "a6200f34043861aa2e32ad6e49e898b768f3ca71828b52b4994901a9dbed20cd",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/joint/FROZEN.json",
+    "original_sha256": "2a441d5802b3883da1a091ec5ce14d86202ec49ddb39558d87435a5be88eaa2e",
+    "public_sha256": "2a441d5802b3883da1a091ec5ce14d86202ec49ddb39558d87435a5be88eaa2e",
+    "identifiers_or_host_paths_redacted": false
+  },
+  {
+    "artifact": "eth/upstream/receipts/joint.json",
+    "original_sha256": "89304f374fa8c8e734287317f52d7863458d6c029b76f675957a23a10d56e290",
+    "public_sha256": "2b9b14a4dcc54d40d4a8f1f0dfbb54d3406e3e81cc590e658485530d1cafa503",
+    "identifiers_or_host_paths_redacted": true
+  }
+]

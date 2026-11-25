@@ -1,0 +1,291 @@
+{
+  "status": "COMPLETE",
+  "stage": "joint",
+  "epoch": 31,
+  "update": 6386,
+  "stop_reason": "early_stop",
+  "history_sha256": "789e1138e748883d00abea3d692fad33f88f9c0a0f2b309c1fe1e9678ddab3c0",
+  "selected": {
+    "stage": "joint",
+    "trained": true,
+    "frozen": true,
+    "weights_sha256": "c0d664bb3d7bde2a5b91428dd5ed4ddb8d31dd5a48291837391f6a85bad88473",
+    "epoch": 16,
+    "updates": 3296,
+    "selection": "dev_H_JADE",
+    "value": 0.3800500182315484,
+    "identity": "0f50eb824f6963a1a78c994cd2d6e864d5bcbcc59b25b12b60526c381c6d48fd"
+  },
+  "ranks": [
+    {
+      "fold": "eth",
+      "stage": "joint",
+      "macro_stage": "Stage 2 / EBJD joint trajectory learning",
+      "dev_rank": 1,
+      "epoch": 16,
+      "update": 3296,
+      "selection_metric": "dev_H_JADE",
+      "dev_value": 0.3800500182315484,
+      "file": "epoch_016.pt",
+      "checkpoint_sha256": "c0d664bb3d7bde2a5b91428dd5ed4ddb8d31dd5a48291837391f6a85bad88473",
+      "identity": "0f50eb824f6963a1a78c994cd2d6e864d5bcbcc59b25b12b60526c381c6d48fd",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6",
+          "epoch": 19,
+          "updates": 15599,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.32532279534761466,
+          "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+            "epoch": 61,
+            "updates": 50081,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 0.8056008844127606,
+            "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+          }
+        },
+        "train_bank": "d78eaebecef2636a82a736ea9071a3f800635852844f4be78431b2b797efb2d1",
+        "dev_bank": "601cf8df55e8078aa32b983e5eb77b98a3ae7531d1d523a781ad87b76749e94a"
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "joint",
+      "macro_stage": "Stage 2 / EBJD joint trajectory learning",
+      "dev_rank": 2,
+      "epoch": 15,
+      "update": 3090,
+      "selection_metric": "dev_H_JADE",
+      "dev_value": 0.3801206845083715,
+      "file": "epoch_015.pt",
+      "checkpoint_sha256": "8d5bf1f9e5bda221631521f6ab7bd1ce88cc150a9024e0a83f3feb107a653c1f",
+      "identity": "0f50eb824f6963a1a78c994cd2d6e864d5bcbcc59b25b12b60526c381c6d48fd",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6",
+          "epoch": 19,
+          "updates": 15599,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.32532279534761466,
+          "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+            "epoch": 61,
+            "updates": 50081,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 0.8056008844127606,
+            "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+          }
+        },
+        "train_bank": "d78eaebecef2636a82a736ea9071a3f800635852844f4be78431b2b797efb2d1",
+        "dev_bank": "601cf8df55e8078aa32b983e5eb77b98a3ae7531d1d523a781ad87b76749e94a"
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "joint",
+      "macro_stage": "Stage 2 / EBJD joint trajectory learning",
+      "dev_rank": 3,
+      "epoch": 5,
+      "update": 1030,
+      "selection_metric": "dev_H_JADE",
+      "dev_value": 0.38127667280511185,
+      "file": "epoch_005.pt",
+      "checkpoint_sha256": "916e3675c8eabac25076d0d831e0415a53a637743cd3b14645015fa69ef7b202",
+      "identity": "0f50eb824f6963a1a78c994cd2d6e864d5bcbcc59b25b12b60526c381c6d48fd",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6",
+          "epoch": 19,
+          "updates": 15599,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.32532279534761466,
+          "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+            "epoch": 61,
+            "updates": 50081,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 0.8056008844127606,
+            "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+          }
+        },
+        "train_bank": "d78eaebecef2636a82a736ea9071a3f800635852844f4be78431b2b797efb2d1",
+        "dev_bank": "601cf8df55e8078aa32b983e5eb77b98a3ae7531d1d523a781ad87b76749e94a"
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "joint",
+      "macro_stage": "Stage 2 / EBJD joint trajectory learning",
+      "dev_rank": 4,
+      "epoch": 4,
+      "update": 824,
+      "selection_metric": "dev_H_JADE",
+      "dev_value": 0.38206193507693476,
+      "file": "epoch_004.pt",
+      "checkpoint_sha256": "f4d967315a52a9423a4c17d82d444ea787c0027b74669c9f7ebdbe2951ce2737",
+      "identity": "0f50eb824f6963a1a78c994cd2d6e864d5bcbcc59b25b12b60526c381c6d48fd",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6",
+          "epoch": 19,
+          "updates": 15599,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.32532279534761466,
+          "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+            "epoch": 61,
+            "updates": 50081,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 0.8056008844127606,
+            "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+          }
+        },
+        "train_bank": "d78eaebecef2636a82a736ea9071a3f800635852844f4be78431b2b797efb2d1",
+        "dev_bank": "601cf8df55e8078aa32b983e5eb77b98a3ae7531d1d523a781ad87b76749e94a"
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "joint",
+      "macro_stage": "Stage 2 / EBJD joint trajectory learning",
+      "dev_rank": 5,
+      "epoch": 12,
+      "update": 2472,
+      "selection_metric": "dev_H_JADE",
+      "dev_value": 0.3828021040819026,
+      "file": "epoch_012.pt",
+      "checkpoint_sha256": "04e1d0c269ebc2e2f7219b5234a8050385e56a8ace01f83185f8a8f8923333bf",
+      "identity": "0f50eb824f6963a1a78c994cd2d6e864d5bcbcc59b25b12b60526c381c6d48fd",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6",
+          "epoch": 19,
+          "updates": 15599,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.32532279534761466,
+          "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+            "epoch": 61,
+            "updates": 50081,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 0.8056008844127606,
+            "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+          }
+        },
+        "train_bank": "d78eaebecef2636a82a736ea9071a3f800635852844f4be78431b2b797efb2d1",
+        "dev_bank": "601cf8df55e8078aa32b983e5eb77b98a3ae7531d1d523a781ad87b76749e94a"
+      }
+    }
+  ]
+}

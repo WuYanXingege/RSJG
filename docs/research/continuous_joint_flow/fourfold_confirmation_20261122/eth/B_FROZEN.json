@@ -1,0 +1,179 @@
+{
+  "fold": "eth",
+  "rank1_checkpoint": "<host-path-sha256:4d6ce2fe6439fc2d22aceadd928a30de927a60108d00d5ea9bb6f41d793a89fb>",
+  "rank1_epoch": 30,
+  "rank1_sha256": "778b1d1c209c75f06c9a8a7c63ff8a62f08958968c5263f144dc0f1586df9cb1",
+  "rank1_metrics": {
+    "all": {
+      "minADE": 0.23529586364002916,
+      "minFDE": 0.4268962570869953,
+      "JADE": 0.3339318381838429,
+      "JFDE": 0.6667575974418085,
+      "scene_weighted_minADE": 0.21892957083593753,
+      "scene_weighted_minFDE": 0.3870914898085215,
+      "coordination_gap_ADE": 0.11500226734790539,
+      "coordination_gap_FDE": 0.27966610763328703,
+      "agent_count": 5422,
+      "scene_count": 733,
+      "sums": {
+        "agent_minADE": 1275.774172656238,
+        "agent_minFDE": 2314.6315059256885,
+        "scene_JADE": 244.77203738875687,
+        "scene_JFDE": 488.73331892484566,
+        "scene_marginal_ADE": 160.47537542274222,
+        "scene_marginal_FDE": 283.73806202964624
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.2628177751299473,
+      "minFDE": 0.48645698525905057,
+      "JADE": 0.48916936616377277,
+      "JFDE": 1.0614074551762798,
+      "scene_weighted_minADE": 0.2767445078088763,
+      "scene_weighted_minFDE": 0.5301567007741217,
+      "coordination_gap_ADE": 0.21242485835489644,
+      "coordination_gap_FDE": 0.5312507544021581,
+      "agent_count": 3087,
+      "scene_count": 181,
+      "sums": {
+        "agent_minADE": 811.3184718261473,
+        "agent_minFDE": 1501.692713494689,
+        "scene_JADE": 88.53965527564287,
+        "scene_JFDE": 192.11474938690662,
+        "scene_marginal_ADE": 50.09075591340661,
+        "scene_marginal_FDE": 95.95836284011602
+      }
+    },
+    "epoch": 30,
+    "windows": 733,
+    "dense_windows": 181,
+    "dev_delta_nll_nat_per_person": -0.03625736644937521,
+    "actual_ddim_calls": 733,
+    "correction_calls": 733,
+    "ddim_steps": 20,
+    "seed": 2035,
+    "seconds": 348.42338275699876,
+    "test_access": false,
+    "coverage": {
+      "all": {
+        "raw256": {
+          "agent_micro_minFDE": 0.15853327489964075,
+          "scene_macro_minFDE": 0.14672841014199908,
+          "agent_count": 5422,
+          "scene_count": 733
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.42740927195067563,
+          "scene_macro_minFDE": 0.3868695141854867,
+          "agent_count": 5422,
+          "scene_count": 733
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.4268962570869953,
+          "scene_macro_minFDE": 0.3870914889050663,
+          "agent_count": 5422,
+          "scene_count": 733
+        }
+      },
+      "N_ge_9": {
+        "raw256": {
+          "agent_micro_minFDE": 0.18103127409982134,
+          "scene_macro_minFDE": 0.20315776688756143,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.48737106334156854,
+          "scene_macro_minFDE": 0.5301335105571734,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.48645698525905057,
+          "scene_macro_minFDE": 0.5301566993948447,
+          "agent_count": 3087,
+          "scene_count": 181
+        }
+      }
+    },
+    "delta_nll_nat_per_person": {
+      "all": -0.03625736644937521,
+      "N_ge_9": -0.04477926642982577
+    }
+  },
+  "completed_epochs": 45,
+  "updates": 9270,
+  "stop_reason": "early_stop",
+  "recipe": {
+    "seed": 3201,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "clip": 5.0,
+    "logical_scenes": 16,
+    "max_epochs": 100,
+    "minimum": 30,
+    "patience": 15,
+    "scheduler_horizon": 100
+  },
+  "optimizer_parameter_names": [
+    "net.0.weight",
+    "net.0.bias",
+    "net.2.weight",
+    "net.2.bias"
+  ],
+  "identity": {
+    "fold": "eth",
+    "frozen_manifest_sha256": "65e75448484645e53c6ea1033bc7d0b83cd3cbd6cbb1106f87016163967713c4",
+    "upstream_identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "eth",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "geometry": "f16b8df240ea4dd56e1c06cf53c918da2b6df16c1bde16ca8d91bc03e00694a2"
+    },
+    "split_sha256": "3d781fb113daaca7b08ea6dcac43a1dc522df3e0542b80abcdf603e619e2a28c",
+    "split_file_sha256": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+    "config_file_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+    "checkpoint_sha256": "c0d664bb3d7bde2a5b91428dd5ed4ddb8d31dd5a48291837391f6a85bad88473",
+    "provider": [
+      {
+        "stage": "density",
+        "epoch": 61,
+        "sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815"
+      },
+      {
+        "stage": "head",
+        "epoch": 19,
+        "sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6"
+      }
+    ],
+    "banks": {
+      "train": "d78eaebecef2636a82a736ea9071a3f800635852844f4be78431b2b797efb2d1",
+      "selection_dev": "601cf8df55e8078aa32b983e5eb77b98a3ae7531d1d523a781ad87b76749e94a"
+    },
+    "config": "e3407759cf5e697170ca7bcc247246f26b1de51f3949a3f84d3858be540fb95d",
+    "stage": "joint",
+    "experiment": "continuous_joint_flow_remaining_folds",
+    "selector": "minimum actual full-dev B JADE; exact ties earlier completed epoch",
+    "latent_caches": {
+      "train": "421fbbbf75eff2f9c0bddb2b94c8823b8c3d9d8b0f409ac14a86038c1434a86b",
+      "selection_dev": "c8fcd2448031f62dc2dd4eac5e25910d7c6c218cc4ebb83231338ea476e35b15"
+    }
+  },
+  "frozen_unchanged": true,
+  "retention": {
+    "all_completed_epoch_snapshots": 45,
+    "top5_distinct_epochs": [
+      30,
+      37,
+      24,
+      34,
+      28
+    ],
+    "complete_resume_state_verified": true,
+    "aliases_do_not_count_as_distinct_epochs": true
+  },
+  "test_access": false
+}

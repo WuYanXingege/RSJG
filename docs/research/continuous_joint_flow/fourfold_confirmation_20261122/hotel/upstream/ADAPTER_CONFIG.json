@@ -1,0 +1,77 @@
+{
+  "fold": "hotel",
+  "original_folder": "<host-path-sha256:7c0829c539967143bad8dc55bfd24e70ef5122cf6c8b01e1ebc36212fd13b208>",
+  "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+  "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "native_identity": {
+    "schema": "bcep-ebjd-v2-resolved-v1",
+    "fold": "hotel",
+    "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+    "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+    "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+    "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+    "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4"
+  },
+  "config_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+  "split_path": "<host-path-sha256:100a2055ee53a18878026830599a38e1127faf9faec74b9e3da98da2c93f7ef0>",
+  "split_sha256": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+  "stage_caps": {
+    "density": 78000,
+    "head": 15600,
+    "joint": 19500
+  },
+  "stages": [
+    "density",
+    "base-cache",
+    "head",
+    "banks",
+    "joint"
+  ],
+  "recipes": {
+    "density": {
+      "seed": 3102,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "clip": 1.0,
+      "logical_scenes": 4,
+      "max_epochs": 100,
+      "minimum": 20,
+      "patience": 15,
+      "scheduler_patience": 3
+    },
+    "head": {
+      "seed": 3102,
+      "lr": 0.0005,
+      "weight_decay": 0.0001,
+      "clip": 1.0,
+      "logical_scenes": 4,
+      "max_epochs": 20,
+      "minimum": 5,
+      "patience": 5,
+      "scheduler_patience": 2
+    },
+    "joint": {
+      "seed": 3201,
+      "lr": 0.0001,
+      "weight_decay": 0.0001,
+      "clip": 5.0,
+      "logical_scenes": 16,
+      "max_epochs": 100,
+      "minimum": 30,
+      "patience": 15,
+      "scheduler_horizon": 100
+    }
+  },
+  "selectors": {
+    "density": "dev_nll_final_agent_micro",
+    "head": "dev_minfde20_agent_micro",
+    "joint": "dev_H_JADE"
+  },
+  "tie_break": "strict earlier completed epoch",
+  "retention": "ALL completed epochs + original rank1/best + last + machine-readable Top5",
+  "native_state_writer_sha256": "2615795a8f215b7f52b4bcc641fa0fc59c5508c201790139a60c30dccaef7112",
+  "native_workflow_sha256": "6ef59620c6d05955d3bd73da36c4f513a14ca2948b0f08b4c88419d56538096e",
+  "migrated_stage": "copy complete surviving files; preserve original state/identity/RNG",
+  "original_assets_read_only": true,
+  "heldout_future_access": false
+}

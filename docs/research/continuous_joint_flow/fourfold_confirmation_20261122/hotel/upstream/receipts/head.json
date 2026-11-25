@@ -1,0 +1,227 @@
+{
+  "status": "COMPLETE",
+  "stage": "head",
+  "epoch": 9,
+  "update": 7020,
+  "stop_reason": "early_stop",
+  "history_sha256": "1a77c753d247c65fc1c2726f5c0cdc7d834a172ceb9640912c73d42e2ccc1586",
+  "selected": {
+    "stage": "head",
+    "trained": true,
+    "frozen": true,
+    "weights_sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b",
+    "epoch": 4,
+    "updates": 3120,
+    "selection": "dev_minfde20_agent_micro",
+    "value": 0.341481398553975,
+    "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+    "base": {
+      "stage": "density",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+      "epoch": 57,
+      "updates": 44460,
+      "selection": "dev_nll_final_agent_micro",
+      "value": 1.063470154341977,
+      "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+    }
+  },
+  "ranks": [
+    {
+      "fold": "hotel",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 1,
+      "epoch": 4,
+      "update": 3120,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.341481398553975,
+      "file": "epoch_004.pt",
+      "checkpoint_sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b",
+      "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+          "epoch": 57,
+          "updates": 44460,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 1.063470154341977,
+          "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+        },
+        "caches": [
+          "404c256e07a639d68b2211582d934622b238db798ec9892c338c28498e8bbe75",
+          "66c0fea057b347079f2ced7fc8f5368eb634ec9bc587e3baf615eefb3726246e",
+          "88b23f5532ed9ef21e21a7282da3185f9c0f985ea6ac111958861a55f60c9cfd",
+          "6bc2a736d8441fcd348842210bc35161593ce7210179c61ab0a937a931a0f2b4",
+          "5253ad8baf37898e3dedce831a8526ed0343abb8dd4d1e66a6368af2ef19257f",
+          "55f2322e292b6f92f774ac925b1031763b145ad08198f30f926d20714cb91d66",
+          "2114f149fefa9669030b2a82f9c2a28dfa1602d1018493786e1ba50a9a60ab1d"
+        ]
+      }
+    },
+    {
+      "fold": "hotel",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 2,
+      "epoch": 5,
+      "update": 3900,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.3422032852655528,
+      "file": "epoch_005.pt",
+      "checkpoint_sha256": "ec4e698b85ce123acbbb2833a6b485adc860e1a777462552fa91b550ebf7246e",
+      "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+          "epoch": 57,
+          "updates": 44460,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 1.063470154341977,
+          "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+        },
+        "caches": [
+          "404c256e07a639d68b2211582d934622b238db798ec9892c338c28498e8bbe75",
+          "66c0fea057b347079f2ced7fc8f5368eb634ec9bc587e3baf615eefb3726246e",
+          "88b23f5532ed9ef21e21a7282da3185f9c0f985ea6ac111958861a55f60c9cfd",
+          "6bc2a736d8441fcd348842210bc35161593ce7210179c61ab0a937a931a0f2b4",
+          "5253ad8baf37898e3dedce831a8526ed0343abb8dd4d1e66a6368af2ef19257f",
+          "55f2322e292b6f92f774ac925b1031763b145ad08198f30f926d20714cb91d66",
+          "2114f149fefa9669030b2a82f9c2a28dfa1602d1018493786e1ba50a9a60ab1d"
+        ]
+      }
+    },
+    {
+      "fold": "hotel",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 3,
+      "epoch": 9,
+      "update": 7020,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.3422313834573302,
+      "file": "epoch_009.pt",
+      "checkpoint_sha256": "ac142903e0feef63ce2f5776d8fd515ac442435ca683430f6203773cd8867620",
+      "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+          "epoch": 57,
+          "updates": 44460,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 1.063470154341977,
+          "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+        },
+        "caches": [
+          "404c256e07a639d68b2211582d934622b238db798ec9892c338c28498e8bbe75",
+          "66c0fea057b347079f2ced7fc8f5368eb634ec9bc587e3baf615eefb3726246e",
+          "88b23f5532ed9ef21e21a7282da3185f9c0f985ea6ac111958861a55f60c9cfd",
+          "6bc2a736d8441fcd348842210bc35161593ce7210179c61ab0a937a931a0f2b4",
+          "5253ad8baf37898e3dedce831a8526ed0343abb8dd4d1e66a6368af2ef19257f",
+          "55f2322e292b6f92f774ac925b1031763b145ad08198f30f926d20714cb91d66",
+          "2114f149fefa9669030b2a82f9c2a28dfa1602d1018493786e1ba50a9a60ab1d"
+        ]
+      }
+    },
+    {
+      "fold": "hotel",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 4,
+      "epoch": 7,
+      "update": 5460,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.34250489091656366,
+      "file": "epoch_007.pt",
+      "checkpoint_sha256": "3ac893d3d17b28628959fc1673d6781b604e7e3b03e7489d7f948dd568b8cdbe",
+      "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+          "epoch": 57,
+          "updates": 44460,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 1.063470154341977,
+          "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+        },
+        "caches": [
+          "404c256e07a639d68b2211582d934622b238db798ec9892c338c28498e8bbe75",
+          "66c0fea057b347079f2ced7fc8f5368eb634ec9bc587e3baf615eefb3726246e",
+          "88b23f5532ed9ef21e21a7282da3185f9c0f985ea6ac111958861a55f60c9cfd",
+          "6bc2a736d8441fcd348842210bc35161593ce7210179c61ab0a937a931a0f2b4",
+          "5253ad8baf37898e3dedce831a8526ed0343abb8dd4d1e66a6368af2ef19257f",
+          "55f2322e292b6f92f774ac925b1031763b145ad08198f30f926d20714cb91d66",
+          "2114f149fefa9669030b2a82f9c2a28dfa1602d1018493786e1ba50a9a60ab1d"
+        ]
+      }
+    },
+    {
+      "fold": "hotel",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 5,
+      "epoch": 8,
+      "update": 6240,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.3426598863063662,
+      "file": "epoch_008.pt",
+      "checkpoint_sha256": "4d46842b79e1cdf52ef379c976369853a2182cd2be5ab841a877aa16176cea06",
+      "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+          "epoch": 57,
+          "updates": 44460,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 1.063470154341977,
+          "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+        },
+        "caches": [
+          "404c256e07a639d68b2211582d934622b238db798ec9892c338c28498e8bbe75",
+          "66c0fea057b347079f2ced7fc8f5368eb634ec9bc587e3baf615eefb3726246e",
+          "88b23f5532ed9ef21e21a7282da3185f9c0f985ea6ac111958861a55f60c9cfd",
+          "6bc2a736d8441fcd348842210bc35161593ce7210179c61ab0a937a931a0f2b4",
+          "5253ad8baf37898e3dedce831a8526ed0343abb8dd4d1e66a6368af2ef19257f",
+          "55f2322e292b6f92f774ac925b1031763b145ad08198f30f926d20714cb91d66",
+          "2114f149fefa9669030b2a82f9c2a28dfa1602d1018493786e1ba50a9a60ab1d"
+        ]
+      }
+    }
+  ]
+}

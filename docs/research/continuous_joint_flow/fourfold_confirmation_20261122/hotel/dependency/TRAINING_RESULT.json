@@ -1,0 +1,179 @@
+{
+  "fold": "hotel",
+  "rank1_checkpoint": "<host-path-sha256:5abf4d1a7ebbe00e7a81c396f2d8ba0e864368cdab42bed6b701bf6fd04881ff>",
+  "rank1_epoch": 19,
+  "rank1_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+  "rank1_metrics": {
+    "all": {
+      "minADE": 0.24224466309831597,
+      "minFDE": 0.449745562799765,
+      "JADE": 0.36436125501275585,
+      "JFDE": 0.723063430501159,
+      "scene_weighted_minADE": 0.2395864949198873,
+      "scene_weighted_minFDE": 0.4307876687048837,
+      "coordination_gap_ADE": 0.12477476009286856,
+      "coordination_gap_FDE": 0.29227576179627524,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1260.398982100538,
+        "agent_minFDE": 2340.0261632471775,
+        "scene_JADE": 250.680543448776,
+        "scene_JFDE": 497.46764018479735,
+        "scene_marginal_ADE": 164.83550850488245,
+        "scene_marginal_FDE": 296.38191606896
+      }
+    },
+    "N_ge_9": {
+      "minADE": 0.2597759473382682,
+      "minFDE": 0.48790733259813607,
+      "JADE": 0.4951617600015514,
+      "JFDE": 1.0703286473428346,
+      "scene_weighted_minADE": 0.27336225430198136,
+      "scene_weighted_minFDE": 0.5304453812992376,
+      "coordination_gap_ADE": 0.22179950569957002,
+      "coordination_gap_FDE": 0.539883266043597,
+      "agent_count": 3087,
+      "scene_count": 181,
+      "sums": {
+        "agent_minADE": 801.928349433234,
+        "agent_minFDE": 1506.169935730446,
+        "scene_JADE": 89.6242785602808,
+        "scene_JFDE": 193.72948516905308,
+        "scene_marginal_ADE": 49.47856802865863,
+        "scene_marginal_FDE": 96.01061401516199
+      }
+    },
+    "epoch": 19,
+    "windows": 688,
+    "dense_windows": 181,
+    "dev_delta_nll_nat_per_person": -0.05703592401427645,
+    "actual_ddim_calls": 688,
+    "correction_calls": 688,
+    "ddim_steps": 20,
+    "seed": 2035,
+    "seconds": 316.98042609589174,
+    "test_access": false,
+    "coverage": {
+      "all": {
+        "raw256": {
+          "agent_micro_minFDE": 0.1736822056510894,
+          "scene_macro_minFDE": 0.1696169916429449,
+          "agent_count": 5203,
+          "scene_count": 688
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.45528425735247885,
+          "scene_macro_minFDE": 0.4359448229643835,
+          "agent_count": 5203,
+          "scene_count": 688
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.449745562799765,
+          "scene_macro_minFDE": 0.43078766752575515,
+          "agent_count": 5203,
+          "scene_count": 688
+        }
+      },
+      "N_ge_9": {
+        "raw256": {
+          "agent_micro_minFDE": 0.19076744993438308,
+          "scene_macro_minFDE": 0.21914702552109297,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "selected20": {
+          "agent_micro_minFDE": 0.4943416186560742,
+          "scene_macro_minFDE": 0.5368844960465264,
+          "agent_count": 3087,
+          "scene_count": 181
+        },
+        "corrected20": {
+          "agent_micro_minFDE": 0.48790733259813607,
+          "scene_macro_minFDE": 0.5304453790066711,
+          "agent_count": 3087,
+          "scene_count": 181
+        }
+      }
+    },
+    "delta_nll_nat_per_person": {
+      "all": -0.05703592401427645,
+      "N_ge_9": -0.012977363941598477
+    }
+  },
+  "completed_epochs": 34,
+  "updates": 6630,
+  "stop_reason": "early_stop",
+  "recipe": {
+    "seed": 3201,
+    "lr": 0.0001,
+    "weight_decay": 0.0001,
+    "clip": 5.0,
+    "logical_scenes": 16,
+    "max_epochs": 100,
+    "minimum": 30,
+    "patience": 15,
+    "scheduler_horizon": 100
+  },
+  "optimizer_parameter_names": [
+    "net.0.weight",
+    "net.0.bias",
+    "net.2.weight",
+    "net.2.bias"
+  ],
+  "identity": {
+    "fold": "hotel",
+    "frozen_manifest_sha256": "2f2ed6c313f0e1d7e14a7c85b0cef371dd3a14e23a084821034bab7d8e1c481e",
+    "upstream_identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "hotel",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4"
+    },
+    "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+    "split_file_sha256": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+    "config_file_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+    "checkpoint_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+    "provider": [
+      {
+        "stage": "density",
+        "epoch": 57,
+        "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+      },
+      {
+        "stage": "head",
+        "epoch": 4,
+        "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+      }
+    ],
+    "banks": {
+      "train": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+      "selection_dev": "5cb8690ac4f6ce36b7ac7572d43ff70d430d274132b0a76eed236a5928ce2b35"
+    },
+    "config": "d6d3d84fe09d152568847964fd743c89c1b0ad7fbfd50e709b274c48419b209c",
+    "stage": "joint",
+    "experiment": "continuous_joint_flow_remaining_folds",
+    "selector": "minimum actual full-dev B JADE; exact ties earlier completed epoch",
+    "latent_caches": {
+      "train": "b0b694312eae6ed87965294b8986f9692595eeb50b20eb3715fd5df7e07e54b5",
+      "selection_dev": "f1a3c1edd164afe47772e68b02e768986b9fb52f078fd58eaa3068752bc3ddcf"
+    }
+  },
+  "frozen_unchanged": true,
+  "retention": {
+    "all_completed_epoch_snapshots": 34,
+    "top5_distinct_epochs": [
+      19,
+      33,
+      9,
+      11,
+      12
+    ],
+    "complete_resume_state_verified": true,
+    "aliases_do_not_count_as_distinct_epochs": true
+  },
+  "test_access": false
+}

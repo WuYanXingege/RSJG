@@ -1,0 +1,341 @@
+{
+  "status": "COMPLETE",
+  "fold": "zara1",
+  "output": "<host-path-sha256:9c0fd585ecf80b48dc01f93b79cdb7d703ccedc440990030afafb1b85752f204>",
+  "paths": {
+    "split": "<host-path-sha256:98da631f895ee949fcd5af5f6711c95ecf16a781c3c8bdfad605fb05bcc518cc>",
+    "density": "<host-path-sha256:e29720d3db3025cb2e411d36efb48a2c5d104154635b39825755c8e5477743d2>",
+    "head": "<host-path-sha256:a009a3fd2ca5ae892c2689c5ca68d2f6b090eddbb862e614591dc9161af1c34f>",
+    "joint": "<host-path-sha256:0d053438789434c73ff2203c7e55d83ee51882e1d8fb59e4998aeb5bedc438ad>",
+    "train_bank": "<host-path-sha256:3dde117624050e465f3451cb47327d9d330d683b82e3cd8666b412a568ab19f7>",
+    "dev_bank": "<host-path-sha256:d377aaa8389752b64fbf3d5431a8d452d8ac638234081ee8cb5d825a406ab8a7>"
+  },
+  "split_path": "<host-path-sha256:98da631f895ee949fcd5af5f6711c95ecf16a781c3c8bdfad605fb05bcc518cc>",
+  "split_sha256": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+  "config_path": "<host-path-sha256:c55e959d4f64008854f7ffd1b41b0b3771490f8c8147d53a7e26592857799fee>",
+  "config_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+  "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+  "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "identity": {
+    "schema": "bcep-ebjd-v2-resolved-v1",
+    "fold": "zara1",
+    "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+    "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+    "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+    "members_redacted_sha256": "66d5cec32d19cfa39684446310c5483c3febd878c338d8a21d5910a7169d7586",
+    "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330"
+  },
+  "geometry": {
+    "layout": {
+      "schema": "bcep-v2-geometry-v1",
+      "width_m": 32.0,
+      "pixels": 256,
+      "center": "last_observed",
+      "axes": "world_x_columns_y_rows",
+      "crop_align_corners": true,
+      "stride": 8,
+      "offset": 0,
+      "feature_align_corners": false,
+      "outside": "six_zero_channels"
+    },
+    "split": "5e1b5c313874db2949c5a46f54c661f7feaad8413d0ace1f0904481e944720a0",
+    "crop_sources": {
+      "scripts/prepare_bcep_jmm.py": "8bb1d1c88da0c1c90b86460d4973103481b2ec703e7f2fe9dc4a855302ce99fd",
+      "ebjd/export_ethucy.py": "17fa120ba0169dcd09b22db70ab9d50ab5e770dc62f11cae881f334172b82a77"
+    },
+    "records_redacted_sha256": "ca4c97626618a2720354857a875d84f5651b39f67a0d5947a53dd43d8e823e3d"
+  },
+  "banks": {
+    "train": {
+      "path": "<host-path-sha256:3dde117624050e465f3451cb47327d9d330d683b82e3cd8666b412a568ab19f7>",
+      "sha256": "d25cb323f50d434bf51ea05731de5a967e0c9ffa7302e8c1f4aa177a5445d978",
+      "identity": {
+        "schema": "bcep-v2-spatial-budget-head-v1",
+        "fold": "zara1",
+        "split": "c021422e469f6a86e5d3c0dbcf52f8f7e5ab812eb5ecfdfcd335f9780cc7e998",
+        "member_hash": "82eea0fab2e0f4859e9cb3ad9ea26a63a373dce83bf4f580a5d66846cf217d7e",
+        "row_format": "member-identity-sha256-v2",
+        "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330",
+        "scales": [
+          [
+            0.1,
+            0.1
+          ],
+          [
+            0.1140954776508584,
+            0.1111851415528198
+          ],
+          [
+            0.18822587952933667,
+            0.18229305754562003
+          ],
+          [
+            0.27282844591533306,
+            0.26148823864576726
+          ],
+          [
+            0.3664572748658921,
+            0.34671702966641216
+          ],
+          [
+            0.4679707985096867,
+            0.4365250497995289
+          ],
+          [
+            0.5764040916032078,
+            0.5298350567137438
+          ],
+          [
+            0.6911018675988422,
+            0.6258834325851128
+          ],
+          [
+            0.8115498840637401,
+            0.72419579643837
+          ],
+          [
+            0.9371269066346171,
+            0.8245573818581835
+          ],
+          [
+            1.0675408711354777,
+            0.9269758598525344
+          ],
+          [
+            1.2026995676339498,
+            1.0315321290935038
+          ]
+        ],
+        "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+        "purpose": "train",
+        "seed": 2035,
+        "view": null,
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+          "epoch": 61,
+          "updates": 44103,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8072421300127228,
+          "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af",
+          "epoch": 7,
+          "updates": 5061,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.333091471705659,
+          "identity": "0aabaf300e63534a7de652a34282bd76921bd4c87f2b38f6bd9cb1fbd435b4e8",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+            "epoch": 61,
+            "updates": 44103,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 0.8072421300127228,
+            "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+          }
+        },
+        "augmentation": "canonical",
+        "test_only": false,
+        "trained": true,
+        "no_future_as_input": true,
+        "K": 20,
+        "M": 256,
+        "dtype": "float32",
+        "unit": "m",
+        "selector": {
+          "method": "kmeans++/Lloyd",
+          "n_init": 5,
+          "max_iter": 100,
+          "tolerance_m": 1e-06,
+          "ordering": "original kmeans center order"
+        }
+      }
+    },
+    "selection_dev": {
+      "path": "<host-path-sha256:d377aaa8389752b64fbf3d5431a8d452d8ac638234081ee8cb5d825a406ab8a7>",
+      "sha256": "48aa3ee1d01dd3df6c52006bd663b19b2230cc1dfff9dfea2c51e0f4edc9734a",
+      "identity": {
+        "schema": "bcep-v2-spatial-budget-head-v1",
+        "fold": "zara1",
+        "split": "c021422e469f6a86e5d3c0dbcf52f8f7e5ab812eb5ecfdfcd335f9780cc7e998",
+        "member_hash": "a6ca6a483cce008211283fd88947512e4d55de86489084a1104481b35ceb9a77",
+        "row_format": "member-identity-sha256-v2",
+        "geometry": "6aaf198709b85020918101f1779cb1e7473693744528e99364e15d19b8e10330",
+        "scales": [
+          [
+            0.1,
+            0.1
+          ],
+          [
+            0.1140954776508584,
+            0.1111851415528198
+          ],
+          [
+            0.18822587952933667,
+            0.18229305754562003
+          ],
+          [
+            0.27282844591533306,
+            0.26148823864576726
+          ],
+          [
+            0.3664572748658921,
+            0.34671702966641216
+          ],
+          [
+            0.4679707985096867,
+            0.4365250497995289
+          ],
+          [
+            0.5764040916032078,
+            0.5298350567137438
+          ],
+          [
+            0.6911018675988422,
+            0.6258834325851128
+          ],
+          [
+            0.8115498840637401,
+            0.72419579643837
+          ],
+          [
+            0.9371269066346171,
+            0.8245573818581835
+          ],
+          [
+            1.0675408711354777,
+            0.9269758598525344
+          ],
+          [
+            1.2026995676339498,
+            1.0315321290935038
+          ]
+        ],
+        "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+        "purpose": "selection_dev",
+        "seed": 2035,
+        "view": null,
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+          "epoch": 61,
+          "updates": 44103,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8072421300127228,
+          "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af",
+          "epoch": 7,
+          "updates": 5061,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.333091471705659,
+          "identity": "0aabaf300e63534a7de652a34282bd76921bd4c87f2b38f6bd9cb1fbd435b4e8",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+            "epoch": 61,
+            "updates": 44103,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 0.8072421300127228,
+            "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+          }
+        },
+        "augmentation": "canonical",
+        "test_only": false,
+        "trained": true,
+        "no_future_as_input": true,
+        "K": 20,
+        "M": 256,
+        "dtype": "float32",
+        "unit": "m",
+        "selector": {
+          "method": "kmeans++/Lloyd",
+          "n_init": 5,
+          "max_iter": 100,
+          "tolerance_m": 1e-06,
+          "ordering": "original kmeans center order"
+        }
+      }
+    }
+  },
+  "reuse": {
+    "density": "complete native stage, read-only symlink",
+    "head": "complete surviving native stage copied; same last resumed"
+  },
+  "density": {
+    "checkpoint": "<host-path-sha256:e29720d3db3025cb2e411d36efb48a2c5d104154635b39825755c8e5477743d2>",
+    "sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+    "frozen": {
+      "stage": "density",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+      "epoch": 61,
+      "updates": 44103,
+      "selection": "dev_nll_final_agent_micro",
+      "value": 0.8072421300127228,
+      "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+    },
+    "stage_directory": "<host-path-sha256:4615c78d9182e33ed11c13f8215d3afda1683a31b0524ed6355fec287537ab7a>"
+  },
+  "head": {
+    "checkpoint": "<host-path-sha256:a009a3fd2ca5ae892c2689c5ca68d2f6b090eddbb862e614591dc9161af1c34f>",
+    "sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af",
+    "frozen": {
+      "stage": "head",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "19127da8421557578f12a7b3250b92eedbaf95841a51cc837ffb59617a3b00af",
+      "epoch": 7,
+      "updates": 5061,
+      "selection": "dev_minfde20_agent_micro",
+      "value": 0.333091471705659,
+      "identity": "0aabaf300e63534a7de652a34282bd76921bd4c87f2b38f6bd9cb1fbd435b4e8",
+      "base": {
+        "stage": "density",
+        "trained": true,
+        "frozen": true,
+        "weights_sha256": "b83a7bbe40568d82e162488642f1d75422019b1ac1112808f324f5328aca5178",
+        "epoch": 61,
+        "updates": 44103,
+        "selection": "dev_nll_final_agent_micro",
+        "value": 0.8072421300127228,
+        "identity": "7a8f71f14868ade2ea0bf67f15d6975c987badf8a2bdfd3fcb9865b9025e471e"
+      }
+    },
+    "stage_directory": "<host-path-sha256:ce1e7e79e7e40ee3fad8eb6364ab0ba218a05f2f2be5240f1c38b70fa53b1b08>"
+  },
+  "joint": {
+    "checkpoint": "<host-path-sha256:0d053438789434c73ff2203c7e55d83ee51882e1d8fb59e4998aeb5bedc438ad>",
+    "sha256": "bf85c688ec1fb96bbcea3de1384f54e9f5abd40c91be38294fe3cd11c0eb210f",
+    "frozen": {
+      "stage": "joint",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "bf85c688ec1fb96bbcea3de1384f54e9f5abd40c91be38294fe3cd11c0eb210f",
+      "epoch": 15,
+      "updates": 2715,
+      "selection": "dev_H_JADE",
+      "value": 0.4047397857673477,
+      "identity": "70e6368c9af62abf434de4ef55fc5daea001cbffaa863ae8b9dde20721f12ee1"
+    },
+    "stage_directory": "<host-path-sha256:e32975dfa46ee6a9a74ac966862d49784ccf7dd8bf689b2f39ed0de265b8c1c5>"
+  }
+}

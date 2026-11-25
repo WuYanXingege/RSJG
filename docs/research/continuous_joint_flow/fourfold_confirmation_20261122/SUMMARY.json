@@ -1,0 +1,404 @@
+{
+  "schema": "fold-equal-paired-five-seed-summary-v1",
+  "seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "ddof": 1,
+  "K_per_seed": 20,
+  "aggregation": "equal fold mean within each seed, then mean and sample SD across five paired seeds",
+  "fold_weights": "equal; neither windows nor agents are used as fold weights",
+  "within_fold_joint_weighting": "equal windows",
+  "within_fold_marginal_weighting": "valid agents",
+  "difference_standard_deviation": "five paired seed differences after equal-fold averaging",
+  "seed_variation": "inference randomness at fixed weights; not independent training repetitions",
+  "scopes": {
+    "new_four": {
+      "status": "COMPLETE",
+      "requested_folds": [
+        "zara1",
+        "hotel",
+        "univ",
+        "eth"
+      ],
+      "included_folds": [
+        "zara1",
+        "hotel",
+        "univ",
+        "eth"
+      ],
+      "missing_folds": [],
+      "groups": {
+        "all": {
+          "available": true,
+          "participating_fold_count": 4,
+          "participating_folds": [
+            "zara1",
+            "hotel",
+            "univ",
+            "eth"
+          ],
+          "completed_but_empty_folds": [],
+          "scene_count": 2350,
+          "agent_count": 28251,
+          "A": {
+            "JADE": {
+              "mean": 0.4771977453894622,
+              "std": 0.002398570015436933
+            },
+            "JFDE": {
+              "mean": 0.9153479890412651,
+              "std": 0.00416521650977452
+            },
+            "minADE": {
+              "mean": 0.28529343073370694,
+              "std": 0.001333532605870077
+            },
+            "minFDE": {
+              "mean": 0.45743192333840044,
+              "std": 0.0026853836623359855
+            }
+          },
+          "B": {
+            "JADE": {
+              "mean": 0.4456772444486634,
+              "std": 0.0022212936474673584
+            },
+            "JFDE": {
+              "mean": 0.846310943749011,
+              "std": 0.004064513983156971
+            },
+            "minADE": {
+              "mean": 0.3165183066407592,
+              "std": 0.0016266298035489636
+            },
+            "minFDE": {
+              "mean": 0.5668514214078015,
+              "std": 0.00238265090469309
+            }
+          },
+          "B_minus_A": {
+            "JADE": {
+              "mean": -0.03152050094079882,
+              "std": 0.002331398346209879
+            },
+            "JFDE": {
+              "mean": -0.06903704529225423,
+              "std": 0.006918467125903725
+            },
+            "minADE": {
+              "mean": 0.031224875907052217,
+              "std": 0.0018444919112609779
+            },
+            "minFDE": {
+              "mean": 0.10941949806940121,
+              "std": 0.003097550526332576
+            }
+          }
+        },
+        "N_ge_9": {
+          "available": true,
+          "participating_fold_count": 2,
+          "participating_folds": [
+            "zara1",
+            "univ"
+          ],
+          "completed_but_empty_folds": [
+            "hotel",
+            "eth"
+          ],
+          "scene_count": 935,
+          "agent_count": 24387,
+          "A": {
+            "JADE": {
+              "mean": 0.6324171314980311,
+              "std": 0.004302420442332956
+            },
+            "JFDE": {
+              "mean": 1.3108346862661255,
+              "std": 0.008725204699049915
+            },
+            "minADE": {
+              "mean": 0.25616674045804333,
+              "std": 0.002796432817750072
+            },
+            "minFDE": {
+              "mean": 0.4242104870145281,
+              "std": 0.005643028710888311
+            }
+          },
+          "B": {
+            "JADE": {
+              "mean": 0.5805217991496356,
+              "std": 0.0015494257031014667
+            },
+            "JFDE": {
+              "mean": 1.199154317297322,
+              "std": 0.006573672098439081
+            },
+            "minADE": {
+              "mean": 0.2980230740717889,
+              "std": 0.0019765822587440216
+            },
+            "minFDE": {
+              "mean": 0.5520818483849961,
+              "std": 0.004651659895736693
+            }
+          },
+          "B_minus_A": {
+            "JADE": {
+              "mean": -0.05189533234839553,
+              "std": 0.005069738114777993
+            },
+            "JFDE": {
+              "mean": -0.11168036896880358,
+              "std": 0.010985702808230443
+            },
+            "minADE": {
+              "mean": 0.04185633361374559,
+              "std": 0.004355581547399002
+            },
+            "minFDE": {
+              "mean": 0.12787136137046792,
+              "std": 0.00898050202519935
+            }
+          }
+        }
+      }
+    },
+    "all_five": {
+      "status": "COMPLETE",
+      "requested_folds": [
+        "zara1",
+        "hotel",
+        "univ",
+        "eth",
+        "zara2"
+      ],
+      "included_folds": [
+        "zara1",
+        "hotel",
+        "univ",
+        "eth",
+        "zara2"
+      ],
+      "missing_folds": [],
+      "groups": {
+        "all": {
+          "available": true,
+          "participating_fold_count": 5,
+          "participating_folds": [
+            "zara1",
+            "hotel",
+            "univ",
+            "eth",
+            "zara2"
+          ],
+          "completed_but_empty_folds": [],
+          "scene_count": 3348,
+          "agent_count": 34161,
+          "A": {
+            "JADE": {
+              "mean": 0.4501732499502423,
+              "std": 0.002060771365894529
+            },
+            "JFDE": {
+              "mean": 0.8644706549705807,
+              "std": 0.0036729392105937456
+            },
+            "minADE": {
+              "mean": 0.2626358767559703,
+              "std": 0.0009389363156046857
+            },
+            "minFDE": {
+              "mean": 0.4138173213911208,
+              "std": 0.0019417753187658412
+            }
+          },
+          "B": {
+            "JADE": {
+              "mean": 0.4126106067758169,
+              "std": 0.001817224034480139
+            },
+            "JFDE": {
+              "mean": 0.7811784731234257,
+              "std": 0.003233777595676688
+            },
+            "minADE": {
+              "mean": 0.2885650233136027,
+              "std": 0.0014349121641638346
+            },
+            "minFDE": {
+              "mean": 0.5145101085170598,
+              "std": 0.0021264033367703783
+            }
+          },
+          "B_minus_A": {
+            "JADE": {
+              "mean": -0.037562643174425384,
+              "std": 0.002248859821786631
+            },
+            "JFDE": {
+              "mean": -0.08329218184715506,
+              "std": 0.005911107681960663
+            },
+            "minADE": {
+              "mean": 0.02592914655763238,
+              "std": 0.0015201291691635253
+            },
+            "minFDE": {
+              "mean": 0.10069278712593902,
+              "std": 0.0024094744249372503
+            }
+          }
+        },
+        "N_ge_9": {
+          "available": true,
+          "participating_fold_count": 3,
+          "participating_folds": [
+            "zara1",
+            "univ",
+            "zara2"
+          ],
+          "completed_but_empty_folds": [
+            "hotel",
+            "eth"
+          ],
+          "scene_count": 1149,
+          "agent_count": 26584,
+          "A": {
+            "JADE": {
+              "mean": 0.5775430096857598,
+              "std": 0.0032959918050787856
+            },
+            "JFDE": {
+              "mean": 1.1892859147365054,
+              "std": 0.006813016653175185
+            },
+            "minADE": {
+              "mean": 0.23521039307724673,
+              "std": 0.002187480914525239
+            },
+            "minFDE": {
+              "mean": 0.3735761748086565,
+              "std": 0.0038225269997470366
+            }
+          },
+          "B": {
+            "JADE": {
+              "mean": 0.5137854450629136,
+              "std": 0.0011489902108206978
+            },
+            "JFDE": {
+              "mean": 1.047382922625014,
+              "std": 0.005229235298016171
+            },
+            "minADE": {
+              "mean": 0.2672106909482405,
+              "std": 0.0012174108895343504
+            },
+            "minFDE": {
+              "mean": 0.48725628579288893,
+              "std": 0.0030194683459434093
+            }
+          },
+          "B_minus_A": {
+            "JADE": {
+              "mean": -0.06375756462284621,
+              "std": 0.004326303540970862
+            },
+            "JFDE": {
+              "mean": -0.14190299211149154,
+              "std": 0.010705269630838307
+            },
+            "minADE": {
+              "mean": 0.0320002978709938,
+              "std": 0.00303212584766819
+            },
+            "minFDE": {
+              "mean": 0.11368011098423236,
+              "std": 0.005378082638488861
+            }
+          }
+        }
+      }
+    }
+  },
+  "availability": {
+    "zara1": {
+      "status": "COMPLETE",
+      "included": true,
+      "groups": {
+        "all": {
+          "scene_count": 705,
+          "agent_count": 2356
+        },
+        "N_ge_9": {
+          "scene_count": 28,
+          "agent_count": 288
+        }
+      }
+    },
+    "hotel": {
+      "status": "COMPLETE",
+      "included": true,
+      "groups": {
+        "all": {
+          "scene_count": 445,
+          "agent_count": 1197
+        },
+        "N_ge_9": {
+          "scene_count": 0,
+          "agent_count": 0
+        }
+      }
+    },
+    "univ": {
+      "status": "COMPLETE",
+      "included": true,
+      "groups": {
+        "all": {
+          "scene_count": 947,
+          "agent_count": 24334
+        },
+        "N_ge_9": {
+          "scene_count": 907,
+          "agent_count": 24099
+        }
+      }
+    },
+    "eth": {
+      "status": "COMPLETE",
+      "included": true,
+      "groups": {
+        "all": {
+          "scene_count": 253,
+          "agent_count": 364
+        },
+        "N_ge_9": {
+          "scene_count": 0,
+          "agent_count": 0
+        }
+      }
+    },
+    "zara2": {
+      "status": "REUSED_COMPLETE_ARCHIVE",
+      "included": true,
+      "reference_commit": "171bcff3b6b2dbb6aad0becb04e8d7c086c8ffe3",
+      "groups": {
+        "all": {
+          "scene_count": 998,
+          "agent_count": 5910
+        },
+        "N_ge_9": {
+          "scene_count": 214,
+          "agent_count": 2197
+        }
+      },
+      "new_inference_calls": 0
+    }
+  }
+}

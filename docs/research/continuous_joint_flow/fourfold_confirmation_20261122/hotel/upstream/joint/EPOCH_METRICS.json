@@ -1,0 +1,1562 @@
+[
+  {
+    "epoch": 1,
+    "update": 195,
+    "validation": 0.44830523904542935,
+    "metrics": {
+      "minADE": 0.23631375340460964,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.44830523904542935,
+      "JFDE": 0.8283774406475903,
+      "scene_weighted_minADE": 0.23473098949897428,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.21357424954645507,
+      "coordination_gap_FDE": 0.49430111619416456,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1229.540458964184,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 308.4340044632554,
+        "scene_JFDE": 569.9236791655421,
+        "scene_marginal_ADE": 161.4949207752943,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 105.06242537767002,
+      "clean_path_signal_sum": 19.669811624616973
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.0336954539376748,
+    "train_clean_path_alpha2_scene_macro": 0.006308470694232512,
+    "train_mean_per_update": {
+      "loss": 2.6873304325036513,
+      "pair_softmin_m": 0.9632370905193326,
+      "pair_exact_hard_jfde_m": 0.7169293971340264,
+      "world_weight_entropy": 1.046233077591829,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00031525493615272923,
+      "diffusion_term": 1.653591243073065,
+      "geometry_term": 0.00014498098530339867,
+      "pair_term": 0.9632284833930241,
+      "map_term": 0.07005044878575901
+    },
+    "file": "epoch_001.pt",
+    "train_seconds": 1484.4843400050886,
+    "validation_seconds": 386.35044217901304
+  },
+  {
+    "epoch": 2,
+    "update": 390,
+    "validation": 0.4210300220847996,
+    "metrics": {
+      "minADE": 0.2268941425585014,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4210300220847996,
+      "JFDE": 0.8040616817144287,
+      "scene_weighted_minADE": 0.22587751829996705,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19515250378483256,
+      "coordination_gap_FDE": 0.46998535726100293,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1180.5302237318829,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 289.66865519434214,
+        "scene_JFDE": 553.194437019527,
+        "scene_marginal_ADE": 155.40373259037733,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 78.76726992124259,
+      "clean_path_signal_sum": 13.930543365016092
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.025262113509057917,
+    "train_clean_path_alpha2_scene_macro": 0.00446778170783069,
+    "train_mean_per_update": {
+      "loss": 2.1328310309216763,
+      "pair_softmin_m": 0.9490410719176023,
+      "pair_exact_hard_jfde_m": 0.7033835598049709,
+      "world_weight_entropy": 1.050572913088759,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.0002233342830750339,
+      "diffusion_term": 1.1506237757763822,
+      "geometry_term": 0.00011105844607345743,
+      "pair_term": 0.9489934920787048,
+      "map_term": 0.03287935247066111
+    },
+    "file": "epoch_002.pt",
+    "train_seconds": 1452.8743774620816,
+    "validation_seconds": 382.25195439485833
+  },
+  {
+    "epoch": 3,
+    "update": 585,
+    "validation": 0.433032923253513,
+    "metrics": {
+      "minADE": 0.24701024978843167,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.433032923253513,
+      "JFDE": 0.7990505113185189,
+      "scene_weighted_minADE": 0.24517217619604495,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.18786074705746805,
+      "coordination_gap_FDE": 0.4649741868650931,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1285.19432964921,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 297.92665119841695,
+        "scene_JFDE": 549.746751787141,
+        "scene_marginal_ADE": 168.67845722287893,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 58.7725157287482,
+      "clean_path_signal_sum": 10.498951071693227
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.018849427751362478,
+    "train_clean_path_alpha2_scene_macro": 0.0033672068863672953,
+    "train_mean_per_update": {
+      "loss": 1.8803188945238407,
+      "pair_softmin_m": 0.9461456361271086,
+      "pair_exact_hard_jfde_m": 0.7012447131652099,
+      "world_weight_entropy": 1.0657524995908083,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00016833416353347384,
+      "diffusion_term": 0.9327128920084511,
+      "geometry_term": 8.659239338643241e-05,
+      "pair_term": 0.9460449475126389,
+      "map_term": 0.0013061162950128553
+    },
+    "file": "epoch_003.pt",
+    "train_seconds": 1506.821857620962,
+    "validation_seconds": 396.25969954021275
+  },
+  {
+    "epoch": 4,
+    "update": 780,
+    "validation": 0.4164458648788981,
+    "metrics": {
+      "minADE": 0.2281496467223803,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4164458648788981,
+      "JFDE": 0.8035876051100448,
+      "scene_weighted_minADE": 0.22537742721371698,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19106843766518114,
+      "coordination_gap_FDE": 0.469511280656619,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1187.0626118965447,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 286.5147550366819,
+        "scene_JFDE": 552.8682723157108,
+        "scene_marginal_ADE": 155.0596699230373,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 57.576295488244796,
+      "clean_path_signal_sum": 9.661139099408047
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.018465777898731495,
+    "train_clean_path_alpha2_scene_macro": 0.0030985051633765385,
+    "train_mean_per_update": {
+      "loss": 1.802391935330935,
+      "pair_softmin_m": 0.9489088615955232,
+      "pair_exact_hard_jfde_m": 0.7037252514654448,
+      "world_weight_entropy": 1.0556299916949448,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00015485706916980492,
+      "diffusion_term": 0.8519815074017346,
+      "geometry_term": 7.953323784181093e-05,
+      "pair_term": 0.9491554856300354,
+      "map_term": 0.001020539390590678
+    },
+    "file": "epoch_004.pt",
+    "train_seconds": 1394.4659934120718,
+    "validation_seconds": 380.38085589394905
+  },
+  {
+    "epoch": 5,
+    "update": 975,
+    "validation": 0.42501176942984553,
+    "metrics": {
+      "minADE": 0.23318675811492534,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.42501176942984553,
+      "JFDE": 0.8201652228680634,
+      "scene_weighted_minADE": 0.2316642190481341,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19334755038171142,
+      "coordination_gap_FDE": 0.4860888984146376,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1213.2707024719566,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 292.4080973677337,
+        "scene_JFDE": 564.2736733332276,
+        "scene_marginal_ADE": 159.38498270511627,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 58.267967666692584,
+      "clean_path_signal_sum": 9.442554755464016
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.018687609899516545,
+    "train_clean_path_alpha2_scene_macro": 0.0030284011403027633,
+    "train_mean_per_update": {
+      "loss": 1.793190571302787,
+      "pair_softmin_m": 0.9481634896767118,
+      "pair_exact_hard_jfde_m": 0.7037789637589402,
+      "world_weight_entropy": 1.064135351474198,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00015140780241790363,
+      "diffusion_term": 0.8437953205756431,
+      "geometry_term": 7.579493487927111e-05,
+      "pair_term": 0.9482624163898902,
+      "map_term": 0.0009056204555357835
+    },
+    "file": "epoch_005.pt",
+    "train_seconds": 1460.8488404080272,
+    "validation_seconds": 402.33113497309387
+  },
+  {
+    "epoch": 6,
+    "update": 1170,
+    "validation": 0.41935406447669793,
+    "metrics": {
+      "minADE": 0.2194798011106319,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41935406447669793,
+      "JFDE": 0.8208712076681645,
+      "scene_weighted_minADE": 0.2200808360993992,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19927322837729872,
+      "coordination_gap_FDE": 0.4867948832147387,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1141.9534051786177,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 288.5155963599682,
+        "scene_JFDE": 564.7593908756971,
+        "scene_marginal_ADE": 151.41561523638666,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 49.88794102022257,
+      "clean_path_signal_sum": 9.16591906540748
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.015999981084099606,
+    "train_clean_path_alpha2_scene_macro": 0.0029396789818497368,
+    "train_mean_per_update": {
+      "loss": 1.7478482778542317,
+      "pair_softmin_m": 0.9519173746239463,
+      "pair_exact_hard_jfde_m": 0.7054427236621567,
+      "world_weight_entropy": 1.0412219706209644,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00014698042481724118,
+      "diffusion_term": 0.7951100014721575,
+      "geometry_term": 7.357699087436914e-05,
+      "pair_term": 0.9517151687294245,
+      "map_term": 0.0008025398790155404
+    },
+    "file": "epoch_006.pt",
+    "train_seconds": 1417.1641321450006,
+    "validation_seconds": 350.8559613060206
+  },
+  {
+    "epoch": 7,
+    "update": 1365,
+    "validation": 0.4271246377855193,
+    "metrics": {
+      "minADE": 0.23083788885627757,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4271246377855193,
+      "JFDE": 0.8329285750203484,
+      "scene_weighted_minADE": 0.23099690653535343,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19612773125016586,
+      "coordination_gap_FDE": 0.4988522505669227,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1201.0495357192121,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 293.86175079643726,
+        "scene_JFDE": 573.0548596139997,
+        "scene_marginal_ADE": 158.92587169632316,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 49.975417824929536,
+      "clean_path_signal_sum": 8.765828480334449
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.016028036505750333,
+    "train_clean_path_alpha2_scene_macro": 0.0028113625658545377,
+    "train_mean_per_update": {
+      "loss": 1.7156308534435736,
+      "pair_softmin_m": 0.956306377144005,
+      "pair_exact_hard_jfde_m": 0.7095582316654534,
+      "world_weight_entropy": 1.0314803867969204,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00014084394851903898,
+      "diffusion_term": 0.7581950721034719,
+      "geometry_term": 7.137475395289824e-05,
+      "pair_term": 0.956485190619834,
+      "map_term": 0.0007383594914996832
+    },
+    "file": "epoch_007.pt",
+    "train_seconds": 1263.323549748864,
+    "validation_seconds": 354.3063240060583
+  },
+  {
+    "epoch": 8,
+    "update": 1560,
+    "validation": 0.41663760755774243,
+    "metrics": {
+      "minADE": 0.23386770695578232,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41663760755774243,
+      "JFDE": 0.8073850982703356,
+      "scene_weighted_minADE": 0.23198856231973095,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.18464904523801148,
+      "coordination_gap_FDE": 0.4733087738169098,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1216.8136792909354,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 286.6466739997268,
+        "scene_JFDE": 555.4809476099908,
+        "scene_marginal_ADE": 159.6081308759749,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 45.87757123552933,
+      "clean_path_signal_sum": 8.383524360153046
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.014713781666301903,
+    "train_clean_path_alpha2_scene_macro": 0.002688750596585326,
+    "train_mean_per_update": {
+      "loss": 1.699664892289692,
+      "pair_softmin_m": 0.9715981169811863,
+      "pair_exact_hard_jfde_m": 0.7249928524230492,
+      "world_weight_entropy": 1.040882625580953,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.0001344467639319428,
+      "diffusion_term": 0.727082089756654,
+      "geometry_term": 6.829181124427983e-05,
+      "pair_term": 0.9716726164023082,
+      "map_term": 0.000707439401822134
+    },
+    "file": "epoch_008.pt",
+    "train_seconds": 1169.097794140922,
+    "validation_seconds": 318.256406492088
+  },
+  {
+    "epoch": 9,
+    "update": 1755,
+    "validation": 0.4203660799417818,
+    "metrics": {
+      "minADE": 0.22282953376951767,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4203660799417818,
+      "JFDE": 0.825467937409358,
+      "scene_weighted_minADE": 0.2218915383374795,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19847454160430233,
+      "coordination_gap_FDE": 0.4913916129559322,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1159.3820642028004,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 289.2118629999459,
+        "scene_JFDE": 567.9219409376383,
+        "scene_marginal_ADE": 152.6613783761859,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 49.52530906816264,
+      "clean_path_signal_sum": 8.446792469814909
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01588367834129655,
+    "train_clean_path_alpha2_scene_macro": 0.0027090418440714912,
+    "train_mean_per_update": {
+      "loss": 1.7233047402535493,
+      "pair_softmin_m": 0.9769170439164171,
+      "pair_exact_hard_jfde_m": 0.7298292079324247,
+      "world_weight_entropy": 1.034669064109364,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.0001354322959145658,
+      "diffusion_term": 0.7454137852354833,
+      "geometry_term": 6.82876362116138e-05,
+      "pair_term": 0.9769710778903503,
+      "map_term": 0.0007161462465092386
+    },
+    "file": "epoch_009.pt",
+    "train_seconds": 975.12434854405,
+    "validation_seconds": 313.49876569607295
+  },
+  {
+    "epoch": 10,
+    "update": 1950,
+    "validation": 0.424704413427863,
+    "metrics": {
+      "minADE": 0.21764326551231922,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.424704413427863,
+      "JFDE": 0.839999103328473,
+      "scene_weighted_minADE": 0.21612459085990005,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.20857982256796298,
+      "coordination_gap_FDE": 0.5059227788750473,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1132.397910460597,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 292.19663643836975,
+        "scene_JFDE": 577.9193830899894,
+        "scene_marginal_ADE": 148.69371851161122,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 43.6424692674193,
+      "clean_path_signal_sum": 7.837659520356738
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013996943318607858,
+    "train_clean_path_alpha2_scene_macro": 0.002513681693507613,
+    "train_mean_per_update": {
+      "loss": 1.6757729244681123,
+      "pair_softmin_m": 0.9809145346399901,
+      "pair_exact_hard_jfde_m": 0.7325262664549262,
+      "world_weight_entropy": 1.0147066807672451,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00012565493509480226,
+      "diffusion_term": 0.6942965015141463,
+      "geometry_term": 6.560942120367658e-05,
+      "pair_term": 0.9805777006949752,
+      "map_term": 0.0007074493318137465
+    },
+    "file": "epoch_010.pt",
+    "train_seconds": 974.8073557170574,
+    "validation_seconds": 319.2565658048261
+  },
+  {
+    "epoch": 11,
+    "update": 2145,
+    "validation": 0.41412757866106237,
+    "metrics": {
+      "minADE": 0.22182558684190262,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41412757866106237,
+      "JFDE": 0.8345188047238734,
+      "scene_weighted_minADE": 0.22132546244849732,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19280211621256504,
+      "coordination_gap_FDE": 0.5004424802704477,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1154.1585283384193,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 284.9197741188109,
+        "scene_JFDE": 574.1489376500249,
+        "scene_marginal_ADE": 152.27191816456616,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 47.22012978175803,
+      "clean_path_signal_sum": 7.7743199683512785
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.015144364907555495,
+    "train_clean_path_alpha2_scene_macro": 0.0024933675331466577,
+    "train_mean_per_update": {
+      "loss": 1.683128708295333,
+      "pair_softmin_m": 0.987877391020839,
+      "pair_exact_hard_jfde_m": 0.73932216458113,
+      "world_weight_entropy": 1.0178128810009628,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00012464235790873502,
+      "diffusion_term": 0.6946750576234796,
+      "geometry_term": 6.438194413727744e-05,
+      "pair_term": 0.9875704113107461,
+      "map_term": 0.0006942065902065322
+    },
+    "file": "epoch_011.pt",
+    "train_seconds": 1049.2557262468617,
+    "validation_seconds": 324.7835706139449
+  },
+  {
+    "epoch": 12,
+    "update": 2340,
+    "validation": 0.41121502436134355,
+    "metrics": {
+      "minADE": 0.21404014330189236,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41121502436134355,
+      "JFDE": 0.8327477755848058,
+      "scene_weighted_minADE": 0.21429742561100962,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19691759875033393,
+      "coordination_gap_FDE": 0.49867145113138006,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1113.6508655997459,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 282.9159367606044,
+        "scene_JFDE": 572.9304696023464,
+        "scene_marginal_ADE": 147.4366288203746,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 45.27233244428362,
+      "clean_path_signal_sum": 7.934276427344685
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01451967044396524,
+    "train_clean_path_alpha2_scene_macro": 0.0025446685142221565,
+    "train_mean_per_update": {
+      "loss": 1.6602769260223096,
+      "pair_softmin_m": 0.9920918595496114,
+      "pair_exact_hard_jfde_m": 0.7437804915144508,
+      "world_weight_entropy": 1.0197540406635754,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00012717747989572542,
+      "diffusion_term": 0.6674848625302119,
+      "geometry_term": 6.420051683268464e-05,
+      "pair_term": 0.9919180031770315,
+      "map_term": 0.0006826766674485955
+    },
+    "file": "epoch_012.pt",
+    "train_seconds": 1186.7901546419598,
+    "validation_seconds": 356.1201411620714
+  },
+  {
+    "epoch": 13,
+    "update": 2535,
+    "validation": 0.4199426948352782,
+    "metrics": {
+      "minADE": 0.22819757584545797,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4199426948352782,
+      "JFDE": 0.8420936511288029,
+      "scene_weighted_minADE": 0.22595943250357672,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19398326233170146,
+      "coordination_gap_FDE": 0.5080173266753771,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1187.3119871239178,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 288.9205740466714,
+        "scene_JFDE": 579.3604319766164,
+        "scene_marginal_ADE": 155.46008956246078,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 49.292678681808184,
+      "clean_path_signal_sum": 7.615050601921553
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01580906949384483,
+    "train_clean_path_alpha2_scene_macro": 0.0024422869153051803,
+    "train_mean_per_update": {
+      "loss": 1.6653856625637182,
+      "pair_softmin_m": 0.983621493177045,
+      "pair_exact_hard_jfde_m": 0.7358553312490036,
+      "world_weight_entropy": 1.0248586270012863,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00012209406843399488,
+      "diffusion_term": 0.6810774575390602,
+      "geometry_term": 6.496658718719963e-05,
+      "pair_term": 0.9834609443083023,
+      "map_term": 0.0006601933837769846
+    },
+    "file": "epoch_013.pt",
+    "train_seconds": 1243.0607234821655,
+    "validation_seconds": 350.66789946099743
+  },
+  {
+    "epoch": 14,
+    "update": 2730,
+    "validation": 0.41886966651153945,
+    "metrics": {
+      "minADE": 0.2159371666699113,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41886966651153945,
+      "JFDE": 0.8351439459650063,
+      "scene_weighted_minADE": 0.21684913623395788,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.20202053027758157,
+      "coordination_gap_FDE": 0.5010676215115806,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1123.5210781835485,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 288.18233055993915,
+        "scene_JFDE": 574.5790348239243,
+        "scene_marginal_ADE": 149.19220572896302,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 43.556247305137276,
+      "clean_path_signal_sum": 7.702167419233604
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013969290348023501,
+    "train_clean_path_alpha2_scene_macro": 0.002470226882371265,
+    "train_mean_per_update": {
+      "loss": 1.6534507525320619,
+      "pair_softmin_m": 0.9898310597269581,
+      "pair_exact_hard_jfde_m": 0.7411108318930355,
+      "world_weight_entropy": 1.0119743098088279,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00012345061064740262,
+      "diffusion_term": 0.6630410846792744,
+      "geometry_term": 6.402888809938408e-05,
+      "pair_term": 0.9895631254244691,
+      "map_term": 0.0006590593721736149
+    },
+    "file": "epoch_014.pt",
+    "train_seconds": 1256.4581653370988,
+    "validation_seconds": 356.5079294659663
+  },
+  {
+    "epoch": 15,
+    "update": 2925,
+    "validation": 0.4229888620429001,
+    "metrics": {
+      "minADE": 0.21604907760432757,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4229888620429001,
+      "JFDE": 0.8447836395515519,
+      "scene_weighted_minADE": 0.21580316402494562,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.20718569801795447,
+      "coordination_gap_FDE": 0.5107073150981261,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1124.1033507753164,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 291.01633708551526,
+        "scene_JFDE": 581.2111440114677,
+        "scene_marginal_ADE": 148.47257684916258,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 41.477040595240624,
+      "clean_path_signal_sum": 7.374617676617845
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013302450479551194,
+    "train_clean_path_alpha2_scene_macro": 0.0023651756499736515,
+    "train_mean_per_update": {
+      "loss": 1.6408064283526096,
+      "pair_softmin_m": 0.9927762189081737,
+      "pair_exact_hard_jfde_m": 0.7447910936053582,
+      "world_weight_entropy": 1.0222940988816112,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011823933355359646,
+      "diffusion_term": 0.64708998467234,
+      "geometry_term": 6.331096936464941e-05,
+      "pair_term": 0.9928818214398164,
+      "map_term": 0.0006530652457677763
+    },
+    "file": "epoch_015.pt",
+    "train_seconds": 1226.9818948800676,
+    "validation_seconds": 364.048088200856
+  },
+  {
+    "epoch": 16,
+    "update": 3120,
+    "validation": 0.41924695311070875,
+    "metrics": {
+      "minADE": 0.22614530371523073,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41924695311070875,
+      "JFDE": 0.8432590279695686,
+      "scene_weighted_minADE": 0.22430594772544452,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19494100538526424,
+      "coordination_gap_FDE": 0.5091827035161429,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1176.6340152303455,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 288.4419037401676,
+        "scene_JFDE": 580.1622112430632,
+        "scene_marginal_ADE": 154.32249203510582,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 44.0404085467535,
+      "clean_path_signal_sum": 7.4393027373077985
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.014124569771248716,
+    "train_clean_path_alpha2_scene_macro": 0.002385921339739512,
+    "train_mean_per_update": {
+      "loss": 1.6460983294468277,
+      "pair_softmin_m": 0.987903077367543,
+      "pair_exact_hard_jfde_m": 0.7408191141948759,
+      "world_weight_entropy": 1.0307908781449888,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011930612308585427,
+      "diffusion_term": 0.657135081527575,
+      "geometry_term": 6.13800818886267e-05,
+      "pair_term": 0.988115704847643,
+      "map_term": 0.000666845230155772
+    },
+    "file": "epoch_016.pt",
+    "train_seconds": 1248.8528119421098,
+    "validation_seconds": 356.06247819494456
+  },
+  {
+    "epoch": 17,
+    "update": 3315,
+    "validation": 0.43217951406962996,
+    "metrics": {
+      "minADE": 0.22386286325477794,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.43217951406962996,
+      "JFDE": 0.861989587123051,
+      "scene_weighted_minADE": 0.2233205711994277,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.20885894287020226,
+      "coordination_gap_FDE": 0.5279132626696252,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1164.7584775146097,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 297.3395056799054,
+        "scene_JFDE": 593.048835940659,
+        "scene_marginal_ADE": 153.64455298520625,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 43.57386369745245,
+      "clean_path_signal_sum": 7.206133958553892
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013974940249343313,
+    "train_clean_path_alpha2_scene_macro": 0.002311139819933897,
+    "train_mean_per_update": {
+      "loss": 1.619115694015263,
+      "pair_softmin_m": 0.9918497407385881,
+      "pair_exact_hard_jfde_m": 0.7435996931918349,
+      "world_weight_entropy": 1.017114936533668,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011551193235108898,
+      "diffusion_term": 0.6263704360009992,
+      "geometry_term": 5.925118058187059e-05,
+      "pair_term": 0.9919009708871062,
+      "map_term": 0.0006695161483025404
+    },
+    "file": "epoch_017.pt",
+    "train_seconds": 1090.4802508619614,
+    "validation_seconds": 319.75054252985865
+  },
+  {
+    "epoch": 18,
+    "update": 3510,
+    "validation": 0.4185646834165984,
+    "metrics": {
+      "minADE": 0.2178262885801878,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4185646834165984,
+      "JFDE": 0.8375468640371637,
+      "scene_weighted_minADE": 0.21685023667009243,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.201714446746506,
+      "coordination_gap_FDE": 0.503470539583738,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1133.350179482717,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 287.9725021906197,
+        "scene_JFDE": 576.2322424575686,
+        "scene_marginal_ADE": 149.1929628290236,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 43.17008607821731,
+      "clean_path_signal_sum": 7.164558289745742
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01384544133361684,
+    "train_clean_path_alpha2_scene_macro": 0.002297805737570796,
+    "train_mean_per_update": {
+      "loss": 1.622869314578099,
+      "pair_softmin_m": 0.9944275342473835,
+      "pair_exact_hard_jfde_m": 0.7460208309476816,
+      "world_weight_entropy": 1.020215146441265,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011491086002311111,
+      "diffusion_term": 0.6275351126487545,
+      "geometry_term": 6.083912829065986e-05,
+      "pair_term": 0.9945110608178835,
+      "map_term": 0.0006473816228937676
+    },
+    "file": "epoch_018.pt",
+    "train_seconds": 985.8995206190739,
+    "validation_seconds": 309.77671269793063
+  },
+  {
+    "epoch": 19,
+    "update": 3705,
+    "validation": 0.4343137110605143,
+    "metrics": {
+      "minADE": 0.2437404117813413,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4343137110605143,
+      "JFDE": 0.843636853222432,
+      "scene_weighted_minADE": 0.24152864251004227,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19278506855047203,
+      "coordination_gap_FDE": 0.5095605287690061,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1268.1813624983188,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 298.8078332096338,
+        "scene_JFDE": 580.4221550170332,
+        "scene_marginal_ADE": 166.1717060469091,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 45.12133882025137,
+      "clean_path_signal_sum": 7.184862196362417
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.014471244009060734,
+    "train_clean_path_alpha2_scene_macro": 0.0023043175742021864,
+    "train_mean_per_update": {
+      "loss": 1.6229107931638376,
+      "pair_softmin_m": 0.9950462364567778,
+      "pair_exact_hard_jfde_m": 0.7464570556373051,
+      "world_weight_entropy": 1.0109519866808634,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011517947198613623,
+      "diffusion_term": 0.6270025887869535,
+      "geometry_term": 6.054346747603631e-05,
+      "pair_term": 0.9950764608641084,
+      "map_term": 0.0006560133070472228
+    },
+    "file": "epoch_019.pt",
+    "train_seconds": 982.5884271659888,
+    "validation_seconds": 315.63552452414297
+  },
+  {
+    "epoch": 20,
+    "update": 3900,
+    "validation": 0.42085132467950326,
+    "metrics": {
+      "minADE": 0.21239781612718298,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.42085132467950326,
+      "JFDE": 0.8487159008983263,
+      "scene_weighted_minADE": 0.21340308024353066,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.2074482444359726,
+      "coordination_gap_FDE": 0.5146395764449005,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1105.105837309733,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 289.54571137949824,
+        "scene_JFDE": 583.9165398180485,
+        "scene_marginal_ADE": 146.8213192075491,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 42.50331398746516,
+      "clean_path_signal_sum": 7.392176102807795
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01363159524934739,
+    "train_clean_path_alpha2_scene_macro": 0.0023708069604899923,
+    "train_mean_per_update": {
+      "loss": 1.6316805377698098,
+      "pair_softmin_m": 0.996791767928026,
+      "pair_exact_hard_jfde_m": 0.7489850085864701,
+      "world_weight_entropy": 1.0255208138325456,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.0001184821480879349,
+      "diffusion_term": 0.6337951418774576,
+      "geometry_term": 6.19289488091217e-05,
+      "pair_term": 0.9970260969052712,
+      "map_term": 0.0006788760264207029
+    },
+    "file": "epoch_020.pt",
+    "train_seconds": 970.7966800360009,
+    "validation_seconds": 309.4294814208988
+  },
+  {
+    "epoch": 21,
+    "update": 4095,
+    "validation": 0.41670089517178577,
+    "metrics": {
+      "minADE": 0.21598721856957323,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41670089517178577,
+      "JFDE": 0.8400085673689149,
+      "scene_weighted_minADE": 0.21566291861669268,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.2010379765550931,
+      "coordination_gap_FDE": 0.5059322429154891,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1123.7814982174896,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 286.6902158781886,
+        "scene_JFDE": 577.9258943498135,
+        "scene_marginal_ADE": 148.37608800828457,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 42.223670666320004,
+      "clean_path_signal_sum": 7.171322042267519
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01354190848823605,
+    "train_clean_path_alpha2_scene_macro": 0.002299974997520051,
+    "train_mean_per_update": {
+      "loss": 1.6066053629972232,
+      "pair_softmin_m": 0.9942469628657395,
+      "pair_exact_hard_jfde_m": 0.7460823540974514,
+      "world_weight_entropy": 1.0215272267298217,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.000114965796316883,
+      "diffusion_term": 0.6119901742931347,
+      "geometry_term": 5.978713614749673e-05,
+      "pair_term": 0.9938004858027666,
+      "map_term": 0.0006399457034301121
+    },
+    "file": "epoch_021.pt",
+    "train_seconds": 983.4432530170307,
+    "validation_seconds": 313.60301455599256
+  },
+  {
+    "epoch": 22,
+    "update": 4290,
+    "validation": 0.4271868588944334,
+    "metrics": {
+      "minADE": 0.222072157516303,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4271868588944334,
+      "JFDE": 0.8439912317959635,
+      "scene_weighted_minADE": 0.22190783057513452,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.2052790283192989,
+      "coordination_gap_FDE": 0.5099149073425377,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1155.4414355573244,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 293.9045589193702,
+        "scene_JFDE": 580.6659674756229,
+        "scene_marginal_ADE": 152.67258743569255,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 43.414541422065895,
+      "clean_path_signal_sum": 7.293820329606746
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013923842662625367,
+    "train_clean_path_alpha2_scene_macro": 0.0023392624533697067,
+    "train_mean_per_update": {
+      "loss": 1.6055946003215817,
+      "pair_softmin_m": 0.9948957529587623,
+      "pair_exact_hard_jfde_m": 0.7470427316530768,
+      "world_weight_entropy": 1.0294210227759566,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011702109882200192,
+      "diffusion_term": 0.6098506562500181,
+      "geometry_term": 5.844873936013278e-05,
+      "pair_term": 0.994918470352124,
+      "map_term": 0.0006499974993403611
+    },
+    "file": "epoch_022.pt",
+    "train_seconds": 978.562252168078,
+    "validation_seconds": 319.1531192618422
+  },
+  {
+    "epoch": 23,
+    "update": 4485,
+    "validation": 0.4207982704758124,
+    "metrics": {
+      "minADE": 0.21491582348227484,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4207982704758124,
+      "JFDE": 0.8486453514697767,
+      "scene_weighted_minADE": 0.21546068269120486,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.20533758778460756,
+      "coordination_gap_FDE": 0.514569027016351,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1118.207029578276,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 289.50921008735895,
+        "scene_JFDE": 583.8680018112063,
+        "scene_marginal_ADE": 148.23694969154894,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 42.14604126958079,
+      "clean_path_signal_sum": 6.939715219471637
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013517011311603846,
+    "train_clean_path_alpha2_scene_macro": 0.0022256944257445918,
+    "train_mean_per_update": {
+      "loss": 1.6110268379107882,
+      "pair_softmin_m": 0.9934172872692729,
+      "pair_exact_hard_jfde_m": 0.7473091352657857,
+      "world_weight_entropy": 1.0451407079204362,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011126827132897209,
+      "diffusion_term": 0.6170726225478075,
+      "geometry_term": 5.8070103121036305e-05,
+      "pair_term": 0.9931383068315112,
+      "map_term": 0.0006465626332843717
+    },
+    "file": "epoch_023.pt",
+    "train_seconds": 970.3345975528937,
+    "validation_seconds": 311.61456524115056
+  },
+  {
+    "epoch": 24,
+    "update": 4680,
+    "validation": 0.4204951304465879,
+    "metrics": {
+      "minADE": 0.2183466962847743,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4204951304465879,
+      "JFDE": 0.8468556550418048,
+      "scene_weighted_minADE": 0.2178481944151721,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.2026469360314158,
+      "coordination_gap_FDE": 0.512779330588379,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1136.0578607696807,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 289.30064974725246,
+        "scene_JFDE": 582.6366906687617,
+        "scene_marginal_ADE": 149.8795577576384,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 41.21538716820419,
+      "clean_path_signal_sum": 6.727414437923471
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01321853340866074,
+    "train_clean_path_alpha2_scene_macro": 0.002157605656806758,
+    "train_mean_per_update": {
+      "loss": 1.62833991624797,
+      "pair_softmin_m": 1.005590812234215,
+      "pair_exact_hard_jfde_m": 0.757972262317,
+      "world_weight_entropy": 1.0308346046678336,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.0001079047299901216,
+      "diffusion_term": 0.6217921006753722,
+      "geometry_term": 5.8157978031628537e-05,
+      "pair_term": 1.005718424400458,
+      "map_term": 0.0006633226080120385
+    },
+    "file": "epoch_024.pt",
+    "train_seconds": 975.3158386179712,
+    "validation_seconds": 308.99469597800635
+  },
+  {
+    "epoch": 25,
+    "update": 4875,
+    "validation": 0.42029256918900754,
+    "metrics": {
+      "minADE": 0.22102638218567,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.42029256918900754,
+      "JFDE": 0.8496441637750628,
+      "scene_weighted_minADE": 0.22113649776546546,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19915607142354208,
+      "coordination_gap_FDE": 0.515567839321637,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1150.000266512041,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 289.1612876020372,
+        "scene_JFDE": 584.5551846772432,
+        "scene_marginal_ADE": 152.14191046264023,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 41.35035590802909,
+      "clean_path_signal_sum": 6.943603587285793
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013261820368194063,
+    "train_clean_path_alpha2_scene_macro": 0.002226941496884475,
+    "train_mean_per_update": {
+      "loss": 1.595899614195029,
+      "pair_softmin_m": 0.9938529296228901,
+      "pair_exact_hard_jfde_m": 0.7460979436771541,
+      "world_weight_entropy": 1.0327848626601166,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00011131071885890638,
+      "diffusion_term": 0.6013090212329405,
+      "geometry_term": 5.757677848563585e-05,
+      "pair_term": 0.9937710175386224,
+      "map_term": 0.0006506803483525708
+    },
+    "file": "epoch_025.pt",
+    "train_seconds": 979.6377709060907,
+    "validation_seconds": 307.9539272650145
+  },
+  {
+    "epoch": 26,
+    "update": 5070,
+    "validation": 0.417041614749144,
+    "metrics": {
+      "minADE": 0.21828926329316337,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.417041614749144,
+      "JFDE": 0.8427785904103413,
+      "scene_weighted_minADE": 0.218375742124112,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19866587262503196,
+      "coordination_gap_FDE": 0.5087022659569156,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1135.759036914329,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 286.92463094741106,
+        "scene_JFDE": 579.8316702023149,
+        "scene_marginal_ADE": 150.24251058138907,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 40.74451944690304,
+      "clean_path_signal_sum": 6.678853447024267
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013067517462124131,
+    "train_clean_path_alpha2_scene_macro": 0.0021420312530546076,
+    "train_mean_per_update": {
+      "loss": 1.590494951300132,
+      "pair_softmin_m": 0.9927809471953591,
+      "pair_exact_hard_jfde_m": 0.7458333576001606,
+      "world_weight_entropy": 1.0360016115963981,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00010709820495274828,
+      "diffusion_term": 0.5966619559750784,
+      "geometry_term": 5.660290214875987e-05,
+      "pair_term": 0.9930309400822107,
+      "map_term": 0.0006383448490049074
+    },
+    "file": "epoch_026.pt",
+    "train_seconds": 980.228815596085,
+    "validation_seconds": 307.5401475268882
+  },
+  {
+    "epoch": 27,
+    "update": 5265,
+    "validation": 0.41651487189648284,
+    "metrics": {
+      "minADE": 0.22015698866404246,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.41651487189648284,
+      "JFDE": 0.839730943921347,
+      "scene_weighted_minADE": 0.22078077105106786,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.19573410084541498,
+      "coordination_gap_FDE": 0.5056546194679212,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1145.4768120190129,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 286.5622318647802,
+        "scene_JFDE": 577.7348894178867,
+        "scene_marginal_ADE": 151.8971704831347,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 41.56889248532116,
+      "clean_path_signal_sum": 6.657075756831233
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013331909071623207,
+    "train_clean_path_alpha2_scene_macro": 0.0021350467468990485,
+    "train_mean_per_update": {
+      "loss": 1.5953362077379074,
+      "pair_softmin_m": 0.9936544776147047,
+      "pair_exact_hard_jfde_m": 0.746101825218669,
+      "world_weight_entropy": 1.0287432369534273,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00010673951836688801,
+      "diffusion_term": 0.6009948146499253,
+      "geometry_term": 5.5217584034013456e-05,
+      "pair_term": 0.99350772374429,
+      "map_term": 0.0006717046031729204
+    },
+    "file": "epoch_027.pt",
+    "train_seconds": 977.1837697399314,
+    "validation_seconds": 307.2036234489642
+  },
+  {
+    "epoch": 28,
+    "update": 5460,
+    "validation": 0.42679927455867794,
+    "metrics": {
+      "minADE": 0.2211798062209871,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.42679927455867794,
+      "JFDE": 0.8673580900960883,
+      "scene_weighted_minADE": 0.22130552635441514,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.2054937482042628,
+      "coordination_gap_FDE": 0.5332817656426625,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1150.7985317677958,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 293.6379008963704,
+        "scene_JFDE": 596.7423659861088,
+        "scene_marginal_ADE": 152.2582021318376,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 40.279114711305965,
+      "clean_path_signal_sum": 6.7168270304518956
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.012918253595672214,
+    "train_clean_path_alpha2_scene_macro": 0.0021542100803245336,
+    "train_mean_per_update": {
+      "loss": 1.5978913659564196,
+      "pair_softmin_m": 1.0039771846676375,
+      "pair_exact_hard_jfde_m": 0.7560314999584999,
+      "world_weight_entropy": 1.0268652513326657,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000003,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00010775756812572231,
+      "diffusion_term": 0.5931035735788505,
+      "geometry_term": 5.802437537815887e-05,
+      "pair_term": 1.0039748212179311,
+      "map_term": 0.0006471815458563471
+    },
+    "file": "epoch_028.pt",
+    "train_seconds": 971.310054867994,
+    "validation_seconds": 311.9468002161011
+  },
+  {
+    "epoch": 29,
+    "update": 5655,
+    "validation": 0.4225247729039036,
+    "metrics": {
+      "minADE": 0.22010135071067474,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4225247729039036,
+      "JFDE": 0.8573304495211084,
+      "scene_weighted_minADE": 0.21983767209877803,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.2026871008051256,
+      "coordination_gap_FDE": 0.5232541250676825,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1145.1873277476407,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 290.6970437578857,
+        "scene_JFDE": 589.8433492705226,
+        "scene_marginal_ADE": 151.24831840395927,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 41.95268852716504,
+      "clean_path_signal_sum": 6.7767095767408705
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.013454999527634714,
+    "train_clean_path_alpha2_scene_macro": 0.002173415515311376,
+    "train_mean_per_update": {
+      "loss": 1.602954856855556,
+      "pair_softmin_m": 1.0061149223069676,
+      "pair_exact_hard_jfde_m": 0.7589981532914819,
+      "world_weight_entropy": 1.0410841576832472,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00010868883993862843,
+      "diffusion_term": 0.5962167438231138,
+      "geometry_term": 5.7998648375717634e-05,
+      "pair_term": 1.0059390363689416,
+      "map_term": 0.0006323829258482635
+    },
+    "file": "epoch_029.pt",
+    "train_seconds": 970.6591188970488,
+    "validation_seconds": 307.10203219996765
+  },
+  {
+    "epoch": 30,
+    "update": 5850,
+    "validation": 0.4126188030498925,
+    "metrics": {
+      "minADE": 0.21980660746288247,
+      "minFDE": 0.34209376236101385,
+      "JADE": 0.4126188030498925,
+      "JFDE": 0.8433374519741466,
+      "scene_weighted_minADE": 0.219176729887908,
+      "scene_weighted_minFDE": 0.3340763244534258,
+      "coordination_gap_ADE": 0.1934420731619845,
+      "coordination_gap_FDE": 0.5092611275207208,
+      "agent_count": 5203,
+      "scene_count": 688,
+      "sums": {
+        "agent_minADE": 1143.6537786293775,
+        "agent_minFDE": 1779.9138455643551,
+        "scene_JADE": 283.88173649832606,
+        "scene_JFDE": 580.2161669582129,
+        "scene_marginal_ADE": 150.79359016288072,
+        "scene_marginal_FDE": 229.84451122395694
+      }
+    },
+    "train_raw_sums": {
+      "clean_path_raw_sum": 39.01971028673779,
+      "clean_path_signal_sum": 6.673599197946402
+    },
+    "train_counts": {
+      "valid_scene_count": 3118
+    },
+    "train_clean_path_scene_macro": 0.01251433941203906,
+    "train_clean_path_alpha2_scene_macro": 0.0021403461186486213,
+    "train_mean_per_update": {
+      "loss": 1.5956305660116368,
+      "pair_softmin_m": 1.0057031126044718,
+      "pair_exact_hard_jfde_m": 0.7574994590059443,
+      "world_weight_entropy": 1.0214431597992364,
+      "assignment_temperature": 1.0,
+      "pair_temperature_m": 0.10000000000000006,
+      "pair_weight": 1.0,
+      "effective_edges": 1056.1846153846154,
+      "clean_path_term": 0.00010701686195650698,
+      "diffusion_term": 0.589294741225978,
+      "geometry_term": 5.651356613056613e-05,
+      "pair_term": 1.0055357357916923,
+      "map_term": 0.0006365512894915756
+    },
+    "file": "epoch_030.pt",
+    "train_seconds": 968.7678693179041,
+    "validation_seconds": 307.251234583091
+  }
+]

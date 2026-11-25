@@ -1,0 +1,50 @@
+{
+  "status": "COMPLETE",
+  "prediction_manifest_sha256": "d8e9c12273536e2cc134932c84936e9f45ad09a0faa4f6476ccb9ba1d95110ea",
+  "prediction_manifest_canonical_sha256": "e34311221dad3a9ac287f9fb9818daf994d20fe10b9974c9948b582da9267428",
+  "source_config_sha256": "7dd3236e4d45b544832695f6ec255d987c2cb08b7f1e0e913056b20c2dcbe5a8",
+  "pre_score_seal_verification_sha256": "4eec2b88a4a9117a611f361dd291515ef17a1cd971653cc2660ed6c51bed5014",
+  "all_predictions_verified_before_any_truth": true,
+  "prediction_files_verified": 1265,
+  "seal_unix": 1795629463.1732826,
+  "verification_complete_unix": 1795629463.775952,
+  "first_truth_read_unix": 1795629463.8933113,
+  "scoring_complete_unix": 1795629465.647224,
+  "fold": "eth",
+  "windows": 253,
+  "groups": {
+    "all": {
+      "scene_count": 253,
+      "agent_count": 364
+    },
+    "N_ge_9": {
+      "scene_count": 0,
+      "agent_count": 0
+    }
+  },
+  "seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "K_per_seed": 20,
+  "prediction_frames": 12,
+  "future_reads_this_complete_pass": 253,
+  "future_read_once_per_window_for_all_five_seeds": true,
+  "metric_implementation": "ebjd.metrics.hard_metric_statistics and MetricAccumulator",
+  "metric_precision": "CPU FP32 per-world errors and native FP64 accumulation",
+  "seed_pooling": false,
+  "parameter_updates": 0,
+  "selection_on_test": false,
+  "development_thresholds_applied": false,
+  "output_sha256": {
+    "PER_WINDOW.csv": "c417de96dc6e5cf3d5cd109afa22ff59468ea28843ce054dfdbfc54204629cab",
+    "PER_SEED.csv": "6bf24631eeb6b1a04d71f19630315eb63b3df387f0d5218d4af20a88bd94502b",
+    "NATIVE_METRICS.json": "a8ea915bbbe9fddb5d89c6d9da6c0069280e27f8b345865acdd440949e2f66df",
+    "SUMMARY.json": "9ddf1e67d448c586fbcdf564bd822a3a6de812446bc4df7526dc945deb36d662",
+    "SUMMARY.csv": "8ee2d0aee35695c16c42d683f8770057983596a33712b98f47504a5af08418de"
+  },
+  "seconds": 1.7569944341666996
+}

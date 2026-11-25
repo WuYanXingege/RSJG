@@ -1,0 +1,338 @@
+{
+  "status": "COMPLETE",
+  "fold": "hotel",
+  "output": "<host-path-sha256:eab40d6bdfd04d8066a762b354471ba2eb783f53b6b71eca42485257e7969b53>",
+  "paths": {
+    "split": "<host-path-sha256:100a2055ee53a18878026830599a38e1127faf9faec74b9e3da98da2c93f7ef0>",
+    "density": "<host-path-sha256:a57c365ab77f078b495d4b3c2fc582660c00e127b3cddcc56cc75c7cbb67a5a3>",
+    "head": "<host-path-sha256:0e90027014509cc61e3f8b585df30294eaf9821818bc3e3c37499c0fd104914f>",
+    "joint": "<host-path-sha256:84df33ddcdcb58474546229412b2ac2ee794ba38aaf6f643c0a6162a38b4a54b>",
+    "train_bank": "<host-path-sha256:5a5ad07065cfa32ddff40e849e4ddd7071d05fbd7622f5f4172aa682a6e130c4>",
+    "dev_bank": "<host-path-sha256:4ea41c2856cacb3a4a1a93d311cba2073e7277980cc424f91f26a89645d332a5>"
+  },
+  "split_path": "<host-path-sha256:100a2055ee53a18878026830599a38e1127faf9faec74b9e3da98da2c93f7ef0>",
+  "split_sha256": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+  "config_path": "<host-path-sha256:c55e959d4f64008854f7ffd1b41b0b3771490f8c8147d53a7e26592857799fee>",
+  "config_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+  "native_workspace": "<host-path-sha256:977396c586d628536a60eabe4046671d253dac61907924eaa14b8ab501ea783e>",
+  "native_commit": "468c5eddde48bdeec47c4bb3c39418352be16bb9",
+  "identity": {
+    "schema": "bcep-ebjd-v2-resolved-v1",
+    "fold": "hotel",
+    "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+    "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+    "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+    "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+    "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4"
+  },
+  "geometry": {
+    "layout": {
+      "schema": "bcep-v2-geometry-v1",
+      "width_m": 32.0,
+      "pixels": 256,
+      "center": "last_observed",
+      "axes": "world_x_columns_y_rows",
+      "crop_align_corners": true,
+      "stride": 8,
+      "offset": 0,
+      "feature_align_corners": false,
+      "outside": "six_zero_channels"
+    },
+    "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+    "crop_sources": {
+      "scripts/prepare_bcep_jmm.py": "8bb1d1c88da0c1c90b86460d4973103481b2ec703e7f2fe9dc4a855302ce99fd",
+      "ebjd/export_ethucy.py": "17fa120ba0169dcd09b22db70ab9d50ab5e770dc62f11cae881f334172b82a77"
+    },
+    "records_redacted_sha256": "544b9789e438df61ffa09f735c0f238360f8c25697ca461608d48ceb5446ba9f"
+  },
+  "banks": {
+    "train": {
+      "path": "<host-path-sha256:5a5ad07065cfa32ddff40e849e4ddd7071d05fbd7622f5f4172aa682a6e130c4>",
+      "sha256": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+      "identity": {
+        "schema": "bcep-v2-spatial-budget-head-v1",
+        "fold": "hotel",
+        "split": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+        "member_hash": "cb11111a4af756e7d76f031eb292710007f582ead2f8c94410aebd069a36138b",
+        "row_format": "member-identity-sha256-v2",
+        "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4",
+        "scales": [
+          [
+            0.1,
+            0.1
+          ],
+          [
+            0.11359222019146985,
+            0.1114309581065566
+          ],
+          [
+            0.1875850580693943,
+            0.1830749352854758
+          ],
+          [
+            0.2719513145883185,
+            0.2627456883063182
+          ],
+          [
+            0.36533638592391476,
+            0.34849947316260704
+          ],
+          [
+            0.4666129626374458,
+            0.4389218149147963
+          ],
+          [
+            0.5748140720698786,
+            0.5329942323888676
+          ],
+          [
+            0.6893057621158278,
+            0.629959399722297
+          ],
+          [
+            0.8095518165782455,
+            0.729292494212252
+          ],
+          [
+            0.9349330007487386,
+            0.8308190582753212
+          ],
+          [
+            1.0651797697152345,
+            0.9345496985191313
+          ],
+          [
+            1.2002144768413978,
+            1.0405431087153794
+          ]
+        ],
+        "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+        "purpose": "train",
+        "seed": 2035,
+        "view": null,
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+          "epoch": 57,
+          "updates": 44460,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 1.063470154341977,
+          "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b",
+          "epoch": 4,
+          "updates": 3120,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.341481398553975,
+          "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+            "epoch": 57,
+            "updates": 44460,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 1.063470154341977,
+            "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+          }
+        },
+        "augmentation": "canonical",
+        "test_only": false,
+        "trained": true,
+        "no_future_as_input": true,
+        "K": 20,
+        "M": 256,
+        "dtype": "float32",
+        "unit": "m",
+        "selector": {
+          "method": "kmeans++/Lloyd",
+          "n_init": 5,
+          "max_iter": 100,
+          "tolerance_m": 1e-06,
+          "ordering": "original kmeans center order"
+        }
+      }
+    },
+    "selection_dev": {
+      "path": "<host-path-sha256:4ea41c2856cacb3a4a1a93d311cba2073e7277980cc424f91f26a89645d332a5>",
+      "sha256": "5cb8690ac4f6ce36b7ac7572d43ff70d430d274132b0a76eed236a5928ce2b35",
+      "identity": {
+        "schema": "bcep-v2-spatial-budget-head-v1",
+        "fold": "hotel",
+        "split": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+        "member_hash": "62be77faae33b5d848bac88445b6134d7b7e5f314162168318ae9654638e809f",
+        "row_format": "member-identity-sha256-v2",
+        "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4",
+        "scales": [
+          [
+            0.1,
+            0.1
+          ],
+          [
+            0.11359222019146985,
+            0.1114309581065566
+          ],
+          [
+            0.1875850580693943,
+            0.1830749352854758
+          ],
+          [
+            0.2719513145883185,
+            0.2627456883063182
+          ],
+          [
+            0.36533638592391476,
+            0.34849947316260704
+          ],
+          [
+            0.4666129626374458,
+            0.4389218149147963
+          ],
+          [
+            0.5748140720698786,
+            0.5329942323888676
+          ],
+          [
+            0.6893057621158278,
+            0.629959399722297
+          ],
+          [
+            0.8095518165782455,
+            0.729292494212252
+          ],
+          [
+            0.9349330007487386,
+            0.8308190582753212
+          ],
+          [
+            1.0651797697152345,
+            0.9345496985191313
+          ],
+          [
+            1.2002144768413978,
+            1.0405431087153794
+          ]
+        ],
+        "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+        "purpose": "selection_dev",
+        "seed": 2035,
+        "view": null,
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+          "epoch": 57,
+          "updates": 44460,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 1.063470154341977,
+          "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+        },
+        "head": {
+          "stage": "head",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b",
+          "epoch": 4,
+          "updates": 3120,
+          "selection": "dev_minfde20_agent_micro",
+          "value": 0.341481398553975,
+          "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+          "base": {
+            "stage": "density",
+            "trained": true,
+            "frozen": true,
+            "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+            "epoch": 57,
+            "updates": 44460,
+            "selection": "dev_nll_final_agent_micro",
+            "value": 1.063470154341977,
+            "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+          }
+        },
+        "augmentation": "canonical",
+        "test_only": false,
+        "trained": true,
+        "no_future_as_input": true,
+        "K": 20,
+        "M": 256,
+        "dtype": "float32",
+        "unit": "m",
+        "selector": {
+          "method": "kmeans++/Lloyd",
+          "n_init": 5,
+          "max_iter": 100,
+          "tolerance_m": 1e-06,
+          "ordering": "original kmeans center order"
+        }
+      }
+    }
+  },
+  "reuse": {},
+  "density": {
+    "checkpoint": "<host-path-sha256:a57c365ab77f078b495d4b3c2fc582660c00e127b3cddcc56cc75c7cbb67a5a3>",
+    "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+    "frozen": {
+      "stage": "density",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+      "epoch": 57,
+      "updates": 44460,
+      "selection": "dev_nll_final_agent_micro",
+      "value": 1.063470154341977,
+      "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+    },
+    "stage_directory": "<host-path-sha256:229c0332788fdd8986e9234473662a345f6f6097740848a4d34b0b145f0c6852>"
+  },
+  "head": {
+    "checkpoint": "<host-path-sha256:0e90027014509cc61e3f8b585df30294eaf9821818bc3e3c37499c0fd104914f>",
+    "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b",
+    "frozen": {
+      "stage": "head",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b",
+      "epoch": 4,
+      "updates": 3120,
+      "selection": "dev_minfde20_agent_micro",
+      "value": 0.341481398553975,
+      "identity": "ead81fdfec584ad6570f0aa003521e7b4053ff75be44f500f4e7ddb69fada912",
+      "base": {
+        "stage": "density",
+        "trained": true,
+        "frozen": true,
+        "weights_sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168",
+        "epoch": 57,
+        "updates": 44460,
+        "selection": "dev_nll_final_agent_micro",
+        "value": 1.063470154341977,
+        "identity": "520ba3fa47b44a319196926ae234791861a478a9f338f63423cae12f2b2e00c3"
+      }
+    },
+    "stage_directory": "<host-path-sha256:d95ed946d44502b93181510cc026011db77b0d0ca1ab78aae062e177f1767720>"
+  },
+  "joint": {
+    "checkpoint": "<host-path-sha256:84df33ddcdcb58474546229412b2ac2ee794ba38aaf6f643c0a6162a38b4a54b>",
+    "sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+    "frozen": {
+      "stage": "joint",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+      "epoch": 12,
+      "updates": 2340,
+      "selection": "dev_H_JADE",
+      "value": 0.41121502436134355,
+      "identity": "b1e2fc96dae3f890dcb52aea7840e669191d33417394ec746a26ff8257e3f188"
+    },
+    "stage_directory": "<host-path-sha256:e71419f45f736ae6920c2d17a40076bc4c85146dde7207312fc5c79ad64d16a5>"
+  }
+}

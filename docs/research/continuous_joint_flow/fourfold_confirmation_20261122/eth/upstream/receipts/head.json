@@ -1,0 +1,227 @@
+{
+  "status": "COMPLETE",
+  "stage": "head",
+  "epoch": 20,
+  "update": 16420,
+  "stop_reason": "max_epochs",
+  "history_sha256": "52e3a9e37038c504b1372ca9fb0d23d284b47bd2eecad6a850971205e079ac96",
+  "selected": {
+    "stage": "head",
+    "trained": true,
+    "frozen": true,
+    "weights_sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6",
+    "epoch": 19,
+    "updates": 15599,
+    "selection": "dev_minfde20_agent_micro",
+    "value": 0.32532279534761466,
+    "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+    "base": {
+      "stage": "density",
+      "trained": true,
+      "frozen": true,
+      "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+      "epoch": 61,
+      "updates": 50081,
+      "selection": "dev_nll_final_agent_micro",
+      "value": 0.8056008844127606,
+      "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+    }
+  },
+  "ranks": [
+    {
+      "fold": "eth",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 1,
+      "epoch": 19,
+      "update": 15599,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.32532279534761466,
+      "file": "epoch_019.pt",
+      "checkpoint_sha256": "dcb66b1e6a1eedac19b345ff820816e99e452f53978c0ce7daf7d4c0e3c90ae6",
+      "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "caches": [
+          "f37fb0cc021b4900552c56ddb96f06124854d09284ca703292ab4e6f6c13e376",
+          "5ed44af3a6c89e6656daf57d7afe0ff15f4f388d9144d07a0ac6be2680fab6a6",
+          "9d7946b9dc6ac41ef5ea5d2245c367049aa9d128fac5a3f9b3f35988931d3470",
+          "3a8559cb88b9cff9513f7468f2b03448e6309be5170e161dc91b244a73b7591c",
+          "c3cb6d83e95a28c0558a3b9ed5f5ff336b6f741ac20f3ae83f41110add8ce828",
+          "336ae0190016a3cafe4f32496125d94894511c7ab75202fb225d77c5e6a5d772",
+          "f4992246d982af442fbd280340ea7136645bbf92a95268453a8a6b9f5e019821"
+        ]
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 2,
+      "epoch": 20,
+      "update": 16420,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.32543245410778204,
+      "file": "epoch_020.pt",
+      "checkpoint_sha256": "d2dc800ea3e99a01ee95630c048183f5ad952df723199fc0c168e221b2c1145f",
+      "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "caches": [
+          "f37fb0cc021b4900552c56ddb96f06124854d09284ca703292ab4e6f6c13e376",
+          "5ed44af3a6c89e6656daf57d7afe0ff15f4f388d9144d07a0ac6be2680fab6a6",
+          "9d7946b9dc6ac41ef5ea5d2245c367049aa9d128fac5a3f9b3f35988931d3470",
+          "3a8559cb88b9cff9513f7468f2b03448e6309be5170e161dc91b244a73b7591c",
+          "c3cb6d83e95a28c0558a3b9ed5f5ff336b6f741ac20f3ae83f41110add8ce828",
+          "336ae0190016a3cafe4f32496125d94894511c7ab75202fb225d77c5e6a5d772",
+          "f4992246d982af442fbd280340ea7136645bbf92a95268453a8a6b9f5e019821"
+        ]
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 3,
+      "epoch": 18,
+      "update": 14778,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.325631376575096,
+      "file": "epoch_018.pt",
+      "checkpoint_sha256": "f5cc9e3469f7e08d192194cb87e390ca39e9abb52838400450e1fed1ba81a0dc",
+      "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "caches": [
+          "f37fb0cc021b4900552c56ddb96f06124854d09284ca703292ab4e6f6c13e376",
+          "5ed44af3a6c89e6656daf57d7afe0ff15f4f388d9144d07a0ac6be2680fab6a6",
+          "9d7946b9dc6ac41ef5ea5d2245c367049aa9d128fac5a3f9b3f35988931d3470",
+          "3a8559cb88b9cff9513f7468f2b03448e6309be5170e161dc91b244a73b7591c",
+          "c3cb6d83e95a28c0558a3b9ed5f5ff336b6f741ac20f3ae83f41110add8ce828",
+          "336ae0190016a3cafe4f32496125d94894511c7ab75202fb225d77c5e6a5d772",
+          "f4992246d982af442fbd280340ea7136645bbf92a95268453a8a6b9f5e019821"
+        ]
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 4,
+      "epoch": 17,
+      "update": 13957,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.32602823063053055,
+      "file": "epoch_017.pt",
+      "checkpoint_sha256": "3d25f2ae768325fc06bfa25913b65c1dae5acb4d78e84e52758a57011d84d20d",
+      "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "caches": [
+          "f37fb0cc021b4900552c56ddb96f06124854d09284ca703292ab4e6f6c13e376",
+          "5ed44af3a6c89e6656daf57d7afe0ff15f4f388d9144d07a0ac6be2680fab6a6",
+          "9d7946b9dc6ac41ef5ea5d2245c367049aa9d128fac5a3f9b3f35988931d3470",
+          "3a8559cb88b9cff9513f7468f2b03448e6309be5170e161dc91b244a73b7591c",
+          "c3cb6d83e95a28c0558a3b9ed5f5ff336b6f741ac20f3ae83f41110add8ce828",
+          "336ae0190016a3cafe4f32496125d94894511c7ab75202fb225d77c5e6a5d772",
+          "f4992246d982af442fbd280340ea7136645bbf92a95268453a8a6b9f5e019821"
+        ]
+      }
+    },
+    {
+      "fold": "eth",
+      "stage": "head",
+      "macro_stage": "Stage 1 / BCEP Provider learning",
+      "dev_rank": 5,
+      "epoch": 12,
+      "update": 9852,
+      "selection_metric": "dev_minfde20_agent_micro",
+      "dev_value": 0.32619625664134383,
+      "file": "epoch_012.pt",
+      "checkpoint_sha256": "35cf44ea3e6d6ad702b0b4018b55f3ef6a7c85bb42bdac7b77077441c154ea86",
+      "identity": "c281e10280e8d8536524a89a1ce4c70ce024453fa267c16d11821cd2301ba5c0",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "split": "1f6b7376675cde3c12447a4d16c0f142f1a3414961f24f559471239a737353f8",
+      "members_redacted_sha256": "051dc3ef966fda3614260a3895c9027614db4c9e611f7307bd0b16c7c6b95e66",
+      "upstream": {
+        "base": {
+          "stage": "density",
+          "trained": true,
+          "frozen": true,
+          "weights_sha256": "41e2d31f678b9820bc562343a0f381b45eeec219ab5370337d64cac2130db815",
+          "epoch": 61,
+          "updates": 50081,
+          "selection": "dev_nll_final_agent_micro",
+          "value": 0.8056008844127606,
+          "identity": "442dc01c0bc020023b54d1006bc7c2d83866c8b2d83d6413d92d8fcf332d7f70"
+        },
+        "caches": [
+          "f37fb0cc021b4900552c56ddb96f06124854d09284ca703292ab4e6f6c13e376",
+          "5ed44af3a6c89e6656daf57d7afe0ff15f4f388d9144d07a0ac6be2680fab6a6",
+          "9d7946b9dc6ac41ef5ea5d2245c367049aa9d128fac5a3f9b3f35988931d3470",
+          "3a8559cb88b9cff9513f7468f2b03448e6309be5170e161dc91b244a73b7591c",
+          "c3cb6d83e95a28c0558a3b9ed5f5ff336b6f741ac20f3ae83f41110add8ce828",
+          "336ae0190016a3cafe4f32496125d94894511c7ab75202fb225d77c5e6a5d772",
+          "f4992246d982af442fbd280340ea7136645bbf92a95268453a8a6b9f5e019821"
+        ]
+      }
+    }
+  ]
+}

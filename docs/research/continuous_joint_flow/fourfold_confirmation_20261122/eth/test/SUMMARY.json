@@ -1,0 +1,97 @@
+{
+  "fold": "eth",
+  "seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "seed_count": 5,
+  "ddof": 1,
+  "unit": "m",
+  "K_per_seed": 20,
+  "aggregation": "native metrics within each seed; equally weighted five-seed mean and sample standard deviation",
+  "difference_std": "sample standard deviation of the five paired B-minus-A seed differences",
+  "groups": {
+    "all": {
+      "scene_count": 253,
+      "agent_count": 364,
+      "available": true,
+      "A": {
+        "JADE": {
+          "mean": 0.5348823826362493,
+          "std": 0.007397737160642719
+        },
+        "JFDE": {
+          "mean": 0.8942888283025356,
+          "std": 0.009005199927379796
+        },
+        "minADE": {
+          "mean": 0.47467219311472764,
+          "std": 0.0033710166147208846
+        },
+        "minFDE": {
+          "mean": 0.7510634690718879,
+          "std": 0.006453818149069497
+        }
+      },
+      "B": {
+        "JADE": {
+          "mean": 0.5547859775336834,
+          "std": 0.00558709199204068
+        },
+        "JFDE": {
+          "mean": 0.9472032754199778,
+          "std": 0.009856818095146694
+        },
+        "minADE": {
+          "mean": 0.5191267884098464,
+          "std": 0.00606002748576206
+        },
+        "minFDE": {
+          "mean": 0.9007143769620477,
+          "std": 0.006796589436470295
+        }
+      },
+      "B_minus_A": {
+        "JADE": {
+          "mean": 0.01990359489743414,
+          "std": 0.006757951718763915
+        },
+        "JFDE": {
+          "mean": 0.05291444711744224,
+          "std": 0.01688816170440755
+        },
+        "minADE": {
+          "mean": 0.04445459529511875,
+          "std": 0.00721908271243292
+        },
+        "minFDE": {
+          "mean": 0.14965090789015986,
+          "std": 0.006732548592367337
+        }
+      }
+    },
+    "N_ge_9": {
+      "scene_count": 0,
+      "agent_count": 0,
+      "available": false,
+      "A": null,
+      "B": null,
+      "B_minus_A": null
+    }
+  },
+  "interpretation": {
+    "all_JADE_lower": false,
+    "all_JFDE_lower": false,
+    "N_ge_9_JFDE_lower": null,
+    "marginal_minFDE_change_cm": {
+      "all": 14.965090789015987,
+      "N_ge_9": null
+    },
+    "comparator": "same heldout test windows and paired seeds; frozen upstream dev-rank1 coordinate A",
+    "development_thresholds_applied": false,
+    "prediction_or_model_selection": false
+  }
+}

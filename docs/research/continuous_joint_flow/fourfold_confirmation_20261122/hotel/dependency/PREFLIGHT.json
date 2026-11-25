@@ -1,0 +1,68 @@
+{
+  "passed": true,
+  "identity": {
+    "fold": "hotel",
+    "frozen_manifest_sha256": "2f2ed6c313f0e1d7e14a7c85b0cef371dd3a14e23a084821034bab7d8e1c481e",
+    "upstream_identity": {
+      "schema": "bcep-ebjd-v2-resolved-v1",
+      "fold": "hotel",
+      "config": "edddd578f60a376395a3778ac01acbad4e891851e511ac7128db8353a71bf787",
+      "sources": "6113fba5c13b9cf492c9f82cefeb243c37b76ebc292a68374f92968518aabf88",
+      "split": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+      "members_redacted_sha256": "973b628fe1357e52c52b57721019f2f542ad3279f5ecba34a2fb239d7a0b6514",
+      "geometry": "61e331f8913ee9353848b30f4aec9fcfbed99233c9aee22bdb8403ecaf78ace4"
+    },
+    "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+    "split_file_sha256": "a5fb8daebfe3373b1f0a7582ebb7469ae288691b67887bf5409d2181fb6027d7",
+    "config_file_sha256": "7812151e68144b28461c8e99e8b5923caa4343a91e4f7f0a9af7fc9c4acaa362",
+    "checkpoint_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+    "provider": [
+      {
+        "stage": "density",
+        "epoch": 57,
+        "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+      },
+      {
+        "stage": "head",
+        "epoch": 4,
+        "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+      }
+    ],
+    "banks": {
+      "train": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+      "selection_dev": "5cb8690ac4f6ce36b7ac7572d43ff70d430d274132b0a76eed236a5928ce2b35"
+    }
+  },
+  "windows": [
+    {
+      "window": "train_0001",
+      "agents": 1,
+      "R_diagonal_max_abs": 0.0,
+      "R_cholesky_diagonal_min": 1.0,
+      "first_layer_gradient_l2": 0.0,
+      "last_layer_gradient_l2": 0.0,
+      "raw_joint_ids_unique": true,
+      "endpoint_and_noise_raw_ids_aligned": true,
+      "sampler_vs_direct_max_abs": 0.0,
+      "endpoint_path_max_abs_m": 0.0
+    },
+    {
+      "window": "train_2096",
+      "agents": 57,
+      "R_diagonal_max_abs": 2.384185791015625e-07,
+      "R_cholesky_diagonal_min": 0.9999977946281433,
+      "first_layer_gradient_l2": 0.0016540377400815487,
+      "last_layer_gradient_l2": 0.07266416400671005,
+      "raw_joint_ids_unique": true,
+      "endpoint_and_noise_raw_ids_aligned": true,
+      "sampler_vs_direct_max_abs": 9.5367431640625e-07,
+      "endpoint_path_max_abs_m": 0.0
+    }
+  ],
+  "optimizer_updates": 0,
+  "dependency_initial_state_sha256": "47c541323ec01dce489aa688189fe3c2bc2b39379abf8a3085e90870956c82c8",
+  "dependency_weights_unchanged": true,
+  "all_rng_restored": true,
+  "gradients_restored": true,
+  "test_access": false
+}
