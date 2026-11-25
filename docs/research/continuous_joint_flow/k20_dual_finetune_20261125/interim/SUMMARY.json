@@ -1,0 +1,228 @@
+{
+  "status": "COMPLETE",
+  "scope": "原测试集上的单种子探索性开发评估",
+  "fold": "hotel",
+  "seed": 2035,
+  "evaluated_epoch": 8,
+  "identity": {
+    "fold": "hotel",
+    "seed": 2035,
+    "epoch": 8,
+    "checkpoint_sha256": "863d169a44122fbe40668d2299202b39d605dbae708a62f2da8e2c20eb6797cc",
+    "purpose": "heldout_confirmation",
+    "scope": "原测试集上的单种子探索性开发评估",
+    "split_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+    "output_state_sha256": {
+      "model": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669",
+      "provider": "984f096fca7a075a69a87dc01125d7b5ca523a003e615d5b5688216e2f6fe08d",
+      "dependence": "9e584666e541556f5ce991f90081721497d2584e1c19b4fcddef613e79a874c2"
+    },
+    "B_initial_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+    "B_initial_epoch": 19,
+    "history_sha256": {
+      "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+      "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+    },
+    "historical_predictions_seal_sha256": "12d73378a0b33d5e2f678796b06131d7e71e482a8516268b92f30ca9f848d8e2"
+  },
+  "groups": {
+    "all": {
+      "scene_count": 445,
+      "agent_count": 1197,
+      "B": {
+        "JADE": 0.23748634694029022,
+        "JFDE": 0.408611338497715,
+        "minADE": 0.18904263043520178,
+        "minFDE": 0.3269958618602732,
+        "L": 0.30339365583800293,
+        "G": 0.10521768265971208
+      },
+      "new": {
+        "JADE": null,
+        "JFDE": 0.39985167152991286,
+        "minADE": null,
+        "minFDE": 0.3231566776246391,
+        "L": 0.2993776048095512,
+        "G": 0.10047406672036165
+      },
+      "delta": {
+        "JADE": null,
+        "JFDE": -0.008759666967802171,
+        "minADE": null,
+        "minFDE": -0.0038391842356340633,
+        "L": -0.004016051028451706,
+        "G": -0.004743615939350437
+      }
+    },
+    "single": {
+      "scene_count": 144,
+      "agent_count": 144,
+      "B": {
+        "JADE": 0.15706389033746543,
+        "JFDE": 0.2311521162563521,
+        "minADE": 0.15706389033746543,
+        "minFDE": 0.2311521162563521,
+        "L": 0.2311521162563521,
+        "G": 0.0
+      },
+      "new": {
+        "JADE": null,
+        "JFDE": 0.23100959289392145,
+        "minADE": null,
+        "minFDE": 0.23100959289392145,
+        "L": 0.23100959289392145,
+        "G": 0.0
+      },
+      "delta": {
+        "JADE": null,
+        "JFDE": -0.00014252336243064656,
+        "minADE": null,
+        "minFDE": -0.00014252336243064656,
+        "L": -0.00014252336243064656,
+        "G": 0.0
+      }
+    },
+    "multi": {
+      "scene_count": 301,
+      "agent_count": 1053,
+      "B": {
+        "JADE": 0.2759608776738675,
+        "JFDE": 0.4935087737228189,
+        "minADE": 0.19341579147420845,
+        "minFDE": 0.34010269886593764,
+        "L": 0.33795439238204855,
+        "G": 0.15555438134077038
+      },
+      "new": {
+        "JADE": null,
+        "JFDE": 0.4806266194487925,
+        "minADE": null,
+        "minFDE": 0.33575798835704496,
+        "L": 0.3320852251279921,
+        "G": 0.14854139432080044
+      },
+      "delta": {
+        "JADE": null,
+        "JFDE": -0.012882154274026447,
+        "minADE": null,
+        "minFDE": -0.00434471050889268,
+        "L": -0.005869167254056451,
+        "G": -0.007012987019969941
+      }
+    }
+  },
+  "endpoint_groups": {
+    "all": {
+      "scene_count": 445,
+      "agent_count": 1197,
+      "B": {
+        "JADE": 0.23748634694029022,
+        "JFDE": 0.408611338497715,
+        "minADE": 0.18904263043520178,
+        "minFDE": 0.3269958618602732,
+        "L": 0.30339365583800293,
+        "G": 0.10521768265971208
+      },
+      "new": {
+        "JADE": null,
+        "JFDE": 0.39985167152991286,
+        "minADE": null,
+        "minFDE": 0.3231566776246391,
+        "L": 0.2993776048095512,
+        "G": 0.10047406672036165
+      },
+      "delta": {
+        "JADE": null,
+        "JFDE": -0.008759666967802171,
+        "minADE": null,
+        "minFDE": -0.0038391842356340633,
+        "L": -0.004016051028451706,
+        "G": -0.004743615939350437
+      }
+    },
+    "single": {
+      "scene_count": 144,
+      "agent_count": 144,
+      "B": {
+        "JADE": 0.15706389033746543,
+        "JFDE": 0.2311521162563521,
+        "minADE": 0.15706389033746543,
+        "minFDE": 0.2311521162563521,
+        "L": 0.2311521162563521,
+        "G": 0.0
+      },
+      "new": {
+        "JADE": null,
+        "JFDE": 0.23100959289392145,
+        "minADE": null,
+        "minFDE": 0.23100959289392145,
+        "L": 0.23100959289392145,
+        "G": 0.0
+      },
+      "delta": {
+        "JADE": null,
+        "JFDE": -0.00014252336243064656,
+        "minADE": null,
+        "minFDE": -0.00014252336243064656,
+        "L": -0.00014252336243064656,
+        "G": 0.0
+      }
+    },
+    "multi": {
+      "scene_count": 301,
+      "agent_count": 1053,
+      "B": {
+        "JADE": 0.2759608776738675,
+        "JFDE": 0.4935087737228189,
+        "minADE": 0.19341579147420845,
+        "minFDE": 0.34010269886593764,
+        "L": 0.33795439238204855,
+        "G": 0.15555438134077038
+      },
+      "new": {
+        "JADE": null,
+        "JFDE": 0.4806266194487925,
+        "minADE": null,
+        "minFDE": 0.33575798835704496,
+        "L": 0.3320852251279921,
+        "G": 0.14854139432080044
+      },
+      "delta": {
+        "JADE": null,
+        "JFDE": -0.012882154274026447,
+        "minADE": null,
+        "minFDE": -0.00434471050889268,
+        "L": -0.005869167254056451,
+        "G": -0.007012987019969941
+      }
+    }
+  },
+  "endpoint_gate_passed": false,
+  "pass_minFDE": false,
+  "pass_JFDE": true,
+  "four_metrics_improved": false,
+  "ddim_calls": 0,
+  "endpoint_receipt": {
+    "files": 445,
+    "manifest_sha256": "cb3097edcba6055836f3d043e894995040903f1b1b33246e6ddf0fd11292f6ad",
+    "completed_unix": 1795595132.8691418,
+    "seal_unix": 1795595132.7060685,
+    "status": "COMPLETE",
+    "phase": "endpoint",
+    "first_truth_read_unix": 1795595132.8698604,
+    "truth_reads": 445,
+    "score_wall_seconds": 1.6722920329775661,
+    "table_sha256": "7b10f048097bb75f38ac0444141cf2a0c1f3d4ef16e69005a9dfc6f49b3bb3cb",
+    "seed": 2035,
+    "first_exploratory_truth_read": true
+  },
+  "trajectory_receipt": null,
+  "endpoint_export_wall_seconds": 21.677053129998967,
+  "trajectory_export_wall_seconds": null,
+  "states_unchanged": true,
+  "wall_seconds_this_attempt": 23.906835888978094,
+  "output_sha256": {
+    "PER_WINDOW.csv": "7b10f048097bb75f38ac0444141cf2a0c1f3d4ef16e69005a9dfc6f49b3bb3cb",
+    "SUMMARY.csv": "602d577168bf5010d58c3d80d2a9b29e502970b9c159fb490e0618c721aadfc3"
+  }
+}
