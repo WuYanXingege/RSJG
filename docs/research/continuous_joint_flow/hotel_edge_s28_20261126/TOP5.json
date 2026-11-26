@@ -1,0 +1,47 @@
+{
+  "selector": "fixed final epoch and single S24/S28 development acceptance",
+  "ranked_epoch_count": 1,
+  "all_completed_epochs_retained": 4,
+  "entries": [
+    {
+      "epoch": 25,
+      "file": "epoch_025.pt",
+      "sha256": "53f70c7bbd9d31f448b938c72895ed460a3fe99dc8fbb22abc909e9e00410710",
+      "metrics": null,
+      "rank": null
+    },
+    {
+      "epoch": 26,
+      "file": "epoch_026.pt",
+      "sha256": "c4585c371365e44bde574b58fe9151132c569027e370f764264464f05bca6317",
+      "metrics": null,
+      "rank": null
+    },
+    {
+      "epoch": 27,
+      "file": "epoch_027.pt",
+      "sha256": "33aac5895775142e0b414aeda54d01ba60d7f9ae47008479c91b10d9e45260ee",
+      "metrics": null,
+      "rank": null
+    },
+    {
+      "epoch": 28,
+      "file": "epoch_028.pt",
+      "sha256": "b82664123624d459b8b1f696712c2de9ff5c48ea4c9e43f817fa3d0d13d56a43",
+      "metrics": {
+        "JADE": 0.3574423331206903,
+        "JFDE": 0.7082913760975718,
+        "minADE": 0.2088666407941353,
+        "minFDE": 0.33904269062211784
+      },
+      "rank": 1
+    }
+  ],
+  "note": "Only S28 is evaluated after training; all four epochs are kept.",
+  "validation_purpose": "selection_dev",
+  "retention_decision": "S28",
+  "parent": {
+    "epoch": 24,
+    "sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a"
+  }
+}

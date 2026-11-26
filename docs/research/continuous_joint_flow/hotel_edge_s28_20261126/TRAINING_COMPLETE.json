@@ -1,0 +1,155 @@
+{
+  "status": "COMPLETE",
+  "completed_epoch": 28,
+  "updates": 780,
+  "completed_batches": 780,
+  "eligible_windows": 6592,
+  "active_windows": 3055,
+  "extra_trigger_fraction": 0.46344053398058255,
+  "train_ddim_calls": 1560,
+  "ddim_backward_windows": 1300,
+  "train_seconds": 4402.057448319392,
+  "skipped_batches": 0,
+  "peak_gpu_allocated_mib": 2454.46337890625,
+  "peak_gpu_reserved_mib": 2778.0,
+  "first_update": {
+    "epoch": 25,
+    "update": 1,
+    "batch": 1,
+    "cursor": 16,
+    "total": 3118,
+    "gradient_norm": 0.4798639416694641,
+    "batch_eligible": 10,
+    "batch_triggered": 4,
+    "sampled_agents": [
+      9,
+      5
+    ],
+    "ddim_backward_agents": [
+      9,
+      5
+    ],
+    "activation_offload": false,
+    "worker_pid": 2226468,
+    "peak_gpu_allocated_mib": 703.21240234375,
+    "peak_gpu_reserved_mib": 1210.0
+  },
+  "first_ddim_backward_update": {
+    "epoch": 25,
+    "update": 1,
+    "batch": 1,
+    "cursor": 16,
+    "total": 3118,
+    "gradient_norm": 0.4798639416694641,
+    "batch_eligible": 10,
+    "batch_triggered": 4,
+    "sampled_agents": [
+      9,
+      5
+    ],
+    "ddim_backward_agents": [
+      9,
+      5
+    ],
+    "activation_offload": false,
+    "worker_pid": 2226468,
+    "peak_gpu_allocated_mib": 703.21240234375,
+    "peak_gpu_reserved_mib": 1210.0
+  },
+  "dense_slot_replays": {
+    "windows": 230,
+    "max_path_replay_abs_m": 1.9073486328125e-06
+  },
+  "frozen_before_sha256": {
+    "bridge_and_A": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669",
+    "provider": "ea254070fda120345d69c5ebca230b95c3cdb84d19d578495c30957ca89da55e",
+    "B": "46f2d3c93d396858d72c13e4f73ece3dc8a9f0bdb0188999375e060d4c477178",
+    "personal": "bd8ee064580693731720c6ecc0e5e163892d7787c863234c5046550768e071ef",
+    "latent": "19278ae046cd706784bf8a9e23baa51f6bca1e9de366b9efcc16cade5faaef57",
+    "queries": "c5bbc4667601c9020758b5fab4f355581d67739ee9c1811e741d781348798edc"
+  },
+  "frozen_after_sha256": {
+    "bridge_and_A": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669",
+    "provider": "ea254070fda120345d69c5ebca230b95c3cdb84d19d578495c30957ca89da55e",
+    "B": "46f2d3c93d396858d72c13e4f73ece3dc8a9f0bdb0188999375e060d4c477178",
+    "personal": "bd8ee064580693731720c6ecc0e5e163892d7787c863234c5046550768e071ef",
+    "latent": "19278ae046cd706784bf8a9e23baa51f6bca1e9de366b9efcc16cade5faaef57",
+    "queries": "c5bbc4667601c9020758b5fab4f355581d67739ee9c1811e741d781348798edc"
+  },
+  "edge_after_sha256": "80fcffcfd83641d743b9499f8b9d0bc2a7e66ff4e289402fd1b30ebbf619e4bc",
+  "S28_checkpoint": "<host-path-sha256:62633ff3f4c29bb9203d16d3224ed8796713e63a61f52701db684b2aaf746733>",
+  "S28_sha256": "b82664123624d459b8b1f696712c2de9ff5c48ea4c9e43f817fa3d0d13d56a43",
+  "retained_epochs": [
+    25,
+    26,
+    27,
+    28
+  ],
+  "epoch_rows": [
+    {
+      "epoch": 25,
+      "file": "epoch_025.pt",
+      "windows": 3118,
+      "agents": 29676,
+      "updates": 195,
+      "skipped_batches": 0,
+      "eligible_windows": 1648,
+      "active_windows": 762,
+      "train_ddim_calls": 390,
+      "ddim_backward_windows": 328,
+      "extra_sum_m": 89.5248349874746,
+      "objective_sum": 656.7840714077465,
+      "train_seconds": 1073.1628215729725,
+      "sha256": "53f70c7bbd9d31f448b938c72895ed460a3fe99dc8fbb22abc909e9e00410710"
+    },
+    {
+      "epoch": 26,
+      "file": "epoch_026.pt",
+      "windows": 3118,
+      "agents": 29676,
+      "updates": 195,
+      "skipped_batches": 0,
+      "eligible_windows": 1648,
+      "active_windows": 765,
+      "train_ddim_calls": 390,
+      "ddim_backward_windows": 332,
+      "extra_sum_m": 88.45341703417944,
+      "objective_sum": 658.8129891897552,
+      "train_seconds": 1108.939258820843,
+      "sha256": "c4585c371365e44bde574b58fe9151132c569027e370f764264464f05bca6317"
+    },
+    {
+      "epoch": 27,
+      "file": "epoch_027.pt",
+      "windows": 3118,
+      "agents": 29676,
+      "updates": 195,
+      "skipped_batches": 0,
+      "eligible_windows": 1648,
+      "active_windows": 764,
+      "train_ddim_calls": 390,
+      "ddim_backward_windows": 323,
+      "extra_sum_m": 87.80577697692206,
+      "objective_sum": 658.6568910998758,
+      "train_seconds": 1057.9896142778452,
+      "sha256": "33aac5895775142e0b414aeda54d01ba60d7f9ae47008479c91b10d9e45260ee"
+    },
+    {
+      "epoch": 28,
+      "file": "epoch_028.pt",
+      "windows": 3118,
+      "agents": 29676,
+      "updates": 195,
+      "skipped_batches": 0,
+      "eligible_windows": 1648,
+      "active_windows": 764,
+      "train_ddim_calls": 390,
+      "ddim_backward_windows": 317,
+      "extra_sum_m": 86.54119520646054,
+      "objective_sum": 660.2644342596177,
+      "train_seconds": 1161.9657536477316,
+      "sha256": "b82664123624d459b8b1f696712c2de9ff5c48ea4c9e43f817fa3d0d13d56a43"
+    }
+  ],
+  "test_access": false
+}

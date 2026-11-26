@@ -1,0 +1,336 @@
+[
+  {
+    "event": "WORKER_STARTED",
+    "unix": 1795702079.907654,
+    "stage": "train",
+    "pid": 2226468,
+    "gpu": {
+      "uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+      "total_mib": 16303,
+      "free_mib": 11157,
+      "compute_mib": {
+        "2223696": 3820
+      }
+    },
+    "main": {
+      "controller_pid": 2203374,
+      "worker_pid": 2223696,
+      "worker_stage": "train",
+      "fold": "eth",
+      "status": "FITTING_WITH_FIXED_SCHEDULE",
+      "controller_alive": true,
+      "worker_on_gpu": true,
+      "progress": {
+        "phase": "TRAIN_UPDATE",
+        "unix": 1795702078.2065737,
+        "fold": "eth",
+        "epoch": 11,
+        "update": 2070,
+        "windows": 160,
+        "total": 3283,
+        "phase_ddim_calls": 0,
+        "last_batch_draws": 0,
+        "last_batch_p": 0.0,
+        "grad_norm": 2.6033947467803955,
+        "epoch_train_seconds": 8.339960569981486
+      },
+      "changing_worker": false
+    },
+    "activation_offload": false
+  },
+  {
+    "event": "WORKER_EXITED",
+    "unix": 1795702139.1215544,
+    "stage": "train",
+    "pid": 2226468,
+    "exit_code": 76,
+    "seconds": 59.214335680007935,
+    "peak_observed_process_mib": 3110,
+    "minimum_free_mib": 8055,
+    "yield_reason": null,
+    "activation_offload": false
+  },
+  {
+    "event": "GPU_OOM_ROLLBACK",
+    "unix": 1795702139.1216762,
+    "oom": {
+      "stage": "train",
+      "pid": 2226468,
+      "unix": 1795702137.696199,
+      "activation_offload": false,
+      "peak_allocated_bytes": 2798326272,
+      "peak_reserved_bytes": 2896166912,
+      "message": "CUDA out of memory. Tried to allocate 98.00 MiB. GPU 0 has a total capacity of 15.48 GiB of which 7.87 GiB is free. Process 2223696 has 3.73 GiB memory in use. Including non-PyTorch memory, this process has 3.04 GiB memory in use. 2.79 GiB allowed; Of the allocated memory 2.61 GiB is allocated by PyTorch, and 93.31 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+      "recovery_cursor": {
+        "phase": "ROLL_BACK_UNCOMMITTED_BATCH",
+        "unix": 1795702137.6958468,
+        "reason": "cuda_oom",
+        "epoch": 25,
+        "cursor": 192,
+        "completed_batches": 12,
+        "updates": 12,
+        "interrupted_window_agents": 46,
+        "sampled_for_ddim": true,
+        "activation_offload": false,
+        "worker_pid": 2226468,
+        "peak_gpu_allocated_mib": 2668.69189453125,
+        "peak_gpu_reserved_mib": 2762.0
+      }
+    }
+  },
+  {
+    "event": "WORKER_STARTED",
+    "unix": 1795702159.2584755,
+    "stage": "train",
+    "pid": 2226644,
+    "gpu": {
+      "uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+      "total_mib": 16303,
+      "free_mib": 11182,
+      "compute_mib": {
+        "2223696": 3820
+      }
+    },
+    "main": {
+      "controller_pid": 2203374,
+      "worker_pid": 2223696,
+      "worker_stage": "train",
+      "fold": "eth",
+      "status": "FITTING_WITH_FIXED_SCHEDULE",
+      "controller_alive": true,
+      "worker_on_gpu": true,
+      "progress": {
+        "phase": "TRAIN_UPDATE",
+        "unix": 1795702151.4582381,
+        "fold": "eth",
+        "epoch": 11,
+        "update": 2140,
+        "windows": 1280,
+        "total": 3283,
+        "phase_ddim_calls": 0,
+        "last_batch_draws": 0,
+        "last_batch_p": 0.0,
+        "grad_norm": 2.212880849838257,
+        "epoch_train_seconds": 81.5496265036054
+      },
+      "changing_worker": false
+    },
+    "activation_offload": true
+  },
+  {
+    "event": "WORKER_EXITED",
+    "unix": 1795702167.5477934,
+    "stage": "train",
+    "pid": 2226644,
+    "exit_code": 76,
+    "seconds": 8.289843797683716,
+    "peak_observed_process_mib": 3174,
+    "minimum_free_mib": 7997,
+    "yield_reason": null,
+    "activation_offload": true
+  },
+  {
+    "event": "GPU_OOM_ROLLBACK",
+    "unix": 1795702167.5479052,
+    "oom": {
+      "stage": "train",
+      "pid": 2226644,
+      "unix": 1795702165.5604305,
+      "activation_offload": true,
+      "peak_allocated_bytes": 2860678656,
+      "peak_reserved_bytes": 2967470080,
+      "message": "CUDA out of memory. Tried to allocate 98.00 MiB. GPU 0 has a total capacity of 15.48 GiB of which 7.81 GiB is free. Process 2223696 has 3.73 GiB memory in use. Including non-PyTorch memory, this process has 3.10 GiB memory in use. 2.79 GiB allowed; Of the allocated memory 2.66 GiB is allocated by PyTorch, and 99.84 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+      "recovery_cursor": {
+        "phase": "ROLL_BACK_UNCOMMITTED_BATCH",
+        "unix": 1795702165.5602202,
+        "reason": "cuda_oom",
+        "epoch": 25,
+        "cursor": 192,
+        "completed_batches": 12,
+        "updates": 12,
+        "interrupted_window_agents": 46,
+        "sampled_for_ddim": true,
+        "activation_offload": true,
+        "worker_pid": 2226644,
+        "peak_gpu_allocated_mib": 2728.15576171875,
+        "peak_gpu_reserved_mib": 2830.0
+      }
+    }
+  },
+  {
+    "event": "WORKER_STARTED",
+    "unix": 1795702187.673074,
+    "stage": "train",
+    "pid": 2226679,
+    "gpu": {
+      "uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+      "total_mib": 16303,
+      "free_mib": 11182,
+      "compute_mib": {
+        "2223696": 3820
+      }
+    },
+    "main": {
+      "controller_pid": 2203374,
+      "worker_pid": 2223696,
+      "worker_stage": "train",
+      "fold": "eth",
+      "status": "FITTING_WITH_FIXED_SCHEDULE",
+      "controller_alive": true,
+      "worker_on_gpu": true,
+      "progress": {
+        "phase": "TRAIN_UPDATE",
+        "unix": 1795702186.5894332,
+        "fold": "eth",
+        "epoch": 11,
+        "update": 2180,
+        "windows": 1920,
+        "total": 3283,
+        "phase_ddim_calls": 0,
+        "last_batch_draws": 0,
+        "last_batch_p": 0.0,
+        "grad_norm": 2.6904191970825195,
+        "epoch_train_seconds": 116.65789380460046
+      },
+      "changing_worker": false
+    },
+    "activation_offload": true
+  },
+  {
+    "event": "WORKER_EXITED",
+    "unix": 1795702194.0307674,
+    "stage": "train",
+    "pid": 2226679,
+    "exit_code": 76,
+    "seconds": 6.358562469482422,
+    "peak_observed_process_mib": 616,
+    "minimum_free_mib": 10589,
+    "yield_reason": null,
+    "activation_offload": true
+  },
+  {
+    "event": "GPU_OOM_ROLLBACK",
+    "unix": 1795702194.0308757,
+    "oom": {
+      "stage": "train",
+      "pid": 2226679,
+      "unix": 1795702193.1784644,
+      "activation_offload": true,
+      "peak_allocated_bytes": 2860678656,
+      "peak_reserved_bytes": 2967470080,
+      "message": "CUDA out of memory. Tried to allocate 98.00 MiB. GPU 0 has a total capacity of 15.48 GiB of which 7.81 GiB is free. Process 2223696 has 3.73 GiB memory in use. Including non-PyTorch memory, this process has 3.10 GiB memory in use. 2.79 GiB allowed; Of the allocated memory 2.66 GiB is allocated by PyTorch, and 99.84 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://pytorch.org/docs/stable/notes/cuda.html#environment-variables)",
+      "recovery_cursor": {
+        "phase": "ROLL_BACK_UNCOMMITTED_BATCH",
+        "unix": 1795702193.1782918,
+        "reason": "cuda_oom",
+        "epoch": 25,
+        "cursor": 192,
+        "completed_batches": 12,
+        "updates": 12,
+        "interrupted_window_agents": 46,
+        "sampled_for_ddim": true,
+        "activation_offload": true,
+        "worker_pid": 2226679,
+        "peak_gpu_allocated_mib": 2728.15576171875,
+        "peak_gpu_reserved_mib": 2830.0
+      }
+    }
+  },
+  {
+    "event": "WORKER_STARTED",
+    "unix": 1795702615.9720328,
+    "stage": "train",
+    "pid": 2227239,
+    "gpu": {
+      "uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+      "total_mib": 16303,
+      "free_mib": 11238,
+      "compute_mib": {
+        "2223696": 3820
+      }
+    },
+    "main": {
+      "controller_pid": 2203374,
+      "worker_pid": 2223696,
+      "worker_stage": "train",
+      "fold": "eth",
+      "status": "FITTING_WITH_FIXED_SCHEDULE",
+      "controller_alive": true,
+      "worker_on_gpu": true,
+      "progress": {
+        "phase": "VALIDATING_TRUE_TRAJECTORY",
+        "unix": 1795702607.9759,
+        "fold": "eth",
+        "epoch": 12,
+        "windows": 400,
+        "total": 733,
+        "wall_seconds": 174.9442469039932
+      },
+      "changing_worker": false
+    },
+    "activation_offload": false
+  },
+  {
+    "event": "WORKER_EXITED",
+    "unix": 1795706984.654877,
+    "stage": "train",
+    "pid": 2227239,
+    "exit_code": 0,
+    "seconds": 4368.683348655701,
+    "peak_observed_process_mib": 2776,
+    "minimum_free_mib": 7890,
+    "yield_reason": null,
+    "activation_offload": false
+  },
+  {
+    "event": "WORKER_STARTED",
+    "unix": 1795706984.7240105,
+    "stage": "export",
+    "pid": 2237063,
+    "gpu": {
+      "uuid": "GPU-078a9326-675c-cb94-af4a-ac46eb77c484",
+      "total_mib": 16303,
+      "free_mib": 10685,
+      "compute_mib": {
+        "2223696": 4388
+      }
+    },
+    "main": {
+      "controller_pid": 2203374,
+      "worker_pid": 2223696,
+      "worker_stage": "train",
+      "fold": "eth",
+      "status": "FITTING_WITH_FIXED_SCHEDULE",
+      "controller_alive": true,
+      "worker_on_gpu": true,
+      "progress": {
+        "phase": "TRAIN_UPDATE",
+        "unix": 1795706942.9141693,
+        "fold": "eth",
+        "epoch": 17,
+        "update": 3350,
+        "windows": 864,
+        "total": 3283,
+        "phase_ddim_calls": 108,
+        "last_batch_draws": 2,
+        "last_batch_p": 0.125,
+        "grad_norm": 2.6022894382476807,
+        "epoch_train_seconds": 235.64667199202813
+      },
+      "changing_worker": false
+    },
+    "activation_offload": false
+  },
+  {
+    "event": "WORKER_EXITED",
+    "unix": 1795707622.8099635,
+    "stage": "export",
+    "pid": 2237063,
+    "exit_code": 0,
+    "seconds": 638.0864760875702,
+    "peak_observed_process_mib": 3060,
+    "minimum_free_mib": 7611,
+    "yield_reason": null,
+    "activation_offload": false
+  }
+]
