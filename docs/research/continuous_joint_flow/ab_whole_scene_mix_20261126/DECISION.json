@@ -1,0 +1,209 @@
+{
+  "five_fold_all_metrics_improved": false,
+  "five_fold_new_minus_B_cm": {
+    "JADE": 0.6242781525395815,
+    "JFDE": 1.2353947902318234,
+    "minADE": -1.2261276417031617,
+    "minFDE": -3.6774668968091193
+  },
+  "per_fold_degraded_metrics": {
+    "zara1": [
+      "JADE",
+      "JFDE"
+    ],
+    "zara2": [
+      "JADE",
+      "JFDE"
+    ],
+    "hotel": [
+      "JADE",
+      "JFDE"
+    ],
+    "univ": [
+      "JADE",
+      "JFDE"
+    ],
+    "eth": []
+  },
+  "new_minus_B_cm_by_group": {
+    "zara1": {
+      "all": {
+        "JADE": 1.085248489540518,
+        "JFDE": 2.300758957374074,
+        "minADE": -0.14581396449230677,
+        "minFDE": -0.6809900432602067
+      },
+      "multi": {
+        "JADE": 1.2096249823306893,
+        "JFDE": 2.6530567947713224,
+        "minADE": -0.16886091704699013,
+        "minFDE": -0.7231723996526551
+      },
+      "single": {
+        "JADE": 0.3583101530387567,
+        "JFDE": 0.24169781064451887,
+        "minADE": 0.3583101530387567,
+        "minFDE": 0.24169781064451887
+      },
+      "N_ge_9": {
+        "JADE": 1.1742867316518513,
+        "JFDE": 2.9112976363726983,
+        "minADE": -0.077951161915229,
+        "minFDE": -0.24470455776382738
+      }
+    },
+    "zara2": {
+      "all": {
+        "JADE": 1.297349381374423,
+        "JFDE": 2.200749983052437,
+        "minADE": -0.658186387155652,
+        "minFDE": -2.702278095837758
+      },
+      "multi": {
+        "JADE": 1.3043756077589874,
+        "JFDE": 2.4191375827491624,
+        "minADE": -0.6828915302512517,
+        "minFDE": -2.7325195123907955
+      },
+      "single": {
+        "JADE": 1.2133084138395718,
+        "JFDE": -0.4113926055278721,
+        "minADE": 1.2133084138395718,
+        "minFDE": -0.4113926055278721
+      },
+      "N_ge_9": {
+        "JADE": 1.222199040038564,
+        "JFDE": 2.662859691359174,
+        "minADE": -0.8197522013243437,
+        "minFDE": -3.199690727686809
+      }
+    },
+    "hotel": {
+      "all": {
+        "JADE": 1.6800324671242504,
+        "JFDE": 3.95961661401121,
+        "minADE": -0.03608025880818322,
+        "minFDE": -0.4894105544268046
+      },
+      "multi": {
+        "JADE": 2.248540826550255,
+        "JFDE": 5.389690043349006,
+        "minADE": -0.10825425343975348,
+        "minFDE": -0.6890381043075244
+      },
+      "single": {
+        "JADE": 0.4916920769351757,
+        "JFDE": 0.9703659040759594,
+        "minADE": 0.4916920769351757,
+        "minFDE": 0.9703659040759594
+      },
+      "N_ge_9": {
+        "JADE": null,
+        "JFDE": null,
+        "minADE": null,
+        "minFDE": null
+      }
+    },
+    "univ": {
+      "all": {
+        "JADE": 1.2747198809036608,
+        "JFDE": 2.705964958403402,
+        "minADE": -2.2493134596232123,
+        "minFDE": -5.701019648494627
+      },
+      "multi": {
+        "JADE": 1.2747198809036608,
+        "JFDE": 2.705964958403402,
+        "minADE": -2.2493134596232123,
+        "minFDE": -5.701019648494627
+      },
+      "single": {
+        "JADE": null,
+        "JFDE": null,
+        "minADE": null,
+        "minFDE": null
+      },
+      "N_ge_9": {
+        "JADE": 1.2977054041564906,
+        "JFDE": 2.761937523098479,
+        "minADE": -2.2277119718129157,
+        "minFDE": -5.6268324297987675
+      }
+    },
+    "eth": {
+      "all": {
+        "JADE": -2.2159594562449447,
+        "JFDE": -4.990116561682005,
+        "minADE": -3.041244138436454,
+        "minFDE": -8.813636142026201
+      },
+      "multi": {
+        "JADE": -1.6266540884971612,
+        "JFDE": -3.939629678215293,
+        "minADE": -3.6477398351143573,
+        "minFDE": -12.273138911972717
+      },
+      "single": {
+        "JADE": -2.4413768100282542,
+        "JFDE": -5.3919421455217265,
+        "minADE": -2.4413768100282542,
+        "minFDE": -5.3919421455217265
+      },
+      "N_ge_9": {
+        "JADE": null,
+        "JFDE": null,
+        "minADE": null,
+        "minFDE": null
+      }
+    },
+    "five_fold": {
+      "all": {
+        "JADE": 0.6242781525395815,
+        "JFDE": 1.2353947902318234,
+        "minADE": -1.2261276417031617,
+        "minFDE": -3.6774668968091193
+      },
+      "multi": {
+        "JADE": 0.8821214418092863,
+        "JFDE": 1.8456439402115201,
+        "minADE": -1.3714119990951128,
+        "minFDE": -4.423777715363664
+      },
+      "single": {
+        "JADE": -0.0945165415536875,
+        "JFDE": -1.1478177590822802,
+        "minADE": -0.0945165415536875,
+        "minFDE": -1.1478177590822802
+      },
+      "N_ge_9": {
+        "JADE": 1.2313970586156353,
+        "JFDE": 2.778698283610117,
+        "minADE": -1.0418051116841627,
+        "minFDE": -3.023742571749801
+      }
+    }
+  },
+  "ETH_single_contribution": {
+    "JADE": {
+      "five_fold_delta_contribution_cm": -0.35317941204361303,
+      "share_of_five_fold_reduction_pct": null
+    },
+    "JFDE": {
+      "five_fold_delta_contribution_cm": -0.7800200890359494,
+      "share_of_five_fold_reduction_pct": null
+    },
+    "minADE": {
+      "five_fold_delta_contribution_cm": -0.24547909683251126,
+      "share_of_five_fold_reduction_pct": 20.020680431894245
+    },
+    "minFDE": {
+      "five_fold_delta_contribution_cm": -0.5421568201266351,
+      "share_of_five_fold_reduction_pct": 14.742670303764152
+    }
+  },
+  "ETH_single_dominates": false,
+  "multi_no_metric_improves": false,
+  "UNIV_no_metric_improves": false,
+  "only_single_supported": false,
+  "recommendation": "结束本版固定组合方案，保留原有模型。"
+}

@@ -1,0 +1,116 @@
+{
+  "status": "COMPLETE",
+  "training_updates": 0,
+  "supplementary_prediction_pairs": 0,
+  "supplementary_model_forwards": 0,
+  "selection_seal_sha256": "6210d8d4efea8dca8ea17460f663bd1997935bb09ddef521935a542ca43f5bec",
+  "windows": 3348,
+  "window_seed_pairs": 16740,
+  "singleton_exact_pairs": 2535,
+  "original_AB_max_abs_replay_m": 0.0,
+  "AB_replay_atol": 1e-06,
+  "AB_replay_rtol": 1e-06,
+  "split_counts": {
+    "zara1": {
+      "all": {
+        "scene_count": 705,
+        "agent_count": 2356
+      },
+      "single": {
+        "scene_count": 103,
+        "agent_count": 103
+      },
+      "multi": {
+        "scene_count": 602,
+        "agent_count": 2253
+      },
+      "N_ge_9": {
+        "scene_count": 28,
+        "agent_count": 288
+      }
+    },
+    "hotel": {
+      "all": {
+        "scene_count": 445,
+        "agent_count": 1197
+      },
+      "single": {
+        "scene_count": 144,
+        "agent_count": 144
+      },
+      "multi": {
+        "scene_count": 301,
+        "agent_count": 1053
+      },
+      "N_ge_9": {
+        "scene_count": 0,
+        "agent_count": 0
+      }
+    },
+    "univ": {
+      "all": {
+        "scene_count": 947,
+        "agent_count": 24334
+      },
+      "single": {
+        "scene_count": 0,
+        "agent_count": 0
+      },
+      "multi": {
+        "scene_count": 947,
+        "agent_count": 24334
+      },
+      "N_ge_9": {
+        "scene_count": 907,
+        "agent_count": 24099
+      }
+    },
+    "eth": {
+      "all": {
+        "scene_count": 253,
+        "agent_count": 364
+      },
+      "single": {
+        "scene_count": 183,
+        "agent_count": 183
+      },
+      "multi": {
+        "scene_count": 70,
+        "agent_count": 181
+      },
+      "N_ge_9": {
+        "scene_count": 0,
+        "agent_count": 0
+      }
+    },
+    "zara2": {
+      "all": {
+        "scene_count": 998,
+        "agent_count": 5910
+      },
+      "single": {
+        "scene_count": 77,
+        "agent_count": 77
+      },
+      "multi": {
+        "scene_count": 921,
+        "agent_count": 5833
+      },
+      "N_ge_9": {
+        "scene_count": 214,
+        "agent_count": 2197
+      }
+    }
+  },
+  "selection_seal_unix": 1795659449.35093,
+  "verified_selected_slots_unix": 1795659449.5150056,
+  "first_truth_read_unix": 1795659449.5186741,
+  "truth_reads": 3348,
+  "K_per_seed": 20,
+  "scoring_wall_seconds": 71.21682603401132,
+  "output_sha256": {
+    "PER_WINDOW.csv": "2a506c084b3cca27ad0a31316044bbbe6c521932e4ab54b92fb98c79498bca20",
+    "PER_SEED.csv": "3863c30a0cea48f62087320aee371a5364d15794944def57ebbf7f73ba98d28b",
+    "SELECTED_SLOTS.csv": "d2e107d6b4a73f31aeb989e4013d535d12509942d67578629301b6cb89e3bbed"
+  }
+}
