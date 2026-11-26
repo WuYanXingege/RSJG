@@ -1,0 +1,42 @@
+{
+  "status": "COMPLETE",
+  "scope": "ZARA1 五种子提前探索性对照",
+  "K_per_seed": 20,
+  "windows": 705,
+  "window_seed_pairs": 3525,
+  "selection_seal_unix": 1795678926.3381782,
+  "first_truth_read_unix": 1795678926.3429148,
+  "global_prediction_seal_sha256": "2d5cd4c3c085d5321159c1e12696cf728924fa48710fc36e53162595f074394f",
+  "split_counts": {
+    "zara1": {
+      "all": {
+        "scene_count": 705,
+        "agent_count": 2356
+      },
+      "single": {
+        "scene_count": 103,
+        "agent_count": 103
+      },
+      "multi": {
+        "scene_count": 602,
+        "agent_count": 2253
+      },
+      "N_ge_9": {
+        "scene_count": 28,
+        "agent_count": 288
+      }
+    }
+  },
+  "max_seed_endpoint_metric_drift_m": {
+    "zara1": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    }
+  },
+  "original_AB_max_abs_replay_m": 0.0,
+  "scoring_wall_seconds": 11.424824516987428,
+  "output_sha256": {
+    "PER_SEED.csv": "f6e166c71052e3be7619659f4f97fe52c0de015916ad954ff7168db536d8084e",
+    "PER_WINDOW.csv": "daf7697074c73d9ff17515d840f477ae77f12b0aeed3198c6018d061dd89258a"
+  }
+}
