@@ -89,7 +89,8 @@ def _benchmark(assets, reader, identity, rows, output):
 
 
 @torch.no_grad()
-def export_fold(assets, student, selected, barrier_path, output):
+def export_fold(assets, student, selected, barrier_path, output, *, progress_root=RUN,
+                benchmark=True):
     """Only observation arrays are read at generation time."""
     output.mkdir(parents=True, exist_ok=True)
     split = assets.split
@@ -150,9 +151,10 @@ def export_fold(assets, student, selected, barrier_path, output):
                         'student endpoints depend on evaluation seed')
                 rows.append(row)
             if ordinal % 50 == 0 or ordinal == len(indices):
-                status(RUN, 'STUDENT_TEST_EXPORT', fold=assets.fold, windows=ordinal,
+                status(progress_root, 'STUDENT_TEST_EXPORT', fold=assets.fold, windows=ordinal,
                     total=len(indices), elapsed_seconds=time.monotonic()-started)
-        timing = _benchmark(assets, reader, identity, rows, output)
+        timing = _benchmark(assets, reader, identity, rows, output) if benchmark else dict(
+            A_ddim_calls=0, B_ddim_calls=0)
     seal = output / 'PREDICTIONS_FROZEN.json'
     if not seal.exists():
         immutable(seal, dict(identity=identity, rows=rows, seal_unix=time.time(), truth_reads=0,
@@ -200,23 +202,23 @@ def verify_export(fold, reference, directory, barrier_path, selected):
 
 
 @torch.no_grad()
-def score_all(references, barrier_path):
-    receipt_path = RUN / 'SCORE_RECEIPT.json'
+def score_all(references, barrier_path, *, run=RUN, folds=FOLDS):
+    receipt_path = run / 'SCORE_RECEIPT.json'
     if receipt_path.exists():
         receipt = read(receipt_path)
-        require(receipt['global_prediction_seal_sha256'] == digest(RUN/'ALL_PREDICTIONS_SEALED.json')
-                and all(digest(RUN / n) == s for n, s in receipt['output_sha256'].items()),
+        require(receipt['global_prediction_seal_sha256'] == digest(run/'ALL_PREDICTIONS_SEALED.json')
+                and all(digest(run / n) == s for n, s in receipt['output_sha256'].items()),
                 'completed native scoring changed')
         return receipt
     barrier = read(barrier_path)
     started = time.monotonic()
     mappings = {}
     records = {}
-    for fold in FOLDS:
-        directory = RUN / fold / 'test'
+    for fold in folds:
+        directory = run / fold / 'test'
         mappings[fold], records[fold] = verify_export(fold, references[fold],
             directory, barrier_path, barrier['folds'][fold])
-    global_path = RUN / 'ALL_PREDICTIONS_SEALED.json'
+    global_path = run / 'ALL_PREDICTIONS_SEALED.json'
     core = dict(freeze_barrier_sha256=digest(barrier_path), folds=records,
                 window_seed_pairs=sum(record['pairs'] for record in records.values()), truth_reads=0)
     if global_path.exists():
@@ -230,14 +232,14 @@ def score_all(references, barrier_path):
     split_counts = {}
     max_drift = {}
     max_baseline_replay = 0.
-    for fold in FOLDS:
+    for fold in folds:
         reference = references[fold]
         split = reference['split']
         reader = FormalData(split, 'scoring', verify=False)
         counts_per_group = {}
         accumulators = {seed: {group: {name: MetricAccumulator() for name in MODELS}
                                for group in GROUPS} for seed in SEEDS}
-        directory = RUN / fold / 'test'
+        directory = run / fold / 'test'
         fold_max = {metric: 0. for metric in ('JFDE', 'minFDE')}
         for ordinal, index in enumerate(reference['indices'], 1):
             paths = {}
@@ -281,7 +283,7 @@ def score_all(references, barrier_path):
                         values[f'new_minus_{ref}_{name}_cm'] = 100*(values['new_'+name] - values[ref+'_'+name])
                 windows.append(values)
             if ordinal % 100 == 0 or ordinal == len(reference['indices']):
-                status(RUN, 'SCORING_FROZEN_STUDENTS', fold=fold, windows=ordinal, total=len(reference['indices']))
+                status(run, 'SCORING_FROZEN_STUDENTS', fold=fold, windows=ordinal, total=len(reference['indices']))
         max_drift[fold] = fold_max
         for seed in SEEDS:
             for group in GROUPS:
@@ -309,14 +311,14 @@ def score_all(references, barrier_path):
                             100*(row[f'new_{metric}']-row[f'{name}_{metric}']) if count else None)
                 seed_rows.append(row)
         split_counts[fold] = counts_per_group
-    csvwrite(RUN/'PER_SEED.csv', seed_rows)
-    csvwrite(RUN/'PER_WINDOW.csv', windows)
-    receipt = dict(status='COMPLETE', scope='五折五种子探索性对照', K_per_seed=20,
-        windows=sum(len(ref['indices']) for ref in references.values()), window_seed_pairs=len(windows),
+    csvwrite(run/'PER_SEED.csv', seed_rows)
+    csvwrite(run/'PER_WINDOW.csv', windows)
+    receipt = dict(status='COMPLETE', scope=('五折五种子探索性对照' if len(folds)==5 else 'ZARA1 五种子提前探索性对照'), K_per_seed=20,
+        windows=sum(len(references[f]['indices']) for f in folds), window_seed_pairs=len(windows),
         selection_seal_unix=whole['seal_unix'], first_truth_read_unix=first_truth,
         global_prediction_seal_sha256=digest(global_path), split_counts=split_counts,
         max_seed_endpoint_metric_drift_m=max_drift, original_AB_max_abs_replay_m=max_baseline_replay,
         scoring_wall_seconds=time.monotonic()-started, output_sha256={
-            filename: digest(RUN/filename) for filename in ('PER_SEED.csv','PER_WINDOW.csv')})
+            filename: digest(run/filename) for filename in ('PER_SEED.csv','PER_WINDOW.csv')})
     write(receipt_path, receipt)
     return receipt
