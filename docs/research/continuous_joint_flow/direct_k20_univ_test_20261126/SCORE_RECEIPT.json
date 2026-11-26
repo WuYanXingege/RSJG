@@ -1,0 +1,42 @@
+{
+  "status": "COMPLETE",
+  "scope": "UNIV 五种子提前探索性对照",
+  "K_per_seed": 20,
+  "windows": 947,
+  "window_seed_pairs": 4735,
+  "selection_seal_unix": 1795701141.337854,
+  "first_truth_read_unix": 1795701141.3500516,
+  "global_prediction_seal_sha256": "99948e5b7fec1deff3c0fda9d3c6278fc8ceec0dd4595c2943ce41f4b8ba1ee8",
+  "split_counts": {
+    "univ": {
+      "all": {
+        "scene_count": 947,
+        "agent_count": 24334
+      },
+      "single": {
+        "scene_count": 0,
+        "agent_count": 0
+      },
+      "multi": {
+        "scene_count": 947,
+        "agent_count": 24334
+      },
+      "N_ge_9": {
+        "scene_count": 907,
+        "agent_count": 24099
+      }
+    }
+  },
+  "max_seed_endpoint_metric_drift_m": {
+    "univ": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    }
+  },
+  "original_AB_max_abs_replay_m": 0.0,
+  "scoring_wall_seconds": 47.93148995307274,
+  "output_sha256": {
+    "PER_SEED.csv": "66c7c9da35e8a77a1a934e1f149fe13e52f87fe9b461294d5976a07aabd0aacf",
+    "PER_WINDOW.csv": "a1700ce42cbc41c6ab0d42df5ea3d02a9a1de38b7aea32fdbd505ecc86317615"
+  }
+}
