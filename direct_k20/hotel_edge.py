@@ -3,6 +3,7 @@
 import argparse
 import csv
 import fcntl
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -18,6 +19,7 @@ from .common import ASSETS, ENVIRONMENT, METRICS, RUN as MAIN, SOURCE, immutable
 
 
 BASE = '52547bb2acbc3a8ab8f52edffeac274e30ae238b'
+INITIAL_RUN_SOURCE = '0f843f9c1649633f0369de3c48b85d8a4009e0ad'
 BRANCH = 'experiment/hotel-direct-k20-edge-s28-20261126'
 RUN = ASSETS / 'hotel_edge_s28_20261126'
 DOC = SOURCE / 'docs/research/continuous_joint_flow/hotel_edge_s28_20261126'
@@ -53,7 +55,46 @@ def _members(split, purpose):
     return [split['members'][index] for index in indices]
 
 
-def prepare():
+def _check_run_source(config):
+    recovery = _optional(RUN / 'RECOVERY_CONFIG.json')
+    if recovery:
+        require(recovery['original_config_sha256'] == digest(RUN / 'RUN_CONFIG.json'),
+                'the training identity cannot change during GPU recovery')
+    expected = recovery.get('source_sha256', config['source_sha256'])
+    require(runtime_sources() == expected, 'HOTEL edge source differs from the pinned execution')
+    return recovery
+
+
+def _pin_slot_replay(config):
+    original = config['source_sha256']
+    current = runtime_sources()
+    edited = {path for path in original.keys() | current.keys() if original.get(path) != current.get(path)}
+    require(edited == {'direct_k20/hotel_edge.py', 'direct_k20/hotel_edge_train.py',
+                       'direct_k20/hotel_edge_eval.py'},
+            'GPU recovery may only change the isolated HOTEL experiment modules')
+    for path in sorted(edited):
+        initial = subprocess.check_output(['git', 'show', INITIAL_RUN_SOURCE + ':' + path])
+        require(hashlib.sha256(initial).hexdigest() == original[path], 'initial execution source differs')
+    rollback = read(RUN / 'training/ROLLBACK.json')
+    require(rollback['reason'] == 'cuda_oom' and rollback['activation_offload']
+            and rollback['sampled_for_ddim'] and rollback['interrupted_window_agents'] >= 24,
+            'no dense DDIM allocator failure to recover')
+    resume_path = RUN / 'training/checkpoints/last.pt'
+    immutable(RUN / 'RECOVERY_CONFIG.json', dict(
+        original_config_sha256=digest(RUN / 'RUN_CONFIG.json'),
+        original_source_commit=INITIAL_RUN_SOURCE,
+        recovery_source_commit=subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
+        source_sha256=current, changed_sources=sorted(edited),
+        retained_resume_sha256=digest(resume_path), failed_batch=rollback,
+        training_replay=dict(slot_chunk=5, minimum_agents=24, global_worlds=20, full_ddim_steps=20,
+            objective='differentiable hard reductions over the native full K20 path; VJP recomputed in slot chunks',
+            path_atol=1e-5, path_rtol=1e-6),
+        activation_offload='off initially after chunk recovery; enabled only on further OOM',
+        reproduce='python -m direct_k20.hotel_edge --resume-sliced-ddim',
+    ))
+
+
+def prepare(resume_sliced_ddim=False):
     receipt = ORIGINAL / 'TRAINING_COMPLETE.json'
     finished = read(receipt)
     checkpoint = Path(finished['selected_checkpoint'])
@@ -85,8 +126,9 @@ def prepare():
             and manifest['identity']['train_members_sha256'] == train_sha
             and [row['index'] for row in manifest['rows']] == split['train_indices'],
             'frozen teacher cache is not the official HOTEL train population')
+    prior = _optional(RUN / 'RUN_CONFIG.json')
     config = dict(
-        code_base=BASE, source_sha256=runtime_sources(), fold='hotel',
+        code_base=BASE, source_sha256=prior.get('source_sha256') or runtime_sources(), fold='hotel',
         main_config_sha256=_main_source_identity(), main_source_commit='1a7444b0ec2f2b0bf1c9e31c8e7f04decddf2a91',
         S24_checkpoint=str(checkpoint), S24_sha256=S24_SHA256,
         S24_training_receipt_sha256=digest(receipt), S24_dev_score_sha256=digest(candidate),
@@ -119,6 +161,10 @@ def prepare():
         environment=ENVIRONMENT, reproduce='python -m direct_k20.hotel_edge',
     )
     immutable(RUN / 'RUN_CONFIG.json', config)
+    if resume_sliced_ddim and not (RUN / 'RECOVERY_CONFIG.json').exists():
+        require(bool(prior), 'DDIM recovery is only for an existing experiment')
+        _pin_slot_replay(config)
+    _check_run_source(config)
     return config
 
 
@@ -157,6 +203,39 @@ def _student(path, sha, epoch):
     return student.to(device='cuda', dtype=torch.float32).eval().requires_grad_(False)
 
 
+def _verify_slot_replay(assets, student, replay):
+    import torch
+
+    from .hotel_edge_train import _trajectory_slot_vjp
+    from .model import trajectory_terms
+    from .train import _trajectory, _window_goals
+
+    path = RUN / 'RECOVERY_PARITY.json'
+    recovery_sha = digest(RUN / 'RECOVERY_CONFIG.json')
+    if path.exists():
+        require(read(path)['recovery_config_sha256'] == recovery_sha, 'GPU parity receipt changed')
+        return
+    index = next(index for index in assets.split['train_indices']
+                 if len(assets.split['members'][index]['agent_ids']) == 9)
+    batch = assets.batch(index, 'train', truth=True)
+    with torch.no_grad():
+        goals, key = _window_goals(assets, student, index, batch, input_grad=False)
+    goals = goals.detach().requires_grad_(True)
+    native = _trajectory(assets, batch, goals, key, seed=3201, input_grad=True)
+    native_loss = sum(trajectory_terms(native, batch.future, batch.valid))
+    reference, = torch.autograd.grad(native_loss, goals)
+    value, gradient, drift = _trajectory_slot_vjp(assets, batch, goals, key, {'MA': 1., 'JA': 1.},
+                                                replay['slot_chunk'])
+    torch.testing.assert_close(native_loss.detach(), value, atol=1e-5, rtol=1e-6)
+    torch.testing.assert_close(reference, gradient, atol=2e-6, rtol=1e-4)
+    immutable(path, dict(recovery_config_sha256=recovery_sha, agent_count=9, world_count=20,
+                         slot_chunk=replay['slot_chunk'], updates=0,
+                         path_max_abs_m=float(drift),
+                         loss_abs_diff=float((native_loss.detach()-value).abs()),
+                         gradient_max_abs_diff=float((reference-gradient).abs().max())))
+    torch.cuda.empty_cache()
+
+
 def _worker(stage, activation_offload):
     yielded = False
     controller_pid = os.getppid()
@@ -174,7 +253,7 @@ def _worker(stage, activation_offload):
     from bcep_v2.runtime import configure_cuda
 
     config = read(RUN / 'RUN_CONFIG.json')
-    require(runtime_sources() == config['source_sha256'], 'HOTEL edge source changed')
+    recovery = _check_run_source(config)
     torch.set_num_threads(1)
     configure_cuda()
     torch.cuda.set_per_process_memory_fraction(config['GPU']['initial_allocator_fraction'])
@@ -186,8 +265,12 @@ def _worker(stage, activation_offload):
         if stage == 'train':
             from .hotel_edge_train import train
 
+            replay = recovery.get('training_replay', {})
+            if replay:
+                _verify_slot_replay(assets, s24, replay)
             outcome = train(assets, s24, TEACHER_CACHE, RUN, config,
-                            should_yield=should_yield, activation_offload=activation_offload)
+                            should_yield=should_yield, activation_offload=activation_offload,
+                            dense_slot_chunk=replay.get('slot_chunk', 0))
             if outcome is None:
                 return YIELD_CODE
             immutable(RUN / 'TRAINING_COMPLETE.json', outcome)
@@ -269,7 +352,9 @@ def _execute(stage, receipt):
     if receipt.exists():
         return
     failures = 0
-    offload = stage == 'train' and (RUN / 'ACTIVATION_OFFLOAD.json').exists()
+    marker = ('RECOVERY_ACTIVATION_OFFLOAD.json' if (RUN / 'RECOVERY_CONFIG.json').exists()
+              else 'ACTIVATION_OFFLOAD.json')
+    offload = stage == 'train' and (RUN / marker).exists()
     waits = None
     while not receipt.exists():
         with (RUN / 'worker.lock').open('a') as lock:
@@ -357,7 +442,7 @@ def _execute(stage, receipt):
             _event('GPU_OOM_ROLLBACK', oom=read(RUN / 'GPU_OOM.json'))
             if stage == 'train' and not offload:
                 offload = True
-                write(RUN / 'ACTIVATION_OFFLOAD.json', dict(enabled=True, unix=time.time()))
+                write(RUN / marker, dict(enabled=True, unix=time.time()))
         require(failures < 3, f'{stage} failed repeatedly at the same shared GPU budget; see {stage}.log')
         status(RUN, 'RECOVERING_SAME_RUN', stage=stage, exit_code=code, retry=failures)
         time.sleep(20)
@@ -419,6 +504,9 @@ def _publish():
 
     DOC.mkdir(parents=True, exist_ok=True)
     write(DOC / 'TOP5.json', read(RUN / 'training/checkpoints/TOP5.json'))
+    for name in ('RECOVERY_CONFIG.json', 'RECOVERY_PARITY.json'):
+        if (RUN / name).exists():
+            write(DOC / name, read(RUN / name))
     build_report(RUN, DOC)
     require(subprocess.check_output(['git', 'branch', '--show-current'], text=True).strip() == BRANCH,
             'archive attempted outside the HOTEL auxiliary branch')
@@ -441,6 +529,7 @@ def main():
     parser.add_argument('--worker', choices=('train', 'export'))
     parser.add_argument('--activation-offload', action='store_true')
     parser.add_argument('--prepare-only', action='store_true')
+    parser.add_argument('--resume-sliced-ddim', action='store_true')
     args = parser.parse_args()
     if args.worker:
         with (RUN / 'worker.lock').open('a') as lock:
@@ -449,7 +538,7 @@ def main():
     RUN.mkdir(parents=True, exist_ok=True)
     with (RUN / 'controller.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        config = prepare()
+        config = prepare(resume_sliced_ddim=args.resume_sliced_ddim)
         if args.prepare_only:
             status(RUN, 'PREPARED')
             return 0
@@ -465,7 +554,7 @@ def main():
         _execute('train', RUN / 'TRAINING_COMPLETE.json')
         identity = _evaluation_identity(config)
         _execute('export', RUN / 'EXPORT_COMPLETE.json')
-        require(runtime_sources() == config['source_sha256'], 'HOTEL edge source changed during experiment')
+        _check_run_source(config)
         require(_main_source_identity() == config['main_config_sha256'], 'main run identity changed')
         status(RUN, 'SCORING_SELECTION_DEV', fold='hotel')
         import torch

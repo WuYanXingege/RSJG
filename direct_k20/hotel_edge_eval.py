@@ -401,6 +401,15 @@ def build_report(run: Path, doc: Path):
         epoch = f'第 {main_epoch} 轮，' if main_epoch is not None else ''
         lines.append(f'归档时五折主线在 {str(main.get("fold","")).upper()} {epoch}'
                      f'状态为 `{main["status"]}`。')
+    if (run / 'RECOVERY_PARITY.json').exists():
+        parity = read(run / 'RECOVERY_PARITY.json')
+        lines.append(
+            '第 25 轮第 13 批的 46 人窗在 DDIM 注意力重算时触及 18% 分配上限。'
+            f'从第 12 次完整更新恢复后，有 {train["dense_slot_replays"]["windows"]} 个轨迹训练窗保持完整 K20 前向，'
+            '反传按 5 槽重算并合并。9 人真实窗对照的损失绝对差为 '
+            f'{parity["loss_abs_diff"]:.3g}，目标终点梯度最大绝对差为 '
+            f'{parity["gradient_max_abs_diff"]:.3g}。'
+            '[恢复配置](RECOVERY_CONFIG.json) · [等价性核验](RECOVERY_PARITY.json)')
     if 'seconds' in wall:
         lines.append(f'墙钟耗时 {wall["seconds"]/60:.1f} 分钟。')
     lines.extend([

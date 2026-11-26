@@ -10,10 +10,14 @@ import torch
 
 from bcep.contracts import canonical_hash, digest, require
 from bcep_joint.common import read, restore_rng, rng_state, save, seed_all, write
+from ebjd.sampling import differentiable_sample
 from joint_flow_fourfold.common import immutable
 from joint_flow_fourfold.inputs import state_hash
 from .assets import TeacherCache
-from .model import endpoint_terms, teacher_terms, trajectory_terms
+from .model import (
+    K, NATIVE_ATOL, NATIVE_RTOL, _bridge_grid_sample, decode_student,
+    endpoint_terms, student_noise, teacher_terms, trajectory_terms,
+)
 from .train import (
     METRICS, RECIPE as ORIGINAL_RECIPE, _atomic_alias, _epoch_sample_count,
     _progress, _trajectory, _window_goals,
@@ -88,7 +92,48 @@ def _batch_weights(counts, draws, scales):
     )
 
 
-def _microbatch(assets, student, cache, index, n, selected, w):
+def _trajectory_slot_vjp(assets, batch, goals, key, w, slot_chunk):
+    """Compute the whole K20 trajectory loss, then replay its VJP in slot slices."""
+    with torch.no_grad():
+        context = assets.model.encode_context(batch.observed, batch.semantic_maps, batch.valid)
+        noise = student_noise(key, batch.agent_ids[0], RECIPE['train_bridge_seed'], device=goals.device)
+        native = decode_student(assets.model, context, goals.detach(), noise)
+    path = native.detach().requires_grad_(True)
+    ma, ja = trajectory_terms(path, batch.future, batch.valid)
+    loss = w['MA']*ma + w['JA']*ja
+    cotangent, = torch.autograd.grad(loss, path)
+    require(bool(torch.isfinite(cotangent).all()), 'nonfinite native K20 trajectory cotangent')
+
+    # The bridge has no operations mixing proposal slots. The native forward
+    # above still resolves both minima jointly across all twenty slots.
+    bridge = assets.model.bridge
+    original_map_sampler = bridge.denoiser.map_sampler
+    bridge.denoiser.map_sampler = _bridge_grid_sample
+    gradients = []
+    max_replay_diff = 0.
+    try:
+        for first in range(0, K, slot_chunk):
+            slots = slice(first, first + slot_chunk)
+            proposal = goals[slots].detach().requires_grad_(True)
+            replay, _, _ = differentiable_sample(
+                bridge, context, noise[:, slots], steps=20, checkpoint_steps=True,
+                checkpoint_blocks=False, proposal_goals=proposal[None], proposal_eta=0.,
+            )
+            torch.testing.assert_close(replay.detach()[..., -1, :], proposal.detach()[None],
+                                       rtol=NATIVE_RTOL, atol=NATIVE_ATOL)
+            reference = native[:, slots]
+            torch.testing.assert_close(replay.detach(), reference, rtol=NATIVE_RTOL, atol=1e-5)
+            max_replay_diff = max(max_replay_diff, float((replay.detach() - reference).abs().max()))
+            gradient, = torch.autograd.grad(replay, proposal, cotangent[:, slots])
+            gradients.append(gradient)
+    finally:
+        bridge.denoiser.map_sampler = original_map_sampler
+    goal_gradient = torch.cat(gradients)
+    require(bool(torch.isfinite(goal_gradient).all()), 'nonfinite sliced bridge cotangent')
+    return loss.detach(), goal_gradient, max_replay_diff
+
+
+def _microbatch(assets, student, cache, index, n, selected, w, slot_chunk=0, replays=None):
     batch = assets.batch(index, 'train', truth=True)
     require(batch.valid.shape == (1, n) and bool(batch.valid.all()),
             'training member mask differs from the cache')
@@ -107,7 +152,15 @@ def _microbatch(assets, student, cache, index, n, selected, w):
         extra = torch.relu(jf - ref_jf)
         total = total + w['extra']*extra
     trajectory_backward = False
-    if selected:
+    if selected and slot_chunk and n >= 24 and goals.requires_grad:
+        trajectory_loss, goal_gradient, replay_diff = _trajectory_slot_vjp(
+            assets, batch, goals, key, w, slot_chunk)
+        torch.autograd.backward((total, goals), (None, goal_gradient))
+        total = total.detach() + trajectory_loss
+        trajectory_backward = True
+        if replays is not None:
+            replays.append(dict(agents=n, slot_chunk=slot_chunk, max_path_replay_abs_m=replay_diff))
+    elif selected:
         path = _trajectory(assets, batch, goals, key, seed=RECIPE['train_bridge_seed'],
                            input_grad=goals.requires_grad)
         ma, ja = trajectory_terms(path, batch.future, batch.valid)
@@ -155,9 +208,10 @@ def _latest(checkpoints, identity):
 
 
 def train(assets, student, teacher_cache, run, config, should_yield=None, *,
-          activation_offload=False):
+          activation_offload=False, dense_slot_chunk=0):
     """Run the fixed four epochs, returning None when the auxiliary worker yields."""
     require(assets.fold == 'hotel', 'this continuation accepts HOTEL only')
+    require(0 <= dense_slot_chunk <= K, 'invalid dense replay slot size')
     output = Path(run) / 'training'
     checkpoints = output / 'checkpoints'
     checkpoints.mkdir(parents=True, exist_ok=True)
@@ -203,6 +257,7 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
         restore_rng(state['rng'], loader)
         sampler.set_state(state['trajectory_sampler_rng'])
         _manifest(output, checkpoints, state['history'])
+    state.setdefault('dense_slot_replays', dict(windows=0, max_path_replay_abs_m=0.))
     require(_frozen_states(assets, student) == frozen, 'resumed frozen weights differ from S24')
 
     def persist(path):
@@ -221,6 +276,7 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
                     completed_batches=state['completed_batches'], updates=state['update'],
                     interrupted_window_agents=n, sampled_for_ddim=selected,
                     activation_offload=activation_offload, worker_pid=os.getpid(),
+                    dense_slot_chunk=dense_slot_chunk,
                     **_memory(device))
         write(output / 'ROLLBACK.json', dict(info, unix=time.time()))
         _progress(output, 'ROLL_BACK_UNCOMMITTED_BATCH', **info)
@@ -253,6 +309,7 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
                 torch.cuda.reset_peak_memory_stats(device)
             objectives = torch.zeros((windows, 2), device=device, dtype=torch.float64)
             backward_counts = []
+            replay_diagnostics = []
             n = None
             sampled = None
             try:
@@ -266,7 +323,8 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
                                else nullcontext())
                     with offload:
                         objectives[pos], trajectory_backward = _microbatch(
-                            assets, student, cache, index, n, sampled, weights)
+                            assets, student, cache, index, n, sampled, weights,
+                            dense_slot_chunk, replay_diagnostics)
                     if trajectory_backward:
                         backward_counts.append(n)
                 values = objectives.sum(0).tolist()
@@ -287,6 +345,11 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
             state['cursor'] += windows
             state['completed_batches'] += 1
             state['update'] += int(actual_update)
+            for diagnostic in replay_diagnostics:
+                replays = state['dense_slot_replays']
+                replays['windows'] += 1
+                replays['max_path_replay_abs_m'] = max(replays['max_path_replay_abs_m'],
+                                                     diagnostic['max_path_replay_abs_m'])
             eligible = sum(2 <= n <= 8 for n in batch_counts)
             for name, value in dict(windows=windows, agents=sum(batch_counts),
                     updates=int(actual_update), skipped_batches=int(not actual_update),
@@ -299,6 +362,7 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
                         batch_eligible=eligible, batch_triggered=active,
                         sampled_agents=[batch_counts[pos] for pos in sorted(selected)],
                         ddim_backward_agents=backward_counts, activation_offload=activation_offload,
+                        dense_slot_replay=replay_diagnostics,
                         worker_pid=os.getpid(), **memory)
             first_update = actual_update and state['first_update'] is None
             first_ddim = actual_update and bool(backward_counts) and state['first_ddim_backward_update'] is None
@@ -309,7 +373,7 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
             persist(checkpoints / 'last.pt')
             if first_update or first_ddim:
                 milestones()
-            if first_ddim or first_update or state['completed_batches'] % 10 == 0:
+            if replay_diagnostics or first_ddim or first_update or state['completed_batches'] % 10 == 0:
                 _progress(output, 'TRAIN_UPDATE', **info)
             if should_yield is not None and should_yield():
                 _progress(output, 'YIELD_AT_COMPLETE_BATCH', **info)
@@ -353,6 +417,7 @@ def train(assets, student, teacher_cache, run, config, should_yield=None, *,
                 peak_gpu_reserved_mib=state['peak_gpu_reserved_mib'],
                 first_update=state['first_update'],
                 first_ddim_backward_update=state['first_ddim_backward_update'],
+                dense_slot_replays=state['dense_slot_replays'],
                 frozen_before_sha256=frozen, frozen_after_sha256=_frozen_states(assets, student),
                 edge_after_sha256=state_hash(student.edge),
                 S28_checkpoint=str(final.resolve()), S28_sha256=digest(final),
