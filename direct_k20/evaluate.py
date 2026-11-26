@@ -313,7 +313,8 @@ def score_all(references, barrier_path, *, run=RUN, folds=FOLDS):
         split_counts[fold] = counts_per_group
     csvwrite(run/'PER_SEED.csv', seed_rows)
     csvwrite(run/'PER_WINDOW.csv', windows)
-    receipt = dict(status='COMPLETE', scope=('五折五种子探索性对照' if len(folds)==5 else 'ZARA1 五种子提前探索性对照'), K_per_seed=20,
+    scope = '五折五种子探索性对照' if len(folds) == 5 else f'{folds[0].upper()} 五种子提前探索性对照'
+    receipt = dict(status='COMPLETE', scope=scope, K_per_seed=20,
         windows=sum(len(references[f]['indices']) for f in folds), window_seed_pairs=len(windows),
         selection_seal_unix=whole['seal_unix'], first_truth_read_unix=first_truth,
         global_prediction_seal_sha256=digest(global_path), split_counts=split_counts,
