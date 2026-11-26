@@ -1,0 +1,607 @@
+{
+  "status": "COMPLETE",
+  "fold": "hotel",
+  "identity": {
+    "fold": "hotel",
+    "upstream": {
+      "A_epoch": 12,
+      "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+      "B_epoch": 19,
+      "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+      "provider": [
+        {
+          "stage": "density",
+          "epoch": 57,
+          "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+        },
+        {
+          "stage": "head",
+          "epoch": 4,
+          "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+        }
+      ],
+      "upstream_manifest_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+      "B_manifest_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+      "train_bank_sha256": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+      "fold": "hotel",
+      "source_report_commit": "3296fc5968463ed14bf43265c064b3856d55ed30",
+      "historical": {
+        "score_receipt_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+        "prediction_seal_sha256": "f68a89a2b76493e2c75051db56c40b04be7145420ef038995f7972b51c946ef4",
+        "heldout_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+        "tables": {
+          "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+          "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+        }
+      },
+      "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+      "dev_B_seed": 2035,
+      "dev_B": {
+        "JADE": 0.36436125501275585,
+        "JFDE": 0.723063430501159,
+        "minADE": 0.24224466309831597,
+        "minFDE": 0.449745562799765
+      }
+    },
+    "cache": {
+      "teacher_identity": {
+        "A_epoch": 12,
+        "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+        "B_epoch": 19,
+        "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+        "provider": [
+          {
+            "stage": "density",
+            "epoch": 57,
+            "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+          },
+          {
+            "stage": "head",
+            "epoch": 4,
+            "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+          }
+        ],
+        "upstream_manifest_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+        "B_manifest_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+        "train_bank_sha256": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+        "fold": "hotel",
+        "source_report_commit": "3296fc5968463ed14bf43265c064b3856d55ed30",
+        "historical": {
+          "score_receipt_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+          "prediction_seal_sha256": "f68a89a2b76493e2c75051db56c40b04be7145420ef038995f7972b51c946ef4",
+          "heldout_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+          "tables": {
+            "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+            "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+          }
+        },
+        "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+        "dev_B_seed": 2035,
+        "dev_B": {
+          "JADE": 0.36436125501275585,
+          "JFDE": 0.723063430501159,
+          "minADE": 0.24224466309831597,
+          "minFDE": 0.449745562799765
+        }
+      },
+      "teachers_manifest_sha256": "dcd982fddd4d2a44f416e5ffa09c43ba6467959043ba53029a4033584d8f3cad",
+      "scale_receipt_sha256": "3dfc1ad16be8af56b98f559b8af55696438919cde0e5b4da86bf3233c1da433f",
+      "train_member_count": 3118,
+      "scale_member_count": 256,
+      "scale_members_sha256": "33e4054caa5590bd75ffbb319b9f74fa394d036eaeee38575e15d973e5689cf0",
+      "scales": {
+        "JADE": 0.33929696761333616,
+        "JFDE": 0.6273388679232994,
+        "minADE": 0.21893737595274232,
+        "minFDE": 0.36810079783820615
+      }
+    },
+    "train_indices_sha256": "59e857a383f4edeb9d08b6a675c618a1d0591aae3bd54f9a384fa5c54749d44d",
+    "recipe": {
+      "seed": 3201,
+      "train_bridge_seed": 3201,
+      "development_seed": 2035,
+      "epochs": 24,
+      "logical_windows": 16,
+      "end_only_epochs": 12,
+      "trajectory_sample_fraction": 0.125,
+      "trajectory_sample_count": "max(1,(logical_batch_window_count+4)//8)",
+      "lr": 0.0003,
+      "weight_decay": 0.0001,
+      "clip_grad_norm": 5.0,
+      "teacher_weight": 0.25,
+      "trajectory_weight": 0.5,
+      "normalization_floor": 1e-06,
+      "evaluation_epochs": [
+        12,
+        16,
+        20,
+        24
+      ],
+      "K": 20,
+      "DDIM_steps": 20,
+      "proposal_eta": 0.0,
+      "checkpoint_steps": true,
+      "precision": "FP32",
+      "ranking": "minimize (max four metric ratios, mean four metric ratios, completed epoch)",
+      "retention": "keep all completed epochs; rank the four evaluated epochs by the fixed selector"
+    },
+    "frozen": {
+      "provider": "ea254070fda120345d69c5ebca230b95c3cdb84d19d578495c30957ca89da55e",
+      "bridge": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669"
+    },
+    "scales_m": {
+      "JADE": 0.33929696761333616,
+      "JFDE": 0.6273388679232994,
+      "minADE": 0.21893737595274232,
+      "minFDE": 0.36810079783820615
+    },
+    "development_B_m": {
+      "JADE": 0.36436125501275585,
+      "JFDE": 0.723063430501159,
+      "minADE": 0.24224466309831597,
+      "minFDE": 0.449745562799765
+    }
+  },
+  "recipe": {
+    "seed": 3201,
+    "train_bridge_seed": 3201,
+    "development_seed": 2035,
+    "epochs": 24,
+    "logical_windows": 16,
+    "end_only_epochs": 12,
+    "trajectory_sample_fraction": 0.125,
+    "trajectory_sample_count": "max(1,(logical_batch_window_count+4)//8)",
+    "lr": 0.0003,
+    "weight_decay": 0.0001,
+    "clip_grad_norm": 5.0,
+    "teacher_weight": 0.25,
+    "trajectory_weight": 0.5,
+    "normalization_floor": 1e-06,
+    "evaluation_epochs": [
+      12,
+      16,
+      20,
+      24
+    ],
+    "K": 20,
+    "DDIM_steps": 20,
+    "proposal_eta": 0.0,
+    "checkpoint_steps": true,
+    "precision": "FP32",
+    "ranking": "minimize (max four metric ratios, mean four metric ratios, completed epoch)",
+    "retention": "keep all completed epochs; rank the four evaluated epochs by the fixed selector"
+  },
+  "updates": 4680,
+  "completed_epochs": 24,
+  "selected_epoch": 24,
+  "selected_checkpoint": "<host-path-sha256:e3950147515b179d58fe023319ae9e5ce0f0d5b9843c4b8c7e0e8d30d4da1d96>",
+  "selected_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+  "final_checkpoint": "<host-path-sha256:cd57034d46d28ea06001cabdfe3d8d643bf4fb58cc93da737cc5dd46147467a8>",
+  "final_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+  "dev_scores": [
+    {
+      "identity": {
+        "fold": "hotel",
+        "epoch": 12,
+        "seed": 2035,
+        "student_state_sha256": "07412d09391d0a76d5078f1ebdf92a996e4d205b64002c841052e36e31aa5e96",
+        "upstream": {
+          "A_epoch": 12,
+          "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+          "B_epoch": 19,
+          "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+          "provider": [
+            {
+              "stage": "density",
+              "epoch": 57,
+              "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+            },
+            {
+              "stage": "head",
+              "epoch": 4,
+              "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+            }
+          ],
+          "upstream_manifest_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+          "B_manifest_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+          "train_bank_sha256": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+          "fold": "hotel",
+          "source_report_commit": "3296fc5968463ed14bf43265c064b3856d55ed30",
+          "historical": {
+            "score_receipt_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+            "prediction_seal_sha256": "f68a89a2b76493e2c75051db56c40b04be7145420ef038995f7972b51c946ef4",
+            "heldout_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+            "tables": {
+              "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+              "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+            }
+          },
+          "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+          "dev_B_seed": 2035,
+          "dev_B": {
+            "JADE": 0.36436125501275585,
+            "JFDE": 0.723063430501159,
+            "minADE": 0.24224466309831597,
+            "minFDE": 0.449745562799765
+          }
+        },
+        "reference": {
+          "JADE": 0.36436125501275585,
+          "JFDE": 0.723063430501159,
+          "minADE": 0.24224466309831597,
+          "minFDE": 0.449745562799765
+        }
+      },
+      "epoch": 12,
+      "seed": 2035,
+      "metrics": {
+        "minADE": 0.20914482865627557,
+        "minFDE": 0.3394506744141884,
+        "JADE": 0.3620573181772691,
+        "JFDE": 0.7205472440799958,
+        "scene_weighted_minADE": 0.21293931669923802,
+        "scene_weighted_minFDE": 0.33837523750641363,
+        "coordination_gap_ADE": 0.1491180014780311,
+        "coordination_gap_FDE": 0.3821720065735822,
+        "agent_count": 5203,
+        "scene_count": 688,
+        "sums": {
+          "agent_minADE": 1088.1805434986018,
+          "agent_minFDE": 1766.1618589770223,
+          "scene_JADE": 249.09543490596116,
+          "scene_JFDE": 495.7365039270371,
+          "scene_marginal_ADE": 146.50224988907576,
+          "scene_marginal_FDE": 232.80216340441257
+        }
+      },
+      "ratios": {
+        "JADE": 0.993676778735966,
+        "JFDE": 0.9965201027807212,
+        "minADE": 0.8633619662918778,
+        "minFDE": 0.7547615863090085
+      },
+      "max_ratio": 0.9965201027807212,
+      "mean_ratio": 0.9020801085293934,
+      "windows": 688,
+      "ddim_calls": 688,
+      "seconds": 319.7854206149932
+    },
+    {
+      "identity": {
+        "fold": "hotel",
+        "epoch": 16,
+        "seed": 2035,
+        "student_state_sha256": "73959e6964e22c6268a08d14eec8ad3192b61a2f658423e0ae1e052adb142cdf",
+        "upstream": {
+          "A_epoch": 12,
+          "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+          "B_epoch": 19,
+          "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+          "provider": [
+            {
+              "stage": "density",
+              "epoch": 57,
+              "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+            },
+            {
+              "stage": "head",
+              "epoch": 4,
+              "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+            }
+          ],
+          "upstream_manifest_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+          "B_manifest_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+          "train_bank_sha256": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+          "fold": "hotel",
+          "source_report_commit": "3296fc5968463ed14bf43265c064b3856d55ed30",
+          "historical": {
+            "score_receipt_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+            "prediction_seal_sha256": "f68a89a2b76493e2c75051db56c40b04be7145420ef038995f7972b51c946ef4",
+            "heldout_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+            "tables": {
+              "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+              "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+            }
+          },
+          "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+          "dev_B_seed": 2035,
+          "dev_B": {
+            "JADE": 0.36436125501275585,
+            "JFDE": 0.723063430501159,
+            "minADE": 0.24224466309831597,
+            "minFDE": 0.449745562799765
+          }
+        },
+        "reference": {
+          "JADE": 0.36436125501275585,
+          "JFDE": 0.723063430501159,
+          "minADE": 0.24224466309831597,
+          "minFDE": 0.449745562799765
+        }
+      },
+      "epoch": 16,
+      "seed": 2035,
+      "metrics": {
+        "minADE": 0.20978965599503524,
+        "minFDE": 0.3415591634190126,
+        "JADE": 0.3593315239467788,
+        "JFDE": 0.7165722015968978,
+        "scene_weighted_minADE": 0.21265403362705784,
+        "scene_weighted_minFDE": 0.33945322650157156,
+        "coordination_gap_ADE": 0.14667749031972097,
+        "coordination_gap_FDE": 0.37711897509532627,
+        "agent_count": 5203,
+        "scene_count": 688,
+        "sums": {
+          "agent_minADE": 1091.5355801421683,
+          "agent_minFDE": 1777.1323272691225,
+          "scene_JADE": 247.22008847538382,
+          "scene_JFDE": 493.00167469866574,
+          "scene_marginal_ADE": 146.3059751354158,
+          "scene_marginal_FDE": 233.54381983308122
+        }
+      },
+      "ratios": {
+        "JADE": 0.9861957576532089,
+        "JFDE": 0.9910226010188871,
+        "minADE": 0.8660238508944623,
+        "minFDE": 0.7594497682038966
+      },
+      "max_ratio": 0.9910226010188871,
+      "mean_ratio": 0.9006729944426137,
+      "windows": 688,
+      "ddim_calls": 688,
+      "seconds": 324.47023365600035
+    },
+    {
+      "identity": {
+        "fold": "hotel",
+        "epoch": 20,
+        "seed": 2035,
+        "student_state_sha256": "b3b96439647889aea1a3acf807969451ba02e350f3815349460fb131329f65dc",
+        "upstream": {
+          "A_epoch": 12,
+          "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+          "B_epoch": 19,
+          "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+          "provider": [
+            {
+              "stage": "density",
+              "epoch": 57,
+              "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+            },
+            {
+              "stage": "head",
+              "epoch": 4,
+              "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+            }
+          ],
+          "upstream_manifest_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+          "B_manifest_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+          "train_bank_sha256": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+          "fold": "hotel",
+          "source_report_commit": "3296fc5968463ed14bf43265c064b3856d55ed30",
+          "historical": {
+            "score_receipt_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+            "prediction_seal_sha256": "f68a89a2b76493e2c75051db56c40b04be7145420ef038995f7972b51c946ef4",
+            "heldout_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+            "tables": {
+              "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+              "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+            }
+          },
+          "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+          "dev_B_seed": 2035,
+          "dev_B": {
+            "JADE": 0.36436125501275585,
+            "JFDE": 0.723063430501159,
+            "minADE": 0.24224466309831597,
+            "minFDE": 0.449745562799765
+          }
+        },
+        "reference": {
+          "JADE": 0.36436125501275585,
+          "JFDE": 0.723063430501159,
+          "minADE": 0.24224466309831597,
+          "minFDE": 0.449745562799765
+        }
+      },
+      "epoch": 20,
+      "seed": 2035,
+      "metrics": {
+        "minADE": 0.21045202010836275,
+        "minFDE": 0.3427653663957991,
+        "JADE": 0.35822547083655587,
+        "JFDE": 0.713932529087774,
+        "scene_weighted_minADE": 0.21372010114705622,
+        "scene_weighted_minFDE": 0.3414239437863512,
+        "coordination_gap_ADE": 0.14450536968949965,
+        "coordination_gap_FDE": 0.37250858530142283,
+        "agent_count": 5203,
+        "scene_count": 688,
+        "sums": {
+          "agent_minADE": 1094.9818606238114,
+          "agent_minFDE": 1783.4082013573425,
+          "scene_JADE": 246.45912393555045,
+          "scene_JFDE": 491.1855800123885,
+          "scene_marginal_ADE": 147.0394295891747,
+          "scene_marginal_FDE": 234.89967332500964
+        }
+      },
+      "ratios": {
+        "JADE": 0.9831601629103369,
+        "JFDE": 0.9873719219805429,
+        "minADE": 0.868758128318187,
+        "minFDE": 0.7621317356907521
+      },
+      "max_ratio": 0.9873719219805429,
+      "mean_ratio": 0.9003554872249547,
+      "windows": 688,
+      "ddim_calls": 688,
+      "seconds": 321.9830535969231
+    },
+    {
+      "identity": {
+        "fold": "hotel",
+        "epoch": 24,
+        "seed": 2035,
+        "student_state_sha256": "da195412d022d1266e573a711fafa4080f773e750fdafcbcb999e98bb69b2c95",
+        "upstream": {
+          "A_epoch": 12,
+          "A_sha256": "53cc37750ff5142fdc234ba1b56216a03ca202bf912f3627894cbda97ccd482b",
+          "B_epoch": 19,
+          "B_sha256": "1806aabf478641021584aca02f4040e8e9c2431fe80c457d5adabba259d073d0",
+          "provider": [
+            {
+              "stage": "density",
+              "epoch": 57,
+              "sha256": "e029a685dbace33f92e554b51a170159b9a8d07f88655fe7045abf02dd396168"
+            },
+            {
+              "stage": "head",
+              "epoch": 4,
+              "sha256": "5fa56bf53470811f171984194ac255b57a42119fb82d917127e4c552ede35a6b"
+            }
+          ],
+          "upstream_manifest_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+          "B_manifest_sha256": "7ddcfb973c10fa01ef3b0e776ee872e455b3394539250eb39de0e0f7b22f5487",
+          "train_bank_sha256": "9997516ecd74c7c9d46b71da70bafdd544a9ed3dacc0377894a891e66e6f4165",
+          "fold": "hotel",
+          "source_report_commit": "3296fc5968463ed14bf43265c064b3856d55ed30",
+          "historical": {
+            "score_receipt_sha256": "947427a3057420ad183493432fe0a48aa9c06b01d2d22e951060d9e7b8d05a77",
+            "prediction_seal_sha256": "f68a89a2b76493e2c75051db56c40b04be7145420ef038995f7972b51c946ef4",
+            "heldout_members_sha256": "f441b15be772b248734d1bd2c714aa786be80f4ca05f80218e0f8a93149edb24",
+            "tables": {
+              "PER_SEED.csv": "50beb4acbdc4f2ab428cb136a1ef7333e06f5b55e70e412d966bdf4bb5043b4e",
+              "PER_WINDOW.csv": "ca8700f4c3ad5a0450e8704950744ba55dc61329346c1ee851c4dbbefc7e9d32"
+            }
+          },
+          "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+          "dev_B_seed": 2035,
+          "dev_B": {
+            "JADE": 0.36436125501275585,
+            "JFDE": 0.723063430501159,
+            "minADE": 0.24224466309831597,
+            "minFDE": 0.449745562799765
+          }
+        },
+        "reference": {
+          "JADE": 0.36436125501275585,
+          "JFDE": 0.723063430501159,
+          "minADE": 0.24224466309831597,
+          "minFDE": 0.449745562799765
+        }
+      },
+      "epoch": 24,
+      "seed": 2035,
+      "metrics": {
+        "minADE": 0.20964505981074247,
+        "minFDE": 0.3396556240646875,
+        "JADE": 0.35811641039787034,
+        "JFDE": 0.7109034293856429,
+        "scene_weighted_minADE": 0.21321583534374314,
+        "scene_weighted_minFDE": 0.33838149863105743,
+        "coordination_gap_ADE": 0.1449005750541272,
+        "coordination_gap_FDE": 0.37252193075458545,
+        "agent_count": 5203,
+        "scene_count": 688,
+        "sums": {
+          "agent_minADE": 1090.783246195293,
+          "agent_minFDE": 1767.2282120085692,
+          "scene_JADE": 246.3840903537348,
+          "scene_JFDE": 489.1015594173223,
+          "scene_marginal_ADE": 146.69249471649528,
+          "scene_marginal_FDE": 232.80647105816752
+        }
+      },
+      "ratios": {
+        "JADE": 0.9828608433828485,
+        "JFDE": 0.9831826633700892,
+        "minADE": 0.865426949470739,
+        "minFDE": 0.7552172876376069
+      },
+      "max_ratio": 0.9831826633700892,
+      "mean_ratio": 0.8966719359653209,
+      "windows": 688,
+      "ddim_calls": 688,
+      "seconds": 313.08858916093595
+    }
+  ],
+  "train_ddim_calls": 4680,
+  "development_ddim_calls": 2752,
+  "preflight": {
+    "passed": true,
+    "agents": 2,
+    "edges": 1,
+    "seed": 3201,
+    "native_atol": 1e-06,
+    "native_rtol": 1e-06,
+    "native_flow_max_abs_m": 0.0,
+    "native_head_max_abs_m": 0.0,
+    "native_bridge_max_abs_m": 9.5367431640625e-07,
+    "final_frame_max_abs_m": 0.0,
+    "agent_reorder_max_abs_m": 0.0,
+    "agent_reorder_path_max_abs_m": 0.0,
+    "agent_reorder_path_atol_m": 1e-05,
+    "agent_reorder_path_rtol": 1e-05,
+    "teacher_slot_permutation_ta_abs": 0.0,
+    "teacher_slot_permutation_tb_abs": 0.0,
+    "native_metric_max_abs_m": 0.0,
+    "first_eleven_loss": 0.42743125557899475,
+    "first_eleven_grad_l2": {
+      "queries": 0.0002233923296444118,
+      "personal.0.weight": 0.046243563294410706,
+      "personal.0.bias": 0.004092785995453596,
+      "personal.2.weight": 0.02323976531624794,
+      "personal.2.bias": 0.013286925852298737,
+      "edge.0.weight": 0.03214270621538162,
+      "edge.0.bias": 0.0038306843489408493,
+      "edge.2.weight": 0.021057559177279472,
+      "edge.2.bias": 0.01348080299794674,
+      "latent.0.weight": 0.05197608843445778,
+      "latent.0.bias": 0.03171614184975624,
+      "latent.2.weight": 0.03863845020532608,
+      "latent.2.bias": 0.10324400663375854
+    },
+    "training_updates": 0,
+    "ddim_calls": 3,
+    "frozen_state_verified": true,
+    "identity_sha256": "4baa32bd37b0952dfe7bee8df352c85e37d72c838aeba6774b92cb38a57196db",
+    "first_logical_batch": true,
+    "window_sha256": "140b539255f5d421bf684eea517ed85efcbd9633267f2d0c10c627ecc18c8f54",
+    "optimizer_updates": 0
+  },
+  "train_seconds": 11939.685613084817,
+  "development_seconds": 1279.3272970288526,
+  "retained_epochs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+  ],
+  "test_access": false,
+  "epoch_metrics_sha256": "3260a75950f4d31b8fd706a01d528e1f53806ee84b0f07ce5afd72b382fdee2f",
+  "dev_selection_sha256": "4137255e065a50994f052d75c7d7ed945cd0eddb2ae209950483739960284ab0"
+}

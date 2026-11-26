@@ -1,0 +1,130 @@
+{
+  "status": "COMPLETE",
+  "scope": "五折五种子探索性对照",
+  "K_per_seed": 20,
+  "windows": 3348,
+  "window_seed_pairs": 16740,
+  "selection_seal_unix": 1795732712.8489769,
+  "first_truth_read_unix": 1795732712.8586965,
+  "global_prediction_seal_sha256": "ac29061b537a5a14fc05bcc7015b47b8ef5854a82508e5b530eed03a98717528",
+  "split_counts": {
+    "zara1": {
+      "all": {
+        "scene_count": 705,
+        "agent_count": 2356
+      },
+      "single": {
+        "scene_count": 103,
+        "agent_count": 103
+      },
+      "multi": {
+        "scene_count": 602,
+        "agent_count": 2253
+      },
+      "N_ge_9": {
+        "scene_count": 28,
+        "agent_count": 288
+      }
+    },
+    "hotel": {
+      "all": {
+        "scene_count": 445,
+        "agent_count": 1197
+      },
+      "single": {
+        "scene_count": 144,
+        "agent_count": 144
+      },
+      "multi": {
+        "scene_count": 301,
+        "agent_count": 1053
+      },
+      "N_ge_9": {
+        "scene_count": 0,
+        "agent_count": 0
+      }
+    },
+    "univ": {
+      "all": {
+        "scene_count": 947,
+        "agent_count": 24334
+      },
+      "single": {
+        "scene_count": 0,
+        "agent_count": 0
+      },
+      "multi": {
+        "scene_count": 947,
+        "agent_count": 24334
+      },
+      "N_ge_9": {
+        "scene_count": 907,
+        "agent_count": 24099
+      }
+    },
+    "eth": {
+      "all": {
+        "scene_count": 253,
+        "agent_count": 364
+      },
+      "single": {
+        "scene_count": 183,
+        "agent_count": 183
+      },
+      "multi": {
+        "scene_count": 70,
+        "agent_count": 181
+      },
+      "N_ge_9": {
+        "scene_count": 0,
+        "agent_count": 0
+      }
+    },
+    "zara2": {
+      "all": {
+        "scene_count": 998,
+        "agent_count": 5910
+      },
+      "single": {
+        "scene_count": 77,
+        "agent_count": 77
+      },
+      "multi": {
+        "scene_count": 921,
+        "agent_count": 5833
+      },
+      "N_ge_9": {
+        "scene_count": 214,
+        "agent_count": 2197
+      }
+    }
+  },
+  "max_seed_endpoint_metric_drift_m": {
+    "zara1": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    },
+    "hotel": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    },
+    "univ": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    },
+    "eth": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    },
+    "zara2": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    }
+  },
+  "original_AB_max_abs_replay_m": 0.0,
+  "scoring_wall_seconds": 75.9724087100476,
+  "output_sha256": {
+    "PER_SEED.csv": "2862e8269f2c41cdbd0025172bf7f367e2a8c193f356adad8aa64de6d4535bc3",
+    "PER_WINDOW.csv": "9754835f9f179ed810f3afe5a24e9bacfaf71c0ebf8000ad9ae045295c21cabc"
+  }
+}

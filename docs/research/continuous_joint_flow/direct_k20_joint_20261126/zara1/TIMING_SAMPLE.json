@@ -1,0 +1,90 @@
+{
+  "identity": {
+    "fold": "zara1",
+    "selected_sha256": "f642535b7ca5bc8928bc53c62ab4c85569b545e4f5dab05937c0a5c83aa75e09",
+    "selected_epoch": 24,
+    "freeze_barrier_sha256": "f3f0f717d8c4e580090b080e80022566da15cc465eda0817cc650cc55bd74d6a",
+    "ordered_members_sha256": "d7e20b793be2115a544c191e2d84e7a2b9049cac65dd296fe0d7eb7ba156389a",
+    "seeds": [
+      2035,
+      2036,
+      2037,
+      2038,
+      2039
+    ],
+    "K": 20,
+    "ddim_steps": 20,
+    "eta": 0.0,
+    "prediction_frames": 12
+  },
+  "sample": [
+    {
+      "window": "test_0703",
+      "n": 4,
+      "seed": 2035,
+      "A_seconds": 0.5611466721165925,
+      "B_seconds": 0.44725931994616985,
+      "student_seconds": 0.4294587660115212
+    },
+    {
+      "window": "test_0048",
+      "n": 3,
+      "seed": 2035,
+      "A_seconds": 0.5108446620870382,
+      "B_seconds": 0.4267139658331871,
+      "student_seconds": 0.44842446595430374
+    },
+    {
+      "window": "test_0473",
+      "n": 1,
+      "seed": 2035,
+      "A_seconds": 0.43802875303663313,
+      "B_seconds": 0.42111508501693606,
+      "student_seconds": 0.41988206398673356
+    },
+    {
+      "window": "test_0137",
+      "n": 2,
+      "seed": 2035,
+      "A_seconds": 0.48297784198075533,
+      "B_seconds": 0.42338669509626925,
+      "student_seconds": 0.44730729702860117
+    },
+    {
+      "window": "test_0625",
+      "n": 1,
+      "seed": 2035,
+      "A_seconds": 0.4383316859602928,
+      "B_seconds": 0.4145539489109069,
+      "student_seconds": 0.41933394712395966
+    },
+    {
+      "window": "test_0479",
+      "n": 2,
+      "seed": 2035,
+      "A_seconds": 0.47429631697013974,
+      "B_seconds": 0.4228694050107151,
+      "student_seconds": 0.42699346994049847
+    },
+    {
+      "window": "test_0421",
+      "n": 9,
+      "seed": 2035,
+      "A_seconds": 0.7145569359418005,
+      "B_seconds": 0.44589590886607766,
+      "student_seconds": 0.454585290979594
+    },
+    {
+      "window": "test_0558",
+      "n": 3,
+      "seed": 2035,
+      "A_seconds": 0.5179962699767202,
+      "B_seconds": 0.4264383721165359,
+      "student_seconds": 0.42732062796130776
+    }
+  ],
+  "A_ddim_calls": 8,
+  "B_ddim_calls": 8,
+  "student_ddim_calls_additional": 0,
+  "timing_scope": "resident observations through complete trajectories; synchronize CUDA; excludes read/write"
+}
