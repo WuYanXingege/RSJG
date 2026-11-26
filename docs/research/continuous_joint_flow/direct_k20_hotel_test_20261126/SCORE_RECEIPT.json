@@ -1,0 +1,42 @@
+{
+  "status": "COMPLETE",
+  "scope": "HOTEL 五种子提前探索性对照",
+  "K_per_seed": 20,
+  "windows": 445,
+  "window_seed_pairs": 2225,
+  "selection_seal_unix": 1795688474.7031574,
+  "first_truth_read_unix": 1795688474.7070277,
+  "global_prediction_seal_sha256": "ebb8a37f2fa1fcf4132bfddb46c997f8bd0a61f6aa0590edc53d68beabe80843",
+  "split_counts": {
+    "hotel": {
+      "all": {
+        "scene_count": 445,
+        "agent_count": 1197
+      },
+      "single": {
+        "scene_count": 144,
+        "agent_count": 144
+      },
+      "multi": {
+        "scene_count": 301,
+        "agent_count": 1053
+      },
+      "N_ge_9": {
+        "scene_count": 0,
+        "agent_count": 0
+      }
+    }
+  },
+  "max_seed_endpoint_metric_drift_m": {
+    "hotel": {
+      "JFDE": 0.0,
+      "minFDE": 0.0
+    }
+  },
+  "original_AB_max_abs_replay_m": 0.0,
+  "scoring_wall_seconds": 6.820349439047277,
+  "output_sha256": {
+    "PER_SEED.csv": "ab53220b80df32d8009cee66c76f3c81c4ea2dc906a453b2d2af5caeed48db14",
+    "PER_WINDOW.csv": "52dbb74da26fda78b36dccccd0e8f2051b1f95ea0c93906117db6dbe94efd6e2"
+  }
+}
