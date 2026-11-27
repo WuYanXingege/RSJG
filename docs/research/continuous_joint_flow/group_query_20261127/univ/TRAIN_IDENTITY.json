@@ -1,0 +1,134 @@
+{
+  "config_sha256": "bec67548b645986ee98f7344c433adafbf51e61a6e7c097cc2b719655d0fbf14",
+  "fold": "univ",
+  "recipe": {
+    "seed": 3201,
+    "train_bridge_seed": 3201,
+    "development_seed": 2035,
+    "epochs": 12,
+    "logical_windows": 16,
+    "end_only_epochs": 0,
+    "trajectory_sample_fraction": 0.125,
+    "trajectory_sample_count": "max(1,(logical_batch_window_count+4)//8)",
+    "lr": 3e-05,
+    "weight_decay": 0.0001,
+    "clip_grad_norm": 5.0,
+    "teacher_weight": 0.25,
+    "trajectory_weight": 0.5,
+    "normalization_floor": 1e-06,
+    "evaluation_epochs": [
+      12
+    ],
+    "K": 20,
+    "DDIM_steps": 20,
+    "proposal_eta": 0.0,
+    "checkpoint_steps": true,
+    "precision": "FP32",
+    "ranking": "only complete epoch 12 is selected",
+    "retention": "all 12 complete snapshots plus final/selected/best and last",
+    "group_query_lr": 0.0003,
+    "optimizer": "AdamW",
+    "trajectory_sample_seed": 3202,
+    "recovery": "atomically save last after every complete logical batch"
+  },
+  "scales_m": {
+    "JADE": 0.2596698802080937,
+    "JFDE": 0.4389659340640719,
+    "minADE": 0.17843820229259835,
+    "minFDE": 0.28677690344848994
+  },
+  "frozen_sha256": {
+    "bridge_and_A": "efea62e62e5c8ec67f4fa66d2faf8ded1d1d98e63992b8cb673f389e0bfa19b7",
+    "provider": "280f6b45b7642a05efbeaaa8c33ad59149740755fc47ca22e5aef4cecb086cc3",
+    "B": "069e06dc65f18fbdbc5087ef030391a5cb54ec44262203092f877dbca9abcacb"
+  },
+  "cache": {
+    "teacher_identity": {
+      "A_epoch": 9,
+      "A_sha256": "7b381c1e8a11080ba4adce3f4459e4d493d1eb3b5690e890ac5551e0a68f9168",
+      "B_epoch": 33,
+      "B_sha256": "776235267e5cf4f1be2a9ba80cd5eaf8c44cdda5a8e94b6cde3ae3f78a24681a",
+      "provider": [
+        {
+          "stage": "density",
+          "epoch": 43,
+          "sha256": "59313b35df26d536680c66e901eff84cc3ae6e4307582ef4d74a775980e52b06"
+        },
+        {
+          "stage": "head",
+          "epoch": 8,
+          "sha256": "6e48b9527d13ddabede0ab801cfeabde7cdeb86856a7b2a986bed112fd587d07"
+        }
+      ],
+      "upstream_manifest_sha256": "f88ac1ae910020e9c8c32784c4caa4741792a9eb3320a83374e964e55d123ba9",
+      "B_manifest_sha256": "d26c691100abed21b843f54c6c3942c6044070131d1735983564e2a161c38d50",
+      "train_bank_sha256": "bd586d0d733ee8004119ab3b42d21ac70636c24baa32046642d6818f4bee7e48",
+      "fold": "univ",
+      "source_report_commit": "3296fc5968463ed14bf43265c064b3856d55ed30",
+      "historical": {
+        "score_receipt_sha256": "4751485cb75736e41a6ba552ac02b5722e1f729ccc62d28d1af75ea7fa0fb093",
+        "prediction_seal_sha256": "ba1ad42a6915e48f70b240bc8a40bfff4b5a475adc4738950582f92f48a17c71",
+        "heldout_members_sha256": "38b70970d83b32b08202dadd13a402d5eb801f8c7e3772bb7980a45b0c29415d",
+        "tables": {
+          "PER_SEED.csv": "a0fd42bd9a9d7cdbebd8e89a4a39cdcd6f8902076240c7f5560741d03f7b9c09",
+          "PER_WINDOW.csv": "4515d62913ba4704d14762bd61bed93ef741f2c987e0841de9438887c1167dc8"
+        }
+      },
+      "split_sha256": "5ae70bd6361d2d185e11ab2a82f9996045926937393839b3bf1d2e1153a8d214",
+      "dev_B_seed": 2035,
+      "dev_B": {
+        "JADE": 0.309695962891342,
+        "JFDE": 0.5824394542095027,
+        "minADE": 0.2148573121860058,
+        "minFDE": 0.38914849305549326
+      }
+    },
+    "teachers_manifest_sha256": "eaceb752e8c1b2b482a08876ce0751d26e55d4638a4a6a6debd542f076ffdcb4",
+    "scale_receipt_sha256": "41917f0d0bc91fde1d3fb80cde4d7bae45c3950a87702c60cfaeda8daac7dba7",
+    "train_member_count": 2719,
+    "scale_member_count": 256,
+    "scale_members_sha256": "d4126e8df9f95f658b57cb991d35dd6dab1c3243c00dfaed436dcf46978d2461",
+    "scales": {
+      "JADE": 0.2596698802080937,
+      "JFDE": 0.4389659340640719,
+      "minADE": 0.17843820229259835,
+      "minFDE": 0.28677690344848994
+    }
+  },
+  "S0_sha256": "d97dc5f7459406c19bddaaca005bf1d79b31610c9fb2fecba2015a5e48917eeb",
+  "initial_student_sha256": "ff38e26382a3c7dbbee208f2568828d77e766283307d4a3010e29afdec56ffb3",
+  "dense_agent_cutoff": 24,
+  "optimizer_groups": [
+    {
+      "name": "native_student",
+      "lr": 3e-05,
+      "names": [
+        "queries",
+        "personal.0.weight",
+        "personal.0.bias",
+        "personal.2.weight",
+        "personal.2.bias",
+        "edge.0.weight",
+        "edge.0.bias",
+        "edge.2.weight",
+        "edge.2.bias",
+        "latent.0.weight",
+        "latent.0.bias",
+        "latent.2.weight",
+        "latent.2.bias"
+      ],
+      "parameters": 36162
+    },
+    {
+      "name": "group_query_mlp",
+      "lr": 0.0003,
+      "names": [
+        "group_query.0.weight",
+        "group_query.0.bias",
+        "group_query.2.weight",
+        "group_query.2.bias"
+      ],
+      "parameters": 12640
+    }
+  ]
+}
