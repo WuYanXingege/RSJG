@@ -269,6 +269,9 @@ def diagnose_window(*, fold, split, window, observed, future, raw, g0, g1,
     per_slot = combined.mean(axis=1)
     h = float(per_slot.max())
     delta = endpoints['g1']['J'] - endpoints['g0']['J']
+    if not (-per_slot[k1] - BOUND_ATOL_M <= delta <= per_slot[k0] + BOUND_ATOL_M):
+        raise ArithmeticError('joint endpoint change violates the two-winner displacement interval')
+    winner_bound = float(max(per_slot[k0], per_slot[k1]))
     fixed_delta = float(costs['g1'][k0] - costs['g0'][k0])
     switch_delta = float(costs['g1'][k1] - costs['g1'][k0])
     if abs(delta - fixed_delta - switch_delta) > BOUND_ATOL_M:
@@ -288,7 +291,9 @@ def diagnose_window(*, fold, split, window, observed, future, raw, g0, g1,
         abs_delta_J_ge_1cm=abs(delta) >= .01, H_ge_1cm=h >= .01,
         winner_S0_slot=k0, winner_R12_slot=k1, winner_switch_rate=float(k0 != k1),
         winner_delta_fixed_cm=100*fixed_delta, winner_delta_switch_cm=100*switch_delta,
-        winner_shift_m=float(per_slot[k0]), nonwinner_shift_m=float(np.delete(per_slot, k0).mean()),
+        winner_shift_m=float(per_slot[k0]), refined_winner_shift_m=float(per_slot[k1]),
+        winner_bound_m=winner_bound, winner_bound_ge_1cm=winner_bound >= .01,
+        nonwinner_shift_m=float(np.delete(per_slot, k0).mean()),
         winner_direction_agents=int(has_direction.sum()),
         winner_toward_projection_mean_m=_optional_mean(projection),
         winner_toward_positive_rate=_optional_mean(projection > 0),
@@ -341,6 +346,8 @@ def _summarize(group, fold, split, examples, whole_j):
         scope[key] = _mean(rows, key, weight)
 
     scope['H_max_m'] = _maximum(rows, 'H_m')
+    scope['winner_bound_max_m'] = _maximum(rows, 'winner_bound_m')
+    scope['winner_bound_ge_1cm_windows'] = sum(row['winner_bound_ge_1cm'] for row in rows)
     scope['abs_delta_J_max_m'] = _maximum(rows, 'abs_delta_J_m')
     scope['H_bound_min_slack_m'] = min((row['H_bound_slack_m'] for row in rows), default=None)
     scope['H_bound_violation_windows'] = sum(row['H_bound_violation'] for row in rows)

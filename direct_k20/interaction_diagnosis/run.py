@@ -344,6 +344,8 @@ def score(refs):
     export_folds = export_seal['folds']
     receipt = dict(
         status='COMPLETE', training_updates=0, tested_seeds=5, dev_seeds=1,
+        scoring_and_figure_source_sha256={name: value for name,value in _code_hashes().items()
+                                         if name != 'report.py'},
         endpoint_seal_sha256=digest(RUN/'ENDPOINTS_EXPORTED.json'),
         original_score_sealed_before_truth=True, export_sealed_unix=export_seal['sealed_unix'],
         first_truth_read_unix=first_truth,

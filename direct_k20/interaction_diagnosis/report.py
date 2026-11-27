@@ -86,6 +86,7 @@ def _headers(groups):
     gap_share = 100 * _number(dense, 'g0_G_m') / _number(dense, 'g0_J_m')
     near = _number(dense, 'g0_JP_m')
     random = _number(dense, 'g0_random_JP_m')
+    within = _number(dense, 'g0_JP_minus_L_m')
     return [
         '## HOTEL',
         f'1. **误差集中在哪些窗**　{_count(multi)} 个多人测试窗贡献全折 '
@@ -109,7 +110,8 @@ def _headers(groups):
         f'G 占 J 的 {gap_share:.1f}%，个人覆盖误差仍有 {_number(dense, "g0_L_m"):.3f} m。',
         f'4. **限制这项解释的证据**　开发集仅有 {_count(univ_dev_dense)}／{_count(univ_dev)}'
         f' 个密集窗。测试密集窗近邻 Jₚ 为 {_fmt(near)} m，同组大小随机参照为 {_fmt(random)} m。'
-        '这两项把附近配合与跨组共用槽位区分开来。',
+        f'近邻组内共用槽位仍付出 {100*within:.2f} cm，逐人放松后的 L 仍有 '
+        f'{_number(dense, "g0_L_m"):.3f} m。',
     ]
 
 
@@ -138,7 +140,7 @@ def _endpoints(groups):
     ]
 
 
-def _r12(groups):
+def _r12(groups, windows):
     rows = []
     for split in (TEST, DEV):
         for fold in FOLDS:
@@ -151,7 +153,7 @@ def _r12(groups):
                     _fields(row, ['H_median_m', 'H_p90_m', 'H_max_m'], scale=100),
                     *[_fields(row, [f'{branch}_median_m', f'{branch}_p90_m'], scale=100)
                       for branch in ('unary', 'social', 'combined')],
-                    _fields(row, ['abs_delta_J_max_m'], scale=100),
+                    _fields(row, ['abs_delta_J_max_m', 'winner_bound_max_m'], scale=100),
                     _count(row, 'H_ge_1cm_windows') + '／' + _count(row, 'abs_delta_J_ge_1cm_windows'),
                     _count(row, 'H_bound_violation_windows'),
                 ])
@@ -177,9 +179,25 @@ def _r12(groups):
         high = _number(row, 'H_ge_1cm_windows')
         limit = _number(row, 'H_max_m') * 100
         maximum = _number(row, 'abs_delta_J_max_m') * 100
+        winner_bound = _number(row, 'winner_bound_max_m') * 100
         win_move = _number(row, 'winner_shift_m') * 100
         other_move = _number(row, 'nonwinner_shift_m') * 100
         projection = _number(row, 'winner_toward_projection_mean_m') * 100
+        exceptions = [win for win in windows if win['split'] == TEST and win['fold'] == fold
+                      and _number(win, 'H_m') >= .01]
+        if len(exceptions) != int(high):
+            raise ValueError('The per-window and group H≥1 cm counts differ')
+        detail = ''
+        if exceptions:
+            exceptional_move = 100 * max(_number(win, 'winner_shift_m') for win in exceptions)
+            exceptional_j = 100 * max(_number(win, 'abs_delta_J_m') for win in exceptions)
+            switches = sum(_number(win, 'winner_switch_rate') for win in exceptions)
+            counts = {group: sum(win['group'] == group for win in exceptions)
+                      for group in MAIN_GROUPS[1:]}
+            composition = '、'.join(
+                f'{GROUP_LABELS[group]} {count} 窗' for group, count in counts.items() if count)
+            detail = (f' 其中{composition}，旧赢家最大人均位移 {exceptional_move:.4f} cm，'
+                      f'换赢家 {int(switches)} 窗，实测最大 |ΔJ| {exceptional_j:.4f} cm。')
         switch = abs(_number(row, 'winner_delta_switch_cm'))
         fixed = _number(row, 'winner_delta_fixed_cm')
         if abs(fixed) >= switch:
@@ -188,20 +206,24 @@ def _r12(groups):
             attribution = f'换赢家额外降低 {switch:.4f} cm，大于固定赢家项的绝对幅度 {abs(fixed):.4f} cm。'
         notes.append(
             f'- **{fold.upper()}**　实测最大 |ΔJ| 为 {maximum:.4f} cm。'
+            + (f'两赢家上界最大 {winner_bound:.4f} cm。' if math.isfinite(winner_bound) else '')
             + (f'H 最大仅 {limit:.4f} cm，逐窗位移上界已解释 1 cm 以内的变化。'
                if high == 0 else
                f'{int(high)} 窗的 H 达到 1 cm，单用 H 仍容许这些窗发生更大变化。')
             + f' 原赢家人均位移 {win_move:.4f} cm，其他槽 {other_move:.4f} cm，'
             f'原赢家朝真值的平均带符号投影 {projection:+.4f} cm。'
-            + attribution
+            + attribution + detail
         )
     return [
         '## R12 的影响为什么小',
         '对每个窗口和每个槽，先对人的位移长度求平均，再取跨槽最大值 H。'
         '由三角不等式，|ΔJ|≤H。H 的分位数按窗计算，各分支位移长度的分位数按槽×人计算。',
+        '令 D[k] 为第 k 槽的人均位移。用旧赢家 k₀ 控制新目标的最小值，有 J₁−J₀≤D[k₀]。'
+        '用新赢家 k₁ 控制旧目标的最小值，有 J₀−J₁≤D[k₁]。'
+        '因此 max(D[k₀], D[k₁]) 是更紧的两赢家上界。',
         _table(['划分', '折', '人数', 'H 中位 / P90 / 最大（cm）', '个人 中位 / P90（cm）',
                 '交互 中位 / P90（cm）', '合成 中位 / P90（cm）',
-                '|ΔJ| 最大（cm）', 'H≥1 cm／|ΔJ|≥1 cm 窗数', '越 H 窗数'], rows),
+                '|ΔJ| / 两赢家上界 最大（cm）', 'H≥1 cm／|ΔJ|≥1 cm 窗数', '越 H 窗数'], rows),
         '用修正前的赢家 k₀ 和修正后的赢家 k₁，将 ΔJ 精确拆成固定赢家的误差变化'
         ' C₁[k₀]−C₀[k₀]，加上换赢家的额外收益 C₁[k₁]−C₁[k₀]。'
         '正投影表示向真值移动。抵消率为 1−Σ‖合成‖/Σ(‖个人‖+‖交互‖)。',
@@ -229,6 +251,7 @@ def _hotel(groups):
                 _fields(row, ('g0_joint_long_abs_m', 'g0_joint_lat_abs_m')),
                 _fields(row, ('g0_person_long_abs_m', 'g0_person_lat_abs_m')),
                 _fields(row, ('cv_long_abs_m', 'cv_lat_abs_m')),
+                _fields(row, ('g0_joint_no_axis_FDE_m', 'g0_person_no_axis_FDE_m', 'cv_no_axis_FDE_m')),
             ])
     motion = []
     for split in (TEST, DEV):
@@ -249,17 +272,22 @@ def _hotel(groups):
         '窗级贡献为组内 S0 JFDE 之和除以全折同项之和。',
         _table(['划分', '组', '窗／人次', '贡献（%）', 'J / L / G / CV（m）',
                 '可投影／低速人次', 'S0 联合 纵／横带符号（m）', 'S0 联合 纵／横绝对值（m）',
-                'S0 逐人 纵／横绝对值（m）', 'CV 纵／横绝对值（m）'], rows),
+                'S0 逐人 纵／横绝对值（m）', 'CV 纵／横绝对值（m）',
+                '无朝向 联合／逐人／CV（m）'], rows),
         'CV 将最后三段观测的平均速度外推 12 帧。CV 误差按窗等权。方向相对观测朝向，'
-        '终点预测比真值更靠前时纵向为正。末三段矢量均速不超过 0.001 m/s 时只计欧氏误差。',
+        '终点预测比真值更靠前时纵向为正。观测路程均速不超过 0.2 m/s'
+        ' 或末三段矢量均速不超过 0.001 m/s 的行人只计欧氏误差。',
     ]
     tail = groups[TEST, 'hotel', 'top10']
     speed = _fields(tail, ('observed_speed_mean_mps', 'future_speed_mean_mps'), digits=3)
     axes = _fields(tail, ('g0_person_long_abs_m', 'g0_person_lat_abs_m'), digits=3)
+    signed = _number(tail, 'g0_joint_long_signed_m')
+    direction = '向前偏' if signed > 0 else '向后偏' if signed < 0 else '接近零'
     lines.append(
         f'测试头部 10% 中，观测／未来平均路程速度为 {speed} m/s，'
         f'未来位移相对观测朝向的平均绝对转角为 {_fmt(_number(tail, "truth_turn_abs_deg"), 1)}°。'
-        f'即使允许 S0 逐人择槽，纵／横向绝对误差仍有 {axes} m。'
+        f'S0 联合赢家的平均纵向误差为 {_fmt(signed, 3, True)} m，{direction}。'
+        f'S0 逐人择槽的纵／横向绝对误差仍有 {axes} m。'
         f'在这批窗里，CV 的平均终点误差低于 S0 联合 J、逐人 L 的比例分别为 '
         f'{_fields(tail, ("cv_beats_g0_J_rate", "cv_beats_g0_L_rate"), digits=1, scale=100)}%。'
     )
@@ -367,13 +395,13 @@ def _cases(rows):
     links = []
     for row in rows:
         kind = row.get('case') or row.get('kind') or row.get('criterion', '')
-        kind = {'high_L': '高 L', 'high_G': '高 G', 'median_J': '中位 J'}.get(kind, kind)
+        kind = {'highest_L': '高 L', 'highest_G': '高 G', 'median_J': '中位 J'}.get(kind, kind)
         name = ' '.join(filter(None, (row['fold'].upper(), kind, row.get('window', ''))))
         links.append(f'[{name}]({row["figure"]})')
     return [
         '## 匿名案例',
         '每折选 seed 2035 的高 L、高 G 和最接近 S0 JFDE 中位数的窗口。'
-        '各图显示历史、真值、S0 最佳整场轨迹与逐人最近终点对应轨迹。',
+        '各图显示历史、真值、S0 的 JFDE 整场赢家与逐人最近终点对应轨迹。',
         ' · '.join(links),
     ]
 
@@ -429,11 +457,31 @@ def _next_experiment(groups):
     ]
 
 
+def _development(groups):
+    hotel_test = groups[TEST, 'hotel', 'top10']
+    hotel_dev = groups[DEV, 'hotel', 'top10']
+    univ_test = groups[TEST, 'univ', 'N9plus']
+    univ_dev = groups[DEV, 'univ', 'N9plus']
+    return [
+        '## 开发集复核',
+        f'HOTEL 开发集高误差窗在 raw 即有较大的 L / G，分别为 '
+        f'{_fields(hotel_dev, ("raw_L_m", "raw_G_m"), digits=3)} m。'
+        f'其中 R12−S0 的平均 JFDE 差为 {_fmt(_number(hotel_dev, "delta_g1_g0_J_cm"), signed=True)} cm，'
+        f'对应测试头部为 {_fmt(_number(hotel_test, "delta_g1_g0_J_cm"), signed=True)} cm。',
+        f'UNIV 开发集密集窗的 g0 L / G 为 {_fields(univ_dev, ("g0_L_m", "g0_G_m"), digits=3)} m，'
+        f'测试密集窗为 {_fields(univ_test, ("g0_L_m", "g0_G_m"), digits=3)} m。'
+        f'开发集的 G−L 为 {_number(univ_dev, "g0_G_m")-_number(univ_dev, "g0_L_m"):.3f} m，'
+        f'测试为 {_number(univ_test, "g0_G_m")-_number(univ_test, "g0_L_m"):.3f} m。'
+        '原生槽位误差在两种划分中均可追溯，密集窗误差构成的差距提示开发集验证需保留人数分组。',
+    ]
+
+
 def build_report(doc: Path):
     """Render from the scored and scrubbed public artifacts."""
     doc = Path(doc)
     receipt = json.loads((doc / 'RECEIPT.json').read_text(encoding='utf-8'))
     groups = {(r['split'], r['fold'], r['group']): r for r in _read_csv(doc / 'GROUPS.csv')}
+    windows = _read_csv(doc / 'PER_WINDOW.csv')
     demography = _read_csv(doc / 'DEMOGRAPHY.csv')
     cases = _read_csv(doc / 'CASES.csv')
     paragraphs = [
@@ -442,10 +490,11 @@ def build_report(doc: Path):
         '首页使用测试集诊断，开发集复核与五种子路径汇总列在后文。',
         *_headers(groups),
         *_endpoints(groups),
-        *_r12(groups),
+        *_r12(groups, windows),
         *_hotel(groups),
         *_partitions(groups, demography),
         *_paths(groups),
+        *_development(groups),
         *_published_reference(groups),
         *_cases(cases),
         *_integrity(receipt),
