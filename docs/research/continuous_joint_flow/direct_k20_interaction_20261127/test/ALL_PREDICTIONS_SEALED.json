@@ -1,0 +1,37 @@
+{
+  "purpose": "heldout_confirmation",
+  "folds": {
+    "hotel": {
+      "seal_sha256": "9584f22d7f7499df04eb494de911c97d3eaa3848226eefc9d987f4ee1685aa94",
+      "windows": 445,
+      "prediction_pairs": 2225,
+      "ddim_calls": {
+        "S0": 0,
+        "R12": 2225
+      },
+      "S0_reused": 2225,
+      "inference_seconds": {
+        "S0": 981.1385985356756,
+        "R12": 1011.3004332850687
+      },
+      "export_worker_seconds": 966.9057118231431
+    },
+    "univ": {
+      "seal_sha256": "091bfbf161514cd0edc03a5219ce71d244a84ac0a0dc5e60f3b387745c6295a5",
+      "windows": 947,
+      "prediction_pairs": 4735,
+      "ddim_calls": {
+        "S0": 0,
+        "R12": 4735
+      },
+      "S0_reused": 4735,
+      "inference_seconds": {
+        "S0": 2402.4760911057238,
+        "R12": 2464.6714421608485
+      },
+      "export_worker_seconds": 2283.5620766771026
+    }
+  },
+  "truth_reads": 0,
+  "seal_unix": 1795771835.4271731
+}

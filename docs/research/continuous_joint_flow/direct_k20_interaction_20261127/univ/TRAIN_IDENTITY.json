@@ -1,0 +1,41 @@
+{
+  "config_sha256": "2ea43f4869114b899494a2e6486705e2dd5b4e83e820f9fcb9673d7a21aae017",
+  "fold": "univ",
+  "frozen": {
+    "bridge_and_A": "efea62e62e5c8ec67f4fa66d2faf8ded1d1d98e63992b8cb673f389e0bfa19b7",
+    "provider": "280f6b45b7642a05efbeaaa8c33ad59149740755fc47ca22e5aef4cecb086cc3",
+    "B": "069e06dc65f18fbdbc5087ef030391a5cb54ec44262203092f877dbca9abcacb",
+    "S0": "b60def0267d381dca0ebee57b52edf6bd73cc0d0808d9ea9b0b472ccfbf2cdb8"
+  },
+  "S0_sha256": "d97dc5f7459406c19bddaaca005bf1d79b31610c9fb2fecba2015a5e48917eeb",
+  "recipe": {
+    "seed": 3201,
+    "trajectory_sample_seed": 3202,
+    "train_noise_seed": 3201,
+    "optimizer": "AdamW",
+    "learning_rate": 0.0003,
+    "weight_decay": 0.0001,
+    "gradient_clip": 5.0,
+    "logical_windows": 16,
+    "epochs": 12,
+    "K": 20,
+    "ddim_steps": 20,
+    "eta": 0.0,
+    "precision": "FP32",
+    "checkpoint_steps": true,
+    "trajectory_weight": 0.5,
+    "coverage_guard_weight": 1.0,
+    "trajectory_subsample": "uniform without replacement, max(1,(batch_windows+4)//8)",
+    "ranking": "only R12 receives development evaluation; no intermediate selection",
+    "retention": "all 12 distinct completed epoch snapshots plus final/selected and last",
+    "recovery": "atomic last after every complete batch; uncommitted batch rolled back"
+  },
+  "scales_m": {
+    "JADE": 0.2596698802080937,
+    "JFDE": 0.4389659340640719,
+    "minADE": 0.17843820229259835,
+    "minFDE": 0.28677690344848994
+  },
+  "dense_agent_cutoff": 24,
+  "initial_interaction_sha256": "4385b70f06f6bd12f75bf8e76cdbe80a59f96fc6b0fbdbf97cf294d43c0fadb6"
+}
