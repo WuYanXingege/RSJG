@@ -1,0 +1,126 @@
+{
+  "base_commit": "efcacc8a7d369c4e6e52ec0d110289b59459e56f",
+  "purpose": "frozen endpoint and trajectory diagnosis",
+  "sources_sha256": {
+    "assets.py": "1286c97bf75fa8cd71d56ad8b5059085908a9c5b891606f54223528a19ad0ebb",
+    "figures.py": "671ce6af6e744de973879fb712ffd4c38468e5e0dc5c644ba3491eecf9370c56",
+    "report.py": "66e7f7034af46243ea6b222cdb07286832f70aeba2578fe24f734eb9673155c9",
+    "run.py": "ffa5764aaf95a9188b5655ef0c354d3df79979448cf66af75eb8442d1cd8ce2e",
+    "statistics.py": "ae4a5a28719542fa722876b40cd164708752b43907d586d8a6877ef2ca51a05c"
+  },
+  "folds": [
+    "hotel",
+    "univ"
+  ],
+  "inference_seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "development_seeds": [
+    2035
+  ],
+  "endpoint_seed": 2035,
+  "K": 20,
+  "observed_frames": 8,
+  "prediction_frames": 12,
+  "ddim_steps": 20,
+  "eta": 0.0,
+  "dt": 0.4,
+  "training_updates": 0,
+  "tolerance": {
+    "native_coordinate_atol_m": 1e-06,
+    "native_coordinate_rtol": 1e-06,
+    "score_replay_abs_m": 1e-06,
+    "bound_fp64_abs_m": 1e-12
+  },
+  "folds_by_purpose": {
+    "heldout_confirmation/hotel": {
+      "pair_seal_sha256": "9584f22d7f7499df04eb494de911c97d3eaa3848226eefc9d987f4ee1685aa94",
+      "score_receipt_sha256": "8f605626c7041825c6a713ccce1a9e93e748d37fe91c9672b3b41d47d5b10d2f",
+      "global_pair_seal_sha256": "d76a742e813f31864977c3d06c32e5bc812aa4062318a9846567eba34a02f5fe",
+      "S0_cache_seal_sha256": "5c65397b677dc036afce542f83bcf5968b4625673d79ef37042bd39e308617f7",
+      "windows": 445,
+      "seeds": [
+        2035,
+        2036,
+        2037,
+        2038,
+        2039
+      ],
+      "S0_epoch": 24,
+      "S0_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+      "R12_epoch": 12,
+      "R12_sha256": "200d6029ba9eac1dea4ae72deb3e67b189c0ed77ceb657c8ee8f56182b3d5eef",
+      "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e"
+    },
+    "heldout_confirmation/univ": {
+      "pair_seal_sha256": "091bfbf161514cd0edc03a5219ce71d244a84ac0a0dc5e60f3b387745c6295a5",
+      "score_receipt_sha256": "8f605626c7041825c6a713ccce1a9e93e748d37fe91c9672b3b41d47d5b10d2f",
+      "global_pair_seal_sha256": "d76a742e813f31864977c3d06c32e5bc812aa4062318a9846567eba34a02f5fe",
+      "S0_cache_seal_sha256": "48b75ebe2942e5bad9abc96424684a3ad03380c4f443ddcdbbbd7ba6c4029409",
+      "windows": 947,
+      "seeds": [
+        2035,
+        2036,
+        2037,
+        2038,
+        2039
+      ],
+      "S0_epoch": 16,
+      "S0_sha256": "d97dc5f7459406c19bddaaca005bf1d79b31610c9fb2fecba2015a5e48917eeb",
+      "R12_epoch": 12,
+      "R12_sha256": "7b548dbabc0ad43026bfe3413a17ca0ae88335d0240a48ce4a19a0e1d38aa872",
+      "split_sha256": "5ae70bd6361d2d185e11ab2a82f9996045926937393839b3bf1d2e1153a8d214"
+    },
+    "selection_dev/hotel": {
+      "pair_seal_sha256": "f33fc710a30ff5e210fc5c24f803819921f4dae6ae6f3966ba0d54474825ffbf",
+      "score_receipt_sha256": "cb7292f6a3366da53a962dff4ac00006fac50b0a018e7c8da5a2e3f7707f02f3",
+      "global_pair_seal_sha256": "199ebafa01498f9bb80051d618d4bb44d42c559f02542c18d685bd282b0a80e8",
+      "S0_cache_seal_sha256": null,
+      "windows": 688,
+      "seeds": [
+        2035
+      ],
+      "S0_epoch": 24,
+      "S0_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+      "R12_epoch": 12,
+      "R12_sha256": "200d6029ba9eac1dea4ae72deb3e67b189c0ed77ceb657c8ee8f56182b3d5eef",
+      "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e"
+    },
+    "selection_dev/univ": {
+      "pair_seal_sha256": "4bf6b1b7e34a0aef0adc0274aa7125026af887c181acfaa84c57a393fbc8c276",
+      "score_receipt_sha256": "cb7292f6a3366da53a962dff4ac00006fac50b0a018e7c8da5a2e3f7707f02f3",
+      "global_pair_seal_sha256": "199ebafa01498f9bb80051d618d4bb44d42c559f02542c18d685bd282b0a80e8",
+      "S0_cache_seal_sha256": null,
+      "windows": 622,
+      "seeds": [
+        2035
+      ],
+      "S0_epoch": 16,
+      "S0_sha256": "d97dc5f7459406c19bddaaca005bf1d79b31610c9fb2fecba2015a5e48917eeb",
+      "R12_epoch": 12,
+      "R12_sha256": "7b548dbabc0ad43026bfe3413a17ca0ae88335d0240a48ce4a19a0e1d38aa872",
+      "split_sha256": "5ae70bd6361d2d185e11ab2a82f9996045926937393839b3bf1d2e1153a8d214"
+    }
+  },
+  "group_partition": "greedy increasing mean distance over last three observed positions, <=2 m",
+  "random_partition_draws": 20,
+  "random_partition_seed": 3201,
+  "directional_near_stationary_mps": 0.2,
+  "normalize": "J/L/G use window means and minFDE uses people",
+  "environment": {
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "1",
+    "CUDA_VISIBLE_DEVICES": "0"
+  },
+  "commands": [
+    "python -m direct_k20.interaction_diagnosis.run export",
+    "python -m direct_k20.interaction_diagnosis.run score",
+    "python -m direct_k20.interaction_diagnosis.run publish"
+  ]
+}
