@@ -36,7 +36,10 @@ class Student(nn.Module):
         self.edge = _mlp(64 + 64 + 4, 64)
         self.latent = _mlp(64 + 64, 2)
 
-    def forward(self, observed, context, edges=None):
+    def _queries_by_agent(self, observed, context, groups):
+        return self.queries[:, None].expand(-1, len(observed), -1)
+
+    def forward(self, observed, context, edges=None, *, groups=None):
         n = len(observed)
         if n < 1 or observed.shape != (n, 8, 2) or context.shape != (n, 128):
             raise ValueError('expected one packed observation and its per-agent context')
@@ -50,7 +53,7 @@ class Student(nn.Module):
         relative = torch.cat((position[sender] - position[receiver],
                               velocity[sender] - velocity[receiver]), dim=-1)
         query_inputs = torch.cat((context.unsqueeze(0).expand(K, -1, -1),
-                                  self.queries[:, None].expand(-1, n, -1)), dim=-1)
+                                  self._queries_by_agent(observed, context, groups)), dim=-1)
         personal = self.personal(query_inputs)
         if receiver.numel():
             messages = self.edge(torch.cat((personal[:, receiver], personal[:, sender],
@@ -165,16 +168,17 @@ def head_with_input_grad(provider, observed, maps, valid, goals, context, featur
 
 
 def student_endpoints(student, provider, observed, maps, valid, context, features, edges=None,
-                      *, input_grad=False):
+                      *, input_grad=False, groups=None):
     """Apply exactly one correction to the ordered scene query set."""
     if valid.shape != (len(observed),) or not valid.all():
         raise ValueError('use a packed window containing only valid agents')
+    group_inputs = {} if groups is None else {'groups': groups}
     if input_grad:
-        latent = student(observed, context, edges)
+        latent = student(observed, context, edges, **group_inputs)
         raw = flow_world.__wrapped__(provider, observed, context, latent)
         return head_with_input_grad(provider, observed, maps, valid, raw, context, features)
     with torch.no_grad():
-        latent = student(observed, context, edges)
+        latent = student(observed, context, edges, **group_inputs)
         raw = flow_world(provider, observed, context, latent)
         goals, _ = provider.head(provider.base, observed, maps, valid, raw,
                                  context, features, dict(layout=GEOMETRY))
