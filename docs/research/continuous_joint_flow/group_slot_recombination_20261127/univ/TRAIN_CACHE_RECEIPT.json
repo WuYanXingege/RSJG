@@ -1,0 +1,36 @@
+{
+  "identity": {
+    "fold": "univ",
+    "purpose": "train",
+    "model": "S0",
+    "S0_sha256": "d97dc5f7459406c19bddaaca005bf1d79b31610c9fb2fecba2015a5e48917eeb",
+    "S0_epoch": 16,
+    "split_sha256": "5ae70bd6361d2d185e11ab2a82f9996045926937393839b3bf1d2e1153a8d214",
+    "train_member_sha256": "9bf6399a57e74ce27bd9e993ccab960da9c2ba340a3c7816f6684bca2c2b1232",
+    "K": 20,
+    "frames": 12,
+    "dt": 0.4,
+    "unit": "m",
+    "observation_grouping": "greedy mean of final three frame distances <= 2m",
+    "code_sha256": "be13a5cbdc3471ec6ceef7dcceefdb106393970e0191a35fc85712e01e373871"
+  },
+  "frozen_before": {
+    "bridge_and_A": "efea62e62e5c8ec67f4fa66d2faf8ded1d1d98e63992b8cb673f389e0bfa19b7",
+    "provider": "280f6b45b7642a05efbeaaa8c33ad59149740755fc47ca22e5aef4cecb086cc3",
+    "B": "069e06dc65f18fbdbc5087ef030391a5cb54ec44262203092f877dbca9abcacb",
+    "student": "b60def0267d381dca0ebee57b52edf6bd73cc0d0808d9ea9b0b472ccfbf2cdb8"
+  },
+  "frozen_after": {
+    "bridge_and_A": "efea62e62e5c8ec67f4fa66d2faf8ded1d1d98e63992b8cb673f389e0bfa19b7",
+    "provider": "280f6b45b7642a05efbeaaa8c33ad59149740755fc47ca22e5aef4cecb086cc3",
+    "B": "069e06dc65f18fbdbc5087ef030391a5cb54ec44262203092f877dbca9abcacb",
+    "student": "b60def0267d381dca0ebee57b52edf6bd73cc0d0808d9ea9b0b472ccfbf2cdb8"
+  },
+  "windows": 2719,
+  "agents": 9874,
+  "DDIM_calls": 0,
+  "training_updates": 0,
+  "seconds": 72.50770476600155,
+  "sha256": "e93fb0b2b74fc13c9cdf394e1d55244486cfdbf3f971408805fabd07f961ab0b",
+  "members": 2719
+}

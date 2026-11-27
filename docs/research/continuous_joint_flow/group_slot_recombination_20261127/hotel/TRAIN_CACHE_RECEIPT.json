@@ -1,0 +1,36 @@
+{
+  "identity": {
+    "fold": "hotel",
+    "purpose": "train",
+    "model": "S0",
+    "S0_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+    "S0_epoch": 24,
+    "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+    "train_member_sha256": "cb11111a4af756e7d76f031eb292710007f582ead2f8c94410aebd069a36138b",
+    "K": 20,
+    "frames": 12,
+    "dt": 0.4,
+    "unit": "m",
+    "observation_grouping": "greedy mean of final three frame distances <= 2m",
+    "code_sha256": "be13a5cbdc3471ec6ceef7dcceefdb106393970e0191a35fc85712e01e373871"
+  },
+  "frozen_before": {
+    "bridge_and_A": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669",
+    "provider": "ea254070fda120345d69c5ebca230b95c3cdb84d19d578495c30957ca89da55e",
+    "B": "46f2d3c93d396858d72c13e4f73ece3dc8a9f0bdb0188999375e060d4c477178",
+    "student": "da195412d022d1266e573a711fafa4080f773e750fdafcbcb999e98bb69b2c95"
+  },
+  "frozen_after": {
+    "bridge_and_A": "48eff337b33e172d3526405eae95fb6ead7b794b3ca6048a25f5a2d333834669",
+    "provider": "ea254070fda120345d69c5ebca230b95c3cdb84d19d578495c30957ca89da55e",
+    "B": "46f2d3c93d396858d72c13e4f73ece3dc8a9f0bdb0188999375e060d4c477178",
+    "student": "da195412d022d1266e573a711fafa4080f773e750fdafcbcb999e98bb69b2c95"
+  },
+  "windows": 3118,
+  "agents": 29676,
+  "DDIM_calls": 0,
+  "training_updates": 0,
+  "seconds": 140.13394746300764,
+  "sha256": "82e7a92bb19aa157a7a0a84c183ca26197b149f53d03d44c7918653b705d6c93",
+  "members": 3118
+}

@@ -1,0 +1,61 @@
+{
+  "fold": "hotel",
+  "S0_epoch": 24,
+  "S0_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+  "S0_checkpoint": "<host-path-sha256:e3950147515b179d58fe023319ae9e5ce0f0d5b9843c4b8c7e0e8d30d4da1d96>",
+  "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+  "development_seed": 2035,
+  "train": {
+    "fold": "hotel",
+    "purpose": "train",
+    "model": "S0",
+    "S0_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+    "S0_epoch": 24,
+    "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+    "train_member_sha256": "cb11111a4af756e7d76f031eb292710007f582ead2f8c94410aebd069a36138b",
+    "K": 20,
+    "frames": 12,
+    "dt": 0.4,
+    "unit": "m",
+    "observation_grouping": "greedy mean of final three frame distances <= 2m",
+    "code_sha256": "be13a5cbdc3471ec6ceef7dcceefdb106393970e0191a35fc85712e01e373871",
+    "cache_sha256": "82e7a92bb19aa157a7a0a84c183ca26197b149f53d03d44c7918653b705d6c93"
+  },
+  "dev": {
+    "dev_endpoint_seal_sha256": "00a5f36fc36f84603877b060a409b8293aa6bf441eb147c5cac09dd40b7117ed",
+    "dev_path_seal_sha256": "f33fc710a30ff5e210fc5c24f803819921f4dae6ae6f3966ba0d54474825ffbf",
+    "archive_score_sha256": "cb7292f6a3366da53a962dff4ac00006fac50b0a018e7c8da5a2e3f7707f02f3"
+  },
+  "train_windows": 3118,
+  "dev_windows": 688,
+  "dev_agents": 5203,
+  "S0_dev_reference": {
+    "JADE": 0.35811641039787034,
+    "JFDE": 0.7109034293856429,
+    "minADE": 0.20964505981074247,
+    "minFDE": 0.3396556240646875
+  },
+  "train_recipe": {
+    "seed": 3201,
+    "epochs": 12,
+    "logical_windows": 16,
+    "optimizer": "AdamW",
+    "learning_rate": 0.001,
+    "weight_decay": 0.0001,
+    "precision": "FP32",
+    "K": 20,
+    "hungarian": "maximum-score bijection",
+    "sinkhorn_iterations": 20,
+    "sinkhorn_temperature": 0.5,
+    "softmin_temperature_m": 0.1,
+    "window_weighting": "one equal weight per window",
+    "selection": "only completed epoch 12 is evaluated",
+    "retention": "every complete epoch plus final/selected and last",
+    "recovery": "atomic last after each complete logical batch"
+  },
+  "final_checkpoint_sha256": "b5dbfa498487bc0e83e884e66f34aeec88abbbf8cbdbcde851d54c690ee43df7",
+  "final_epoch": 12,
+  "config_sha256": "41b8874bdcaf6fac361fc0d699a299b9e1056bb64bfc52933ed50f538d5d224d",
+  "device": "cpu",
+  "test_access": false
+}
