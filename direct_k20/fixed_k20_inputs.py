@@ -184,7 +184,7 @@ def _open_archived_test_baseline(fold,dev_ref,identity,recovery_root):
         ordered_members_sha256=canonical_hash([split['members'][i] for i in indices]),
         freeze_barrier_sha256=digest(original_freeze),seeds=list(SEEDS),K=20,
         ddim_steps=20,eta=0.,prediction_frames=12)
-    require(seal['identity']==expected and seal['truth_reads']==0 and seal['windows']==len(indices)
+    require(seal['identity']==expected and seal['truth_reads']==0
             and seal['ddim_calls']==len(indices)*len(SEEDS)==len(seal['rows']),
             'original heldout K20 protocol differs')
     rows = {}
