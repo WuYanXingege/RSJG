@@ -1,0 +1,45 @@
+{
+  "fold": "univ",
+  "status": "COMPLETE",
+  "development_gate": "FAIL",
+  "scope": "exploratory_univ_cv_after_development_fail",
+  "j_drop": 3,
+  "S0_sha256": "d97dc5f7459406c19bddaaca005bf1d79b31610c9fb2fecba2015a5e48917eeb",
+  "S0_epoch": 16,
+  "config_sha256": "13d34b81e53d79943488be20955cbde0e06f9c5b4e359999c2766e1b7b0dd4d7",
+  "test_freeze_sha256": "1113abe76711ad02f58c08c99f014d0475d13872c56b0287164be54b5852202f",
+  "score_receipt_sha256": "964b7df6ef6d4fca448733771b1748188c13d7e8bb672f46c3f31557321f5c42",
+  "prediction_pairs": 4735,
+  "development_dense_JFDE_delta_m": -0.009973375523676609,
+  "test_dense_JFDE_delta_m": -0.15502686530778775,
+  "test_dense_minFDE_delta_m": -0.024714131756785385,
+  "development_dense_JFDE_gain_retention": 15.54407180796079,
+  "S0_replay": {
+    "new_DDIM_calls": 0,
+    "seconds": 0.0,
+    "windows": 0,
+    "reused_pairs": 4735
+  },
+  "added_candidate_DDIM_calls": 0,
+  "training_updates": 0,
+  "native_replay_max_abs_m": 0.0,
+  "dense_test_metrics": {
+    "JADE": {
+      "delta_m": -0.08193778412738997,
+      "sample_sd_m": 0.0002610282459793462
+    },
+    "JFDE": {
+      "delta_m": -0.15502686530778775,
+      "sample_sd_m": 0.0
+    },
+    "minADE": {
+      "delta_m": -0.014892425495431183,
+      "sample_sd_m": 7.185532947405322e-05
+    },
+    "minFDE": {
+      "delta_m": -0.024714131756785385,
+      "sample_sd_m": 0.0
+    }
+  },
+  "wall_seconds": 98.14915323257446
+}

@@ -1,0 +1,48 @@
+{
+  "base_commit": "fea283129b483d552ca6c7b977413bc92b848876",
+  "fold": "univ",
+  "purpose": "heldout_confirmation",
+  "test_scope": "exploratory_univ_cv_after_development_fail",
+  "development_gate": "FAIL",
+  "previous_CV_score_sha256": "1338d65822b12dfccf915974703d98b58a4575a991901788306d88ba80453f42",
+  "previous_development_dense": {
+    "windows": 61,
+    "agents": 601,
+    "delta_JFDE_m": -0.009973375523676609,
+    "delta_minFDE_m": -0.005637293953484779
+  },
+  "S0_epoch": 16,
+  "S0_sha256": "d97dc5f7459406c19bddaaca005bf1d79b31610c9fb2fecba2015a5e48917eeb",
+  "precision": "FP32",
+  "j_drop": 3,
+  "dt": 0.4,
+  "seeds": [
+    2035,
+    2036,
+    2037,
+    2038,
+    2039
+  ],
+  "K": 20,
+  "diagnostic_K": 21,
+  "observed_frames": 8,
+  "prediction_frames": 12,
+  "formula": "obs[-1] + t * (obs[-1] - obs[-4]) / 3, t=1..12; original fixed CV implementation",
+  "source_sha256": {
+    "direct_k20/fixed_k20_univ_exploratory.py": "450a04df91738be6444bb9f6a79149ff6c2ffe3dd3b233d40175eeb42d614d5b",
+    "direct_k20/fixed_k20_inputs.py": "b5f99fef87c749af8ca574d8b30850afde9e2e16970e9bd1c3cbbbf288ddb924",
+    "direct_k20/fixed_k20_eval.py": "1126421bb4a30539c4e8c0c75b8ab46772e7021ba7442e4dd84b178dc07f7e20",
+    "direct_k20/fixed_k20_center.py": "1fd7656c57a6faebf02b52ea9d765e44b44091aba0511415f82a0bd9c9388840",
+    "direct_k20/fixed_k20_slot.py": "0e16a9aec307342df623fd7af8f466b44aa6869018bd12cbc366df8b5d31961b",
+    "direct_k20/fixed_k20_run.py": "964f0d098aba082141034a3d098f21cc0a2d835f2e8ddcea23f79ae8509d3b55",
+    "ebjd/metrics.py": "87df77a0e75de2a026135b49f029d081536d6d1a2b8183a87c27e25869bb826e"
+  },
+  "unchanged_S0_slots": 19,
+  "source_trajectories_per_window": 20,
+  "train_updates": 0,
+  "windows_per_seed": 947,
+  "people_per_seed": 24334,
+  "dense_windows_per_seed": 907,
+  "dense_people_per_seed": 24099,
+  "command": "python -m direct_k20.fixed_k20_univ_exploratory"
+}

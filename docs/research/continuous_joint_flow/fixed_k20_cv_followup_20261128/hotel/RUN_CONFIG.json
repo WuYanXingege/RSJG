@@ -1,0 +1,67 @@
+{
+  "base_commit": "fea283129b483d552ca6c7b977413bc92b848876",
+  "fold": "hotel",
+  "purpose": "one train-ranked HOTEL CV replacement on original development",
+  "selection": {
+    "fold": "hotel",
+    "S0_checkpoint": "<host-path-sha256:e3950147515b179d58fe023319ae9e5ce0f0d5b9843c4b8c7e0e8d30d4da1d96>",
+    "S0_sha256": "43be503d852c9d713f464810f0cc9263e08d1b5d0310a5f9b99ff28872deb87a",
+    "S0_epoch": 24,
+    "S0_training_receipt_sha256": "1524b9f8677cee88e8637dc7c771b05cc1bcb2653639f5e9059a01c6beb39ea2",
+    "S0_dev_reference": {
+      "JADE": 0.35811641039787034,
+      "JFDE": 0.7109034293856429,
+      "minADE": 0.20964505981074247,
+      "minFDE": 0.3396556240646875
+    },
+    "upstream_sha256": "1d2213853865f67091b7fd55314a2fedf52d62aabfbc278183d54406f7eda9f1",
+    "scales_m": {
+      "JADE": 0.33929696761333616,
+      "JFDE": 0.6273388679232994,
+      "minADE": 0.21893737595274232,
+      "minFDE": 0.36810079783820615
+    },
+    "scales_sha256": "3dfc1ad16be8af56b98f559b8af55696438919cde0e5b4da86bf3233c1da433f",
+    "split_sha256": "e687943ef6a52525551194c69b78cd79bf8496621d2d7bc4a0b40189c5ec8f4e",
+    "train_manifest_sha256": "cb11111a4af756e7d76f031eb292710007f582ead2f8c94410aebd069a36138b",
+    "train_windows": 3118,
+    "train_agents": 29676,
+    "dev_manifest_sha256": "62be77faae33b5d848bac88445b6134d7b7e5f314162168318ae9654638e809f",
+    "dev_windows": 688,
+    "dev_agents": 5203,
+    "dev_cache": {
+      "dev_endpoint_seal_sha256": "00a5f36fc36f84603877b060a409b8293aa6bf441eb147c5cac09dd40b7117ed",
+      "dev_path_seal_sha256": "f33fc710a30ff5e210fc5c24f803819921f4dae6ae6f3966ba0d54474825ffbf",
+      "archive_score_sha256": "cb7292f6a3366da53a962dff4ac00006fac50b0a018e7c8da5a2e3f7707f02f3"
+    },
+    "dev_max_people": 42
+  },
+  "seed": 2035,
+  "K": 20,
+  "diagnostic_K": 21,
+  "dt": 0.4,
+  "steps": 12,
+  "precision": "FP32",
+  "train_feasibility": "minFDE_slot <= original S0 minFDE",
+  "train_selector": "ascending (JFDE, slot)",
+  "cv": "use original constant_velocity(observed, dt): final three observation intervals",
+  "dev_gate": {
+    "all_JFDE_max_m": -0.01,
+    "remaining_max_m": 1e-06,
+    "groups": [
+      "all",
+      "N2_8"
+    ]
+  },
+  "training_updates": 0,
+  "test_accesses": 0,
+  "original_slot": 7,
+  "source_sha256": {
+    "direct_k20/fixed_k20_hotel_reselection.py": "487116a93e313d7bc8c1483674fdff03727e77005b6077d5e437e0d72c55467e",
+    "direct_k20/fixed_k20_center.py": "1fd7656c57a6faebf02b52ea9d765e44b44091aba0511415f82a0bd9c9388840",
+    "direct_k20/fixed_k20_slot.py": "0e16a9aec307342df623fd7af8f466b44aa6869018bd12cbc366df8b5d31961b",
+    "direct_k20/fixed_k20_inputs.py": "4d3fae2d521c901936fa20333b10b49ea3e5533c7450566e28fb410b3a8e8ea6",
+    "direct_k20/fixed_k20_eval.py": "1126421bb4a30539c4e8c0c75b8ab46772e7021ba7442e4dd84b178dc07f7e20",
+    "ebjd/metrics.py": "87df77a0e75de2a026135b49f029d081536d6d1a2b8183a87c27e25869bb826e"
+  }
+}

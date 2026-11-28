@@ -1,0 +1,30 @@
+{
+  "phase": "test",
+  "purpose": "heldout_confirmation",
+  "K": 20,
+  "diagnostic_K": 21,
+  "truth_reads": 0,
+  "folds": {
+    "univ": {
+      "windows": 947,
+      "prediction_pairs": 4735,
+      "truth_reads": 0,
+      "new_candidate_ddim_calls": 0,
+      "candidate_seconds": 18.175321967806667,
+      "export_wall_seconds": 31.140144411940128,
+      "seal_sha256": "739c41b0aa5fc7a162f4b10fd1b6b112d124cfb9b6a00db86d473c875d925c78",
+      "endpoint_cross_seed_checks": {
+        "S0": {
+          "bitwise_equal": true,
+          "max_abs_difference_m": 0.0
+        },
+        "new_K20": {
+          "bitwise_equal": true,
+          "max_abs_difference_m": 0.0
+        }
+      }
+    }
+  },
+  "config_sha256": "13d34b81e53d79943488be20955cbde0e06f9c5b4e359999c2766e1b7b0dd4d7",
+  "seal_unix": 1795876471.820434
+}
