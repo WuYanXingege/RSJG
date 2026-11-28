@@ -29,6 +29,9 @@ TEST = 'heldout_confirmation'
 WINDOWS = {DEV: {'hotel': 688, 'univ': 622}, TEST: {'hotel': 445, 'univ': 947}}
 GROUPS = ('all', 'N1', 'N2_8', 'N9plus')
 LABEL = dict(zip(GROUPS, ('全体', 'N=1', '2–8 人', 'N≥9')))
+DENSE_GROUPS = ('N9_14', 'N15plus')
+LABEL.update(zip(DENSE_GROUPS, ('9–14 人', 'N≥15')))
+EXPLORATORY_SCOPE = 'exploratory_univ_cv_after_development_fail'
 MODELS = ('base', 'union', 'final')
 PHASES = ('cv_development', 'center_development', 'test')
 K = 20
@@ -110,6 +113,28 @@ def selected_development(run):
 def _test_freeze(run, fold, identity):
     path = run / 'FROZEN_TEST.json'
     barrier = read(path)
+    if barrier.get('test_scope') == EXPLORATORY_SCOPE:
+        from .fixed_k20_inputs import DOC as DEV_ARCHIVE, RUN as DEV_RUN
+
+        require(fold == 'univ' and barrier['folds'] == {fold: identity}
+                and barrier['seeds'] == list(SEEDS)
+                and barrier['config_sha256'] == digest(run / 'RUN_CONFIG.json'),
+                'exploratory authorization is limited to the fixed UNIV CV')
+        choice = selected_development(DEV_RUN)
+        cv_path, cv = _locked_dev_receipt(DEV_RUN, 'cv_development')
+        archived = read(DEV_ARCHIVE / 'cv_development' / 'SCORE_RECEIPT.json')
+        require(not any(row['passed'] for row in choice.values())
+                and cv['decision'] == archived['decision'] and not cv['decision'][fold]['passed']
+                and identity['dev_score_phase'] == 'cv_development'
+                and identity['dev_score_sha256'] == digest(cv_path),
+                'exploratory test must preserve the archived development failures')
+        original = cv['identities'][fold]
+        require(identity['method'] == 'cv' and identity['j_drop'] == 3 and identity['S0_epoch'] == 16
+                and all(identity.get(key) == original.get(key) for key in
+                        ('method', 'j_drop', 'S0_epoch', 'S0_sha256', 'checkpoint_sha256',
+                         'train_deletion_sha256', 'frozen_deleted_slots_sha256')),
+                'UNIV exploratory identity differs from the original CV')
+        return digest(path)
     selected = {key: row for key, row in selected_development(run).items() if row['passed']}
     require(barrier['config_sha256'] == digest(run / 'RUN_CONFIG.json')
             and barrier['seeds'] == list(SEEDS) and set(barrier['folds']) == set(selected),
@@ -271,10 +296,15 @@ def _verify_fold(run, ref, identity, read_base):
             and seal['windows'] == len(ref.indices) and seal['prediction_pairs'] == len(seal['rows']) == count
             and seal['truth_reads'] == seal['new_candidate_ddim_calls'] == 0, 'incomplete observation-only seal')
     rows = iter(seal['rows'])
+    exploratory = identity.get('test_scope') == EXPLORATORY_SCOPE
+    endpoint_checks = {
+        model: dict(bitwise_equal=True, max_abs_difference_m=0.) for model in ('S0', 'new_K20')
+    } if exploratory else {}
     for ordinal, index in enumerate(ref.indices, 1):
         record = ref.split['records'][index]
         require(digest(record['path']) == record['sha256'], 'input changed after prediction seal')
         candidate_sha = None
+        first_endpoints = None
         for seed in ref.seeds:
             base, expected = _source(ref, read_base, index, ordinal, seed, export_sha)
             row, final = _read_shard(directory, expected, base, identity['j_drop'])
@@ -282,9 +312,21 @@ def _verify_fold(run, ref, identity, read_base):
             sha = _array_sha(final[identity['j_drop']])
             require(candidate_sha is None or sha == candidate_sha, 'frozen candidate changed across seeds')
             candidate_sha = sha
+            if exploratory:
+                current = dict(S0=base[:, :, -1], new_K20=final[:, :, -1])
+                if first_endpoints is None:
+                    first_endpoints = current
+                else:
+                    for model, endpoint in current.items():
+                        reference = first_endpoints[model]
+                        stats = endpoint_checks[model]
+                        stats['bitwise_equal'] &= _array_sha(endpoint) == _array_sha(reference)
+                        stats['max_abs_difference_m'] = max(stats['max_abs_difference_m'],
+                            float(np.max(np.abs(endpoint.astype(np.float64) - reference))))
     return {name: seal[name] for name in ('windows', 'prediction_pairs', 'truth_reads',
                                            'new_candidate_ddim_calls', 'candidate_seconds',
-                                           'export_wall_seconds')} | dict(seal_sha256=digest(path))
+                                           'export_wall_seconds')} | dict(seal_sha256=digest(path)) | (
+        dict(endpoint_cross_seed_checks=endpoint_checks) if exploratory else {})
 
 
 def _group(n):
@@ -320,7 +362,7 @@ def _score_window(base, final, j_drop, truth, valid):
 
 
 def _summarize(fold, seed, group, rows):
-    selected = [row for row in rows if group == 'all' or row['group'] == group]
+    selected = [row for row in rows if group == 'all' or row['group'] == group or row.get('dense_group') == group]
     windows, agents = len(selected), sum(row['n'] for row in selected)
     result = dict(fold=fold, seed=seed, group=group, windows=windows, agents=agents,
                   max_agents=max((row['n'] for row in selected), default=0))
@@ -370,6 +412,8 @@ def _score_fold(run, phase, ref, identity, read_base, archived):
     export_sha = digest(directory / 'EXPORT_CONFIG.json')
     reader = FormalData(ref.split, phase='scoring', verify=False)
     rows = {seed: [] for seed in ref.seeds}
+    exploratory = identity.get('test_scope') == EXPLORATORY_SCOPE
+    groups_to_score = GROUPS + DENSE_GROUPS if exploratory else GROUPS
     replay = 0.
     for ordinal, index in enumerate(ref.indices, 1):
         batch = reader.batch([index], ref.purpose, truth=True)
@@ -385,12 +429,15 @@ def _score_fold(run, phase, ref, identity, read_base, archived):
                 replay = max(replay, *(abs(score[f'base_{metric}_m']-float(prior[f'S0_{metric}']))
                                        for metric in METRICS))
                 require(replay <= TOL, 'development S0 trajectory differs from archived metrics')
-            rows[seed].append(dict(fold=ref.fold, split=ref.purpose, method=identity['method'],
-                                   seed=seed, window=expected['window'], n=n, j_drop=identity['j_drop'],
-                                   group=_group(n), **score))
+            row = dict(fold=ref.fold, split=ref.purpose, method=identity['method'],
+                       seed=seed, window=expected['window'], n=n, j_drop=identity['j_drop'],
+                       group=_group(n), **score)
+            if exploratory:
+                row['dense_group'] = None if n < 9 else 'N9_14' if n <= 14 else 'N15plus'
+            rows[seed].append(row)
     by_seed = []
     for seed, windows in rows.items():
-        for group in GROUPS:
+        for group in groups_to_score:
             result = _summarize(ref.fold, seed, group, windows)
             by_seed.append(result)
             if ref.purpose == TEST and group in ('all', 'N1', 'N9plus') and result['windows']:
@@ -401,19 +448,27 @@ def _score_fold(run, phase, ref, identity, read_base, archived):
                 replay = max(replay, *(abs(result[f'base_{metric}_m']-float(prior[f'new_{metric}']))
                                        for metric in METRICS))
                 require(replay <= TOL, 'test S0 baseline failed its archived replay')
-    summaries = {group: _mean_seeds([row for row in by_seed if row['group'] == group]) for group in GROUPS}
+        if exploratory:
+            counts = {row['group']: (row['windows'], row['agents']) for row in by_seed if row['seed'] == seed}
+            require(counts['all'] == (947, 24334) and counts['N9plus'] == (907, 24099)
+                    and tuple(map(sum, zip(counts['N9_14'], counts['N15plus']))) == counts['N9plus'],
+                    'exploratory test population differs from the fixed protocol')
+    summaries = {group: _mean_seeds([row for row in by_seed if row['group'] == group]) for group in groups_to_score}
     return [row for part in rows.values() for row in part], by_seed, summaries, replay
 
 
 @torch.no_grad()
-def score_phase(run, entries, *, phase, doc=None):
+def score_phase(run, entries, *, phase, doc=None, development_folds=None):
     """Validate every admitted prediction and seal the whole phase before loading future targets."""
     run = Path(run)
     require(phase in PHASES and entries, 'invalid evaluation phase')
     if phase == 'test':
+        require(development_folds is None, 'development subset only applies to development scoring')
         require(set(entries) == set(read(run / 'FROZEN_TEST.json')['folds']), 'missing or ineligible test fold')
     else:
-        require(set(entries) == set(FOLDS if phase == 'cv_development' else ('univ',)),
+        expected = FOLDS if phase == 'cv_development' else ('univ',)
+        subset = expected if development_folds is None else tuple(development_folds)
+        require(set(entries) == set(subset) and set(subset) <= set(expected),
                 'incorrect development folds')
     output = run / phase
     started = time.monotonic()
@@ -451,7 +506,7 @@ def score_phase(run, entries, *, phase, doc=None):
             run, phase, ref, identity, read_base, archived)
         all_rows.extend(per_window)
         seed_rows.extend(per_seed)
-    if phase == 'cv_development':
+    if phase == 'cv_development' and 'hotel' in groups:
         expected = groups['hotel']['all']['I_JFDE_m']
         require(abs(expected - .013861) <= 1e-6, 'HOTEL K21 CV potential differs from the reference')
     decision = ({fold: _dev_gate(fold, summary) for fold, summary in groups.items()}

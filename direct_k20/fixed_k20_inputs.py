@@ -60,6 +60,7 @@ class FrozenTestBaseline:
     identity: dict
     source_hashes: dict
     folder: Path
+    recovery_root: Path = RUN
 
     def _source(self,index,seed):
         entry = self.rows[index,seed]
@@ -67,7 +68,7 @@ class FrozenTestBaseline:
 
     def _repair_path(self,index,seed):
         _,entry = self._source(index,seed)
-        return RUN/'recovered_test_S0'/self.fold/entry['file']
+        return self.recovery_root/'recovered_test_S0'/self.fold/entry['file']
 
     def missing_pairs(self):
         absent = []
@@ -132,6 +133,23 @@ def open_test_baseline(fold,dev_ref,identity,freeze):
     require(digest(dev_score)==identity['dev_score_sha256']
             and read(dev_score)['decision'][fold]['passed'],
             'development gate receipt changed or did not pass')
+    return _open_archived_test_baseline(fold,dev_ref,identity,RUN)
+
+
+def open_exploratory_test_baseline(dev_ref,identity,run):
+    """Replay only the archived UNIV S0 under its explicit follow-up freeze."""
+    from .fixed_k20_eval import EXPLORATORY_SCOPE, _test_freeze
+
+    require(dev_ref.fold=='univ' and identity['phase']=='test'
+            and identity['test_scope']==EXPLORATORY_SCOPE,
+            'invalid baseline reuse for the exploratory test')
+    require(read(run/'FROZEN_TEST.json')['test_scope']==EXPLORATORY_SCOPE,
+            'exploratory test freeze missing')
+    _test_freeze(run,dev_ref.fold,identity)
+    return _open_archived_test_baseline(dev_ref.fold,dev_ref,identity,run)
+
+
+def _open_archived_test_baseline(fold,dev_ref,identity,recovery_root):
     original_freeze = ORIGINAL_RUN/'FROZEN_STUDENTS.json'
     original_config = ORIGINAL_RUN/'RUN_CONFIG.json'
     original_seal = ORIGINAL_RUN/'ALL_PREDICTIONS_SEALED.json'
@@ -184,4 +202,4 @@ def open_test_baseline(fold,dev_ref,identity,freeze):
             rows[index,seed] = row
     return FrozenTestBaseline(fold,TEST,split,indices,list(SEEDS),rows,identity,dict(
         S0_test_seal_sha256=digest(seal_path),S0_test_score_sha256=digest(original_score),
-        S0_global_seal_sha256=digest(original_seal)),folder)
+        S0_global_seal_sha256=digest(original_seal)),folder,recovery_root)
