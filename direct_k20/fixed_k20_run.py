@@ -2,6 +2,7 @@
 
 import argparse
 import fcntl
+from hashlib import sha256
 import os
 from pathlib import Path
 import signal
@@ -17,6 +18,8 @@ from .interaction_run import _gpu, _load
 
 
 BRANCH = 'experiment/fixed-k20-single-candidate-20261128'
+INITIAL_IMPLEMENTATION = '0e1a79ec797de789b80f8971d75bc42d84ad17de'
+RUNNER = 'direct_k20/fixed_k20_run.py'
 CV_DEV = 'cv_development'
 CENTER_DEV = 'center_development'
 SEED = 2035
@@ -27,8 +30,10 @@ def _prepare():
     from .fixed_k20_center import RECIPE
 
     selections, refs, dev = fixed_inputs()
+    config_path = RUN/'RUN_CONFIG.json'
+    original_sources = read(config_path)['source_sha256'] if config_path.exists() else runtime_sources()
     config = dict(
-        base_commit=BASE, folds=list(FOLDS), inputs=selections, source_sha256=runtime_sources(),
+        base_commit=BASE, folds=list(FOLDS), inputs=selections, source_sha256=original_sources,
         precision='FP32', K=20, original_slots_per_predict=20, retained_S0_slots=19,
         new_slots=1, diagnostics_K=21, frames=12, observed_frames=8, dt=.4,
         role='19 unchanged complete S0 trajectories plus one complete deterministic candidate',
@@ -45,8 +50,44 @@ def _prepare():
         device=dict(center_train_and_inference='cuda',CV_and_scoring='cpu',single_worker=True),
         environment=ENVIRONMENT, reproduce='python -m direct_k20.fixed_k20_run',
     )
-    immutable(RUN/'RUN_CONFIG.json',config)
+    immutable(config_path,config)
     return config,refs,dev
+
+
+def _seal_device_fix(config):
+    completed = read(RUN/'univ'/'CENTER_TRAINING_COMPLETE.json')
+    require(completed['completed_epochs']==12
+            and digest(completed['final_checkpoint'])==completed['final_sha256'],
+            'device fix requires the same completed center checkpoint')
+    require('frozen context and center devices differ' in (RUN/'center_dev.log').read_text(),
+            'the device alias failure was not recorded')
+    original = config['source_sha256']
+    current = runtime_sources()
+    changes = {path for path in original.keys() | current.keys() if original.get(path)!=current.get(path)}
+    blob = subprocess.check_output(['git','show',f'{INITIAL_IMPLEMENTATION}:{RUNNER}'])
+    require(changes=={RUNNER} and sha256(blob).hexdigest()==original[RUNNER],
+            'the device fix must only change the original experiment runner')
+    require(not subprocess.check_output(['git','status','--porcelain','--',RUNNER],text=True).strip(),
+            'commit the inference recovery source before resuming')
+    immutable(RUN/'INFERENCE_REPAIR.json',dict(
+        original_config_sha256=digest(RUN/'RUN_CONFIG.json'), original_commit=INITIAL_IMPLEMENTATION,
+        repair_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
+        source_sha256=current, center_checkpoint_sha256=completed['final_sha256'], optimizer_updates=0,
+        reason='Use an explicit CUDA device index for inference device equality',
+        command=[sys.executable,'-m','direct_k20.fixed_k20_run','--resume-device-fix'],
+    ))
+
+
+def _check_sources(config):
+    path = RUN/'INFERENCE_REPAIR.json'
+    expected = config['source_sha256']
+    if path.exists():
+        repair = read(path)
+        require(repair['original_config_sha256']==digest(RUN/'RUN_CONFIG.json'),
+                'the original experiment configuration changed')
+        expected = repair['source_sha256']
+    require(expected==runtime_sources(),'fixed experiment source changed')
+    return expected
 
 
 def _rank(refs):
@@ -130,11 +171,11 @@ def _worker(task):
     from .fixed_k20_center import load_center, predict_center, train_center
 
     config = read(RUN/'RUN_CONFIG.json')
-    require(config['source_sha256']==runtime_sources(),'fixed experiment source changed')
+    _check_sources(config)
     torch.set_num_threads(2)
     configure_cuda()
     torch.cuda.set_per_process_memory_fraction(.45)
-    device = torch.device('cuda')
+    device = torch.device('cuda:0' if task=='center_dev' or task.startswith('test_') else 'cuda')
     _,refs,dev = fixed_inputs()
     choices = read(RUN/'DELETIONS_FROZEN.json')['folds']
     parent = os.getppid()
@@ -252,7 +293,7 @@ def _dev_and_test(config,refs,dev,choices):
         for fold,value in eligible.items()}
     freeze_path = RUN/'FROZEN_TEST.json'
     core = dict(folds=frozen,seeds=list(SEEDS),config_sha256=digest(RUN/'RUN_CONFIG.json'),
-                source_sha256=config['source_sha256'],test_scope='exploratory frozen paired replay')
+                source_sha256=_check_sources(config),test_scope='exploratory frozen paired replay')
     if freeze_path.exists():
         hold = read(freeze_path)
         require(all(hold[key]==value for key,value in core.items()),'previous test decision changed')
@@ -307,7 +348,7 @@ def _publish(tested):
             cache = read(cached)
             public = {k:v for k,v in cache.items() if k!='rows'}
             write(folder/'FROZEN_TRAIN_FEATURES.json',public_metadata(public|dict(manifest_sha256=digest(cached))))
-    for name in ('RUN_CONFIG.json','WALL_TIME.json','START.json','DEV_S0_REPLAY.json',
+    for name in ('RUN_CONFIG.json','WALL_TIME.json','START.json','DEV_S0_REPLAY.json','INFERENCE_REPAIR.json',
                  'FROZEN_TEST.json','DELETIONS_FROZEN.json'):
         if (RUN/name).exists():
             write(DOC/name,public_metadata(read(RUN/name)))
@@ -332,6 +373,7 @@ def _publish(tested):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--worker')
+    parser.add_argument('--resume-device-fix',action='store_true')
     args = parser.parse_args()
     if args.worker:
         return _worker(args.worker)
@@ -342,6 +384,9 @@ def main():
         config,refs,dev = _prepare()
         if (RUN/'DELIVERY.json').exists():
             return 0
+        if args.resume_device_fix and not (RUN/'INFERENCE_REPAIR.json').exists():
+            _seal_device_fix(config)
+        _check_sources(config)
         if not (RUN/'START.json').exists():
             write(RUN/'START.json',dict(unix=time.time(),pid=os.getpid(),
                 source_commit=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip(),
@@ -350,7 +395,7 @@ def main():
         torch.set_num_threads(1)
         choices = _rank(refs)
         tested = _dev_and_test(config,refs,dev,choices)
-        require(config['source_sha256']==runtime_sources(),'fixed experiment source changed')
+        _check_sources(config)
         write(RUN/'WALL_TIME.json',dict(seconds=time.time()-read(RUN/'START.json')['unix']))
         status(RUN,'ARCHIVING_FIXED_K20_RESULTS',tested_folds=tested)
         _publish(tested)
